@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model Users {
+    id        String    @id @default(cuid())
+    email     String    @unique
+    firstName String
+    lastName  String
+    username  String?   @unique
+    image     String?
+    phone     String?
+    password  String
+    // role            String            @default("Administrator")
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+    events    Events[]
+}
+
+model NewsLetterSubscribers {
+    id        String    @id @default(cuid())
+    email     String    @unique
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+}
+
+model Locations {
+    id        String    @id @default(cuid())
+    address   String
+    city      String
+    state     String
+    country   String
+    zipCode   String?
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+    events    Events[]
+}
+
+enum EventVisibility {
+    PUBLIC
+    PRIVATE
+}
+
+model EventImages {
+    id       String @id @default(cuid())
+    imageUrl String
+    event    Events @relation(fields: [eventId], references: [id])
+    eventId  String
+}
+
+model Tickets {
+    id      String @id @default(cuid())
+    event   Events @relation(fields: [eventId], references: [id])
+    eventId String
+
+    role             String  @default("General")
+    price            Decimal
+    quantity         Int
+    remainingTickets Int     @default(0)
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+}
+
+model Events {
+    id     String @id @default(cuid())
+    user   Users  @relation(fields: [publisherId], references: [id])
+    publisherId String
+
+    title       String
+    description String
+    location    Locations      @relation(fields: [locationId], references: [id])
+    locationId  String
+    date        DateTime
+    time        DateTime
+    category    String         @default("General")
+    tag         String
+    visibility  EventVisibility @default(PUBLIC)
+
+    mainImageUrl String?
+    images       EventImages[]
+
+    currency          String    @default("NGN")
+    tickets           Tickets[]
+    purchaseStartDate DateTime
+    purchaseEndDate   DateTime
+    allowedGuestType  String    @default("Everyone")
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+}
