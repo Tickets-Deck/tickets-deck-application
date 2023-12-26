@@ -1,0 +1,63 @@
+@import "./variables";
+@import "./reusables";
+
+.dashboard {
+    .topArea {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h3 {
+            font-size: $font-size-30;
+            font-weight: $fontWeight-400;
+            color: $white;
+        }
+
+        button {
+            @include primary-button;
+        }
+    }
+    .kpiSection {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 1rem;
+        margin-top: 1.5rem;
+
+        .kpi {
+            width: 25%;
+            background-color: $dark-grey;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            span {
+                width: 2.5rem;
+                height: 2.5rem;
+                border-radius: .25rem;
+                background-color: $dark-grey-2;
+                display: grid;
+                place-items: center;
+                svg path {
+                    fill: $white;
+                }
+            }
+            .content {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                h4 {
+                    font-size: $font-size-24;
+                    font-weight: $fontWeight-500;
+                    line-height: $font-size-20 + .125rem;
+                    color: $white;
+                }
+                p {
+                    font-size: $font-size-16 - .125rem;
+                    font-weight: $fontWeight-400;
+                    color: rgba($color: $white, $alpha: 0.5);
+                }
+            }
+        }
+    }
+}

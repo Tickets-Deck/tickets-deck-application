@@ -1,0 +1,726 @@
+@import "./variables";
+@import "./reusables";
+
+.homepage {
+    background-color: $dark-grey;
+    color: $white;
+
+    .heroSection {
+        @include sectionPadding;
+        padding-top: 4.5rem;
+        padding-bottom: 4.5rem;
+        background-color: $dark-grey;
+        display: flex;
+        // align-items: flex-start;
+        align-items: center;
+        position: relative;
+
+        @include bigMobilePhone {
+            flex-direction: column;
+            gap: 2rem;
+            padding-top: 6.5rem;
+            padding-bottom: 4.5rem;
+        }
+        .backgroundImage {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            img {
+                object-fit: cover;
+            }
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(180deg, rgba(27, 27, 27, 0.4) 0%, rgba(27, 27, 27, 0.7) 100%);
+            }
+        }
+        &__lhs {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            flex-basis: 50%;
+            z-index: 2;
+            .textContents {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                h2 {
+                    font-family: Mona-Sans-Wide, "sans-serif";
+                    font-weight: 500;
+                    font-size: $font-size-35;
+                    span {
+                        // color: $secondary-color;
+                        position: relative;
+                        background: linear-gradient(90deg, rgba(253, 253, 255, 100) 100%, rgba(253, 253, 255, 0) 100%);
+                        background-clip: text;
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        // border-right: 2px solid #0065e9;
+                        animation: animateText 4s steps(12) infinite;
+                        // &::before {
+                        //     content: '';
+                        //     position: absolute;
+                        //     top: 0;
+                        //     left: 0;
+                        //     height: 100%;
+                        //     width: 100%;
+                        //     background-color: #dbdbdb;
+                        //     border-left: 2px solid #0065e9;
+                        //     // padding-left: 0.5px;
+                        //     animation: animateText 4s steps(12) infinite;
+
+                        // }
+                        // @keyframes animateText {
+                        //     40%, 60% {
+                        //         left: 100%;
+                        //     }
+                        //     100% {
+                        //         left: 0%;
+                        //     }
+                        // }
+                        @keyframes animateText {
+                            // 40%, 60% {
+                            // background: linear-gradient(90deg, rgba(253, 253, 255, 100) 100%, rgba(253, 253, 255, 0) 100%);
+                            // }
+                            // to {
+                            // background: linear-gradient(90deg, rgba(253, 253, 255, 0) 0%, rgba(253, 253, 255, 0) 100%);
+                            // }
+                        }
+                    }
+                }
+                p {
+                    font-size: $font-size-16 - 0.125rem;
+                    font-weight: $fontWeight-300;
+                }
+            }
+            .actionButtons {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                button {
+                    @include secondary-button();
+                    background-color: $white;
+                    border: 1.5px solid $white;
+                    color: $dark-grey;
+                    font-weight: $fontWeight-500;
+                }
+                .secondaryButton {
+                    background-color: transparent;
+                    color: $white;
+                }
+            }
+        }
+        &__rhs {
+            flex-basis: 35%;
+            margin-left: auto;
+            z-index: 2;
+            @include bigMobilePhone {
+                margin: 0 auto;
+                flex-basis: 100%;
+                width: 100%;
+                margin-top: .75rem;
+            }
+
+            // .appLoader {
+            //     margin: auto;
+            //     // border: 1px solid #fff;
+            //     width: 200px;
+            //     height: 200px;
+            //     display: grid;
+            //     place-items: center;
+            //     border-radius: 16px;
+            //     font-size: 24px;
+            //     font-weight: $fontWeight-700;
+            //     position: relative;
+            //     transform: translateZ(0);
+            //     border-radius: var(--border-radius);
+            //     overflow: hidden;
+            //     box-shadow: 0px 0px 24px 2px rgba(83, 215, 255, 0.08);
+
+            //     & > div {
+            //         display: flex;
+            //         flex-direction: column;
+            //         align-items: center;
+            //         span {
+            //             font-size: $font-size-16 - 4px;
+            //             font-weight: $fontWeight-300;
+            //         }
+            //     }
+
+            //     &::after,
+            //     &::before {
+            //         content: "";
+            //         position: absolute;
+            //         z-index: -1;
+            //     }
+
+            //     &::before {
+            //         animation: 6s rotate linear infinite alternate;
+            //         width: 200%;
+            //         height: 200%;
+            //         background: var(--tile-border);
+            //         background: conic-gradient(
+            //             from 179.82deg at 50% 50%,
+            //             rgba(12, 20, 20, 0.24) 0deg,
+            //             rgba(89, 0, 159, 0.0689191) 80.63deg,
+            //             rgba(112, 195, 255, 0.442708) 163.12deg,
+            //             rgba(16, 129, 101, 0.49775) 294.38deg,
+            //             #0f1f1b 360deg
+            //         );
+            //     }
+            //     &::after {
+            //         inset: 0;
+            //         padding: 1px;
+            //         border-radius: var(--border-radius);
+            //         background: linear-gradient(
+            //             to bottom right,
+            //             rgba($primary-color, 0.4),
+            //             rgba(var(--tile-end-rgb), 1)
+            //         );
+            //         background-clip: content-box;
+            //     }
+            // }
+
+            @keyframes rotate {
+                from {
+                    transform: rotate(-360deg);
+                }
+                to {
+                    transform: rotate(0deg);
+                }
+            }
+
+            .searchContainer {
+                border-radius: 1.5rem;
+                background: rgba(17, 17, 17, 0.3);
+                // background: rgba(17, 17, 17);
+                backdrop-filter: blur(0.469rem);
+                padding: 1.25rem;
+                border-top: 1.5px solid rgba($white, 0.8);
+                position: relative;
+                // overflow: hidden;
+                transform: translateZ(0);
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0px 10px 24px 2px rgba(83, 215, 255, 0.15);
+                // box-shadow: 0px 16px 16px 2px rgba(255, 255, 255, 0.52);
+
+                animation: move 1200ms ease-in-out infinite alternate;
+
+                @keyframes move {
+                    from {
+                        transform: translateY(-0.5rem);
+                        box-shadow: 0px 10px 24px 2px rgba(83, 215, 255, 0);
+                    }
+                }
+
+                @include bigMobilePhone {
+                    width: 100%;
+                    padding: 1.5rem 1.25rem;
+                }
+
+                &::before,
+                &::after {
+                    content: "";
+                    position: absolute;
+                    z-index: -1;
+                }
+                // &::before {
+                //     animation: 6s rotate linear infinite alternate;
+                //     width: 200%;
+                //     height: 200%;
+                //     background: conic-gradient(
+                //         from 179.82deg at 50% 50%,
+                //         rgba(12, 20, 20, 0.06) 0deg,
+                //         rgba(89, 0, 159, 0.0689191) 80.63deg,
+                //         rgba($primary-color, 0.1) 163.12deg,
+                //         rgba($secondary-color, 0.06) 294.38deg,
+                //         rgba($primary-color, 0.1) 360deg
+                //     );
+                // }
+                // &::after {
+                //     inset: 0;
+                //     padding: 1px;
+                //     border-radius: var(--border-radius);
+                //     // background: linear-gradient(
+                //     //     to bottom right,
+                //     //     rgba($primary-color, 0.4),
+                //     //     rgba($primary-color, 1)
+                //     // );
+                //     background: linear-gradient(to bottom right, rgba(17, 17, 17, 0.3), rgba(17, 17, 17, 0.3));
+                //     background-clip: content-box;
+                // }
+
+                .textContents {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.25rem;
+                    @include bigMobilePhone {
+                        text-align: center;
+                    }
+                    p {
+                        font-size: $font-size-16;
+                        @include bigMobilePhone {
+                            font-size: $font-size-18;
+                        }
+                        span {
+                            color: $secondary-color;
+                        }
+                        &:nth-child(2) {
+                            font-size: $font-size-16 - 0.125rem;
+                            opacity: 0.8;
+                            @include bigMobilePhone {
+                                font-size: $font-size-16 - 0.05rem;
+                            }
+                        }
+                    }
+                }
+                .inputAreaContainer {
+                    width: 100%;
+                    position: relative;
+                    .resultsDropdown {
+                        position: absolute;
+                        width: 100%;
+                        top: 2.5rem;
+                        padding: 0.5rem;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.1rem;
+                        border-radius: 0.625rem;
+                        border: 1px solid rgba(255, 255, 255, 0.4);
+                        background: rgba(0, 0, 0, 0.3);
+                        backdrop-filter: blur(10px);
+                        // height: fit-content;
+                        max-height: 160px;
+                        overflow-y: auto;
+                        @include bigMobilePhone {
+                            top: 3.35rem;
+                        }
+
+                        .eachResult {
+                            border-radius: .375rem;
+                            cursor: pointer;
+                            padding: .5rem;
+                            &:hover {
+                                background: rgba(255, 255, 255, 0.1);
+                            }
+
+                            &__top {
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                gap: 1rem;
+                                margin-bottom: .25rem;
+                                h4 {
+                                    font-size: $font-size-16 - 0.125rem;
+                                    font-weight: $fontWeight-500;
+                                    &:nth-child(1) {
+                                        // border: 1px solid #fff;
+                                        width: 100%;
+                                        max-width: 100%;
+                                        overflow: hidden;
+                                        white-space: nowrap;
+                                        text-overflow: ellipsis;
+                                    }
+                                    &:nth-child(2) {
+                                        min-width: fit-content;
+                                        // border: 1px solid #fff;
+                                        opacity: 0.8;
+                                        font-size: $font-size-16 - 0.25rem;
+                                    }
+                                }
+                            }
+                            p {
+                                font-size: $font-size-16 - 0.2rem;
+                                font-weight: $fontWeight-300;
+                                font-family: "Mona-Sans-Wide", sans-serif;
+                            }
+                        }
+                        .resultNotFound {
+                            display: flex;
+                            align-items: center;
+                            gap: .125rem;
+                            padding: .5rem;
+                        }
+                    }
+                }
+                .inputArea {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.25rem;
+                    width: 100%;
+                    @include bigMobilePhone {
+                        gap: 0.5rem;
+                    }
+                    input {
+                        border-radius: 10px;
+                        border: 1px solid rgba(255, 255, 255, 0.4);
+                        background: rgba(0, 0, 0, 0.3);
+                        padding: 0.5rem;
+                        outline: none;
+                        color: $white;
+                        @include bigMobilePhone {
+                            font-size: $font-size-16;
+                            padding: 0.8rem 0.65rem;
+                        }
+                    }
+                    .searchErrorMsg {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.125rem;
+                        svg {
+                            width: 0.8rem;
+                            height: 0.8rem;
+                        }
+                        p {
+                            font-size: $font-size-16 - 0.25rem;
+                            font-weight: $fontWeight-400;
+                        }
+                    }
+                }
+                button {
+                    @include primary-button();
+                    width: 100%;
+                    justify-content: center;
+                }
+            }
+        }
+        .colors {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            opacity: 0.2;
+            mix-blend-mode: hard-light;
+            span {
+                position: absolute;
+                &:nth-child(1) {
+                    background: #29ffbf;
+                    top: -50%;
+                    left: -40%;
+                    filter: blur(200px);
+                    width: 765px;
+                    height: 392px;
+                    animation: moveFirst 5400ms ease infinite alternate;
+                }
+                &:nth-child(2) {
+                    border-radius: 765px;
+                    background: #ffcc1c;
+                    filter: blur(200px);
+                    top: -50%;
+                    left: 80%;
+                    width: 765px;
+                    height: 392px;
+                    animation: moveSecond 5400ms ease infinite alternate;
+                }
+                &:nth-child(3) {
+                    border-radius: 765px;
+                    background: #ffcc1c;
+                    filter: blur(200px);
+                    top: 0%;
+                    left: 0%;
+                    transform: translate(50%, 50%);
+                    width: 700px;
+                    height: 350px;
+                    animation: moveThird 7800ms ease infinite alternate;
+                }
+                &:nth-child(4) {
+                    border-radius: 503px;
+                    background: #74ffd5;
+                    filter: blur(250px);
+                    top: 0%;
+                    left: 0%;
+                    transform: translate(250%, 50%);
+                    width: 503px;
+                    height: 258px;
+                    animation: moveFourth 7800ms ease infinite alternate;
+                }
+                @keyframes moveFirst {
+                    0% {
+                        top: -50%;
+                        left: -40%;
+                        transform: translate(0%, 0%);
+                    }
+                    25% {
+                        top: -50%;
+                        left: 80%;
+                        transform: translate(0%, 0%);
+                    }
+                    50% {
+                        top: 0%;
+                        left: 0%;
+                        transform: translate(50%, 50%);
+                    }
+                    100% {
+                        top: 0%;
+                        left: 0%;
+                        transform: translate(250%, 50%);
+                    }
+                }
+                @keyframes moveSecond {
+                    0% {
+                        top: -50%;
+                        left: 80%;
+                        transform: translate(0%, 0%);
+                    }
+                    25% {
+                        top: -50%;
+                        left: -40%;
+                        transform: translate(0%, 0%);
+                    }
+                    50% {
+                        top: 0%;
+                        left: 0%;
+                        transform: translate(50%, 50%);
+                    }
+                    100% {
+                        top: 150%;
+                        left: -40%;
+                        transform: translate(0%, 0%);
+                    }
+                }
+                @keyframes moveThird {
+                    0% {
+                        top: 0%;
+                        left: 0%;
+                        transform: translate(50%, 50%);
+                    }
+                    25% {
+                        top: -50%;
+                        left: -40%;
+                        transform: translate(0%, 0%);
+                    }
+                    50% {
+                        top: -50%;
+                        left: 80%;
+                        transform: translate(0%, 0%);
+                    }
+                    100% {
+                        top: 150%;
+                        left: -40%;
+                        transform: translate(0%, 0%);
+                    }
+                }
+                @keyframes moveFourth {
+                    0% {
+                        top: 150%;
+                        left: -40%;
+                        transform: translate(0%, 0%);
+                    }
+                    25% {
+                        top: 50%;
+                        left: -40%;
+                        transform: translate(0%, 0%);
+                        scale: 1;
+                    }
+                    50% {
+                        top: -50%;
+                        left: 80%;
+                        transform: translate(0%, 0%);
+                        scale: 3;
+                    }
+                    100% {
+                        top: 0%;
+                        left: 0%;
+                        transform: translate(50%, 50%);
+                        scale: 1;
+                    }
+                }
+            }
+        }
+    }
+
+    .servicesSection {
+        background-color: $dark-grey;
+        @include sectionPadding;
+        padding-top: 2rem;
+
+        .topArea {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            width: fit-content;
+            margin: 0 auto;
+            width: 40%;
+            // border: 1px solid #fff;
+            @include bigMobilePhone {
+                width: 80%;
+            }
+            h2 {
+                position: relative;
+                font-size: $font-size-30;
+                font-family: Mona-Sans-Wide;
+                font-weight: $fontWeight-600;
+                display: flex;
+                align-items: center;
+                gap: 0.125rem;
+                svg {
+                    width: 2rem;
+                    height: 2rem;
+                }
+            }
+            p {
+                font-size: $font-size-16 - 0.125rem;
+                font-weight: $fontWeight-400;
+                width: fit-content;
+                text-align: center;
+            }
+        }
+        .servicesContainer {
+            margin: 2rem 0;
+            display: grid;
+            // grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            @include bigMobilePhone {
+                gap: 20px;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+            .service {
+                width: 100%;
+                min-width: 250px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 32px 40px;
+                gap: 1rem;
+                border-radius: 24px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+                @include bigMobilePhone {
+                    min-width: 160px;
+                    padding: 32px 24px;
+                }
+                span {
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 300px;
+                    background: rgba(255, 255, 255, 0.2);
+                    display: grid;
+                    place-items: center;
+                    @include bigMobilePhone {
+                        width: 100px;
+                        height: 100px;
+                    }
+                    svg {
+                        width: 52px;
+                        height: 52px;
+                        @include bigMobilePhone {
+                            width: 40px;
+                            height: 40px;
+                        }
+                    }
+                }
+                &__textContents {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.25rem;
+                    width: 75%;
+                    h2 {
+                        font-size: $font-size-24;
+                        text-align: center;
+                        @include bigMobilePhone {
+                            font-size: $font-size-20;
+                            font-weight: $fontWeight-500;
+                            width: 95%;
+                        }
+                    }
+                    p {
+                        font-size: $font-size-16 - 0.125rem;
+                        font-weight: $fontWeight-300;
+                    }
+                }
+            }
+        }
+    }
+
+    .createEventSection {
+        @include sectionPadding;
+        display: flex;
+        background-color: $white;
+        gap: 3rem;
+        @include bigMobilePhone {
+            flex-direction: column;
+            padding-top: 3rem;
+            padding-bottom: 2rem;
+            gap: 1.5rem;
+        }
+
+        &__lhs {
+            flex-basis: 40%;
+            width: 100%;
+            position: relative;
+            @include bigMobilePhone {
+                flex-basis: 100%;
+            }
+            .image {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                display: inline-flex;
+                align-items: flex-end;
+                height: 124.5%;
+                @include bigMobilePhone {
+                    position: relative;
+                    height: 12rem;
+                    // height: 60.5%;
+                }
+                // border: 2px solid #000;
+                img {
+                    width: 100%;
+                    height: 100%;
+                    display: inline-flex;
+                    object-fit: contain;
+                }
+            }
+        }
+        &__rhs {
+            flex-basis: 60%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+            color: $dark-grey;
+            padding: 2rem 0;
+            @include bigMobilePhone {
+                align-items: center;
+                text-align: center;
+                padding: 0;
+            }
+            h3 {
+                font-size: $font-size-30;
+                font-weight: $fontWeight-600;
+                @include bigMobilePhone {
+                    font-size: $font-size-35;
+                }
+            }
+            p {
+                width: 60%;
+                font-weight: $fontWeight-300;
+                @include bigMobilePhone {
+                    width: 100%;
+                }
+            }
+            button {
+                @include secondary-button;
+                &:hover {
+                    box-shadow: 0px 10px 50px 0px rgba(61, 55, 241, 0.25);
+                }
+            }
+        }
+    }
+}

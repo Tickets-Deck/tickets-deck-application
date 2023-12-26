@@ -1,0 +1,137 @@
+//Color
+$white : #ffffff;
+$black : #000000;
+$grey : #f2f2f2;
+$dark-grey : #111111;   
+$dark-grey-2 : #222222;   
+
+$container-grey : #313131;       
+$text-grey : #717171;       
+$purple-grey : #ADADBC;       
+
+$primary-color : #8133F1;
+$primary-color-sub : #CEB0FA;
+$primary-color-sub-50 : #EFE6FD;
+$secondary-color : #FEE755;
+$grey-bg: #F4F1F1;
+$grey-3: #828282;
+
+
+$success-color : #00c940;
+$failed-color : #DC143C;
+
+$peach : #FF7875;
+$standard : #34ABAE;
+$premium : #006aff;
+
+//Shadow
+$boxShadow : 0rem .625rem 1.25rem rgba(0, 0, 0, 0.5);
+
+//Padding
+$padding-desktop : 8rem;
+$padding-mobile : 1.5rem 4rem;
+$padding-mobile-side : 0rem 1rem;
+
+//Font Size
+$font-size-102 : 6.375rem;
+$font-size-80 : 5rem;
+$font-size-70 : 4.375rem;
+$font-size-60 : 3.75rem;
+$font-size-50 : 3.125rem;
+$font-size-40 : 2.5rem;
+$font-size-35 : 2.188rem;
+$font-size-30 : 1.875rem;
+$font-size-24 : 1.5rem;
+$font-size-20 : 1.25rem;
+$font-size-18 : 1.125rem;
+$font-size-16 : 1rem;
+
+//Font weight
+$fontWeight-100 : 100;
+$fontWeight-200 : 200;
+$fontWeight-300 : 300;
+$fontWeight-400 : 400;
+$fontWeight-500 : 500;
+$fontWeight-600 : 600;
+$fontWeight-700 : 700;
+$fontWeight-800 : 800;
+$fontWeight-900 : 900;
+
+// Font types 
+$wide-font: "Mona-Sans-Wide";
+$normal-font: "Mona-Sans";
+$narrow-font: "Mona-Sans-Narrow";
+
+//#Toast Card styles  ====================================================
+
+@mixin success-lg {
+    $from: lighten($success, 5%);
+    $to: darken($success, 5%);
+    background-color: -moz-linear-gradient($from, $to);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
+    background-color: -webkit-linear-gradient($from, $to);
+    background-color: -o-linear-gradient($from, $to);
+    background-color: $white;
+}
+@mixin info-lg {
+    $from: lighten($info, 5%);
+    $to: darken($info, 5%);
+    background-color: -moz-linear-gradient($from, $to);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
+    background-color: -webkit-linear-gradient($from, $to);
+    background-color: -o-linear-gradient($from, $to);
+}
+@mixin warning-lg {
+    $from: lighten($warning, 5%);
+    $to: darken($warning, 5%);
+    background-color: -moz-linear-gradient($from, $to);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
+    background-color: -webkit-linear-gradient($from, $to);
+    background-color: -o-linear-gradient($from, $to);
+}
+@mixin danger-lg {
+    $from: lighten($danger, 5%);
+    $to: darken($danger, 5%);
+    background-color: -moz-linear-gradient($from, $to);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
+    background-color: -webkit-linear-gradient($from, $to);
+    background-color: -o-linear-gradient($from, $to);
+}
+
+$success: #3ab35a;
+$success-light: #eaf7ee;
+$success-btn: rgba(58, 179, 91, 0.2);
+.indicatorsuccess {
+    // @include success-lg;
+    background-color: $white;
+    background-image: none;
+}
+
+$info: #006ee7;
+$info-light: #e6effa;
+$info-btn: rgba(0, 110, 231, 0.2);
+.indicatorinfo {
+    // @include info-lg;
+    background-color: $white;
+    background-image: none;
+}
+
+$warning: #ee9500;
+$warning-light: #fef7ea;
+$warning-btn: rgba(238, 149, 0, 0.2);
+.indicatorwarning {
+    // @include warning-lg;
+    background-color: $white;
+    background-image: none;
+}
+
+$danger: #e64e2f;
+$danger-light: #fcede9;
+$danger-btn: rgba(230, 78, 47, 0.2);
+.indicatordanger {
+    // @include danger-lg;
+    background-color: $white;
+    background-image: none;
+}
+
+//#Toast Card styles end ====================================================

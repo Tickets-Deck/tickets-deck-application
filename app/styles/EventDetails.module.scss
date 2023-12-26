@@ -1,0 +1,462 @@
+@import "./variables";
+@import "./reusables";
+
+@mixin button {
+    @include primary-button;
+    border-radius: 2.5rem;
+    background-color: $white;
+    color: $black;
+    font-weight: $fontWeight-500;
+    font-size: $font-size-18;
+}
+
+.eventDetailsPage, .userEventDetailsPage {
+    color: $white;
+    background-color: $dark-grey;
+
+    .heroSection {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding-bottom: 3rem;
+        // overflow: hidden;
+
+        .textContents {
+            @include sectionPadding;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+            width: 70%;
+            z-index: 2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            @include bigMobilePhone {
+                width: 100%;
+            }
+            span {
+                border-radius: 0.5rem;
+                padding: 0.25rem 0.5rem;
+                background: rgba(255, 255, 255, 0.1);
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+                width: fit-content;
+                font-size: $font-size-16 - 0.25rem;
+                span {
+                    background-color: transparent;
+                    border: none;
+                    padding: 0;
+                }
+                .img {
+                    width: 1rem;
+                    height: 1rem;
+                }
+            }
+            h2 {
+                font-weight: $fontWeight-500;
+                font-size: $font-size-35;
+                line-height: $font-size-35;
+                @include bigMobilePhone {
+                    font-size: $font-size-30;
+                    line-height: $font-size-30;
+                }
+            }
+        }
+        .video {
+            position: absolute;
+            // border: 2px solid #fff;
+            height: 100%;
+            width: 100%;
+            video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                // object-position: 50% -750%;
+                object-position: bottom;
+            }
+            &::after {
+                content: "";
+                background-color: $white;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: 2;
+                background: linear-gradient(180deg, #8133f1 0%, #6315d3 100%);
+                opacity: 0.5;
+            }
+        }
+    }
+
+    .eventInfoContainer {
+        @include sectionPadding;
+        z-index: 2;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        transform: translateY(-2.25rem);
+        @include bigMobilePhone {
+            transform: translateY(-4rem);
+        }
+
+        .mainSection {
+            display: flex;
+            align-items: center;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            background-color: $container-grey;
+            gap: 1rem;
+            position: relative;
+            @include bigMobilePhone {
+                flex-direction: column;
+            }
+            @include midSizeMobilePhone {
+                padding: 1rem;
+                border-radius: 1.5rem;
+            }
+            .eventImage {
+                min-width: 30%;
+                width: 30%;
+                min-height: 40vh;
+                height: 100%;
+                border-radius: 1rem;
+                position: relative;
+                border-radius: 1rem;
+                overflow: hidden;
+                display: inline-flex;
+                @include bigMobilePhone {
+                    width: 100%;
+                    min-width: 100%;
+                }
+                @include midSizeMobilePhone {
+                    min-height: 180px;
+                    height: 180px;
+                }
+                img {
+                    object-fit: cover;
+                }
+            }
+            .tag {
+                position: absolute;
+                top: 1.5rem;
+                right: 1.5rem;
+                padding: 0.25rem 0.75rem;
+                border-radius: 1rem;
+                color: $white;
+                background-color: $primary-color;
+            }
+            .eventDetails {
+                display: flex;
+                align-items: flex-end;
+                gap: 0.25rem;
+                width: 100%;
+                height: 100%;
+                min-height: 100%;
+                @include midSizeMobilePhone {
+                    flex-direction: column;
+                    .leftInfo {
+                        order: 2;
+                    }
+                }
+                .leftInfo {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.85rem;
+                    .title {
+                        font-size: $font-size-30;
+                        font-weight: $fontWeight-600;
+                        line-height: $font-size-30;
+                        @include midSizeMobilePhone {
+                            font-size: $font-size-20;
+                            line-height: $font-size-20;
+                        }
+                        // font-family: Mona-Sans-Wide, 'sans-serif';
+                    }
+                    .datePosted {
+                        color: $purple-grey;
+                        font-size: $font-size-16 - 0.25rem;
+                    }
+                    .publisherInfo {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.35rem;
+                        &__image {
+                            width: 2.5rem;
+                            height: 2.5rem;
+                            @include midSizeMobilePhone {
+                                width: 2rem;
+                                height: 2rem;
+                            }
+                        }
+                        &__name {
+                            font-size: $font-size-16;
+                            color: $white;
+                            font-weight: $fontWeight-500;
+                            @include midSizeMobilePhone {
+                                font-size: $font-size-16 - 0.125rem;
+                            }
+                        }
+                    }
+                    .dateTime {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.75rem;
+                        h4 {
+                            font-size: $font-size-16;
+                            font-weight: $fontWeight-500;
+                            color: $white;
+                        }
+                    }
+                    .location {
+                        width: 100%;
+                        p {
+                            font-size: $font-size-16 - 0.125rem;
+                            color: $white;
+                        }
+                        button {
+                            color: $purple-grey;
+                            text-decoration: underline;
+                            background-color: transparent;
+                            border: none;
+                            outline: none;
+                            cursor: pointer;
+                            &:hover {
+                                opacity: 0.8;
+                            }
+                        }
+                    }
+                    .bottomArea {
+                        display: flex;
+                        gap: 0.75rem;
+                        margin-top: 0.8rem;
+                        @include bigMobilePhone {
+                            flex-direction: column;
+                        }
+                        .priceArea {
+                            span {
+                                color: $purple-grey;
+                                font-size: $font-size-16 - 0.125rem;
+                            }
+                            h2 {
+                                font-weight: $fontWeight-600;
+                            }
+                        }
+                        button {
+                            @include button();
+                            @include midSizeMobilePhone {
+                                font-size: $font-size-16 - 0.125rem;
+                            }
+                        }
+                    }
+                }
+                .actionButtons {
+                    width: 8%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.85rem;
+                    @include midSizeMobilePhone {
+                        flex-direction: row;
+                        width: 100%;
+                        margin-bottom: .5rem; 
+                        gap: 0.5rem;
+                    }
+                    .actionButton {
+                        margin-left: auto;
+                        width: 2.5rem;
+                        height: 2.5rem;
+                        border-radius: 100%;
+                        background-color: $white;
+                        display: grid;
+                        place-items: center;
+                        position: relative;
+                        @include midSizeMobilePhone {
+                            width: 2rem;
+                            height: 2rem;
+                        }
+                        svg {
+                            width: 1rem;
+                            height: 1rem;
+                        }
+                    }
+                }
+            }
+        }
+        .optionalSection {
+            .ticketsSelectionContainer, .ticketsFetchErrorMsgContainer {
+                border-radius: 1rem;
+                background: linear-gradient(180deg, rgba(49, 49, 49, 0) 4.17%, #313131 100%);
+                width: 80%;
+                margin: 0 auto;
+                padding: 2.5rem 1.5rem 2.5px;
+                @include bigMobilePhone {
+                    width: 100%;
+                    padding: 2rem 1.5rem 2.5px;
+                }
+                .topArea {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.125rem;
+                    margin-bottom: 1.5rem;
+                    text-align: center;
+                    h3 {
+                        font-size: $font-size-18;
+                        font-weight: $fontWeight-500;
+                        color: $white;
+                    }
+                    p {
+                        color: $purple-grey;
+                    }
+                }
+                .ticketsContainer {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(calc(50% - 1.25rem), 1fr));
+                    gap: 1.25rem;
+                    @include bigMobilePhone {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .ticket {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                        background-color: rgba($color: $primary-color-sub-50, $alpha: 0.1);
+                        padding: 1.25rem;
+                        border-radius: 0.5rem;
+                        border: 0.2rem solid transparent;
+                        p {
+                            font-size: $font-size-16 - 0.125rem;
+                            font-weight: $fontWeight-400;
+                        }
+
+                        &__topArea {
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            h4 {
+                                font-size: $font-size-16;
+                                font-weight: $fontWeight-500;
+                            }
+                        }
+                        &__bottomArea {
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            span {
+                                width: 1.875rem;
+                                height: 1.875rem;
+                                border-radius: 0.25rem;
+                                background-color: rgba($color: $primary-color-sub-50, $alpha: 0.1);
+                                cursor: pointer;
+                                display: grid;
+                                place-items: center;
+                                &:hover {
+                                    background-color: rgba($color: $primary-color-sub-50, $alpha: 0.4);
+                                }
+                            }
+                        }
+                    }
+                    .active {
+                        border: 0.2rem solid rgba($color: $primary-color-sub-50, $alpha: 0.2);
+                    }
+                }
+                .bottomContainer {
+                    display: flex;
+                    align-items: flex-end;
+                    justify-content: space-between;
+                    margin: 1rem 0;
+                    @include bigMobilePhone {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 0.5rem;
+                    }
+                    .left {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.125rem;
+                        p {
+                            font-size: $font-size-16 - 0.125rem;
+                            font-weight: $fontWeight-300;
+                            color: $purple-grey;
+                        }
+                        .price {
+                            display: flex;
+                            align-items: center;
+                            gap: 0.625rem;
+                            p {
+                                color: $primary-color-sub-50;
+                            }
+                            h1 {
+                                font-size: $font-size-24;
+                                font-weight: $fontWeight-500;
+                            }
+                        }
+                    }
+                    button {
+                        @include button();
+                        @include bigMobilePhone {
+                            width: 100%;
+                            justify-content: center;
+                        }
+                    }
+                }
+            }
+            .ticketsFetchErrorMsgContainer {
+                .messageContent {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    // gap: .5rem;
+                    width: 60%;
+                    margin: 0 auto;
+                    text-align: center;
+                    padding-bottom: 2.5rem;
+                    @include bigMobilePhone {
+                        width: 100%;
+                    }
+                    &__image {
+                        width: 6.5rem;
+                        height: 6.5rem;
+                        margin: 1.5rem 0;
+                    }
+                    h4 {
+                        font-size: $font-size-20;
+                        font-weight: $fontWeight-400;
+                        color: $purple-grey;
+                        margin-bottom: .5rem;
+                    }
+                    p {
+                        font-size: $font-size-16;
+                        
+                        span {
+                            text-decoration: underline;
+                            cursor: pointer;
+                            &:hover {
+                                color: $purple-grey;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.userEventDetailsPage {
+    min-height: calc(100vh - 3.125rem);
+    .heroSection {
+        .textContents {
+            padding-right: 1.5rem;
+            padding-left: 1.5rem;
+        }
+    }
+    .eventInfoContainer {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
