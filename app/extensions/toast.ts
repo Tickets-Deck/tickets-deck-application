@@ -1,6 +1,6 @@
 "use client"
 import { createContext } from "react";
-import { IToastOptions } from "../components/models/toastOptions";
+import { IToastOptions } from "../models/toastOptions";
 
 interface IToastContext {
     toastOptions?: IToastOptions;
