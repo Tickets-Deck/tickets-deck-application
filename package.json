@@ -9,6 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@fluentui/react": "^8.114.0",
+    "@mui/lab": "^5.0.0-alpha.158",
+    "@mui/material": "^5.15.2",
     "@prisma/client": "^5.7.1",
     "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
