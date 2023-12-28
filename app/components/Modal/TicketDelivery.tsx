@@ -5,16 +5,15 @@ import ModalWrapper from "./ModalWrapper";
 import Image from "next/image";
 import images from "../../../public/images";
 import { CheckIcon, CloseIcon } from "../SVGs/SVGicons";
-import { ITicketPricing } from "../models/ITicketPricing";
+import { ITicketPricing } from "../../models/ITicketPricing";
 import { emailRegex } from "../../constants/emailRegex";
 import useResponsive from "../../hooks/useResponsiveness";
 import PanelWrapper from "./PanelWrapper";
-import { RetrievedTicketType } from "../models/IEvent";
 
 interface TicketDeliveryProps {
     setVisibility: Dispatch<SetStateAction<boolean>>
     visibility: boolean
-    eventTicketTypes: RetrievedTicketType[] | undefined
+    eventTicketTypes: [] | undefined
 }
 
 enum ValidationStatus {
