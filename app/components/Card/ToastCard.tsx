@@ -6,7 +6,7 @@ import styles from '../../styles/ToastCard.module.scss';
 import { CloseMenuIcon, OutlineCheckIcon, OutlineCloseIcon, OutlineInfoIcon, OutlineWarningIcon } from "../../components/SVGs/SVGicons";  
 // import useResponsive from "../../hooks/useResponsiveness";
 import { ToastContext } from "../../extensions/toast";
-import { ToastMessageType } from "../models/ToastMessageType";
+import { ToastMessageType } from "../../models/ToastMessageType";
 import useResponsive from "../../hooks/useResponsiveness";
 
 interface ToastCardProps {
