@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
-import { UserCredentialsRequest } from "../components/models/IUser";
+import { UserCredentialsRequest } from "../models/IUser";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_DEV,
