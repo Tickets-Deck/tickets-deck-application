@@ -43,12 +43,6 @@ const Dashboard: FunctionComponent<DashboardProps> = (): ReactElement => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        if (!session) {
-            push('/auth/signin');
-        }
-    }, [session]);
-
     return (
         <div className={styles.dashboard}>
             <div className={styles.topArea}>
