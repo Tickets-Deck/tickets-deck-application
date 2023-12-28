@@ -71,12 +71,10 @@
         }
     }
 
-    // &:hover {
-    //     gap: 1rem;
-    //     svg {
-    //         opacity: 1;
-    //     }
-    // }
+    &:hover {
+        background-color: $white;
+        color: $primary-color;
+    }
 }
 @mixin secondary-button {
     width: fit-content;
@@ -172,6 +170,7 @@
     min-width: 80%;
     min-height: 100%;
     overflow-y: auto;
+    scrollbar-width: thin;
     // padding-top: 1.25rem;
     // height: calc(100vh - 3rem);
 
