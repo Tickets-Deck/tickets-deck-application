@@ -7,16 +7,17 @@ export type EventImages = {
 };
 
 export type EventRequest = {
+  eventId: string;
   publisherId: string;
 
   title: string;
   description: string;
   location: Location;
-  locationId: string;
+  venue: string;
   date: Date;
-  time: Date;
+  time: string;
   category: string;
-  tag: string;
+  tags: string[];
   visibility: EventVisibility;
 
   mainImageUrl: string;
