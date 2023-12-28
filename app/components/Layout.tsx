@@ -4,7 +4,7 @@ import { FunctionComponent, ReactElement, ReactNode, useContext, useEffect, useS
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { ToastContext } from '../extensions/toast';
-import { ToastMessageType } from './models/ToastMessageType';
+import { ToastMessageType } from '../models/ToastMessageType';
 import ToastCard from './Card/ToastCard';
 import Sidebar from './shared/Sidebar';
 import Topbar from './shared/Topbar';
