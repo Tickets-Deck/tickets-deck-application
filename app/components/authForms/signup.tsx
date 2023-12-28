@@ -5,13 +5,12 @@ import Image from "next/image";
 import images from "../../../public/images";
 import { EyeIcon, FacebookIcon, GoogleIcon, UserIcon } from "../SVGs/SVGicons";
 import Link from "next/link";
-import { UserCredentialsRequest } from "../models/IUser";
-import { emailRegex } from "@/app/constants/emailRegex";
-import { useCreateUser } from "@/app/api/apiClient";
-import { ToastContext } from "@/app/extensions/toast";
+import { UserCredentialsRequest } from "../../models/IUser";
+import { emailRegex } from "../../constants/emailRegex";
+import { ToastContext } from "../../extensions/toast";
 import ComponentLoader from "../Loader/ComponentLoader";
-import { useRouter } from "next/navigation";
-import { signUp } from "@/app/actions/users/signUp";
+import { useRouter } from "next/navigation"; 
+import { signUp } from "../../actions/users/signUp";
 
 interface SignupPageProps {
 
