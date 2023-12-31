@@ -4,7 +4,7 @@ import { UserCredentialsRequest } from "../models/IUser";
 import { EventRequest } from "../models/IEvents";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_DEV,
+  baseURL: ApiRoutes.BASE_URL_TEST,
 });
 
 export function useCreateNewsletterSubscriber() {
