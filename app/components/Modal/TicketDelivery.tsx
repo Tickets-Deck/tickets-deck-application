@@ -9,11 +9,12 @@ import { ITicketPricing } from "../../models/ITicketPricing";
 import { emailRegex } from "../../constants/emailRegex";
 import useResponsive from "../../hooks/useResponsiveness";
 import PanelWrapper from "./PanelWrapper";
+import { RetrievedTicketResponse } from "@/app/models/ITicket";
 
 interface TicketDeliveryProps {
     setVisibility: Dispatch<SetStateAction<boolean>>
     visibility: boolean
-    eventTicketTypes: [] | undefined
+    eventTicketTypes: RetrievedTicketResponse[] | undefined
 }
 
 enum ValidationStatus {
