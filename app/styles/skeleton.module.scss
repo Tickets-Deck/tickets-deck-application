@@ -102,6 +102,8 @@
         gap: 1rem;
         position: relative;
         overflow: hidden;
+        height: 320px;
+
         @include bigMobilePhone {
             flex-direction: column;
         }
