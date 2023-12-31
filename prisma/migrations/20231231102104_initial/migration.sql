@@ -3,14 +3,14 @@ CREATE TYPE "EventVisibility" AS ENUM ('PUBLIC', 'PRIVATE');
 
 -- CreateTable
 CREATE TABLE "Users" (
-    "id" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "firstName" TEXT NOT NULL,
-    "lastName" TEXT NOT NULL,
-    "username" TEXT,
-    "image" TEXT,
-    "phone" TEXT,
-    "password" TEXT NOT NULL,
+    "id" STRING NOT NULL,
+    "email" STRING NOT NULL,
+    "firstName" STRING NOT NULL,
+    "lastName" STRING NOT NULL,
+    "username" STRING,
+    "image" STRING,
+    "phone" STRING,
+    "password" STRING NOT NULL,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
 
@@ -19,8 +19,8 @@ CREATE TABLE "Users" (
 
 -- CreateTable
 CREATE TABLE "NewsLetterSubscribers" (
-    "id" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
+    "id" STRING NOT NULL,
+    "email" STRING NOT NULL,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
 
@@ -29,12 +29,12 @@ CREATE TABLE "NewsLetterSubscribers" (
 
 -- CreateTable
 CREATE TABLE "Locations" (
-    "id" TEXT NOT NULL,
-    "address" TEXT NOT NULL,
-    "city" TEXT NOT NULL,
-    "state" TEXT NOT NULL,
-    "country" TEXT NOT NULL,
-    "zipCode" TEXT,
+    "id" STRING NOT NULL,
+    "address" STRING NOT NULL,
+    "city" STRING NOT NULL,
+    "state" STRING NOT NULL,
+    "country" STRING NOT NULL,
+    "zipCode" STRING,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
 
@@ -43,21 +43,21 @@ CREATE TABLE "Locations" (
 
 -- CreateTable
 CREATE TABLE "EventImages" (
-    "id" TEXT NOT NULL,
-    "imageUrl" TEXT NOT NULL,
-    "eventId" TEXT NOT NULL,
+    "id" STRING NOT NULL,
+    "imageUrl" STRING NOT NULL,
+    "eventId" STRING NOT NULL,
 
     CONSTRAINT "EventImages_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Tickets" (
-    "id" TEXT NOT NULL,
-    "eventId" TEXT NOT NULL,
-    "role" TEXT NOT NULL DEFAULT 'General',
+    "id" STRING NOT NULL,
+    "eventId" STRING NOT NULL,
+    "role" STRING NOT NULL DEFAULT 'General',
     "price" DECIMAL(65,30) NOT NULL,
-    "quantity" INTEGER NOT NULL,
-    "remainingTickets" INTEGER NOT NULL DEFAULT 0,
+    "quantity" INT4 NOT NULL,
+    "remainingTickets" INT4 NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
 
@@ -66,30 +66,30 @@ CREATE TABLE "Tickets" (
 
 -- CreateTable
 CREATE TABLE "Tags" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "id" STRING NOT NULL,
+    "name" STRING NOT NULL,
 
     CONSTRAINT "Tags_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Events" (
-    "id" TEXT NOT NULL,
-    "eventId" TEXT NOT NULL,
-    "publisherId" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "locationId" TEXT,
-    "venue" TEXT,
+    "id" STRING NOT NULL,
+    "eventId" STRING NOT NULL,
+    "publisherId" STRING NOT NULL,
+    "title" STRING NOT NULL,
+    "description" STRING NOT NULL,
+    "locationId" STRING,
+    "venue" STRING,
     "date" TIMESTAMP(3) NOT NULL,
-    "time" TEXT NOT NULL,
-    "category" TEXT NOT NULL DEFAULT 'General',
+    "time" STRING NOT NULL,
+    "category" STRING NOT NULL DEFAULT 'General',
     "visibility" "EventVisibility" NOT NULL DEFAULT 'PUBLIC',
-    "mainImageUrl" TEXT,
-    "currency" TEXT NOT NULL DEFAULT 'NGN',
+    "mainImageUrl" STRING,
+    "currency" STRING NOT NULL DEFAULT 'NGN',
     "purchaseStartDate" TIMESTAMP(3) NOT NULL,
     "purchaseEndDate" TIMESTAMP(3) NOT NULL,
-    "allowedGuestType" TEXT NOT NULL DEFAULT 'Everyone',
+    "allowedGuestType" STRING NOT NULL DEFAULT 'Everyone',
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
 
@@ -98,8 +98,8 @@ CREATE TABLE "Events" (
 
 -- CreateTable
 CREATE TABLE "TagsForEvents" (
-    "eventId" TEXT NOT NULL,
-    "tagId" TEXT NOT NULL,
+    "eventId" STRING NOT NULL,
+    "tagId" STRING NOT NULL,
 
     CONSTRAINT "TagsForEvents_pkey" PRIMARY KEY ("eventId","tagId")
 );
