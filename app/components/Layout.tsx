@@ -8,10 +8,11 @@ import { ToastMessageType } from '../models/ToastMessageType';
 import ToastCard from './Card/ToastCard';
 import Sidebar from './shared/Sidebar';
 import Topbar from './shared/Topbar';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Provider } from './Provider';
 import images from '@/public/images';
 import Image from "next/image";
+import { useSession } from 'next-auth/react';
 
 export const metadata: Metadata = {
     title: 'Ticket wave web application',
@@ -33,19 +34,27 @@ const Layout: FunctionComponent<LayoutProps> = ({ children }): ReactElement => {
         }
     }, [iswindow]);
 
+    const { push } = useRouter();
     const pathname = usePathname();
+    const { data: session } = useSession();
 
     const toastContext = useContext(ToastContext);
     const isAppPage = pathname.includes('/app');
     const isEventsPage = pathname == '/app/events';
     const isViewEventPage = pathname.startsWith('/app/event') && !pathname.includes('/create');
 
+    useEffect(() => {
+        if (!session && isAppPage) {
+            push('/');
+        }
+    }, [session]);
+
 
     return (
         <>
             {
-                !loaderIsVisible && 
-                <Provider>
+                !loaderIsVisible &&
+                <>
                     <ToastCard
                         visibility={toastContext?.toastOptions?.visible ?? false}
                         title={toastContext?.toastOptions?.title ?? 'Welcome'}
@@ -72,7 +81,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children }): ReactElement => {
                             </div>
                         </>
                     }
-                </Provider>
+                </>
             }
             {
                 loaderIsVisible && <div className="splashScreen">
