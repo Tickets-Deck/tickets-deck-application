@@ -4,16 +4,14 @@ import Image from "next/image";
 import images from "../../../public/images";
 import styles from '../../styles/EventGroupSection.module.scss';
 import useResponsive from "../../hooks/useResponsiveness";
-import { Event } from "../models/IEvent";
-import moment from "moment";
-import Link from "next/link";
 import EventCard from "../Event/EventCard";
 import { useRouter } from "next/navigation";
+import { EventResponse } from "@/app/models/IEvents";
 
 interface EventsGroupProps {
     title: string
     subText: string
-    eventsData: Event[]
+    eventsData: EventResponse[]
     consoleDisplay?: boolean
 }
 
