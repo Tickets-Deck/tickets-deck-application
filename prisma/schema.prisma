@@ -6,12 +6,14 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
+    // provider = "mysql"
+    provider = "postgresql"
+    url      = env("TD_POSTGRESS_PRISMA_URL") // uses connection pooling
+    directUrl = env("TD_POSTGRESS_URL_NON_POOLING") // uses a direct connection
 }
 
 model Users {
-    id        String    @id @default(cuid())
+    id        String    @id @default(uuid())
     email     String    @unique
     firstName String
     lastName  String
@@ -26,14 +28,14 @@ model Users {
 }
 
 model NewsLetterSubscribers {
-    id        String    @id @default(cuid())
+    id        String    @id @default(uuid())
     email     String    @unique
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
 }
 
 model Locations {
-    id        String    @id @default(cuid())
+    id        String    @id @default(uuid())
     address   String
     city      String
     state     String
@@ -50,14 +52,14 @@ enum EventVisibility {
 }
 
 model EventImages {
-    id       String @id @default(cuid())
+    id       String @id @default(uuid())
     imageUrl String
     event    Events @relation(fields: [eventId], references: [id])
     eventId  String
 }
 
 model Tickets {
-    id      String @id @default(cuid())
+    id      String @id @default(uuid())
     event   Events @relation(fields: [eventId], references: [id])
     eventId String
 
@@ -71,13 +73,13 @@ model Tickets {
 }
 
 model Tags {
-    id     String   @id @default(cuid())
-    name   String   @unique
-    events Events[]
+    id     String          @id @default(uuid())
+    name   String
+    events TagsForEvents[]
 }
 
 model Events {
-    id          String @id @default(cuid())
+    id          String @id @default(uuid())
     eventId     String
     user        Users  @relation(fields: [publisherId], references: [id])
     publisherId String
@@ -90,7 +92,7 @@ model Events {
     date        DateTime
     time        String
     category    String          @default("General")
-    tags        Tags[]
+    tags        TagsForEvents[]
     visibility  EventVisibility @default(PUBLIC)
 
     mainImageUrl String?
@@ -104,4 +106,15 @@ model Events {
 
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
+}
+
+model TagsForEvents {
+    eventId String
+    tagId   String
+
+    // Relationships with Event and Tag models
+    event Events @relation(fields: [eventId], references: [id])
+    tag   Tags   @relation(fields: [tagId], references: [id])
+
+    @@id([eventId, tagId])
 }
