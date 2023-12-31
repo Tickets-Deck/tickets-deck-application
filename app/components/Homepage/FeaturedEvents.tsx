@@ -1,18 +1,18 @@
 "use client"
 
-import { FunctionComponent, ReactElement, useContext, useEffect } from 'react';
+import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
 import styles from '../../styles/FeaturedEvents.module.scss';
 import Image from 'next/image';
 import images from '../../../public/images';
-import { CaretLeftIcon, CaretRightIcon, HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from '../SVGs/SVGicons';
+import { CaretLeftIcon, CaretRightIcon } from '../SVGs/SVGicons';
 import Link from 'next/link';
 import { events } from '../demoData/Events';
-import moment from 'moment';
 import Tooltip from '../custom/Tooltip';
 import { ToastContext } from '../../extensions/toast';
-import { Event } from '../models/IEvent';
 import useResponsive from '../../hooks/useResponsiveness';
 import EventCard from '../Event/EventCard';
+import { useFetchEvents } from '@/app/api/apiClient';
+import { EventResponse } from '@/app/models/IEvents';
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean
@@ -20,12 +20,15 @@ interface FeaturedEventsProps {
 
 const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage }): ReactElement => {
 
+    const fetchEvents = useFetchEvents();
     const toasthandler = useContext(ToastContext);
-    
+    const [events, setEvents] = useState<EventResponse[]>([]);
+    const [isFetchingEvents, setIsFetchingEvents] = useState(false);
+
     const windowRes = useResponsive();
     const onMobile = windowRes.width && windowRes.width < 768;
 
-    function shareEvent(eventInfo: Event) {
+    function shareEvent(eventInfo: EventResponse) {
         const eventURL = window.location.href;
         // const tempInput = document.createElement("input");
         // document.body.appendChild(tempInput);
@@ -36,11 +39,11 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
         try {
             navigator.clipboard.writeText(eventURL);
             // alert("Event link copied to clipboard!");
-            toasthandler?.logSuccess('Event link copied.', `The link to ${eventInfo?.title} has been copied.`)
+            toasthandler?.logSuccess('Event link copied.', `The link to ${eventInfo.title} has been copied.`)
         } catch (error) {
             console.error("Copying to clipboard failed:", error);
         }
-    }
+    };
     function shareEventMobile() {
         const eventURL = window.location.href;
         if (navigator.share) {
@@ -54,7 +57,31 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
         } else {
             console.log("Web Share API not supported");
         }
-    }
+    };
+
+    async function handleFetchEvents() {
+        // Start loader
+        setIsFetchingEvents(true);
+
+        await fetchEvents()
+            .then((response) => {
+                if (response) {
+                    setEvents(response.data);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                toasthandler?.logError('Error', 'An error occurred while fetching events.');
+            })
+            .finally(() => {
+                // Stop loader
+                setIsFetchingEvents(false);
+            });
+    };
+
+    useEffect(() => {
+        handleFetchEvents();
+    }, []);
 
     return (
         <section className={styles.featuredEvents}>
@@ -89,8 +116,13 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
                     )}
                 </div>
             </div>
-            <span className={styles.controller}><CaretLeftIcon /></span>
-            <span className={styles.controller}><CaretRightIcon /></span>
+            {
+                events.length > 3 &&
+                <>
+                    <span className={styles.controller}><CaretLeftIcon /></span>
+                    <span className={styles.controller}><CaretRightIcon /></span>
+                </>
+            }
         </section>
     );
 }
