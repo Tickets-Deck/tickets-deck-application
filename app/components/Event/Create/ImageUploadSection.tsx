@@ -8,11 +8,12 @@ import { EventRequest } from "@/app/models/IEvents";
 interface ImageUploadSectionProps {
     eventRequest: EventRequest | undefined
     setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
+    mainImageFile: File | undefined
+    setMainImageFile: Dispatch<SetStateAction<File | undefined>>
 }
 
-const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({ eventRequest, setEventRequest }): ReactElement => {
+const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({ eventRequest, setEventRequest, mainImageFile, setMainImageFile }): ReactElement => {
 
-    const [mainImageFile, setMainImageFile] = useState<File>();
     const [mainImageUrl, setMainImageUrl] = useState<string>();
     const [subImageFiles, setSubImageFiles] = useState<File[]>();
     const [subImageUrls, setSubImageUrls] = useState<string[]>();

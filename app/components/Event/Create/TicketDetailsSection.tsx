@@ -1,9 +1,9 @@
 import { ReactElement, FunctionComponent, Dispatch, SetStateAction, useRef, ChangeEvent } from "react";
 import styles from '../../../styles/CreateEvent.module.scss';
-import { EventRequest } from "@/app/models/IEvents";
-import { Tickets } from "@/app/models/ITicket";
+import { EventRequest } from "@/app/models/IEvents"; 
 import { CalenderIcon } from "../../SVGs/SVGicons";
 import { DatePicker } from "@fluentui/react";
+import { TicketResponse } from "@/app/models/ITicket";
 
 
 interface TicketDetailsSectionProps {
@@ -12,7 +12,7 @@ interface TicketDetailsSectionProps {
 }
 
 const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({ eventRequest, setEventRequest }): ReactElement => {
-    
+
     const purchaseStartDateRef = useRef(null);
     const purchaseEndDateRef = useRef(null);
 
@@ -24,17 +24,37 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({ ev
         // If the name is undefined...
         if (!name) return;
 
-        if(eventRequest?.tickets) {
-            setEventRequest({ ...eventRequest as EventRequest, tickets: [{ ...eventRequest?.tickets[0] as Tickets, [name]: value }] });
+        if (eventRequest?.tickets) {
+            setEventRequest({
+                ...eventRequest as EventRequest,
+                tickets: [{
+                    ...eventRequest?.tickets[0] as TicketResponse,
+                    [name]: name == "price" || name == "quantity" ? Number(value) : value
+                }]
+            });
         } else {
             // If tickets is undefined...
             // setEventRequest({ ...eventRequest as EventRequest, tickets[name]: value  }); 
+            setEventRequest(prevState => {
+                const ticketsArray = eventRequest?.tickets || []; // Initialize as empty array if undefined
+
+                return {
+                    ...eventRequest as EventRequest,
+                    tickets: [
+                        {
+                            ...(ticketsArray[0] as TicketResponse),
+                            [name]: name == "price" || name == "quantity" ? Number(value) : value,
+                        },
+                        // If you have more elements in the array, you can spread them here
+                    ],
+                };
+            });
         }
     }
 
     return (
         <div className={styles.ticketDetailsSection}>
-            <div>Ticket details</div>
+            <h3>Ticket details</h3>
             <div className={styles.formContainer}>
                 <div className={styles.lhs}>
                     <div className={styles.formField}>
@@ -42,9 +62,9 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({ ev
                         <input
                             type="text"
                             name="role"
-                            // value={eventRequest?.tickets[0]?.role}
+                            value={eventRequest?.tickets[0]?.role}
                             placeholder="Ticket role (VIP, Regular, Team, Geneal, etc. )"
-                            onChange={(e) => setEventRequest({ ...eventRequest as EventRequest, tickets: [{ ...eventRequest?.tickets[0] as Tickets, role: e.target.value }] })}
+                            onChange={(e) => onFormValueChange(e)}
                         />
                         {/* {titleErrorMsg && <span className={styles.errorMsg}>Please enter event title</span>} */}
                     </div>
@@ -53,12 +73,47 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({ ev
                         <input
                             type="text"
                             name="price"
-                            // value={eventRequest?.tickets[0].price}
+                            value={eventRequest?.tickets[0]?.price}
                             placeholder="Price per ticket"
                             onChange={(e) => {
-                                const value = parseInt(e.target.value);
-                                if (isNaN(value)) return;
-                                setEventRequest({ ...eventRequest as EventRequest, tickets: [{ ...eventRequest?.tickets[0] as Tickets, price: value }] })
+                                if (Number(e.target.value) == 0) {
+                                    setEventRequest(prevState => {
+                                        const ticketsArray = eventRequest?.tickets || []; // Initialize as empty array if undefined
+
+                                        return {
+                                            ...eventRequest as EventRequest,
+                                            tickets: [
+                                                {
+                                                    ...(ticketsArray[0] as TicketResponse),
+                                                    price: 0,
+                                                },
+                                                // If you have more elements in the array, you can spread them here
+                                            ],
+                                        };
+                                    });
+                                    return;
+                                }
+                                if (!Number(e.target.value)) {
+                                    return;
+                                }
+
+                                onFormValueChange(e);
+
+                                // setEventRequest(prevState => {
+                                //     const ticketsArray = eventRequest?.tickets || []; // Initialize as empty array if undefined
+
+                                //     return {
+                                //         ...eventRequest as EventRequest,
+                                //         tickets: [
+                                //             {
+                                //                 ...(ticketsArray[0] as Tickets),
+                                //                 price: Number(e.target.value),
+                                //             },
+                                //             // If you have more elements in the array, you can spread them here
+                                //         ],
+                                //     };
+                                // });
+
                             }}
                         />
                         {/* {titleErrorMsg && <span className={styles.errorMsg}>Please enter event title</span>} */}
@@ -85,6 +140,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({ ev
                                     placeholder="Purchase start date"
                                     ariaLabel="Select a date"
                                     minDate={new Date()}
+                                    maxDate={eventRequest?.date as Date ?? undefined}
                                     value={eventRequest?.purchaseStartDate}
                                     onSelectDate={(date) => {
                                         // Set the form value
@@ -138,6 +194,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({ ev
                                     placeholder="Start date"
                                     ariaLabel="Select a date"
                                     minDate={eventRequest?.purchaseStartDate as Date ?? new Date()}
+                                    maxDate={eventRequest?.date as Date ?? undefined}
                                     value={eventRequest?.purchaseEndDate}
                                     onSelectDate={(date) => {
                                         // Set the form value
@@ -179,12 +236,31 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({ ev
                         <input
                             type="text"
                             name="quantity"
-                            // value={eventRequest?.tickets[0].quantity}
+                            value={eventRequest?.tickets[0]?.quantity}
                             placeholder="Number of available tickets"
                             onChange={(e) => {
-                                const value = parseInt(e.target.value);
-                                if (isNaN(value)) return;
-                                setEventRequest({ ...eventRequest as EventRequest, tickets: [{ ...eventRequest?.tickets[0] as Tickets, quantity: value }] })
+                                if (Number(e.target.value) == 0) {
+                                    setEventRequest(prevState => {
+                                        const ticketsArray = eventRequest?.tickets || []; // Initialize as empty array if undefined
+
+                                        return {
+                                            ...eventRequest as EventRequest,
+                                            tickets: [
+                                                {
+                                                    ...(ticketsArray[0] as TicketResponse),
+                                                    quantity: 0,
+                                                },
+                                                // If you have more elements in the array, you can spread them here
+                                            ],
+                                        };
+                                    });
+                                    return;
+                                }
+                                if (!Number(e.target.value)) {
+                                    return;
+                                }
+
+                                onFormValueChange(e);
                             }}
                         />
                         {/* {titleErrorMsg && <span className={styles.errorMsg}>Please enter event title</span>} */}

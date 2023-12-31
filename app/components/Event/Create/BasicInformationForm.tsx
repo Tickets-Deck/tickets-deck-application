@@ -178,7 +178,7 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                                     gapSpace: 8,
                                     target: eventDateRef
                                 }}
-                                placeholder="Start date"
+                                placeholder="Event date"
                                 ariaLabel="Select a date"
                                 minDate={new Date()}
                                 value={eventRequest?.date}
@@ -247,6 +247,7 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                             placeholder="Select category"
                             value={eventRequest?.category}
                             onFocus={() => setCategoryDropdownIsVisible(true)}
+                            onClick={() => setCategoryDropdownIsVisible(true)}
                             onChange={(e) => onFormValueChange(e)}
                         />
                         {categoryDropdownIsVisible &&
