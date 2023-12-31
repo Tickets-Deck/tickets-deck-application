@@ -11,4 +11,9 @@ export class ApiRoutes {
    * The route to CreateNewsletterSubscriber endpoint
    */
   static CreateNewsletterSubscriber: string = "api/newsletter-subscriber";
+
+  /**
+   * The route to Event endpoint
+   */
+  static Events: string = "api/events";
 }
