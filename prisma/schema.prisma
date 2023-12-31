@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-    provider = "cockroachdb"
+    // provider = "cockroachdb"
     // url      = env("DATABASE_URL") // For local development or test environment
+    provider = "postgresql"
     url      = env("TD_POSTGRESS_PRISMA_URL") // For staging or production environment
 }
 
