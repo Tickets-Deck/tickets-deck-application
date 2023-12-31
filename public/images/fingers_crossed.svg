@@ -1,6 +1,6 @@
 <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <rect width="17" height="16" fill="#E3E3E3"/>
-<g clip-path="url(#clip0_1_2)">
+<g clipPath="url(#clip0_1_2)">
 <rect width="1512" height="3733" transform="translate(-936 -1118)" fill="#111111"/>
 <rect width="1512" height="965" transform="translate(-936 -801)" fill="url(#paint0_linear_1_2)"/>
 <rect x="-620" y="-441" width="880" height="535" rx="24" fill="url(#paint1_linear_1_2)"/>
@@ -12,11 +12,11 @@
 </pattern>
 <linearGradient id="paint0_linear_1_2" x1="756" y1="0" x2="756" y2="965" gradientUnits="userSpaceOnUse">
 <stop/>
-<stop offset="1" stop-color="#222222"/>
+<stop offset="1" stopColor="#222222"/>
 </linearGradient>
 <linearGradient id="paint1_linear_1_2" x1="-180" y1="-441" x2="-180" y2="94" gradientUnits="userSpaceOnUse">
-<stop offset="0.0416667" stop-color="#313131" stop-opacity="0"/>
-<stop offset="1" stop-color="#313131"/>
+<stop offset="0.0416667" stopColor="#313131" stopOpacity="0"/>
+<stop offset="1" stopColor="#313131"/>
 </linearGradient>
 <clipPath id="clip0_1_2">
 <rect width="1512" height="3733" fill="white" transform="translate(-936 -1118)"/>
