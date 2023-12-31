@@ -8,12 +8,12 @@ import { InfoIcon } from '../SVGs/SVGicons';
 import { events } from '../demoData/Events';
 import ComponentLoader from '../Loader/ComponentLoader';
 import { useRouter } from 'next/navigation';
-import { Event } from '../models/IEvent';
 import Link from 'next/link';
 import moment from "moment";
 import useOuterClick from '../../hooks/useOuterClick';
 import { scrollWindow } from '../PageScroll/ScrollWindow';
 import useResponsive from '../../hooks/useResponsiveness';
+import { EventResponse } from '@/app/models/IEvents';
 
 interface HeroSectionProps {
 
@@ -59,7 +59,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = (): ReactElement => {
     const [eventName, setEventName] = useState<string>();
     const [eventNameErrorMsg, setEventNameErrorMsg] = useState(false);
 
-    const [searchResults, setSearchResults] = useState<Event[]>();
+    const [searchResults, setSearchResults] = useState<EventResponse[]>();
     const [searchResultsIsVisible, setSearchResultsIsVisible] = useState(false);
 
     async function handleEventSearch(e: ChangeEvent<HTMLInputElement>) {
@@ -174,9 +174,9 @@ const HeroSection: FunctionComponent<HeroSectionProps> = (): ReactElement => {
                                         <div className={styles.eachResult} key={index}>
                                             <div className={styles.eachResult__top}>
                                                 <h4>{event.title}</h4>
-                                                <h4>{moment(event?.eventDateTime).format("MMM. Do YYYY")}</h4>
+                                                <h4>{moment(event?.date).format("MMM. Do YYYY")}</h4>
                                             </div>
-                                            <p>Starting price: &#8358;{event.ticketPrice.amount.toLocaleString()}</p>
+                                            {/* <p>Starting price: &#8358;{event.ticketPrice.amount.toLocaleString()}</p> */}
                                         </div>
                                     </Link>
                                 )}
