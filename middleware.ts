@@ -3,10 +3,11 @@ import type { NextRequest } from "next/server";
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  const userIsAuthenticated = request.cookies.get("next-auth.session-token");
+  const devUserIsAuthenticated = request.cookies.get("next-auth.session-token");
+  const userIsAuthenticated = request.cookies.get("__Secure-next-auth.session-token");
 
     // If the user is not authenticated, redirect to /auth/signin
-    if (!userIsAuthenticated && request.nextUrl.pathname.startsWith("/app")) {
+    if ((!devUserIsAuthenticated || !userIsAuthenticated) && request.nextUrl.pathname.startsWith("/app")) {
         return NextResponse.redirect(new URL("/auth/signin", request.url));
     } else {
         // Otherwise, let the request continue
