@@ -15,4 +15,8 @@ declare module "next-auth" {
             accessToken: string | null | undefined;
         }
     }
+
+    interface Profile {
+        picture: string | null | undefined;
+    }
 }
