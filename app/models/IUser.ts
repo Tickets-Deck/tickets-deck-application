@@ -12,5 +12,5 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   username: string;
   createdAt: Date;
   updatedAt: Date;
-  events: Event[];
+  events: Event[] | undefined;
 };
