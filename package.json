@@ -38,6 +38,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/react-scroll": "^1.8.10",
+    "prisma": "^5.7.1",
     "typescript": "^5"
   }
 }
