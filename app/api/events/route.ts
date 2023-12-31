@@ -136,7 +136,9 @@ export async function GET(req: NextRequest) {
       }
 
       // Extract tag names from the result
-      const tagNames = event.tags.map((tag) => tag.tag.name);
+    //   const tagNames = event.tags.map((tag) => tag.tag.name);
+      const tagNames: string[] = event.tags.map((tag: { tag: { name: string } }) => tag.tag.name);
+
 
       const eventResponse = {
         ...event,
@@ -181,7 +183,9 @@ export async function GET(req: NextRequest) {
       }
 
       // Extract tag names from the result
-      const tagNames = event.tags.map((tag) => tag.tag.name);
+    //   const tagNames = event.tags.map((tag) => tag.tag.name);
+      const tagNames: string[] = event.tags.map((tag: { tag: { name: string } }) => tag.tag.name);
+
 
       const eventResponse = {
         ...event,
