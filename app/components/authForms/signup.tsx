@@ -125,7 +125,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
 
         await signUp(formValues?.email, formValues?.password, formValues?.firstName, formValues?.lastName)
             .then((response) => { 
-                console.log(response);
+                console.log("Sign up response: ", response);
                 // Display success message
                 toastHandler?.logSuccess('Success', 'You have successfully subscribed to our newsletter');
                 // Clear input fields
