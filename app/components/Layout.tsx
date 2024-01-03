@@ -24,7 +24,6 @@ interface LayoutProps {
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({ children }): ReactElement => {
-
     const [loaderIsVisible, setLoaderIsVisible] = useState(true);
     const iswindow = typeof window !== "undefined" ? true : false;
 
@@ -34,20 +33,12 @@ const Layout: FunctionComponent<LayoutProps> = ({ children }): ReactElement => {
         }
     }, [iswindow]);
 
-    const { push } = useRouter();
     const pathname = usePathname();
-    const { data: session } = useSession();
 
     const toastContext = useContext(ToastContext);
     const isAppPage = pathname.includes('/app');
     const isEventsPage = pathname == '/app/events';
     const isViewEventPage = pathname.startsWith('/app/event') && !pathname.includes('/create');
-
-    // useEffect(() => {
-    //     if (!session && isAppPage) {
-    //         push('/');
-    //     }
-    // }, [session]);
 
 
     return (
