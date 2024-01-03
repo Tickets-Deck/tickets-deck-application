@@ -43,11 +43,11 @@ const Layout: FunctionComponent<LayoutProps> = ({ children }): ReactElement => {
     const isEventsPage = pathname == '/app/events';
     const isViewEventPage = pathname.startsWith('/app/event') && !pathname.includes('/create');
 
-    useEffect(() => {
-        if (!session && isAppPage) {
-            push('/');
-        }
-    }, [session]);
+    // useEffect(() => {
+    //     if (!session && isAppPage) {
+    //         push('/');
+    //     }
+    // }, [session]);
 
 
     return (
