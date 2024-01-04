@@ -1,6 +1,7 @@
 import { UserCredentialsRequest } from "@/app/models/IUser";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 
 export async function GET(req: NextRequest) {
   if (req.method === "GET") {
@@ -33,11 +34,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Hash the password
+    const passwordHash = bcrypt.hashSync(request.password, 10);
+
     // If user does not exist, create a new user...
     const newUser = await prisma.users.create({
       data: {
         email: request.email,
-        password: request.password,
+        password: passwordHash,
         firstName: request.firstName,
         lastName: request.lastName,
         phone: request.phone ?? null,
