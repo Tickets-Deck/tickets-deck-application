@@ -18,7 +18,12 @@ export class ApiRoutes {
   static CreateNewsletterSubscriber: string = "api/newsletter-subscriber";
 
   /**
-   * The route to Event endpoint
+   * The route to Events endpoint
    */
   static Events: string = "api/events";
+
+  /**
+   * The route to Users endpoint
+   */
+  static Users: string = "api/users";
 }
