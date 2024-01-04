@@ -67,6 +67,8 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
             .then((response) => {
                 console.log("response: ", response);
                 if (response && response.status == StatusCodes.Unauthorized) {
+                    // Close loader
+                    setIsLoading(false);
                     setMessage("An error occurred while logging in. Please check your credentials and try again.");
                     return;
                 }
@@ -76,8 +78,6 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                 setMessage("An error occurred while logging in. Please try again.");
                 console.log("Error logging in: ", error);
                 catchError(error);
-            })
-            .finally(() => {
                 // Close loader
                 setIsLoading(false);
             })
