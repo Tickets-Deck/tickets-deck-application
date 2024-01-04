@@ -1,9 +1,7 @@
 "use server";
 
+import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 export const signUp = async (
   email: string,
@@ -37,7 +35,7 @@ export const signUp = async (
       password: passwordHash,
       firstName: firstName,
       lastName: lastName,
-      phone: phone ?? null,
+      phone: phone ?? null
     },
   });
 
