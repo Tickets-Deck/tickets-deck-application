@@ -7,7 +7,7 @@ import GoogleProvider from "next-auth/providers/google";
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 30 * 60, // Would be stored for 30 seconds
+    maxAge: 30 * 60 * 60, // Would be stored for 30 minutes
     updateAge: 15 * 60, // How frequently the tokem would be updated -  every day
   },
   providers: [
