@@ -11,6 +11,8 @@ import { ToastContext } from "../../extensions/toast";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { useRouter } from "next/navigation";
 import { signUp } from "../../actions/users/signUp";
+import { signIn } from "next-auth/react";
+import { useCreateUser } from "@/app/api/apiClient";
 
 interface SignupPageProps {
 
@@ -31,6 +33,8 @@ enum EmailConfirmationStatus {
 const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
 
     const router = useRouter();
+    const createUser = useCreateUser();
+
     const toastHandler = useContext(ToastContext);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState<string>();
@@ -123,10 +127,10 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
 
         console.log("Form values", formValues);
 
-        try {
-            const response = await signUp(formValues?.email, formValues?.password, formValues?.firstName, formValues?.lastName);
+        await createUser(formValues)
+        .then((response) => {
 
-            console.log("Sign up response: ", response);
+            console.log("Create user response: ", response);
 
             // Display success message
             toastHandler?.logSuccess('Success', 'You have successfully subscribed to our newsletter');
@@ -137,16 +141,41 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
 
             // Redirect to login page
             router.push('/auth/signin');
-        }
-        catch (error) {
+        })
+        .catch((error) => {
             console.log(error);
             // Display error message
             toastHandler?.logError('Error', 'An error occurred while creating your account');
-        }
-        finally {
+        })
+        .finally(() => {
             // Stop loading
             setIsCreatingUser(false);
-        }
+        });
+
+        // try {
+        //     const response = await signUp(formValues?.email, formValues?.password, formValues?.firstName, formValues?.lastName);
+
+        //     console.log("Sign up response: ", response);
+
+        //     // Display success message
+        //     toastHandler?.logSuccess('Success', 'You have successfully subscribed to our newsletter');
+
+        //     // Clear input fields
+        //     setFormValues({} as UserCredentialsRequest);
+        //     setConfirmPassword('');
+
+        //     // Redirect to login page
+        //     router.push('/auth/signin');
+        // }
+        // catch (error) {
+        //     console.log(error);
+        //     // Display error message
+        //     toastHandler?.logError('Error', 'An error occurred while creating your account');
+        // }
+        // finally {
+        //     // Stop loading
+        //     setIsCreatingUser(false);
+        // }
     }
 
     return (
@@ -158,7 +187,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                         {/* <p>Create your account</p> */}
                     </div>
                     <div className={styles.content__loginOptions}>
-                        <div className={styles.option}>
+                        <div className={styles.option} onClick={async () => await signIn('google')}>
                             <span>
                                 <GoogleIcon />
                             </span>
