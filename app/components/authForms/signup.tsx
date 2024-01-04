@@ -9,7 +9,7 @@ import { UserCredentialsRequest } from "../../models/IUser";
 import { emailRegex } from "../../constants/emailRegex";
 import { ToastContext } from "../../extensions/toast";
 import ComponentLoader from "../Loader/ComponentLoader";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { signUp } from "../../actions/users/signUp";
 
 interface SignupPageProps {
@@ -121,29 +121,32 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
         // Start loading
         setIsCreatingUser(true);
 
-        console.log("Form values", formValues); 
+        console.log("Form values", formValues);
 
-        await signUp(formValues?.email, formValues?.password, formValues?.firstName, formValues?.lastName)
-            .then((response) => { 
-                console.log("Sign up response: ", response);
-                // Display success message
-                toastHandler?.logSuccess('Success', 'You have successfully subscribed to our newsletter');
-                // Clear input fields
-                setFormValues({} as UserCredentialsRequest);
-                setConfirmPassword('');
+        try {
+            const response = await signUp(formValues?.email, formValues?.password, formValues?.firstName, formValues?.lastName);
 
-                // Redirect to login page
-                router.push('/auth/signin');
-            })
-            .catch((error) => {
-                console.log(error);
-                // Display error message
-                toastHandler?.logError('Error', 'An error occurred while creating your account');
-            })
-            .finally(() => {
-                // Stop loading
-                setIsCreatingUser(false);
-            })
+            console.log("Sign up response: ", response);
+
+            // Display success message
+            toastHandler?.logSuccess('Success', 'You have successfully subscribed to our newsletter');
+
+            // Clear input fields
+            setFormValues({} as UserCredentialsRequest);
+            setConfirmPassword('');
+
+            // Redirect to login page
+            router.push('/auth/signin');
+        }
+        catch (error) {
+            console.log(error);
+            // Display error message
+            toastHandler?.logError('Error', 'An error occurred while creating your account');
+        }
+        finally {
+            // Stop loading
+            setIsCreatingUser(false);
+        }
     }
 
     return (
