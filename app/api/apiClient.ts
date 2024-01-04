@@ -48,3 +48,11 @@ export function useFetchEventsByEventId() {
 }
 
 // export function useFetchEventsByPublisherId() {}
+
+export function useCreateUser() {
+  async function createUser(user: UserCredentialsRequest) {
+    return API.post(ApiRoutes.Users, user);
+  }
+
+  return createUser;
+}
