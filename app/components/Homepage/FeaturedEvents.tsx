@@ -13,6 +13,7 @@ import useResponsive from '../../hooks/useResponsiveness';
 import EventCard from '../Event/EventCard';
 import { useFetchEvents } from '@/app/api/apiClient';
 import { EventResponse } from '@/app/models/IEvents';
+import ComponentLoader from '../Loader/ComponentLoader';
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean
@@ -23,7 +24,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
     const fetchEvents = useFetchEvents();
     const toasthandler = useContext(ToastContext);
     const [events, setEvents] = useState<EventResponse[]>([]);
-    const [isFetchingEvents, setIsFetchingEvents] = useState(false);
+    const [isFetchingEvents, setIsFetchingEvents] = useState(true);
 
     const windowRes = useResponsive();
     const onMobile = windowRes.width && windowRes.width < 768;
@@ -66,6 +67,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
         await fetchEvents()
             .then((response) => {
                 if (response) {
+                    console.log(response.data);
                     setEvents(response.data);
                 }
             })
@@ -110,11 +112,32 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
                 </div>
             </div>
             <div className={styles.eventsContainer}>
-                <div className={styles.eventsContainerCarousel}>
-                    {events.map((event, index) =>
-                        <EventCard event={event} key={index} />
-                    )}
-                </div>
+                {
+                    !isFetchingEvents && events.length > 0 &&
+                    <div className={styles.eventsContainerCarousel}>
+                        {
+                            events.map((event, index) =>
+                                <EventCard event={event} key={index} />
+                            )
+                        }
+                    </div>
+                }
+                {
+                    isFetchingEvents &&
+                    <>
+                        <br />
+                        <br />
+                        <ComponentLoader customLoaderColor="#fff" />
+                    </>
+                }
+                {
+                    !isFetchingEvents && events.length == 0 &&
+                    <div className={styles.noEvents}>
+                        <br />
+                        <br />
+                        <p>No events found.</p>
+                    </div>
+                }
             </div>
             {
                 events.length > 3 &&
