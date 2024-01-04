@@ -104,11 +104,11 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
             .catch((error) => {
                 // log error
                 console.log(error);
-            })
-            .finally(() => {
                 // Stop loader
                 setIsCreatingEvent(false);
-            });
+            })
+            // .finally(() => {
+            // });
 };
 
 useEffect(() => {
