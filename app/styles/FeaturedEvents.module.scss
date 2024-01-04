@@ -99,6 +99,14 @@
             }
 
         }
+        .noEvents {
+            text-align: center;
+            width: fit-content;
+            margin: 0 auto;
+            p {
+                opacity: 0.4;
+            }
+        }
     }
     .controller {
         top: 0;
