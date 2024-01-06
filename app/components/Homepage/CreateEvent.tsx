@@ -4,15 +4,19 @@ import styles from '../../styles/Home.module.scss';
 import Image from 'next/image';
 import images from '../../../public/images';
 import useResponsive from '../../hooks/useResponsiveness';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 interface CreateEventProps {
 
 }
 
 const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
-    
+
     const windowRes = useResponsive();
     const onMobile = windowRes.width && windowRes.width < 768;
+    const { data: session } = useSession();
+    const user = session?.user;
 
     return (
         <section className={styles.createEventSection}>
@@ -24,7 +28,9 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
             <div className={styles.createEventSection__rhs}>
                 <h3>Create your own Event</h3>
                 <p>Lets help you manage your ticketing while you make your events with us</p>
-                <button>Create Events</button>
+                <Link href={user ? "/app/event/create" : "/api/auth/signin"}>
+                    <button>Create Events</button>
+                </Link>
             </div>
         </section>
     );
