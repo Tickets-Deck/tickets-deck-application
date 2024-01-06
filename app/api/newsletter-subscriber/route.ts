@@ -6,8 +6,6 @@ export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     const request = await req.json();
 
-    console.log("request", request);
-
     try {
       const { email } = request;
 
