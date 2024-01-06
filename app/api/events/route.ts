@@ -2,6 +2,12 @@ import { EventRequest } from "@/app/models/IEvents";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+interface EventTagModel {
+  tag: {
+    name: string;
+  };
+}
+
 export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     const request = (await req.json()) as EventRequest;
@@ -110,6 +116,9 @@ export async function GET(req: NextRequest) {
     // Get the eventId from the search params
     const specifiedEventId = searchParams.get("eventId");
 
+    // Get the publisherId from the search params
+    const specifiedPublisherId = searchParams.get("publisherId");
+
     // If a specifiedId is provided, fetch the event with that id
     if (specifiedId) {
       const event = await prisma.events.findFirst({
@@ -136,9 +145,10 @@ export async function GET(req: NextRequest) {
       }
 
       // Extract tag names from the result
-    //   const tagNames = event.tags.map((tag) => tag.tag.name);
-      const tagNames: string[] = event.tags.map((tag: { tag: { name: string } }) => tag.tag.name);
-
+      //   const tagNames = event.tags.map((tag) => tag.tag.name);
+      const tagNames: string[] = event.tags.map(
+        (tag: { tag: { name: string } }) => tag.tag.name
+      );
 
       const eventResponse = {
         ...event,
@@ -183,9 +193,10 @@ export async function GET(req: NextRequest) {
       }
 
       // Extract tag names from the result
-    //   const tagNames = event.tags.map((tag) => tag.tag.name);
-      const tagNames: string[] = event.tags.map((tag: { tag: { name: string } }) => tag.tag.name);
-
+      //   const tagNames = event.tags.map((tag) => tag.tag.name);
+      const tagNames: string[] = event.tags.map(
+        (tag: { tag: { name: string } }) => tag.tag.name
+      );
 
       const eventResponse = {
         ...event,
@@ -204,7 +215,35 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Fetch all events
+    // If a specifiedPublisherId is provided, fetch the event with that publisherId
+    if (specifiedPublisherId) {
+      const events = await prisma.events.findMany({
+        where: {
+          publisherId: specifiedPublisherId,
+        },
+      });
+
+      // If event is not found, return 404
+      if (!events || events.length === 0) {
+        return NextResponse.json(
+          { error: "This user does not have any events created yet." },
+          { status: 404 }
+        );
+      }
+
+      // If event is found, return it
+      if (events) {
+        return NextResponse.json(events, { status: 200 });
+      }
+
+      // If event is not found, return 404
+      return NextResponse.json(
+        { error: "This user does not have any events created yet." },
+        { status: 404 }
+      );
+    }
+
+    // Else, Fetch all events
     const events = await prisma.events.findMany();
 
     // Return all events
