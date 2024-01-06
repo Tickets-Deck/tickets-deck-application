@@ -4,11 +4,14 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./lib/prisma";
 import GoogleProvider from "next-auth/providers/google";
 
-export const authOptions: NextAuthOptions = {
+export const 
+authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 30 * 60 * 60, // Would be stored for 30 minutes
-    updateAge: 15 * 60, // How frequently the tokem would be updated -  every day
+    // Set max age to 24 hours
+    maxAge: 24 * 60 * 60,
+    // Update jwt every 23 hours
+    updateAge: 20 * 60 * 60,
   },
   providers: [
     CredentialsProvider({
