@@ -47,7 +47,13 @@ export function useFetchEventsByEventId() {
   return fetchEventsByEventId;
 }
 
-// export function useFetchEventsByPublisherId() {}
+export function useFetchEventsByPublisherId() {
+    async function fetchEventsByPublisherId(publisherId: string) {
+        return API.get(`${ApiRoutes.Events}?publisherId=${publisherId}`);
+    }
+    
+    return fetchEventsByPublisherId;
+}
 
 export function useCreateUser() {
   async function createUser(user: UserCredentialsRequest) {
