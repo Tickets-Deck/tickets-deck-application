@@ -280,7 +280,31 @@
 .allUserEvents {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
-    padding-top: 4.5rem;
+    padding-top: 1.25rem;
     padding-bottom: 4.5rem;
     height: 100%;
+
+    .eventsContainer {
+        min-height: 50vh;
+        display: flex;
+        flex-direction: column;
+        padding-top: 2.5rem;
+
+        .noEvents {
+            width: fit-content;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: .125rem;
+            h2 {
+                font-weight: $fontWeight-500;
+                font-size: $font-size-20;
+            }
+            p {
+                font-size: $font-size-16 - 0.125rem;
+                opacity: 0.8;
+            }
+        }
+    }
 }

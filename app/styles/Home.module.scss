@@ -109,6 +109,9 @@
                     border: 1.5px solid $white;
                     color: $dark-grey;
                     font-weight: $fontWeight-500;
+                    &:hover {
+                        opacity: 0.6;
+                    }
                 }
                 .secondaryButton {
                     background-color: transparent;
