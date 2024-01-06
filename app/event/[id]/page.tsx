@@ -216,7 +216,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                             autoPlay
                             loop
                             muted
-                            src="https://res.cloudinary.com/dxwpajciu/video/upload/v1691936875/ticketwave/videos/people_waving_p9tni6.mp4" />
+                            src="https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4" />
                     </div>
                     <div className={styles.textContents}>
                         <span>Time to party! <span className={styles.img}><Image src={images.woman_dancing} alt='Woman dancing' /></span></span>
