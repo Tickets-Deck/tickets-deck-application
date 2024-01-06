@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useState } from "react";
 import { HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
 import Image from "next/image";
 import images from "../../../public/images";
@@ -7,21 +7,24 @@ import useResponsive from "../../hooks/useResponsiveness";
 import EventCard from "../Event/EventCard";
 import { useRouter } from "next/navigation";
 import { EventResponse } from "@/app/models/IEvents";
+import ComponentLoader from "../Loader/ComponentLoader";
 
 interface EventsGroupProps {
     title: string
     subText: string
-    eventsData: EventResponse[]
+    eventsData: EventResponse[] | undefined
     consoleDisplay?: boolean
+    isFetchingEvents?: boolean
 }
 
 const EventsGroup: FunctionComponent<EventsGroupProps> = (
-    { title, subText, eventsData, consoleDisplay }): ReactElement => {
+    { title, subText, eventsData, consoleDisplay, isFetchingEvents }): ReactElement => {
 
-    
+
     const windowRes = useResponsive();
     const onMobile = windowRes.width && windowRes.width < 768;
     const { push } = useRouter();
+
 
     return (
         <section className={consoleDisplay ? styles.allUserEvents : styles.allEvents}>
@@ -43,15 +46,33 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
             </div>
             <div className={styles.eventsContainer}>
                 <div className={styles.eventsContainerCarousel}>
-                    {eventsData.map((event, index) =>
-                        <EventCard
-                            event={event}
-                            mobileAndActionButtonDismiss
-                            key={index}
-                            consoleDisplay={consoleDisplay}
-                        />
-                    )}
+                    {
+                        eventsData?.map((event, index) =>
+                            <EventCard
+                                event={event}
+                                mobileAndActionButtonDismiss
+                                key={index}
+                                consoleDisplay={consoleDisplay}
+                            />
+                        )
+                    }
                 </div>
+                {
+                    isFetchingEvents &&
+                    <>
+                        <br />
+                        <br />
+                        <br />
+                        <ComponentLoader customLoaderColor="#fff" />
+                    </>
+                }
+                {
+                    !isFetchingEvents && !eventsData &&
+                    <div className={styles.noEvents}>
+                        <h2>No events found</h2>
+                        <p>There are no events to show at the moment.</p>
+                    </div>
+                }
             </div>
         </section>
     );
