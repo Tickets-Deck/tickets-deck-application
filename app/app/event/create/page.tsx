@@ -25,7 +25,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
 
     const createEvent = useCreateEvent();
     const { data: session } = useSession();
-    const {push} = useRouter();
+    const { push } = useRouter();
 
     const [eventCreationStage, setEventCreationStage] = useState<EventCreationStage>(EventCreationStage.BasicInfo);
     const [eventRequest, setEventRequest] = useState<EventRequest>();
@@ -78,21 +78,21 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
     async function handleEventCreation() {
 
         // Upload image to cloudinary
-        const imageUrlResponse = await uploadImageToCloudinary(mainImageFile as File, setIsUploadingMainImage, cloudinaryImageUrl, setCloudinaryImageUrl)
+        // const imageUrlResponse = await uploadImageToCloudinary(mainImageFile as File, setIsUploadingMainImage, cloudinaryImageUrl, setCloudinaryImageUrl)
 
-        console.log('imageUrlResponse gotten1: ', imageUrlResponse);
-        if (!imageUrlResponse) {
-            console.log("Error uploading image to cloudinary");
-            return;
-        }
+        // console.log('imageUrlResponse gotten1: ', imageUrlResponse);
+        // if (!imageUrlResponse) {
+        //     console.log("Error uploading image to cloudinary");
+        //     return;
+        // }
 
-        console.log('imageUrlResponse gotten2: ', imageUrlResponse);
+        // console.log('imageUrlResponse gotten2: ', imageUrlResponse);
 
         // Start loader
         setIsCreatingEvent(true);
 
         // Create the event
-        await createEvent({ ...eventRequest as EventRequest, mainImageUrl: imageUrlResponse as string })
+        await createEvent({ ...eventRequest as EventRequest }) 
             .then((response) => {
                 // log response
                 console.log(response);
@@ -107,84 +107,84 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                 // Stop loader
                 setIsCreatingEvent(false);
             })
-            // .finally(() => {
-            // });
-};
+        // .finally(() => {
+        // });
+    };
 
-useEffect(() => {
-    setEventRequest({ ...eventRequest as EventRequest, publisherId: session?.user.id as string });
-}, [session]);
+    useEffect(() => {
+        setEventRequest({ ...eventRequest as EventRequest, publisherId: session?.user.id as string });
+    }, [session]);
 
 
-return (
-    <div className={styles.main}>
-        <div className={styles.topArea}>
-            <h3>Create Event</h3>
-            {/* <Link href="/app/event/create">
+    return (
+        <div className={styles.main}>
+            <div className={styles.topArea}>
+                <h3>Create Event</h3>
+                {/* <Link href="/app/event/create">
                     <button>New Event</button>
                 </Link> */}
-        </div>
-
-        <CreateEventProgressBar
-            eventCreationStage={eventCreationStage}
-            setEventCreationStage={setEventCreationStage}
-            eventRequest={eventRequest}
-        />
-
-        <form onSubmit={moveToNextStage}>
-            {eventCreationStage === EventCreationStage.BasicInfo &&
-                <BasicInformationForm
-                    eventRequest={eventRequest}
-                    setEventRequest={setEventRequest}
-                    validationStage={validationStage}
-                    setValidationStage={setValidationStage}
-                    setEventCreationStage={setEventCreationStage}
-                />}
-
-            {eventCreationStage === EventCreationStage.ImageUpload &&
-                <ImageUploadSection
-                    eventRequest={eventRequest}
-                    setEventRequest={setEventRequest}
-                    mainImageFile={mainImageFile}
-                    setMainImageFile={setMainImageFile}
-                />}
-
-            {eventCreationStage === EventCreationStage.TicketDetails &&
-                <TicketDetailsSection
-                    eventRequest={eventRequest}
-                    setEventRequest={setEventRequest}
-                />
-            }
-
-            {eventCreationStage === EventCreationStage.Confirmation &&
-                <ConfirmationSection
-                    eventRequest={eventRequest}
-                    setEventRequest={setEventRequest}
-                />
-            }
-
-            <div className={styles.actionButtons}>
-                <div className={styles.tagSection}>
-                    {
-                        eventRequest?.tags?.map((tag, index) => {
-                            return (
-                                <span className={styles.tag} key={index}>
-                                    {tag}
-                                    <span><CloseIcon /></span>
-                                </span>
-                            )
-                        })
-                    }
-                </div>
-                <button type="submit" disabled={isCreatingEvent || isUploadingMainImage}>
-                    {/* { 'Next'} */}
-                    {eventCreationStage === EventCreationStage.Confirmation ? isUploadingMainImage ? 'Uploading images' : isCreatingEvent ? 'Creating event' : 'Create Event' : 'Next'}
-                    {isCreatingEvent && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
-                </button>
             </div>
-        </form>
-    </div>
-);
+
+            <CreateEventProgressBar
+                eventCreationStage={eventCreationStage}
+                setEventCreationStage={setEventCreationStage}
+                eventRequest={eventRequest}
+            />
+
+            <form onSubmit={moveToNextStage}>
+                {eventCreationStage === EventCreationStage.BasicInfo &&
+                    <BasicInformationForm
+                        eventRequest={eventRequest}
+                        setEventRequest={setEventRequest}
+                        validationStage={validationStage}
+                        setValidationStage={setValidationStage}
+                        setEventCreationStage={setEventCreationStage}
+                    />}
+
+                {eventCreationStage === EventCreationStage.ImageUpload &&
+                    <ImageUploadSection
+                        eventRequest={eventRequest}
+                        setEventRequest={setEventRequest}
+                        mainImageFile={mainImageFile}
+                        setMainImageFile={setMainImageFile}
+                    />}
+
+                {eventCreationStage === EventCreationStage.TicketDetails &&
+                    <TicketDetailsSection
+                        eventRequest={eventRequest}
+                        setEventRequest={setEventRequest}
+                    />
+                }
+
+                {eventCreationStage === EventCreationStage.Confirmation &&
+                    <ConfirmationSection
+                        eventRequest={eventRequest}
+                        setEventRequest={setEventRequest}
+                    />
+                }
+
+                <div className={styles.actionButtons}>
+                    <div className={styles.tagSection}>
+                        {
+                            eventRequest?.tags?.map((tag, index) => {
+                                return (
+                                    <span className={styles.tag} key={index}>
+                                        {tag}
+                                        <span><CloseIcon /></span>
+                                    </span>
+                                )
+                            })
+                        }
+                    </div>
+                    <button type="submit" disabled={isCreatingEvent || isUploadingMainImage}>
+                        {/* { 'Next'} */}
+                        {eventCreationStage === EventCreationStage.Confirmation ? isUploadingMainImage ? 'Uploading images' : isCreatingEvent ? 'Creating event' : 'Create Event' : 'Next'}
+                        {isCreatingEvent && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
 }
 
 export default CreateEvent;
