@@ -84,7 +84,7 @@
 
 // SKELETON STYLES STARTS HERE =============
 
-.eventInfoContainer {
+.eventInfoContainer, .consoleEventInfoContainer {
     @include sectionPadding;
     z-index: 2;
     position: relative;
@@ -290,4 +290,9 @@
             }
         }
     }
+}
+
+.consoleEventInfoContainer {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }

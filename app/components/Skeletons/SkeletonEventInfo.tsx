@@ -7,16 +7,16 @@ import { SkeletonTypes } from "./SkeletonTypes";
 import useResponsive from "../../hooks/useResponsiveness";
 
 interface SkeletonEventInfoProps {
-
+    forConsole?: boolean
 }
 
-const SkeletonEventInfo: FunctionComponent<SkeletonEventInfoProps> = (): ReactElement => {
-    
+const SkeletonEventInfo: FunctionComponent<SkeletonEventInfoProps> = ({ forConsole }): ReactElement => {
+
     const windowRes = useResponsive();
     const onMobile = windowRes.width && windowRes.width < 768;
 
     return (
-        <section className={styles.eventInfoContainer}>
+        <section className={forConsole ? styles.consoleEventInfoContainer : styles.eventInfoContainer}>
             <div className={styles.mainSection}>
                 <Shimmer />
                 <div className={styles.eventImage}>
