@@ -45,6 +45,7 @@ CREATE TABLE `Locations` (
 CREATE TABLE `EventImages` (
     `id` VARCHAR(191) NOT NULL,
     `imageUrl` VARCHAR(191) NOT NULL,
+    `imageId` VARCHAR(191) NOT NULL,
     `eventId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -85,7 +86,8 @@ CREATE TABLE `Events` (
     `time` VARCHAR(191) NOT NULL,
     `category` VARCHAR(191) NOT NULL DEFAULT 'General',
     `visibility` ENUM('PUBLIC', 'PRIVATE') NOT NULL DEFAULT 'PUBLIC',
-    `mainImageUrl` VARCHAR(191) NULL,
+    `mainImageUrl` VARCHAR(191) NOT NULL,
+    `mainImageId` VARCHAR(191) NOT NULL,
     `currency` VARCHAR(191) NOT NULL DEFAULT 'NGN',
     `purchaseStartDate` DATETIME(3) NOT NULL,
     `purchaseEndDate` DATETIME(3) NOT NULL,
