@@ -348,7 +348,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                             </div>}
                     </div>
                 </section> :
-                <SkeletonEventInfo />
+                <SkeletonEventInfo forConsole />
             }
             {/* <EventsGroup title='Similar Events' subText='Dear superstar, below is a list of all events available at the moment.' eventsData={events} /> */}
         </div>
