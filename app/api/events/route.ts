@@ -1,6 +1,7 @@
 import { EventRequest } from "@/app/models/IEvents";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import cloudinary from "cloudinary";
 
 interface EventTagModel {
   tag: {
@@ -61,6 +62,23 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      const _imagebase64Url = request.mainImageUrl;
+
+      var uploadStr = 'data:image/jpeg;base64,' + _imagebase64Url;
+
+      const cloudinaryRes = await cloudinary.v2.uploader.upload(uploadStr, {
+        folder: "event_images",
+        filename_override: `${eventId}`,
+        // use_filename: true,
+      });
+
+    //   console.log({cloudinaryRes});
+      
+    //   return NextResponse.json(
+    //     { cloudinaryRes },
+    //     { status: 200 }
+    //   );
+
       // If eventId is valid, save it to the database
       const event = await prisma.events.create({
         data: {
@@ -81,7 +99,8 @@ export async function POST(req: NextRequest) {
             })),
           },
           visibility: request.visibility,
-          mainImageUrl: request.mainImageUrl,
+          mainImageUrl: cloudinaryRes.secure_url,
+          mainImageId: cloudinaryRes.public_id, 
           currency: request.currency,
           tickets: {
             createMany: {
