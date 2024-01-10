@@ -29,6 +29,7 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
     const [dateErrorMsg, setDateErrorMsg] = useState<boolean>();
     const [timeErrorMsg, setTimeErrorMsg] = useState<boolean>();
     const [descriptionErrorMsg, setDescriptionErrorMsg] = useState<boolean>();
+    const [tagErrorMsg, setTagErrorMsg] = useState<boolean>();
 
     function onFormValueChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>, setState?: Dispatch<SetStateAction<boolean | undefined>>) {
 
@@ -46,13 +47,14 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
     };
 
     function validateForm() {
-        if (eventRequest?.title && eventRequest.venue && eventRequest.date && eventRequest.time && eventRequest.description) {
+        if (eventRequest?.title && eventRequest.venue && eventRequest.date && eventRequest.time && eventRequest.description && (eventRequest.tags && eventRequest.tags.length > 0)) {
             // Close all error messages
             setTitleErrorMsg(false);
             setVenueErrorMsg(false);
             setDateErrorMsg(false);
             setTimeErrorMsg(false);
             setDescriptionErrorMsg(false);
+            setTagErrorMsg(false);
             return true;
         } else {
             if (!eventRequest?.title) {
@@ -80,6 +82,11 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
             } else {
                 setDescriptionErrorMsg(false);
             }
+            if (!eventRequest?.tags || eventRequest?.tags?.length < 1) {
+                setTagErrorMsg(true);
+            } else {
+                setTagErrorMsg(false);
+            }
             return false;
         }
     };
@@ -99,6 +106,8 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
         if (eventRequest?.tags?.length) {
             // Add the tag to the form request
             setEventRequest({ ...eventRequest as EventRequest, tags: [...eventRequest?.tags as string[], tag] });
+            // Clear error 
+            setTagErrorMsg(false);
             // Clear the tag input
             setTag('');
             return;
@@ -282,6 +291,7 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                                 <AddIcon />
                             </span>
                         </div>
+                        {tagErrorMsg && <span className={styles.errorMsg}>Please add at least one tag</span>}
                     </div>
                 </div>
                 <div className={styles.formField}>
