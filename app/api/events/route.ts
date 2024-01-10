@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
       const _imagebase64Url = request.mainImageUrl;
 
-      var uploadStr = 'data:image/jpeg;base64,' + _imagebase64Url;
+      var uploadStr = "data:image/jpeg;base64," + _imagebase64Url;
 
       const cloudinaryRes = await cloudinary.v2.uploader.upload(uploadStr, {
         folder: "event_images",
@@ -72,12 +72,12 @@ export async function POST(req: NextRequest) {
         // use_filename: true,
       });
 
-    //   console.log({cloudinaryRes});
-      
-    //   return NextResponse.json(
-    //     { cloudinaryRes },
-    //     { status: 200 }
-    //   );
+      //   console.log({cloudinaryRes});
+
+      //   return NextResponse.json(
+      //     { cloudinaryRes },
+      //     { status: 200 }
+      //   );
 
       // If eventId is valid, save it to the database
       const event = await prisma.events.create({
@@ -91,7 +91,18 @@ export async function POST(req: NextRequest) {
           date: request.date,
           time: request.time,
           category: request.category,
+          // Create tags if they are available in the request
+          //   tags: {
+          //     create: request.tags
+          //       ? request.tags.map((tag) => ({
+          //           tag: {
+          //             create: { name: tag },
+          //           },
+          //         }))
+          //       : [],
+          //   },
           tags: {
+            // Create tags as though they are available in the request
             create: request.tags.map((tagName) => ({
               tag: {
                 create: { name: tagName },
@@ -100,7 +111,7 @@ export async function POST(req: NextRequest) {
           },
           visibility: request.visibility,
           mainImageUrl: cloudinaryRes.secure_url,
-          mainImageId: cloudinaryRes.public_id, 
+          mainImageId: cloudinaryRes.public_id,
           currency: request.currency,
           tickets: {
             createMany: {
@@ -268,4 +279,51 @@ export async function GET(req: NextRequest) {
     // Return all events
     return NextResponse.json(events);
   }
+}
+
+export async function DELETE(req: NextRequest) {
+  if (req.method === "DELETE") {
+    // Get the search params from the request url
+    const searchParams = new URLSearchParams(req.url.split("?")[1]);
+
+    // Get the id from the search params
+    const specifiedId = searchParams.get("id");
+
+    // If a specifiedId is provided, delete the event with that id
+    if (specifiedId) {
+      const event = await prisma.events.delete({
+        where: {
+          id: specifiedId,
+        },
+      });
+
+      // If event is not found, return 404
+      if (!event) {
+        return NextResponse.json(
+          { error: "Event with specified ID not found" },
+          { status: 404 }
+        );
+      }
+
+      // If event is found, return it
+      if (event) {
+        return NextResponse.json(event, { status: 200 });
+      }
+
+      // If event is not found, return 404
+      return NextResponse.json(
+        { error: "Event with specified ID not found" },
+        { status: 404 }
+      );
+    }
+
+    // Else, return 400
+    return NextResponse.json(
+      { error: "Event ID is required" },
+      { status: 400 }
+    );
+  }
+
+  // Else, return 400
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
