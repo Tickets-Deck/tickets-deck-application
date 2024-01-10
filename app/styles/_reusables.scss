@@ -105,6 +105,53 @@
     //     }
     // }
 }
+@mixin tertiary-button {
+    width: fit-content;
+    border-radius: 3.125rem;
+    cursor: pointer;
+    font-size: $font-size-16 - 0.125rem;
+    padding: 0.8rem 1.6rem;
+    border: none;
+    background-color: $white;
+    color: $dark-grey;  
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 300ms ease;
+    svg {
+        opacity: 1;
+        color: #fff;
+        width: 0.75rem;
+        path {
+            fill: #fff;
+        }
+    }
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+@mixin closeIcon($color) {
+    margin-left: auto;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    min-height: 32px;
+    border-radius: 100%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    &:hover {
+        background-color: rgba($color, $alpha: 0.1);
+    }
+    svg {
+        path {
+            stroke: $color;
+            fill: $color;
+        }
+    }
+}
 
 // Input field
 @mixin input {
@@ -253,309 +300,6 @@
         }
     }
 }
-
-// .tableSection {
-//     border-spacing: .25rem;
-//     background-color: $white;
-//     width: 100%;
-//     tr {
-//         padding: .75rem;
-//         th {
-//             margin-top: 1.5rem;
-//             text-align: left;
-//             background-color: $primary-color;
-//             color: $white;
-//             white-space: nowrap;
-//             p,
-//             .th {
-//                 padding: .75rem;
-//                 font-size: $font-size-16 - .125rem;
-//                 font-weight: $fontWeight-500;
-//             }
-//             .th {
-//                 display: flex;
-//                 align-items: center;
-//                 gap: 1.5rem;
-//                 position: relative;
-//             }
-//             span {
-//                 // padding: .75rem;
-//                 margin: 0;
-//                 display: grid;
-//                 place-items: center;
-//                 // border: .063rem solid #000;
-//             }
-//             &.searchIcon {
-//                 // min-width: 2.5rem;
-//                 width: 2.5rem;
-//                 min-width: 2.5rem;
-//                 span {
-//                     // min-width: 1.5rem;
-//                     &:first-child {
-//                         cursor: pointer;
-//                     }
-//                 }
-//                 position: relative;
-//                 // .searchBarDropdown {
-//                 //   position: absolute;
-//                 //   right: 0;
-//                 //   top: 2.813rem;
-//                 //   background-color: $white;
-//                 //   padding: .5rem;
-//                 //   display: flex;
-//                 //   flex-direction: column;
-//                 //   input {
-//                 //     padding: .25rem;
-//                 //     outline: none;
-//                 //   }
-//                 //   .actionBtn {
-//                 //     display: flex;
-//                 //     align-items: center;
-//                 //     gap: .25rem;
-//                 //     margin-top: .375rem;
-//                 //     button {
-//                 //       padding: .375rem;
-//                 //       background-color: $primary-color;
-//                 //       color: $white;
-//                 //       width: 100%;
-//                 //       display: flex;
-//                 //       align-items: center;
-//                 //       justify-content: center;
-//                 //       gap: .25rem;
-//                 //       border: none;
-//                 //       outline: none;
-//                 //       border-radius: .25rem;
-//                 //       font-size: $font-size-16 - .25rem;
-//                 //       font-weight: $fontWeight-300;
-//                 //       cursor: pointer;
-//                 //     }
-//                 //   }
-//                 //   @include bumpDownAnimation();
-//                 // }
-//                 .searchBarDropdown {
-//                     @include searchBarDropdown();
-//                 }
-//             }
-//             .filterArea,
-//             .inTabSearchIcon {
-//                 span {
-//                     // min-width: 1.5rem;
-//                     &:first-child {
-//                         cursor: pointer;
-//                         width: fit-content;
-//                         margin-left: auto;
-//                         svg {
-//                             width: .875rem;
-//                             height: .875rem;
-//                             path {
-//                                 fill: $primary-color;
-//                             }
-//                         }
-//                     }
-//                 }
-
-//                 &__filterIcon,
-//                 &__searchIcon {
-//                     cursor: pointer;
-//                     &:hover {
-//                         background-color: lighten($color: $primary-color, $amount: 10%);
-//                     }
-//                 }
-//                 &__dropdown {
-//                     // display: none;
-//                     position: absolute;
-//                     background-color: #f4f8f9;
-//                     width: 100%;
-//                     right: 0;
-//                     top: 2.75rem;
-//                     @include bumpDownAnimation();
-
-//                     .options {
-//                         display: flex;
-//                         flex-direction: column;
-//                         &__option {
-//                             display: flex;
-//                             align-items: center;
-//                             gap: .5rem;
-//                             color: $primary-color;
-//                             position: relative;
-//                             padding: .5rem;
-//                             // border: .063rem solid;
-//                             p {
-//                                 padding: 0rem;
-//                             }
-//                             span {
-//                                 width: 1rem;
-//                                 height: 1rem;
-//                                 border-radius: .125rem;
-//                                 border: .063rem solid $secondary-color;
-//                                 background-color: #fff;
-//                             }
-//                             input {
-//                                 position: absolute;
-//                                 width: 100%;
-//                                 height: 100%;
-//                                 opacity: 0;
-//                                 cursor: pointer;
-//                             }
-//                             input[type="checkbox"]:checked ~ .optionIndicator {
-//                                 background-color: $secondary-color;
-//                                 border: none;
-//                             }
-//                         }
-//                     }
-//                 }
-//                 &__searchDropdown {
-//                     position: absolute;
-//                     background-color: #f4f8f9;
-//                     // border: .063rem solid #000;
-//                     width: fit-content;
-//                     left: 0;
-//                     top: 2.75rem;
-//                     padding: .375rem;
-//                     display: flex;
-//                     flex-direction: column;
-//                     gap: .25rem;
-//                     @include bumpDownAnimation();
-//                     @include searchBarDropdown();
-
-//                     .searchBarDropdown__filterResults,
-//                     .searchBarDropdown__filterResultsUnavailable {
-//                         position: absolute;
-//                         width: 100%;
-//                         height: fit-content;
-//                         display: flex;
-//                         flex-direction: column;
-//                         background-color: $white;
-//                         top: 2.5rem;
-//                         left: 0;
-//                         overflow-y: auto;
-//                         max-height: 12.5rem;
-//                         @extend .scrollArea;
-//                         &::-webkit-scrollbar,
-//                         &::-webkit-scrollbar-thumb {
-//                             width: .25rem;
-//                         }
-//                         p.eachFilterResult {
-//                             font-size: $font-size-16 - .25rem;
-//                             margin: 0;
-//                             color: $black;
-//                             background-color: $white;
-//                             width: 100%;
-//                             padding: .625rem .5rem;
-//                             &:hover {
-//                                 background-color: $grey-bg;
-//                                 cursor: pointer;
-//                             }
-//                         }
-//                     }
-//                     .searchBarDropdown__filterResultsUnavailable {
-//                         overflow-x: hidden;
-//                         // max-height: 12.5rem;
-//                         overflow-y: hidden;
-//                         p {
-//                             font-style: italic;
-//                             font-size: $font-size-16 - .25rem;
-//                             color: $failed-color;
-//                             white-space: normal;
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//         td {
-//             padding: .5rem .75rem;
-//             background-color: $white;
-//             font-size: $font-size-16 - .25rem;
-//             p {
-//                 font-size: $font-size-16 - .25rem;
-//             }
-//             .reservationId,
-//             .paymentReference {
-//                 font-size: $font-size-16 - .125rem;
-//                 font-weight: $fontWeight-800;
-//                 max-width: 12.5rem;
-//             }
-//             .company {
-//                 // display: flex;
-//                 // align-items: center;
-//                 // gap: .5rem;
-//                 &__tag {
-//                     @include tagStyle();
-//                 }
-//                 &__tagPremium {
-//                     @include tagStyle();
-//                     border: .063rem solid $premium;
-//                     border-radius: .75rem;
-//                     color: $primary-color;
-//                     background-color: lighten($color: $premium, $amount: 45%);
-//                 }
-//             }
-//             &.actions {
-//                 button {
-//                     padding: .25rem .5rem;
-//                     border: .063rem solid $primary-color;
-//                     border: none;
-//                     font-size: $font-size-16 - .375rem;
-//                     background-color: lighten($color: $primary-color, $amount: 60%);
-//                     border-radius: .5rem;
-//                     cursor: pointer;
-//                     position: relative;
-//                     &:first-child {
-//                         margin-right: .5rem;
-//                         &:hover {
-//                             background-color: $primary-color;
-//                             color: $white;
-//                         }
-//                     }
-//                     &:nth-child(2) {
-//                         background-color: $peach;
-//                         color: $white;
-//                         &:hover {
-//                             background-color: $failed-color;
-//                         }
-//                     }
-//                 }
-//                 .viewOrder {
-//                     @extend button;
-//                     padding: .375rem .75rem;
-//                     border-radius: .25rem;
-//                     border: .063rem solid rgba($primary-color, 0.2);
-//                     background-color: $white;
-//                     min-width: 4.688rem;
-//                     min-height: 1.5rem;
-//                     &:hover {
-//                         background-color: $primary-color;
-//                         color: $white;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//     .pricingTable {
-//         th {
-//             p,
-//             .th {
-//                 max-height: 2.5rem;
-//                 font-size: .75rem;
-//                 span {
-//                     // width: 60%;
-//                     place-items: start;
-//                     // border: .063rem solid #fff;
-//                     white-space: normal;
-//                     font-size: .688rem;
-//                     &.filterArea__filterIcon,
-//                     &.inTabSearchIcon__searchIcon {
-//                         width: fit-content;
-//                     }
-//                 }
-//                 .inTabSearchIcon {
-//                     margin-left: auto;
-//                 }
-//             }
-//         }
-//     }
-// }
 
 .leftSidebarContainer {
     width: 100%;

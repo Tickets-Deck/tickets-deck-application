@@ -101,6 +101,8 @@ img {
 button {
     overflow: hidden;
     position: relative;
+    border: none;
+    outline: none;
     &:disabled {
         pointer-events: none;
         opacity: 0.8;
