@@ -1,80 +1,17 @@
-"use client"
-import { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import styles from "../../styles/Events.module.scss";
-import useResponsive from "../../hooks/useResponsiveness";
-import EventsGroup from "../../components/events/EventsGroup";
-import { useFetchEventsByPublisherId } from "@/app/api/apiClient";
-import { useSession } from "next-auth/react";
-import { catchError } from "@/app/constants/catchError";
-import { useRouter } from "next/navigation";
-import { EventResponse } from "@/app/models/IEvents";
+import { FunctionComponent, ReactElement } from "react";
+import UserEventsPage from "./UserEventsPage";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/auth";
 
-interface AllEventsProps {
-
-}
-
-const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
-
-    const fetchEventsByPublisherId = useFetchEventsByPublisherId();
-
-    const router = useRouter();
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < 768;
-    const {data: session} = useSession();
+interface UserEventsProps {
     
-    const [isFetchingEvents, setIsFetchingEvents] = useState(true);
-    const [events, setEvents] = useState<EventResponse[]>();
-
-    async function handleFetchEventsByPublisherId() {
-
-        // Start fetching events
-        setIsFetchingEvents(true);
-
-        await fetchEventsByPublisherId(session?.user.id as string)
-        .then((response) => {
-            setEvents(response.data);
-            console.log(response.data)
-        })
-        .catch((error) => {
-            catchError(error);
-        })
-        .finally(() => {
-            // Stop fetching events
-            setIsFetchingEvents(false);
-        })
-    };
-
-    useEffect(() => {
-        handleFetchEventsByPublisherId();
-    }, [router])
-
-    return (
-        <div className={`${styles.allEventsPage} ${styles.allEventsPageConsole}`}>
-            {/* <section className={styles.heroSection}>
-                <div className={styles.video}>
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        src="https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4" />
-                </div>
-                <div className={styles.textContents}>
-                    <h2>Escape the Ordinary: <br /><span>Dive into Event Paradise!</span></h2>
-                    <p>Embark on a journey through events that'll transport you to a world of excitement and wonder. <span>Ready to be amazed?</span> 🚀</p>
-                </div>
-            </section> */}
-
-            {/* <FeaturedEvents isNotHomepage /> */}
-
-            <EventsGroup
-                consoleDisplay
-                eventsData={events}
-                title="All Events"
-                subText="Below is a list of all your events."
-                isFetchingEvents={isFetchingEvents}
-            />
-        </div>
-    );
 }
+ 
+const UserEvents: FunctionComponent<UserEventsProps> = async () => {
 
-export default AllEvents;
+    const session = await getServerSession(authOptions);
+
+    return ( <UserEventsPage session={session} /> );
+}
+ 
+export default UserEvents;
