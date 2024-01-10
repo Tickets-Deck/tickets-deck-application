@@ -39,6 +39,14 @@ export function useFetchEventById() {
   return fetchEvent;
 }
 
+export function useDeleteEvent() {
+    async function deleteEvent(id: string) {
+        return API.delete(`${ApiRoutes.Events}?id=${id}`);
+    }
+    
+    return deleteEvent;
+}
+
 export function useFetchEventsByEventId() {
   async function fetchEventsByEventId(eventId: string) {
     return API.get(`${ApiRoutes.Events}?eventId=${eventId}`);
