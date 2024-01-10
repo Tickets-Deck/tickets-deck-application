@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { FunctionComponent, ReactElement, useContext } from "react";
-import { HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
+import { FunctionComponent, ReactElement, useContext, Dispatch, SetStateAction } from "react";
+import { DeleteIcon, HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
 import Image from "next/image";
 import images from "../../../public/images";
 import useResponsive from "../../hooks/useResponsiveness";
@@ -13,10 +13,13 @@ interface EventCardProps {
     event: EventResponse
     mobileAndActionButtonDismiss?: boolean
     consoleDisplay?: boolean
+    setIsDeleteConfirmationModalVisible?: Dispatch<SetStateAction<boolean>>
+    setSelectedEvent?: Dispatch<SetStateAction<EventResponse | undefined>>
 }
 
 const EventCard: FunctionComponent<EventCardProps> = (
-    { event, mobileAndActionButtonDismiss, consoleDisplay }): ReactElement => {
+    { event, mobileAndActionButtonDismiss, consoleDisplay,
+        setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
 
 
     const windowRes = useResponsive();
@@ -75,37 +78,35 @@ const EventCard: FunctionComponent<EventCardProps> = (
                         {/* <p>{event.location.blockNumber + ' ' + event.location.city + ', ' + event.location.state + ', ' + event.location.country}</p> */}
                     </div>
                 </div>
-                {mobileAndActionButtonDismiss ?
-                    <></> :
+                {(!mobileAndActionButtonDismiss || consoleDisplay) &&
                     <div className={styles.eventInfo__rhs}>
                         <div className={styles.actions}>
                             <button className={styles.actions__like}><LikeIcon /></button>
                             <button
                                 className={styles.actions__share}
-                                onClick={() => {
-                                    shareEventMobile();
-                                    // if (typeof (onMobile) == "boolean" && onMobile) {
-                                    //     shareEventMobile()
-                                    // } else if (typeof (onMobile) == "boolean" && !onMobile) {
-                                    //     shareEvent(`${window.location.origin}/event/${event.id}`)
-                                    // }
-                                }}>
+                                onClick={() => shareEventMobile()}>
                                 <ShareIcon />
                             </button>
                         </div>
-                        <p className={styles.restriction}>Everyone</p>
+                        <p className={styles.restriction}>{event.allowedGuestType}</p>
                     </div>}
-                {/* <div className={styles.eventInfo__rhs}>
-                    <div className={styles.actions}>
-                        <button className={styles.actions__like}><LikeIcon /></button>
-                        <button className={styles.actions__share} onClick={() => typeof (onMobile) == "boolean" && onMobile ? shareEventMobile() : shareEvent(event)}><ShareIcon /></button>
-                    </div>
-                    <p className={styles.restriction}>Everyone</p>
-                </div> */}
             </div>
-            <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
-                <button>View details</button>
-            </Link>
+            <div className={styles.actionBtnContainer}>
+                {
+                    consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
+                    <button
+                        className={styles.deleteBtn}
+                        onClick={() => {
+                            setSelectedEvent(event)
+                            setIsDeleteConfirmationModalVisible(true)
+                        }}>
+                        <DeleteIcon />
+                    </button>
+                }
+                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
+                    <button>View details</button>
+                </Link>
+            </div>
         </div>
     );
 }
