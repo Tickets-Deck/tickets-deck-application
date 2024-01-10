@@ -29,11 +29,13 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
 
     const [eventCreationStage, setEventCreationStage] = useState<EventCreationStage>(EventCreationStage.BasicInfo);
     const [eventRequest, setEventRequest] = useState<EventRequest>();
+    const [isEventCreated, setIsEventCreated] = useState(false); 
     const [validationStage, setValidationStage] = useState<{ status: ValidationStatus }>();
 
     const [mainImageFile, setMainImageFile] = useState<File>();
     const [cloudinaryImageUrl, setCloudinaryImageUrl] = useState<string>();
     const [isUploadingMainImage, setIsUploadingMainImage] = useState(false);
+    const [disableAllTabs, setDisableAllTabs] = useState(false);
 
     const [isCreatingEvent, setIsCreatingEvent] = useState(false);
 
@@ -68,6 +70,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                 setEventCreationStage(EventCreationStage.Confirmation);
                 break;
             case EventCreationStage.Confirmation:
+                setDisableAllTabs(true);
                 handleEventCreation();
                 break;
         }
@@ -94,6 +97,8 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
         // Create the event
         await createEvent({ ...eventRequest as EventRequest }) 
             .then((response) => {
+                // Update created event state
+                setIsEventCreated(true);
                 // log response
                 console.log(response);
                 // Clear the event request
@@ -129,6 +134,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                 eventCreationStage={eventCreationStage}
                 setEventCreationStage={setEventCreationStage}
                 eventRequest={eventRequest}
+                disableAllTabs={disableAllTabs}
             />
 
             <form onSubmit={moveToNextStage}>
@@ -160,6 +166,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                     <ConfirmationSection
                         eventRequest={eventRequest}
                         setEventRequest={setEventRequest}
+                        isEventCreated={isEventCreated}
                     />
                 }
 
