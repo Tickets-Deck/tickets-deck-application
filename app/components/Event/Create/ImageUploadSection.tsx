@@ -15,6 +15,7 @@ interface ImageUploadSectionProps {
 const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({ eventRequest, setEventRequest, mainImageFile, setMainImageFile }): ReactElement => {
 
     const [mainImageUrl, setMainImageUrl] = useState<string>();
+    const [mainImageBase64Url, setMainImageBase64Url] = useState<string>();
     const [subImageFiles, setSubImageFiles] = useState<File[]>();
     const [subImageUrls, setSubImageUrls] = useState<string[]>();
 
@@ -50,6 +51,7 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({ eventR
                         const base64String = base64URL.split(',')[1];
 
                         // console.log('base64URL: ', base64String);
+                        setMainImageBase64Url(base64String); 
                     }
                 };
 
@@ -153,16 +155,16 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({ eventR
     };
 
     useEffect(() => {
-        if (mainImageUrl) {
-            setEventRequest({ ...eventRequest as EventRequest, mainImageUrl: mainImageUrl });
+        if (mainImageBase64Url) {
+            setEventRequest({ ...eventRequest as EventRequest, mainImageUrl: mainImageBase64Url });
         }
-    }, [mainImageUrl])
+    }, [mainImageBase64Url])
 
-    useEffect(() => {
-        if (eventRequest) {
-            setMainImageUrl(eventRequest.mainImageUrl);
-        }
-    }, [eventRequest])
+    // useEffect(() => {
+    //     if (eventRequest) {
+    //         setMainImageUrl(eventRequest.mainImageUrl);
+    //     }
+    // }, [eventRequest])
 
     return (
         <div className={styles.imageUploadSection}>
