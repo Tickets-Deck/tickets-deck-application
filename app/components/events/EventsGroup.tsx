@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement, useState } from "react";
+import { FunctionComponent, ReactElement, Dispatch, SetStateAction } from "react";
 import { HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
 import Image from "next/image";
 import images from "../../../public/images";
@@ -15,12 +15,15 @@ interface EventsGroupProps {
     eventsData: EventResponse[] | undefined
     consoleDisplay?: boolean
     isFetchingEvents?: boolean
+    setIsDeleteConfirmationModalVisible?: Dispatch<SetStateAction<boolean>>
+    setSelectedEvent?: Dispatch<SetStateAction<EventResponse | undefined>>
 }
 
 const EventsGroup: FunctionComponent<EventsGroupProps> = (
-    { title, subText, eventsData, consoleDisplay, isFetchingEvents }): ReactElement => {
+    { title, subText, eventsData, consoleDisplay, isFetchingEvents, 
+        setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
 
-
+ 
     const windowRes = useResponsive();
     const onMobile = windowRes.width && windowRes.width < 768;
     const { push } = useRouter();
@@ -47,12 +50,14 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
             <div className={styles.eventsContainer}>
                 <div className={styles.eventsContainerCarousel}>
                     {
-                        eventsData?.map((event, index) =>
+                        !isFetchingEvents && eventsData?.map((event, index) =>
                             <EventCard
                                 event={event}
                                 mobileAndActionButtonDismiss
                                 key={index}
                                 consoleDisplay={consoleDisplay}
+                                setIsDeleteConfirmationModalVisible={setIsDeleteConfirmationModalVisible}
+                                setSelectedEvent={setSelectedEvent}
                             />
                         )
                     }
