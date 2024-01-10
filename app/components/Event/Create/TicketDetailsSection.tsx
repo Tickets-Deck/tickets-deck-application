@@ -191,7 +191,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({ ev
                                         gapSpace: 8,
                                         target: purchaseEndDateRef
                                     }}
-                                    placeholder="Start date"
+                                    placeholder="Purchase end date"
                                     ariaLabel="Select a date"
                                     minDate={eventRequest?.purchaseStartDate as Date ?? new Date()}
                                     maxDate={eventRequest?.date as Date ?? undefined}
