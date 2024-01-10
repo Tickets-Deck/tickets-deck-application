@@ -52,6 +52,7 @@ enum EventVisibility {
 model EventImages {
     id       String @id @default(uuid())
     imageUrl String
+    imageId  String
     event    Events @relation(fields: [eventId], references: [id])
     eventId  String
 }
@@ -93,7 +94,8 @@ model Events {
     tags        TagsForEvents[]
     visibility  EventVisibility @default(PUBLIC)
 
-    mainImageUrl String?
+    mainImageUrl String
+    mainImageId  String
     images       EventImages[]
 
     currency          String    @default("NGN")
