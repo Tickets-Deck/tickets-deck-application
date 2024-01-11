@@ -56,11 +56,11 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({ session }): Re
 
         await deleteEvent(selectedEvent?.id as string)
             .then((response) => {
-                // Close modal after deleting event
-                setIsDeleteConfirmationModalVisible(false);
-
+                // console.log(response);
                 // Fetch events again
                 handleFetchEventsByPublisherId();
+                // Close modal after deleting event
+                setIsDeleteConfirmationModalVisible(false);
             })
             .catch((error) => {
                 catchError(error);
