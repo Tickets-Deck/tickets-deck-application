@@ -53,13 +53,13 @@ model EventImages {
     id       String @id @default(uuid())
     imageUrl String
     imageId  String
-    event    Events @relation(fields: [eventId], references: [id])
+    event    Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId  String
 }
 
 model Tickets {
     id      String @id @default(uuid())
-    event   Events @relation(fields: [eventId], references: [id])
+    event   Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId String
 
     role             String  @default("General")
@@ -113,8 +113,8 @@ model TagsForEvents {
     tagId   String
 
     // Relationships with Event and Tag models
-    event Events @relation(fields: [eventId], references: [id])
-    tag   Tags   @relation(fields: [tagId], references: [id])
+    event Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    tag   Tags   @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
     @@id([eventId, tagId])
 }
