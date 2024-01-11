@@ -289,13 +289,15 @@ export async function DELETE(req: NextRequest) {
     // Get the id from the search params
     const specifiedId = searchParams.get("id");
 
-    // If a specifiedId is provided, delete the event with that id
+    // If a specifiedId is provided, find the event with that id
     if (specifiedId) {
-      const event = await prisma.events.delete({
+      const event = await prisma.events.findFirst({
         where: {
           id: specifiedId,
         },
       });
+
+      console.log("Event gotten from db", event);
 
       // If event is not found, return 404
       if (!event) {
@@ -305,9 +307,19 @@ export async function DELETE(req: NextRequest) {
         );
       }
 
-      // If event is found, return it
+      // If event is found, delete it
       if (event) {
-        return NextResponse.json(event, { status: 200 });
+        await prisma.events.delete({
+          where: {
+            id: specifiedId,
+          },
+        });
+
+        // Return success message
+        return NextResponse.json(
+          { message: "Event deleted successfully" },
+          { status: 200 }
+        );
       }
 
       // If event is not found, return 404
