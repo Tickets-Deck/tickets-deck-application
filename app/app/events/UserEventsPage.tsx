@@ -29,16 +29,22 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({ session }): Re
     const [selectedEvent, setSelectedEvent] = useState<EventResponse>();
     const [isDeleteConfirmationModalVisible, setIsDeleteConfirmationModalVisible] = useState(false);
     const [isDeletingEvent, setIsDeletingEvent] = useState(false);
+    const [isEventDeleted, setIsEventDeleted] = useState(false);
 
     async function handleFetchEventsByPublisherId() {
+        
+        // Reset events
+        setEvents(undefined);
 
         // Start fetching events
         setIsFetchingEvents(true);
 
         await fetchEventsByPublisherId(session?.user.id as string)
             .then((response) => {
+                // Set events
                 setEvents(response.data);
-                console.log(response.data)
+                // Reset event deleted state
+                setIsEventDeleted(false);
             })
             .catch((error) => {
                 catchError(error);
@@ -59,6 +65,8 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({ session }): Re
                 // console.log(response);
                 // Fetch events again
                 handleFetchEventsByPublisherId();
+                // Set event deleted state
+                setIsEventDeleted(true);
                 // Close modal after deleting event
                 setIsDeleteConfirmationModalVisible(false);
             })
@@ -72,8 +80,17 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({ session }): Re
     }
 
     useEffect(() => {
+        if (!session) {
+            router.push('/auth/signin');
+            return;
+        }
         handleFetchEventsByPublisherId();
     }, [session])
+
+    useEffect(() => {
+        if (isEventDeleted)
+            handleFetchEventsByPublisherId();
+    }, [isEventDeleted]);
 
     return (
         <div className={`${styles.allEventsPage} ${styles.allEventsPageConsole}`}>
@@ -81,6 +98,7 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({ session }): Re
                 visibility={isDeleteConfirmationModalVisible}
                 setVisibility={setIsDeleteConfirmationModalVisible}
                 deleteFunction={handleDeleteEvent}
+                isLoading={isDeletingEvent}
             />
 
             {/* <section className={styles.heroSection}>
