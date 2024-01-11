@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 COPY package*.json /usr/src/app/
 COPY prisma ./prisma/
 RUN npm install
+RUN npx prisma migrate deploy
 # Copying source files
 COPY . /usr/src/app
 # Building app
