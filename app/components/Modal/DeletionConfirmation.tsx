@@ -5,16 +5,19 @@ import ModalWrapper from "./ModalWrapper";
 import Image from "next/image";
 import images from "@/public/images";
 import { CloseIcon } from "../SVGs/SVGicons";
+import ComponentLoader from "../Loader/ComponentLoader";
 
 interface DeletionConfirmationModalProps {
     visibility: boolean
     setVisibility: Dispatch<SetStateAction<boolean>>
     deleteFunction: () => Promise<void>
+    isLoading: boolean
 }
 
-const DeletionConfirmationModal: FunctionComponent<DeletionConfirmationModalProps> = ({ visibility, setVisibility, deleteFunction }): ReactElement => {
+const DeletionConfirmationModal: FunctionComponent<DeletionConfirmationModalProps> = (
+    { visibility, setVisibility, deleteFunction, isLoading }): ReactElement => {
     return (
-        <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
+        <ModalWrapper disallowOverlayFunction visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
             <div className={styles.deletionConfirmationModal}>
                 <div className={styles.topAreaSection}>
                     <div className={styles.topArea}>
@@ -36,7 +39,10 @@ const DeletionConfirmationModal: FunctionComponent<DeletionConfirmationModalProp
                 </div> */}
                 <div className={styles.actionButton}>
                     <button onClick={() => setVisibility(false)}>Cancel</button>
-                    <button onClick={() => deleteFunction()}>Delete Event</button>
+                    <button onClick={() => deleteFunction()} disabled={isLoading}>
+                        Delete Event
+                        {isLoading && <ComponentLoader isSmallLoader customBackground="#DC143C" lightTheme customLoaderColor="#fff" />}
+                    </button>
                 </div>
             </div>
         </ModalWrapper>

@@ -114,6 +114,8 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
         } else {
             // Add the tag to the form request
             setEventRequest({ ...eventRequest as EventRequest, tags: [tag] });
+            // Clear error 
+            setTagErrorMsg(false);
             // Clear the tag input
             setTag('');
             return;
