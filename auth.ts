@@ -3,9 +3,9 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./lib/prisma";
 import GoogleProvider from "next-auth/providers/google";
+import { compileAccountCreationTemplate, sendMail } from "./lib/mail";
 
-export const 
-authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
     // Set max age to 24 hours
@@ -102,8 +102,18 @@ authOptions: NextAuthOptions = {
             firstName: profile?.name?.split(" ")[0] as string,
             lastName: profile?.name?.split(" ")[1] as string,
             password: "google-signup-no-password",
-            image: profile?.picture as string,
+            profilePhoto: profile?.picture as string,
           },
+        });
+
+        // Send email to the subscriber
+        await sendMail({
+          to: profile?.email as string,
+          name: "Account Created",
+          subject: "Welcome to Tickets Deck",
+          body: compileAccountCreationTemplate(
+            `${profile?.name?.split(" ")[0]} ${profile?.name?.split(" ")[1]}`
+          ),
         });
 
         return true; // Return true to allow sign in
@@ -161,7 +171,32 @@ authOptions: NextAuthOptions = {
       };
     },
   },
+  events: {
+    async signIn(message) {
+      console.log("Sign In Event", { message });
+    },
+    async signOut(message) {
+      // Delete the session cookie
+      await fetch(`${process.env.NEXTAUTH_URL}/api/auth/session`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Sign Out Event", { message });
+    },
+    // async createUser(message) {
+    //   console.log("Create User Event", { message });
+    // },
+    // async linkAccount(message) {
+    //   console.log("Link Account Event", { message });
+    // },
+    // async session(message) {
+    //   console.log("Session Event", { message });
+    // },
+  },
   pages: {
     signIn: "/auth/signin",
-  }
+  },
 };
