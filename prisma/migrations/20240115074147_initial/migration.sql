@@ -5,9 +5,13 @@ CREATE TABLE `Users` (
     `firstName` VARCHAR(191) NOT NULL,
     `lastName` VARCHAR(191) NOT NULL,
     `username` VARCHAR(191) NULL,
-    `image` VARCHAR(191) NULL,
+    `profilePhoto` VARCHAR(191) NULL,
+    `profilePhotoId` VARCHAR(191) NULL,
+    `coverPhoto` VARCHAR(191) NULL,
+    `coverPhotoId` VARCHAR(191) NULL,
     `phone` VARCHAR(191) NULL,
     `password` VARCHAR(191) NOT NULL,
+    `occupation` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NULL,
 
@@ -107,10 +111,10 @@ CREATE TABLE `TagsForEvents` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `EventImages` ADD CONSTRAINT `EventImages_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Events`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `EventImages` ADD CONSTRAINT `EventImages_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Events`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Tickets` ADD CONSTRAINT `Tickets_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Events`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Tickets` ADD CONSTRAINT `Tickets_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Events`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Events` ADD CONSTRAINT `Events_publisherId_fkey` FOREIGN KEY (`publisherId`) REFERENCES `Users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -119,7 +123,7 @@ ALTER TABLE `Events` ADD CONSTRAINT `Events_publisherId_fkey` FOREIGN KEY (`publ
 ALTER TABLE `Events` ADD CONSTRAINT `Events_locationId_fkey` FOREIGN KEY (`locationId`) REFERENCES `Locations`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `TagsForEvents` ADD CONSTRAINT `TagsForEvents_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Events`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `TagsForEvents` ADD CONSTRAINT `TagsForEvents_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Events`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `TagsForEvents` ADD CONSTRAINT `TagsForEvents_tagId_fkey` FOREIGN KEY (`tagId`) REFERENCES `Tags`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `TagsForEvents` ADD CONSTRAINT `TagsForEvents_tagId_fkey` FOREIGN KEY (`tagId`) REFERENCES `Tags`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
