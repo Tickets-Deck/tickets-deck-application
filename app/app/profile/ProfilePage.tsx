@@ -63,13 +63,14 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                 userInformation &&
                 <>
                     {
-                        false && <PhotoUpload visibility={isPhotoUploadModalVisible} setVisibility={setIsPhotoUploadModalVisible} />
+                        isPhotoUploadModalVisible && <PhotoUpload visibility={isPhotoUploadModalVisible} setVisibility={setIsPhotoUploadModalVisible} />
                     }
                     <div className={styles.profilePage__header}>
                         {/* <h1>Profile</h1> */}
                         <div className={styles.coverImage}>
                             <Image src="https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover" alt="Cover image" fill />
                         </div>
+                        <button className={styles.editButton}><EditIcon />Edit Cover Photo</button>
                     </div>
                     <div className={styles.profilePage__body}>
                         <div className={styles.profileInfo}>
