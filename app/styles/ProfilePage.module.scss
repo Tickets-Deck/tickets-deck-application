@@ -1,6 +1,19 @@
 @import "./variables";
 @import "./reusables";
 
+@mixin editButton {
+    @include tertiary-button;
+    padding: 0.4rem 0.8rem;
+    font-size: $font-size-16 - 0.25rem;
+    margin-left: auto;
+    gap: 0.25rem;
+    svg {
+        path {
+            fill: $dark-grey;
+        }
+    }
+}
+
 .profilePage {
     &__header {
         height: 220px;
@@ -24,6 +37,13 @@
             img {
                 object-fit: cover;
             }
+        }
+        .editButton {
+            @include editButton();
+            z-index: 2;
+            position: absolute;
+            top: 1.5rem; 
+            right: 2rem;
         }
     }
     &__body {
@@ -74,7 +94,7 @@
                         width: 1.875rem;
                         height: 1.875rem;
                         border-radius: 100%;
-                        border: .0938rem solid $white;
+                        border: 0.0938rem solid $white;
                         background-color: $primary-color;
                         cursor: pointer;
                         display: grid;
@@ -176,16 +196,7 @@
                     pointer-events: none;
                 }
                 .editButton {
-                    @include tertiary-button;
-                    padding: 0.4rem 0.8rem;
-                    font-size: $font-size-16 - 0.25rem;
-                    margin-left: auto;
-                    gap: 0.25rem;
-                    svg {
-                        path {
-                            fill: $dark-grey;
-                        }
-                    }
+                    @include editButton();
                 }
             }
             .settingsFormContainer {

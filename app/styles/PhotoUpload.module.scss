@@ -1,0 +1,92 @@
+@import "./variables";
+@import "./reusables";
+
+.photoUploadContainer {
+    border-radius: 20px;
+    background-color: $container-grey;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    min-width: 21.875rem;
+
+    .topArea {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: $fontWeight-500;
+            color: $white;
+        }
+
+        .closeIcon {
+            @include closeIcon($white);
+        }
+    }
+    .photoContainer {
+        width: 10rem;
+        height: 10rem;
+        border-radius: 1rem;
+        position: relative;
+        overflow: hidden;
+        &:hover {
+            &::after, > span {
+                opacity: 1;
+                scale: 1;
+            }
+        }
+        &:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba($black, 0.5);
+            opacity: 0;
+            scale: 0.6;
+        }
+        > span {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            top: 0;
+            left: 0;
+            color: $white;
+            font-size: 1rem;
+            font-weight: $fontWeight-400;
+            text-align: center;
+            width: 100%;
+            z-index: 2;
+            opacity: 0;
+            scale: 0.6;
+        }
+        .photo {
+            width: 100%;
+            height: 100%;
+            img {
+                object-fit: cover;
+            }
+        }
+        input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            z-index: 2;
+            cursor: pointer;
+        }
+    }
+
+    button {
+        @include tertiary-button;
+    }
+}
