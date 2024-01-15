@@ -1,4 +1,5 @@
 import { StatusCodes } from "@/app/models/IStatusCodes";
+import { compileNewsletterSubscriptionTemplate, sendMail } from "@/lib/mail";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -40,11 +41,20 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // If email is valid, save it to the database
+      // Save it to the database
       const subscriber = await prisma.newsLetterSubscribers.create({
         data: {
-          email,
+          email, 
         },
+      });
+
+      // Send email to the subscriber
+      await sendMail({
+        to: email,
+        name: "Subscriber",
+        subject: "Welcome to the newsletter",
+        body: compileNewsletterSubscriptionTemplate(email),
+        // body: `<p>Thank you for subscribing to the newsletter</p>`,
       });
 
       return NextResponse.json(subscriber, { status: StatusCodes.Created });
