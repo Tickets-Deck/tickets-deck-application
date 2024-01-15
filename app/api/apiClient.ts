@@ -70,3 +70,11 @@ export function useCreateUser() {
 
   return createUser;
 }
+
+export function useFetchUserInformation() {
+    async function fetchUserInformation(userId: string) {
+        return API.get(`${ApiRoutes.Users}?userId=${userId}`);
+    }
+    
+    return fetchUserInformation;
+}
