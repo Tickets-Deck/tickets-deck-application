@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
-import { UserCredentialsRequest } from "../models/IUser";
+import { ProfilePhotoRequest, UserCredentialsRequest } from "../models/IUser";
 import { EventRequest } from "../models/IEvents";
 
 export const API = axios.create({
@@ -40,11 +40,11 @@ export function useFetchEventById() {
 }
 
 export function useDeleteEvent() {
-    async function deleteEvent(id: string) {
-        return API.delete(`${ApiRoutes.Events}?id=${id}`);
-    }
-    
-    return deleteEvent;
+  async function deleteEvent(id: string) {
+    return API.delete(`${ApiRoutes.Events}?id=${id}`);
+  }
+
+  return deleteEvent;
 }
 
 export function useFetchEventsByEventId() {
@@ -56,11 +56,11 @@ export function useFetchEventsByEventId() {
 }
 
 export function useFetchEventsByPublisherId() {
-    async function fetchEventsByPublisherId(publisherId: string) {
-        return API.get(`${ApiRoutes.Events}?publisherId=${publisherId}`);
-    }
-    
-    return fetchEventsByPublisherId;
+  async function fetchEventsByPublisherId(publisherId: string) {
+    return API.get(`${ApiRoutes.Events}?publisherId=${publisherId}`);
+  }
+
+  return fetchEventsByPublisherId;
 }
 
 export function useCreateUser() {
@@ -72,9 +72,20 @@ export function useCreateUser() {
 }
 
 export function useFetchUserInformation() {
-    async function fetchUserInformation(userId: string) {
-        return API.get(`${ApiRoutes.Users}?userId=${userId}`);
-    }
-    
-    return fetchUserInformation;
+  async function fetchUserInformation(userId: string) {
+    return API.get(`${ApiRoutes.Users}?userId=${userId}`);
+  }
+
+  return fetchUserInformation;
+}
+
+export function useUploadUserProfilePhoto() {
+  async function uploadUserProfilePhoto(
+    userId: string,
+    data: ProfilePhotoRequest
+  ) {
+    return API.post(`${ApiRoutes.UploadUserProfilePhoto}?userId=${userId}`, data);
+  }
+
+  return uploadUserProfilePhoto;
 }
