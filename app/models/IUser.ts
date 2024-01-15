@@ -4,7 +4,8 @@ export type UserCredentialsRequest = {
   firstName: string;
   lastName: string;
   phone: string | undefined;
-  image: string | undefined;
+  profilePhoto: string | undefined;
+  coverPhoto: string | undefined;
 };
 
 export type UserCredentialsResponse = UserCredentialsRequest & {
@@ -12,5 +13,11 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   username: string;
   createdAt: Date;
   updatedAt: Date;
+  profilePhotoId: string | undefined;
+  coverPhotoId: string | undefined;
   events: Event[] | undefined;
+};
+
+export type ProfilePhotoRequest = {
+  profilePhoto: string;
 };
