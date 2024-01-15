@@ -236,7 +236,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                 <p className={styles.datePosted}>Posted on: {moment(eventInfo?.createdAt).format('Do MMMM YYYY')}</p>
                                 <div className={styles.publisherInfo}>
                                     <div className={styles.publisherInfo__image}>
-                                        <Image src={eventInfo.user.image ?? images.user_avatar} alt='Avatar' fill />
+                                        <Image src={eventInfo.user.profilePhoto ?? images.user_avatar} alt='Avatar' fill />
                                     </div>
                                     <div className={styles.publisherInfo__name}>{`${eventInfo.user.firstName} ${eventInfo.user.lastName}`}</div>
                                 </div>
