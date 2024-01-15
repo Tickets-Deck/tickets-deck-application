@@ -158,8 +158,17 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     // Create and manage sessions here
-    session: ({ session, token }) => {
+    session: async ({ session, token, trigger }) => {
       console.log("Session Callback", { session, token });
+
+      // Fetch user details from database
+      const user = await prisma.users.findUnique({
+        where: {
+          id: token.id as string,
+        },
+      });
+      console.log("🚀 ~ session: ~ user:", user)
+
       return {
         ...session,
         user: {
@@ -167,6 +176,7 @@ export const authOptions: NextAuthOptions = {
           id: token.id,
           accessToken: token.accessToken,
           idToken: token.idToken,
+          image: user?.profilePhoto,
         },
       };
     },
