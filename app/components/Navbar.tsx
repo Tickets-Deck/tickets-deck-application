@@ -19,7 +19,6 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
 
     const { data: session } = useSession();
     const user = session?.user;
-    const router = useRouter();
     const pathname = usePathname();
 
     // const onMobile = useResponsive();    
