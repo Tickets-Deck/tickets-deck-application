@@ -21,3 +21,7 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
 export type ProfilePhotoRequest = {
   profilePhoto: string;
 };
+
+export type UsernameRequest = {
+  username: string;
+};
