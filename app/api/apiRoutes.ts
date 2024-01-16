@@ -31,4 +31,9 @@ export class ApiRoutes {
    * The route to UploadUserProfilePhoto endpoint
    */
   static UploadUserProfilePhoto: string = "api/users/profile-photo";
+
+  /**
+   * The route to UpdateUserName endpoint
+   */
+  static UpdateUserName: string = "api/users/username";
 }
