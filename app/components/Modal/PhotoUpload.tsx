@@ -82,11 +82,11 @@ const PhotoUpload: FunctionComponent<PhotoUploadProps> = ({ visibility, setVisib
         // Spin the spinner
         setUploadingPhoto(true);
 
-        console.log(session?.user.id as string, { profilePhoto: imageBase64Url as string })
+        // console.log(session?.user.id as string, { profilePhoto: imageBase64Url as string })
 
         await uploadUserProfilePhoto(session?.user.id as string, { profilePhoto: imageBase64Url as string })
             .then(async (response) => {
-                console.log(response);
+                // console.log(response);
                 // Update the user's profile photo in the session
                 await update({
                     ...session,
