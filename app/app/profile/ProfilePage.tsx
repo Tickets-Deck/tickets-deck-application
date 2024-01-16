@@ -9,9 +9,11 @@ import { useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
 import { useRouter } from "next/navigation";
 import { UserCredentialsResponse } from "@/app/models/IUser";
-import { EditIcon } from "@/app/components/SVGs/SVGicons";
+import { CheckIcon, CloseIcon, EditIcon } from "@/app/components/SVGs/SVGicons";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import PhotoUpload from "@/app/components/Modal/PhotoUpload";
+import UserAvatarContainer from "@/app/components/ProfilePage/UserAvatarContainer";
+import UserNameUpdateContainer from "@/app/components/ProfilePage/UserNameUpdateContainer";
 
 interface ProfilePageProps {
 
@@ -25,11 +27,11 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
     const [currentTab, setCurrentTab] = useState(ProfilePageTab.AccountSettings);
     const [isFormFieldsEditable, setIsFormFieldsEditable] = useState(false);
     const [userInformation, setUserInformation] = useState<UserCredentialsResponse>();
-    const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(false);
+    const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(true);
     const [isPhotoUploadModalVisible, setIsPhotoUploadModalVisible] = useState(false);
 
     function showSuccessToast() {
-        toastHandler?.logSuccess("Successp", "This is a success message");
+        toastHandler?.logSuccess("Success", "This is a success message");
     };
 
     async function handleFetchUserInformation() {
@@ -60,7 +62,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
     return (
         <div className={styles.profilePage}>
             {
-                userInformation &&
+                !isFetchingUserInformation && userInformation &&
                 <>
                     {
                         isPhotoUploadModalVisible && <PhotoUpload visibility={isPhotoUploadModalVisible} setVisibility={setIsPhotoUploadModalVisible} />
@@ -75,23 +77,13 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                     <div className={styles.profilePage__body}>
                         <div className={styles.profileInfo}>
                             <div className={styles.basicInfoSection}>
-                                <div className={styles.userAvatarContainer}>
-                                    <div className={styles.userAvatar}>
-                                        <Image
-                                            src={
-                                                userInformation.profilePhoto ??
-                                                `https://placehold.co/300x300/8133F1/FFFFFF/png?text=${userInformation.firstName[0]}${userInformation.lastName[0]}`
-                                            }
-                                            alt="avatar"
-                                            fill
-                                        />
-                                    </div>
-                                    <span className={styles.editIcon} onClick={() => setIsPhotoUploadModalVisible(true)}><EditIcon /></span>
-                                </div>
+                                <UserAvatarContainer
+                                    userInformation={userInformation}
+                                    setIsPhotoUploadModalVisible={setIsPhotoUploadModalVisible}
+                                />
                                 <div className={styles.userInfo}>
                                     <h3>{`${userInformation?.firstName} ${userInformation?.lastName}`}</h3>
-                                    {userInformation.username && <p>@{userInformation.username}</p>}
-                                    {!userInformation.username && <button>Add username</button>}
+                                    <UserNameUpdateContainer userInformation={userInformation} />
                                 </div>
                             </div>
                             <div className={styles.stats}>
@@ -176,7 +168,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                 </>
             }
             {
-                !userInformation &&
+                !userInformation && isFetchingUserInformation &&
                 <div className={styles.profilePage__loader}>
                     <ComponentLoader customLoaderColor="#fff" />
                 </div>
