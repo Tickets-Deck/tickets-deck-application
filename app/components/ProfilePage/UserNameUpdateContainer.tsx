@@ -9,9 +9,10 @@ import { catchError } from "@/app/constants/catchError";
 
 interface UserNameContainerProps {
     userInformation: UserCredentialsResponse;
+    handleFetchUserInformation: () => Promise<void>
 }
 
-const UserNameContainer: FunctionComponent<UserNameContainerProps> = ({ userInformation }): ReactElement => {
+const UserNameContainer: FunctionComponent<UserNameContainerProps> = ({ userInformation, handleFetchUserInformation }): ReactElement => {
 
     const updateUserName = useUpdateUserName();
     const { data: session, update } = useSession();
@@ -37,6 +38,7 @@ const UserNameContainer: FunctionComponent<UserNameContainerProps> = ({ userInfo
         // Update username
         await updateUserName(session?.user.id as string, { username: userName })
             .then(async (response) => {
+                handleFetchUserInformation();
                 // Update the user's profile photo in the session
                 await update({
                     ...session,
