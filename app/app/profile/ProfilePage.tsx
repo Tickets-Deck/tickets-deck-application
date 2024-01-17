@@ -4,16 +4,18 @@ import styles from "../../styles/ProfilePage.module.scss"
 import Image from "next/image";
 import { ToastContext } from "@/app/extensions/toast";
 import { ProfilePageTab } from "@/app/enums/ProfilePageTab";
-import { useFetchUserInformation } from "@/app/api/apiClient";
+import { useFetchUserInformation, useUpdateUserInformation } from "@/app/api/apiClient";
 import { useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
 import { useRouter } from "next/navigation";
-import { UserCredentialsResponse } from "@/app/models/IUser";
+import { UserCredentialsRequest, UserCredentialsResponse, UserCredentialsUpdateRequest } from "@/app/models/IUser";
 import { CheckIcon, CloseIcon, EditIcon } from "@/app/components/SVGs/SVGicons";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import PhotoUpload from "@/app/components/Modal/PhotoUpload";
 import UserAvatarContainer from "@/app/components/ProfilePage/UserAvatarContainer";
 import UserNameUpdateContainer from "@/app/components/ProfilePage/UserNameUpdateContainer";
+import UserCoverContainer from "@/app/components/ProfilePage/UserCoverContainer";
+import AccountSettingsFormContainer from "@/app/components/ProfilePage/AccountSettingsFormContainer";
 
 interface ProfilePageProps {
 
@@ -21,14 +23,21 @@ interface ProfilePageProps {
 
 const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
 
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
     const fetchUserInformation = useFetchUserInformation();
     const toastHandler = useContext(ToastContext);
+    const updateUserInformation = useUpdateUserInformation();
+
+    const [isUpdatingUserInformation, setIsUpdatingUserInformation] = useState(false);
     const [currentTab, setCurrentTab] = useState(ProfilePageTab.AccountSettings);
     const [isFormFieldsEditable, setIsFormFieldsEditable] = useState(false);
     const [userInformation, setUserInformation] = useState<UserCredentialsResponse>();
+    const [retrievedUserInformation, setRetrievedUserInformation] = useState<UserCredentialsResponse>();
     const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(true);
     const [isPhotoUploadModalVisible, setIsPhotoUploadModalVisible] = useState(false);
+
+    const [emailErrorMsg, setEmailErrorMsg] = useState(false);
+    const [triggerInfoUpdate, setTriggerInfoUpdate] = useState(false);
 
     function showSuccessToast() {
         toastHandler?.logSuccess("Success", "This is a success message");
@@ -41,11 +50,11 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
 
         await fetchUserInformation(session?.user.id as string)
             .then((response) => {
-                console.log(response.data);
+                // console.log(response.data);
                 setUserInformation(response.data);
             })
             .catch((error) => {
-                console.log(error);
+                // console.log(error);
                 catchError(error);
             })
             .finally(() => {
@@ -53,27 +62,86 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
             })
     };
 
+    async function handleUpdateUserInformation() {
+
+        // Start loader
+        setIsUpdatingUserInformation(true);
+
+        const data: UserCredentialsUpdateRequest = {
+            email: retrievedUserInformation?.email || null,
+            firstName: retrievedUserInformation?.firstName || null,
+            lastName: retrievedUserInformation?.lastName || null,
+            phone: retrievedUserInformation?.phone || null,
+        }
+        // console.log("🚀 ~ handleUpdateUserInformation ~ data:", data);
+
+        // Update user information
+        await updateUserInformation(userInformation?.id as string, data)
+            .then(async (response) => {
+                console.log(response);
+                await handleFetchUserInformation();
+                
+                // Update the user's profile photo in the session
+                await update({
+                    ...session,
+                    user: {
+                        ...session?.user,
+                        name: `${response.data.firstName} ${response.data.lastName}`,
+                        email: response.data.email,
+                    },
+                })
+
+                setIsUpdatingUserInformation(false);
+                setIsFormFieldsEditable(false);
+            })
+            .catch((error) => {
+                if (error.response.data.error == "Email is already taken") {
+                    toastHandler?.logError("Error", "Email is already taken");
+                    setEmailErrorMsg(true);
+                }
+                catchError(error);
+                setIsUpdatingUserInformation(false);
+            })
+    }
+
     useEffect(() => {
-        if (session) {
+        if (session && !userInformation) {
             handleFetchUserInformation();
         }
     }, [session]);
 
+    useEffect(() => {
+        setRetrievedUserInformation(userInformation);
+    }, [userInformation]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setEmailErrorMsg(false);
+        }, 3000);
+    }, [emailErrorMsg]);
+
+    useEffect(() => {
+        if(triggerInfoUpdate) {
+            handleUpdateUserInformation();
+        }
+    }, [triggerInfoUpdate])
+
     return (
         <div className={styles.profilePage}>
             {
-                !isFetchingUserInformation && userInformation &&
+                userInformation &&
                 <>
                     {
-                        isPhotoUploadModalVisible && <PhotoUpload visibility={isPhotoUploadModalVisible} setVisibility={setIsPhotoUploadModalVisible} />
+                        isPhotoUploadModalVisible && <PhotoUpload
+                            visibility={isPhotoUploadModalVisible}
+                            setVisibility={setIsPhotoUploadModalVisible}
+                            handleFetchUserInformation={handleFetchUserInformation}
+                        />
                     }
-                    <div className={styles.profilePage__header}>
-                        {/* <h1>Profile</h1> */}
-                        <div className={styles.coverImage}>
-                            <Image src="https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover" alt="Cover image" fill />
-                        </div>
-                        <button className={styles.editButton}><EditIcon />Edit Cover Photo</button>
-                    </div>
+                    <UserCoverContainer
+                        userInformation={userInformation}
+                        handleFetchUserInformation={handleFetchUserInformation}
+                    />
                     <div className={styles.profilePage__body}>
                         <div className={styles.profileInfo}>
                             <div className={styles.basicInfoSection}>
@@ -83,7 +151,10 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                 />
                                 <div className={styles.userInfo}>
                                     <h3>{`${userInformation?.firstName} ${userInformation?.lastName}`}</h3>
-                                    <UserNameUpdateContainer userInformation={userInformation} />
+                                    <UserNameUpdateContainer
+                                        userInformation={userInformation}
+                                        handleFetchUserInformation={handleFetchUserInformation}
+                                    />
                                 </div>
                             </div>
                             <div className={styles.stats}>
@@ -93,11 +164,11 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                 </div>
                                 <div className={styles.stat}>
                                     <p>Tickets Sold</p>
-                                    <span>10</span>
+                                    <span>0</span>
                                 </div>
                                 <div className={styles.stat}>
-                                    <p>Event likes</p>
-                                    <span>10</span>
+                                    <p className={styles.userLink}>{`${window.location.origin}/${userInformation.username ?? userInformation.id}`}</p>
+                                    <span>&nbsp;</span>
                                 </div>
                             </div>
                             <div className={styles.accountAction}>
@@ -107,59 +178,37 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                         <div className={styles.mainProfileInfo}>
                             <div className={styles.optionSelectionContainer}>
                                 <span className={currentTab === ProfilePageTab.AccountSettings ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.AccountSettings)}>Account Settings</span>
-                                <span className={currentTab === ProfilePageTab.IdentityVerification ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.IdentityVerification)}>Documents</span>
-                                <span className={currentTab === ProfilePageTab.BankInformation ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.BankInformation)}>Billing</span>
+                                <span className={currentTab === ProfilePageTab.IdentityVerification ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.IdentityVerification)}>Identity Verification</span>
+                                <span className={currentTab === ProfilePageTab.BankInformation ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.BankInformation)}>Bank Information</span>
                                 <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}><EditIcon /> Edit Profile</button>
                             </div>
                             <div className={styles.settingsFormContainer}>
                                 {
                                     currentTab === ProfilePageTab.AccountSettings &&
-                                    <div className={styles.accountSettingsFormContainer}>
-                                        <div className={styles.formRow}>
-                                            <div className={styles.formField}>
-                                                <label htmlFor="firstname">First name</label>
-                                                <input
-                                                    type="text"
-                                                    name="firstname"
-                                                    value={userInformation?.firstName}
-                                                    placeholder="Enter first name"
-                                                    onChange={(e) => { }}
-                                                    disabled
-                                                />
-                                                {/* {true && <span className={styles.errorMsg}>Please enter your first name</span>} */}
-                                            </div>
-                                            <div className={styles.formField}>
-                                                <label htmlFor="lastname">Last name</label>
-                                                <input
-                                                    type="text"
-                                                    name="lastname"
-                                                    value={userInformation?.lastName}
-                                                    placeholder="Enter last name"
-                                                    onChange={(e) => { }}
-                                                    disabled
-                                                />
-                                                {/* {true && <span className={styles.errorMsg}>Please enter your last name</span>} */}
-                                            </div>
-                                        </div>
-                                        <div className={styles.formField}>
-                                            <label htmlFor="firstname">Email address</label>
-                                            <input
-                                                type="email"
-                                                name="email"
-                                                value={userInformation?.email}
-                                                placeholder="Enter email address"
-                                                onChange={(e) => { }}
-                                                disabled
-                                            />
-                                            {/* {true && <span className={styles.errorMsg}>Please enter your email address</span>} */}
-                                        </div>
-                                    </div>
+                                    <AccountSettingsFormContainer
+                                        userInformation={userInformation}
+                                        retrievedUserInformation={retrievedUserInformation}
+                                        setRetrievedUserInformation={setRetrievedUserInformation}
+                                        isFormFieldsEditable={isFormFieldsEditable}
+                                        emailErrorMsg={emailErrorMsg}
+                                        setTriggerInfoUpdate={setTriggerInfoUpdate}
+                                    />
                                 }
                                 {
                                     isFormFieldsEditable &&
                                     <div className={styles.actionButtonContainer}>
-                                        <button onClick={() => showSuccessToast()}>Update</button>
-                                        <button onClick={() => setIsFormFieldsEditable(false)}>Cancel</button>
+                                        <button
+                                            disabled={isUpdatingUserInformation}
+                                            onClick={handleUpdateUserInformation}>
+                                            {/* onClick={() => showSuccessToast()}> */}
+                                            Update
+                                            {isUpdatingUserInformation && <ComponentLoader isSmallLoader customBackground="#8133F1" lightTheme customLoaderColor="#fff" />}
+                                        </button>
+                                        <button
+                                            disabled={isUpdatingUserInformation}
+                                            onClick={() => setIsFormFieldsEditable(false)}>
+                                            Cancel
+                                        </button>
                                     </div>
                                 }
                             </div>
