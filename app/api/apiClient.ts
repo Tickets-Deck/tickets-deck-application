@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
-import { ProfilePhotoRequest, UserCredentialsRequest, UsernameRequest } from "../models/IUser";
+import { CoverPhotoRequest, ProfilePhotoRequest, UserCredentialsRequest, UserCredentialsUpdateRequest, UsernameRequest } from "../models/IUser";
 import { EventRequest } from "../models/IEvents";
 
 export const API = axios.create({
@@ -90,10 +90,26 @@ export function useUploadUserProfilePhoto() {
   return uploadUserProfilePhoto;
 }
 
+export const useUpdateUserCoverPhoto = () => {
+    async function updateUserCoverPhoto(userId: string, data: CoverPhotoRequest) {
+        return API.post(`${ApiRoutes.UpdateUserCoverPhoto}?userId=${userId}`, data);
+    }
+    
+    return updateUserCoverPhoto;
+}
+
 export function useUpdateUserName() {
     async function updateUserName(userId: string, data: UsernameRequest) {
         return API.put(`${ApiRoutes.UpdateUserName}?userId=${userId}`, data);
     }
     
     return updateUserName;
+}
+
+export function useUpdateUserInformation() {
+    async function updateUserInformation(userId: string, data: UserCredentialsUpdateRequest) {
+        return API.put(`${ApiRoutes.Users}?userId=${userId}`, data);
+    }
+    
+    return updateUserInformation;
 }
