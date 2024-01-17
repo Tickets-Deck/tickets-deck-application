@@ -22,6 +22,17 @@ export type ProfilePhotoRequest = {
   profilePhoto: string;
 };
 
+export type CoverPhotoRequest = {
+  coverPhoto: string;
+};
+
 export type UsernameRequest = {
   username: string;
 };
+
+export type UserCredentialsUpdateRequest = {
+    email: string | null;
+    firstName: string | null;
+    lastName: string | null;
+    phone: string | null;
+  };
