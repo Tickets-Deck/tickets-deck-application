@@ -1,0 +1,137 @@
+import { ReactElement, FunctionComponent, useState } from "react";
+import { CheckIcon, EditIcon } from "../SVGs/SVGicons";
+import Image from "next/image";
+import styles from "../../styles/ProfilePage.module.scss";
+import { useSession } from "next-auth/react";
+import { useUpdateUserCoverPhoto } from "@/app/api/apiClient";
+import { UserCredentialsResponse } from "@/app/models/IUser";
+
+interface UserCoverContainerProps {
+    userInformation: UserCredentialsResponse;
+    handleFetchUserInformation: () => Promise<void>
+}
+
+const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({ userInformation, handleFetchUserInformation }): ReactElement => {
+
+    const updateUserCoverPhoto = useUpdateUserCoverPhoto();
+    const [isUpdatingCoverPhoto, setIsUpdatingCoverPhoto] = useState(false);
+    const [coverImageUrl, setCoverImageUrl] = useState<string>();
+    const [coverImageFile, setCoverImageFile] = useState<File>();
+    const [coverImageBase64Url, setCoverImageBase64Url] = useState<string>();
+    const { data: session, update } = useSession();
+
+    /**
+     * Function to handle image file upload and update form values
+     * @param e is the event handler
+     * @returns void
+     */
+    const handleFileUpload = (e: any) => {
+
+        // Get the selected file
+        const selectedFile: File = e.target.files[0];
+
+        // If a valid file was selected...
+        if (selectedFile.type === "image/jpg" || selectedFile.type === "image/png" || selectedFile.type === 'image/jpeg' || selectedFile.type === 'image/webp') {
+
+            // Unset validation message
+            // setPhotoErrorMsg(false);
+
+            const file = e.target.files[0]; // Get the selected file
+
+            if (file) {
+                setCoverImageFile(file);
+
+                // Instantiate a FileReader object
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const base64URL: string = e.target?.result as string; // This is the base64 URL of the image
+
+                    if (base64URL) {
+                        // Extract only the base64 string (remove "data:image/jpeg;base64," prefix)
+                        const base64String = base64URL.split(',')[1];
+
+                        // console.log('base64URL: ', base64String);
+                        setCoverImageBase64Url(base64String);
+                    }
+                };
+
+                // Read the file as a data URL (base64-encoded)
+                reader.readAsDataURL(file);
+            }
+        }
+        // Otherwise...
+        else {
+            // Set appropriate validation message
+            // setPhotoErrorMsg('Please select a valid photo');
+
+            // Exit this method
+            return;
+        }
+
+        // Set the image url
+        const imgURL = URL.createObjectURL(selectedFile);
+
+        // Update the image url state
+        setCoverImageUrl(imgURL);
+    };
+
+    async function handleUploadUserCoverPhoto() {
+
+        // Spin the spinner
+        setIsUpdatingCoverPhoto(true);
+
+        await updateUserCoverPhoto(session?.user.id as string, { coverPhoto: coverImageBase64Url as string })
+            .then(async (response) => {
+                setCoverImageUrl(undefined);
+                setCoverImageFile(undefined);
+                setCoverImageBase64Url(undefined);
+                
+                handleFetchUserInformation();
+                // Update the user's profile photo in the session
+                await update({
+                    ...session,
+                    user: {
+                        ...session?.user,
+                        image: response.data.profilePhoto,
+                    },
+                })
+                // Stop the spinner
+                setIsUpdatingCoverPhoto(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                // Stop the spinner
+                setIsUpdatingCoverPhoto(false);
+            })
+    };
+
+    return (
+        <div className={styles.profilePage__header}>
+            <div className={styles.coverImage}>
+                <Image src={`${coverImageUrl ?? userInformation.coverPhoto ?? "https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover"}`} alt="Cover image" fill />
+                {/* {<input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />} */}
+            </div>
+            <div className={styles.actionButtons}>
+                {
+                    !coverImageUrl ?
+                        <button className={styles.editButton}><EditIcon />
+                            Edit Cover Photo
+                            <input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />
+                        </button> :
+                        <>
+                            <button disabled={isUpdatingCoverPhoto} className={styles.editButton}><EditIcon />
+                                Change Photo
+                                <input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />
+                            </button>
+                            <button disabled={isUpdatingCoverPhoto} className={styles.editButton} onClick={handleUploadUserCoverPhoto}>
+                                <CheckIcon />{isUpdatingCoverPhoto ? 'Updating...' : 'Upload'}
+                            </button>
+                        </>
+                }
+            </div>
+        </div>
+    );
+}
+
+export default UserCoverContainer;
