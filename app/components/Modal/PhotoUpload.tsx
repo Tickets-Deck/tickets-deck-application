@@ -10,9 +10,10 @@ import ComponentLoader from '../Loader/ComponentLoader';
 interface PhotoUploadProps {
     visibility: boolean;
     setVisibility: Dispatch<SetStateAction<boolean>>;
+    handleFetchUserInformation: () => Promise<void>
 }
 
-const PhotoUpload: FunctionComponent<PhotoUploadProps> = ({ visibility, setVisibility }): ReactElement => {
+const PhotoUpload: FunctionComponent<PhotoUploadProps> = ({ visibility, setVisibility, handleFetchUserInformation }): ReactElement => {
 
     const uploadUserProfilePhoto = useUploadUserProfilePhoto();
     const [imageUrl, setImageUrl] = useState<string>();
@@ -79,6 +80,7 @@ const PhotoUpload: FunctionComponent<PhotoUploadProps> = ({ visibility, setVisib
     };
 
     async function handleUploadUserProfilePhoto() {
+
         // Spin the spinner
         setUploadingPhoto(true);
 
@@ -86,7 +88,8 @@ const PhotoUpload: FunctionComponent<PhotoUploadProps> = ({ visibility, setVisib
 
         await uploadUserProfilePhoto(session?.user.id as string, { profilePhoto: imageBase64Url as string })
             .then(async (response) => {
-                // console.log(response);
+                handleFetchUserInformation();
+
                 // Update the user's profile photo in the session
                 await update({
                     ...session,
@@ -95,22 +98,20 @@ const PhotoUpload: FunctionComponent<PhotoUploadProps> = ({ visibility, setVisib
                         image: response.data.profilePhoto,
                     },
                 })
-                .then(() => {
-                    window.location.reload();
-                    // Close the modal
-                    setVisibility(false);
-                    // Stop the spinner
-                    setUploadingPhoto(false);                
-                })
+                
+                // Close the modal
+                setVisibility(false);
+                // Stop the spinner
+                setUploadingPhoto(false);
             })
             .catch((error) => {
                 console.log(error);
                 // Stop the spinner
                 setUploadingPhoto(false);
             })
-            // .finally(() => {
-            // })
-    }
+        // .finally(() => {
+        // })
+    };
 
     return (
         <ModalWrapper
@@ -121,7 +122,7 @@ const PhotoUpload: FunctionComponent<PhotoUploadProps> = ({ visibility, setVisib
             <div className={styles.photoUploadContainer}>
                 <div className={styles.topArea}>
                     <h2>Upload Photo</h2>
-                    <span className={styles.closeIcon}><CloseIcon /></span>
+                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><CloseIcon /></span>
                 </div>
                 <div className={styles.photoContainer}>
                     <div className={styles.photo}>
