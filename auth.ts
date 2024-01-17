@@ -167,7 +167,7 @@ export const authOptions: NextAuthOptions = {
           id: token.id as string,
         },
       });
-      console.log("🚀 ~ session: ~ user:", user)
+      console.log("🚀 ~ session: ~ user:", user);
 
       return {
         ...session,
@@ -177,6 +177,10 @@ export const authOptions: NextAuthOptions = {
           accessToken: token.accessToken,
           idToken: token.idToken,
           image: user?.profilePhoto,
+
+        //   image: token.image as string ?? user?.profilePhoto,
+        //   name: token.name,
+        //   email: token.email,
         },
       };
     },
