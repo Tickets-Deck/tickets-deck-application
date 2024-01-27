@@ -72,10 +72,11 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                     </>
                 }
                 {
-                    !isFetchingEvents && !eventsData &&
+                    !isFetchingEvents && (!eventsData || eventsData?.length == 0) &&
                     <div className={styles.noEvents}>
-                        <h2>No events found</h2>
-                        <p>There are no events to show at the moment.</p>
+                        <br />
+                        <br />
+                        <p>No events found.</p>
                     </div>
                 }
             </div>
