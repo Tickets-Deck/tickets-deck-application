@@ -274,7 +274,12 @@ export async function GET(req: NextRequest) {
     }
 
     // Else, Fetch all events
-    const events = await prisma.events.findMany();
+    const events = await prisma.events.findMany({
+      // exclude events that have visibility set to private
+      where: {
+        visibility: "PUBLIC",
+      },
+    });
 
     // Return all events
     return NextResponse.json(events);
