@@ -104,6 +104,7 @@
             width: fit-content;
             margin: 0 auto;
             p {
+                font-size: $font-size-16 - 0.125rem;
                 opacity: 0.4;
             }
         }
