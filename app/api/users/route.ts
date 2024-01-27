@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
       name: "Account Created",
       subject: "Welcome to Tickets Deck",
       body: compileAccountCreationTemplate(
-        `${request.firstName} ${request.lastName}`
+        `${request.firstName}`
       ),
     });
 
