@@ -5,6 +5,8 @@ import styles from "../../styles/ProfilePage.module.scss";
 import { useSession } from "next-auth/react";
 import { useUpdateUserCoverPhoto } from "@/app/api/apiClient";
 import { UserCredentialsResponse } from "@/app/models/IUser";
+import getBase64Url from "@/lib/getLocalBase64Url";
+import { getBlurData } from "@/lib/getBlurData";
 
 interface UserCoverContainerProps {
     userInformation: UserCredentialsResponse;
@@ -86,7 +88,7 @@ const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({ userIn
                 setCoverImageUrl(undefined);
                 setCoverImageFile(undefined);
                 setCoverImageBase64Url(undefined);
-                
+
                 handleFetchUserInformation();
                 // Update the user's profile photo in the session
                 await update({
@@ -106,10 +108,26 @@ const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({ userIn
             })
     };
 
+    // async function handleGetBase64Url(url: string) {
+    //     const base64Url = await getBase64Url(url);
+    //     return base64Url;
+    // }
+    // handleGetBase64Url("https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover");
+
+    // const myDynamicUrl = await getBase64Url(coverImageUrl ?? userInformation.coverPhoto ?? "https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover");
+
     return (
         <div className={styles.profilePage__header}>
             <div className={styles.coverImage}>
-                <Image src={`${coverImageUrl ?? userInformation.coverPhoto ?? "https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover"}`} alt="Cover image" fill />
+                <Image
+                    src={`${coverImageUrl ?? userInformation.coverPhoto ?? "https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover"}`}
+                    // blurDataURL="data:image/jpeg;base64,MGGZ]c#n9a9]s-00jY$%S2xb?woJR*xani"
+                    alt="Cover image"
+                    fill
+                    placeholder="data:image/jpeg;base64,MGGZ]c#n9a9]s-00jY$%S2xb?woJR*xani"
+                    priority
+                // blurDataURL="https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Loading..."
+                />
                 {/* {<input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />} */}
             </div>
             <div className={styles.actionButtons}>
