@@ -19,6 +19,7 @@
         "@fluentui/react": "^8.114.0",
         "@mui/lab": "^5.0.0-alpha.158",
         "@mui/material": "^5.15.2",
+        "@plaiceholder/next": "^3.0.0",
         "@prisma/client": "^5.7.1",
         "@types/nodemailer": "^6.4.14",
         "axios": "^1.6.2",
@@ -31,10 +32,12 @@
         "next-auth": "^4.24.5",
         "nextjs-toploader": "^1.6.4",
         "nodemailer": "^6.9.8",
+        "plaiceholder": "^3.0.0",
         "react": "^18",
         "react-dom": "^18",
         "react-scroll": "^1.9.0",
-        "sass": "^1.69.5"
+        "sass": "^1.69.5",
+        "sharp": "^0.33.2"
     },
     "devDependencies": {
         "@types/bcryptjs": "^2.4.6",
