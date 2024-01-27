@@ -125,7 +125,7 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage JWTs here
     jwt: async ({ token, user, trigger, session }) => {
-      console.log("JWT Callback", { token, user });
+      console.log("JWT Callback", { token, user, trigger, session });
 
       // Check prisma for user with email gotten in token
       const exisitingUser = await prisma.users.findUnique({
@@ -143,22 +143,26 @@ export const authOptions: NextAuthOptions = {
       } else if (user) {
         const u = user as unknown as any;
 
-        // Return user id and randomKey in JWT so it will be accessible in the session
+        // Return user info so it will be accessible in the session
         return {
           ...token,
-          //   accessToken: token.accessToken,
           id: u.id,
         };
       }
 
       if (trigger === "update") {
-        return { ...token, ...session.user };
+        return {
+          ...token,
+          ...session.user,
+          name: session.user.name,
+          email: session.user.email,
+        };
       }
 
       return token;
     },
     // Create and manage sessions here
-    session: async ({ session, token, trigger }) => {
+    session: async ({ session, token }) => {
       console.log("Session Callback", { session, token });
 
       // Fetch user details from database
@@ -177,10 +181,11 @@ export const authOptions: NextAuthOptions = {
           accessToken: token.accessToken,
           idToken: token.idToken,
           image: user?.profilePhoto,
-
-        //   image: token.image as string ?? user?.profilePhoto,
-        //   name: token.name,
-        //   email: token.email,
+          name: user?.firstName + " " + user?.lastName,
+          email: user?.email,
+          //   image: token.image as string ?? user?.profilePhoto,
+          //   name: token.name,
+          //   email: token.email,
         },
       };
     },
