@@ -186,6 +186,10 @@
                         display: flex;
                         align-items: center;
                         gap: 0.35rem;
+                        width: fit-content;
+                        &:hover {
+                            opacity: 0.65;
+                        }
                         &__image {
                             width: 2.5rem;
                             height: 2.5rem;
