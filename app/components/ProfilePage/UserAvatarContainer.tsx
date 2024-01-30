@@ -1,18 +1,19 @@
 import Image from "next/image";
 import { FunctionComponent, ReactElement, Dispatch, SetStateAction } from "react";
-import styles from "../../styles/ProfilePage.module.scss"
+import styles from "../../styles/userAvatarContainer.module.scss"
 import { UserCredentialsResponse } from "@/app/models/IUser";
 import { EditIcon } from "../SVGs/SVGicons";
 
 interface UserAvatarContainerProps {
     userInformation: UserCredentialsResponse;
-    setIsPhotoUploadModalVisible: Dispatch<SetStateAction<boolean>>
+    setIsPhotoUploadModalVisible?: Dispatch<SetStateAction<boolean>>
+    userAvatarSize?: number;
 }
 
-const UserAvatarContainer: FunctionComponent<UserAvatarContainerProps> = ({ userInformation, setIsPhotoUploadModalVisible }): ReactElement => {
+const UserAvatarContainer: FunctionComponent<UserAvatarContainerProps> = ({ userInformation, setIsPhotoUploadModalVisible, userAvatarSize }): ReactElement => {
     return (
         <div className={styles.userAvatarContainer}>
-            <div className={styles.userAvatar}>
+            <div className={styles.userAvatar} style={userAvatarSize ? { width: `${userAvatarSize}px`, height: `${userAvatarSize}px` } : {}}>
                 <Image
                     src={
                         userInformation.profilePhoto ??
@@ -22,7 +23,7 @@ const UserAvatarContainer: FunctionComponent<UserAvatarContainerProps> = ({ user
                     fill
                 />
             </div>
-            <span className={styles.editIcon} onClick={() => setIsPhotoUploadModalVisible(true)}><EditIcon /></span>
+            {setIsPhotoUploadModalVisible && <span className={styles.editIcon} onClick={() => setIsPhotoUploadModalVisible(true)}><EditIcon /></span>}
         </div>
     );
 }
