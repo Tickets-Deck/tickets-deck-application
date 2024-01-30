@@ -11,9 +11,11 @@ import { getBlurData } from "@/lib/getBlurData";
 interface UserCoverContainerProps {
     userInformation: UserCredentialsResponse;
     handleFetchUserInformation: () => Promise<void>
+    forUser?: boolean
 }
 
-const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({ userInformation, handleFetchUserInformation }): ReactElement => {
+const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = (
+    { userInformation, handleFetchUserInformation, forUser }): ReactElement => {
 
     const updateUserCoverPhoto = useUpdateUserCoverPhoto();
     const [isUpdatingCoverPhoto, setIsUpdatingCoverPhoto] = useState(false);
@@ -130,24 +132,27 @@ const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({ userIn
                 />
                 {/* {<input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />} */}
             </div>
-            <div className={styles.actionButtons}>
-                {
-                    !coverImageUrl ?
-                        <button className={styles.editButton}><EditIcon />
-                            Edit Cover Photo
-                            <input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />
-                        </button> :
-                        <>
-                            <button disabled={isUpdatingCoverPhoto} className={styles.editButton}><EditIcon />
-                                Change Photo
+            {
+                !forUser &&
+                <div className={styles.actionButtons}>
+                    {
+                        !coverImageUrl ?
+                            <button className={styles.editButton}><EditIcon />
+                                Edit Cover Photo
                                 <input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />
-                            </button>
-                            <button disabled={isUpdatingCoverPhoto} className={styles.editButton} onClick={handleUploadUserCoverPhoto}>
-                                <CheckIcon />{isUpdatingCoverPhoto ? 'Updating...' : 'Upload'}
-                            </button>
-                        </>
-                }
-            </div>
+                            </button> :
+                            <>
+                                <button disabled={isUpdatingCoverPhoto} className={styles.editButton}><EditIcon />
+                                    Change Photo
+                                    <input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />
+                                </button>
+                                <button disabled={isUpdatingCoverPhoto} className={styles.editButton} onClick={handleUploadUserCoverPhoto}>
+                                    <CheckIcon />{isUpdatingCoverPhoto ? 'Updating...' : 'Upload'}
+                                </button>
+                            </>
+                    }
+                </div>
+            }
         </div>
     );
 }
