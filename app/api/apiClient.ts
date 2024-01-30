@@ -79,6 +79,14 @@ export function useFetchUserInformation() {
   return fetchUserInformation;
 }
 
+export function useFetchUserInformationByUserName() {
+  async function fetchUserInformationByUserName(data: { username?: string, userId?: string}) {
+    return API.get(`${ApiRoutes.Users}${data.username ? `?userName=${data.username}` : ''}${data.userId ? `?userId=${data.userId}` : ''}`);
+  }
+
+  return fetchUserInformationByUserName;
+}
+
 export function useUploadUserProfilePhoto() {
   async function uploadUserProfilePhoto(
     userId: string,
