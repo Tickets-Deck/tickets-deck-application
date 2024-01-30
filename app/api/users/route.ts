@@ -15,6 +15,9 @@ export async function GET(req: NextRequest) {
     // Get the userId from the search params
     const userId = searchParams.get("userId");
 
+    // Get the userName from the search params
+    const userName = searchParams.get("userName");
+
     // If a userId is provided, find the user with that id
     if (userId) {
       const user = await prisma.users.findUnique({
@@ -30,6 +33,31 @@ export async function GET(req: NextRequest) {
       if (!user) {
         return NextResponse.json(
           { error: "User with specified User ID not found" },
+          { status: 404 }
+        );
+      }
+
+      // If user is found, return it
+      if (user) {
+        return NextResponse.json(user, { status: 200 });
+      }
+    }
+
+    // If a userName is provided, find the user with that username
+    if (userName) {
+      const user = await prisma.users.findUnique({
+        where: {
+            username: userName,
+        },
+        include: {
+          events: true,
+        },
+      });
+
+      // If user is not found, return 404
+      if (!user) {
+        return NextResponse.json(
+          { error: "User with specified username not found" },
           { status: 404 }
         );
       }
