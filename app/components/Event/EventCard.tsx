@@ -28,20 +28,40 @@ const EventCard: FunctionComponent<EventCardProps> = (
 
     function shareEvent(eventUrl: string) {
         // const eventURL = window.location.href;
-        try {
-            navigator.clipboard.writeText(eventUrl);
-            toasthandler?.logSuccess('Event link copied.', `The link to ${event.title} has been copied.`)
-        } catch (error) {
-            console.error("Copying to clipboard failed:", error);
+        // If we are using a mobile device
+        if (typeof (onMobile) == "boolean" && onMobile) {
+            if (navigator.share) {
+                navigator.share({
+                    title: "Check out this event!",
+                    text: "I found this amazing event. You should check it out!",
+                    url: eventUrl
+                })
+                    .then(() => console.log("Shared successfully"))
+                    .catch(error => console.log("Sharing failed:", error));
+            } else {
+                navigator.clipboard.writeText(eventUrl);
+                toasthandler?.logSuccess('Event link copied.', `The link to ${event.title} has been copied.`)
+                console.log("Web Share API not supported");
+            }
+        }
+        if (typeof (onMobile) == "boolean" && !onMobile) {
+            try {
+                navigator.clipboard.writeText(eventUrl);
+                toasthandler?.logSuccess('Event link copied.', `The link to ${event.title} has been copied.`)
+                console.log("Link copied successfully")
+            } catch (error) {
+                console.error("Copying to clipboard failed:", error);
+            }
+        
         }
     }
-    function shareEventMobile() {
-        const eventURL = window.location.href;
+    function shareEventMobile(eventUrl: string) {
+        // const eventURL = window.location.href;
         if (navigator.share) {
             navigator.share({
                 title: "Check out this event!",
                 text: "I found this amazing event. You should check it out!",
-                url: eventURL
+                url: eventUrl
             })
                 .then(() => console.log("Shared successfully"))
                 .catch(error => console.log("Sharing failed:", error));
@@ -84,7 +104,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
                             <button className={styles.actions__like}><LikeIcon /></button>
                             <button
                                 className={styles.actions__share}
-                                onClick={() => shareEventMobile()}>
+                                onClick={() => shareEvent(`${window.location.origin + "/event/" + event.id}`)}>
                                 <ShareIcon />
                             </button>
                         </div>
