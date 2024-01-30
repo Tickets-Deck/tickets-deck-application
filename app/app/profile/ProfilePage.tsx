@@ -16,6 +16,7 @@ import UserAvatarContainer from "@/app/components/ProfilePage/UserAvatarContaine
 import UserNameUpdateContainer from "@/app/components/ProfilePage/UserNameUpdateContainer";
 import UserCoverContainer from "@/app/components/ProfilePage/UserCoverContainer";
 import AccountSettingsFormContainer from "@/app/components/ProfilePage/AccountSettingsFormContainer";
+import Link from "next/link"
 
 interface ProfilePageProps {
 
@@ -80,7 +81,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
             .then(async (response) => {
                 console.log(response);
                 await handleFetchUserInformation();
-                
+
                 // Update the user's profile photo in the session
                 await update({
                     ...session,
@@ -121,7 +122,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
     }, [emailErrorMsg]);
 
     useEffect(() => {
-        if(triggerInfoUpdate) {
+        if (triggerInfoUpdate) {
             handleUpdateUserInformation();
         }
     }, [triggerInfoUpdate])
@@ -165,9 +166,13 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                 <div className={styles.stat}>
                                     <p>Tickets Sold</p>
                                     <span>0</span>
-                                </div>
+                                </div> 
                                 <div className={styles.stat}>
-                                    <p className={styles.userLink}>{`${window.location.origin}/${userInformation.username ?? userInformation.id}`}</p>
+                                    <p className={styles.userLink}>
+                                        <Link target="_blank" href={`${window.location.origin}/u/${userInformation.username ?? userInformation.id}`}>
+                                            {`${window.location.origin}/${userInformation.username ?? userInformation.id}`}
+                                        </Link>
+                                    </p>
                                     <span>&nbsp;</span>
                                 </div>
                             </div>
