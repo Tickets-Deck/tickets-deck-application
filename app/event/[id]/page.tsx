@@ -234,12 +234,12 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                 <div className={styles.leftInfo}>
                                     <h2 className={styles.title}>{eventInfo?.title}</h2>
                                     <p className={styles.datePosted}>Posted on: {moment(eventInfo.createdAt).format('Do MMMM YYYY')}</p>
-                                    <div className={styles.publisherInfo}>
+                                    <Link className={styles.publisherInfo} href={`/u/${eventInfo.user.username ?? eventInfo.user.id}`}>
                                         <div className={styles.publisherInfo__image}>
                                             <Image src={eventInfo.user.profilePhoto ?? images.user_avatar} alt='Avatar' fill />
                                         </div>
                                         <div className={styles.publisherInfo__name}>{`${eventInfo?.user.firstName} ${eventInfo?.user.lastName}`}</div>
-                                    </div>
+                                    </Link>
                                     <div className={styles.dateTime}>
                                         <h4>{moment(eventInfo?.date).format("MMM. Do YYYY")}</h4>
                                         <h4>{eventInfo.time}</h4>
