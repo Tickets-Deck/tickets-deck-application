@@ -7,7 +7,7 @@ interface UserInformationProps {
 
 const UserInformation: FunctionComponent<UserInformationProps> = ({ params }): ReactElement => {
     return (
-        <UserInformationPage userId={params.userId} />
+        <UserInformationPage identifier={params.userId} />
     );
 }
 
