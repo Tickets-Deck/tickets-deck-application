@@ -192,6 +192,9 @@ export async function PUT(req: NextRequest) {
         firstName: request.firstName ?? user.firstName, 
         lastName: request.lastName ?? user.lastName,
         phone: request.phone ?? user.phone,
+        facebookUrl: request.facebookUrl ?? null,
+        twitterUrl: request.twitterUrl ?? null,
+        instagramUrl: request.instagramUrl ?? null,
       },
     });
 
