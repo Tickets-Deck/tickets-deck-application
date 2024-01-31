@@ -1,3 +1,7 @@
+import { Bookmarks } from "./IBookmark";
+import { Favourites } from "./IFavourites";
+import { TicketPurchased } from "./ITicket";
+
 export type UserCredentialsRequest = {
   email: string;
   password: string;
@@ -16,6 +20,35 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   profilePhotoId: string | undefined;
   coverPhotoId: string | undefined;
   events: Event[] | undefined;
+  
+  occupation: string | undefined;
+  bio: string | undefined;
+
+  facebookUrl: string | undefined;
+  twitterUrl: string | undefined;
+  instagramUrl: string | undefined;
+  linkedinUrl: string | undefined;
+
+  followersCount: number;
+  followingCount: number;
+  eventsCount: number;
+  ticketsCount: number;
+  bookmarksCount: number;
+  favoritesCount: number;
+
+  bookmarks: Bookmarks[];
+  favorites: Favourites[];
+
+  isVerified: boolean;
+  isBlocked: boolean;
+  isSuspended: boolean;
+  isDeleted: boolean;
+  isSuperAdmin: boolean;
+  isSubscribed: boolean;
+  isNewsletterSubscribed: boolean;
+
+  ticketsPurchasedCount: number;
+  ticketsPurchased: TicketPurchased[];
 };
 
 export type ProfilePhotoRequest = {
@@ -35,4 +68,7 @@ export type UserCredentialsUpdateRequest = {
     firstName: string | null;
     lastName: string | null;
     phone: string | null;
+    facebookUrl: string | null;
+    twitterUrl: string | null;
+    instagramUrl: string | null;
   };

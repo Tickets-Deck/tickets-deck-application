@@ -1,6 +1,8 @@
 import { EventVisibility } from "../enums/IEventVisibility";
+import { Bookmarks } from "./IBookmark";
+import { Favourites } from "./IFavourites";
 import { Location } from "./ILocation";
-import { TicketRequest, TicketResponse } from "./ITicket";
+import { TicketRequest, TicketResponse, TicketPurchased } from "./ITicket";
 import { UserCredentialsResponse } from "./IUser";
 
 export type EventImages = {
@@ -56,4 +58,11 @@ export type EventResponse = {
   images: [];
   tags: string[];
   location: Location | null;
+
+  bookmarksCount: number;
+  favoritesCount: number;
+  bookmarks: Bookmarks[];
+  favorites: Favourites[];
+  ticketsPurchasedCount: number;
+  ticketsPurchased: TicketPurchased[];
 };
