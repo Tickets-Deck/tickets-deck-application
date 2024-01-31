@@ -8,19 +8,23 @@ import UserAvatarContainer from "@/app/components/ProfilePage/UserAvatarContaine
 import Link from "next/link";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import UserCoverContainer from "@/app/components/ProfilePage/UserCoverContainer";
-import { InstagramIcon, TwitterIcon } from "@/app/components/SVGs/SVGicons";
+import { FacebookIcon, InstagramIcon, TwitterIcon } from "@/app/components/SVGs/SVGicons";
+import { Session } from "next-auth";
 
 interface UserInformationPageProps {
     identifier: string
+    session: Session | null
 }
 
-const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ identifier }): ReactElement => {
+const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ identifier, session }): ReactElement => {
 
     const fetchUserInformation = useFetchUserInformation();
     const fetchUserInformationByUsername = useFetchUserInformationByUserName();
     const [userInformation, setUserInformation] = useState<UserCredentialsResponse>();
     const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(true);
     const [isPhotoUploadModalVisible, setIsPhotoUploadModalVisible] = useState(false);
+
+    const isForUser = session?.user.id === userInformation?.id;
 
 
     async function handleFetchUserInformation() {
@@ -31,7 +35,7 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ iden
         const userId = identifier.includes('-') ? identifier : undefined;
         const username = identifier.includes('-') ? undefined : identifier;
 
-        console.log({ userId, username })
+        // console.log({ userId, username })
 
         // Show loading indicator
         setIsFetchingUserInformation(true);
@@ -78,26 +82,54 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ iden
                                 <h3 className={styles.userPersonalInfo__info__name}>
                                     {userInformation?.firstName} {userInformation?.lastName}
                                 </h3>
-                                <p className={styles.userPersonalInfo__info__username}>
-                                    @{userInformation?.username}
-                                </p>
+                                {
+                                    userInformation?.username &&
+                                    <p className={styles.userPersonalInfo__info__username}>
+                                        @{userInformation?.username}
+                                    </p>
+                                }
                             </div>
                         </div>
                         <div className={styles.userSocials}>
-                            <Link href="/">
-                                <span><InstagramIcon /></span>
-                            </Link>
-                            <Link href="/">
-                                <span><TwitterIcon /></span>
-                            </Link>
-                            <Link href="/">
-                                <span><TwitterIcon /></span>
-                            </Link>
+                            {
+                                userInformation.facebookUrl &&
+                                <Link href="#">
+                                    <span><FacebookIcon /></span>
+                                </Link>
+                            }
+                            {
+                                userInformation.instagramUrl &&
+                                <Link href={userInformation.instagramUrl}>
+                                    <span><InstagramIcon /></span>
+                                </Link>
+                            }
+                            {
+                                userInformation.twitterUrl &&
+                                <Link href="#">
+                                    <span><TwitterIcon /></span>
+                                </Link>
+                            }
                         </div>
                         <div className={styles.userStats}>
                             <div className={styles.stat}>
                                 <p className={styles.stat__number}>
-                                    100k
+                                    {userInformation.eventsCount}
+                                </p>
+                                <p className={styles.stat__label}>
+                                    Events
+                                </p>
+                            </div>
+                            {/* <div className={styles.stat}>
+                                <p className={styles.stat__number}>
+                                    {userInformation.ticketsPurchasedCount}
+                                </p>
+                                <p className={styles.stat__label}>
+                                    Tickets
+                                </p>
+                            </div> */}
+                            <div className={styles.stat}>
+                                <p className={styles.stat__number}>
+                                    {userInformation.followersCount}
                                 </p>
                                 <p className={styles.stat__label}>
                                     Followers
@@ -105,29 +137,18 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ iden
                             </div>
                             <div className={styles.stat}>
                                 <p className={styles.stat__number}>
-                                    20k
+                                    {userInformation.followingCount}
                                 </p>
                                 <p className={styles.stat__label}>
                                     Following
                                 </p>
                             </div>
-                            <div className={styles.stat}>
-                                <p className={styles.stat__number}>
-                                    30
-                                </p>
-                                <p className={styles.stat__label}>
-                                    Events
-                                </p>
-                            </div>
-                            <div className={styles.stat}>
-                                <p className={styles.stat__number}>
-                                    30
-                                </p>
-                                <p className={styles.stat__label}>
-                                    Events
-                                </p>
-                            </div>
                         </div>
+                        {isForUser &&
+                            <Link href="/app/profile" className={styles.updateProfileBtn}>
+                                Update Profile
+                            </Link>
+                        }
                         <div className={styles.userHighlights}>
                             <h3>Recent Events</h3>
                             <div className={styles.noHighlightsContainer}>
