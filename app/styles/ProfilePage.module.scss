@@ -339,7 +339,7 @@
                             font-weight: $fontWeight-400;
                             color: $dark-grey;
                             &::placeholder {
-                                color: rgba($color: $dark-grey, $alpha: 0.5);
+                                color: rgba($color: $dark-grey, $alpha: 0.85);
                             }
                             &:disabled {
                                 opacity: 0.65;
