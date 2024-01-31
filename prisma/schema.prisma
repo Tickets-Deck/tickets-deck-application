@@ -11,11 +11,12 @@ datasource db {
 }
 
 model Users {
-    id             String    @id @default(uuid())
-    email          String    @unique
+    id             String  @id @default(uuid())
+    email          String  @unique
+    emailVerified  Boolean @default(false)
     firstName      String
     lastName       String
-    username       String?   @unique
+    username       String? @unique
     profilePhoto   String?
     profilePhotoId String?
     coverPhoto     String?
@@ -23,9 +24,121 @@ model Users {
     phone          String?
     password       String
     occupation     String?
-    createdAt      DateTime? @default(now())
-    updatedAt      DateTime? @updatedAt
-    events         Events[]
+    bio            String?
+
+    facebookUrl  String?
+    twitterUrl   String?
+    instagramUrl String?
+    linkedinUrl  String?
+
+    followersCount Int         @default(0)
+    followingCount Int         @default(0)
+    eventsCount    Int         @default(0)
+    ticketsCount   Int         @default(0)
+    bookmarksCount Int         @default(0)
+    favoritesCount Int         @default(0)
+    bookmarks      Bookmarks[]
+    favorites      Favorites[]
+    followers      Follows[]   @relation("Follower")
+    following      Follows[]   @relation("Following")
+
+    isVerified             Boolean @default(false)
+    isBlocked              Boolean @default(false)
+    isSuspended            Boolean @default(false)
+    isDeleted              Boolean @default(false)
+    isSuperAdmin           Boolean @default(false)
+    isSubscribed           Boolean @default(false)
+    isNewsletterSubscribed Boolean @default(false)
+
+    ticketsPurchasedCount Int                @default(0)
+    ticketsPurchased      TicketsPurchased[]
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+    events    Events[]
+}
+
+model Events {
+    id          String @id @default(uuid())
+    eventId     String
+    user        Users  @relation(fields: [publisherId], references: [id])
+    publisherId String
+
+    title       String
+    description String
+    location    Locations?      @relation(fields: [locationId], references: [id])
+    locationId  String?
+    venue       String?
+    date        DateTime
+    time        String
+    category    String          @default("General")
+    tags        TagsForEvents[]
+    visibility  EventVisibility @default(PUBLIC)
+
+    mainImageUrl String
+    mainImageId  String
+    images       EventImages[]
+
+    currency          String    @default("NGN")
+    tickets           Tickets[]
+    purchaseStartDate DateTime
+    purchaseEndDate   DateTime
+    allowedGuestType  String    @default("Everyone")
+
+    bookmarksCount        Int                @default(0)
+    favoritesCount        Int                @default(0)
+    bookmarks             Bookmarks[]
+    favorites             Favorites[]
+    ticketsPurchasedCount Int                @default(0)
+    ticketsPurchased      TicketsPurchased[]
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+}
+
+model Bookmarks {
+    id        String    @id @default(uuid())
+    user      Users     @relation(fields: [userId], references: [id])
+    userId    String
+    event     Events    @relation(fields: [eventId], references: [id])
+    eventId   String
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+}
+
+model Favorites {
+    id        String    @id @default(uuid())
+    user      Users     @relation(fields: [userId], references: [id])
+    userId    String
+    event     Events    @relation(fields: [eventId], references: [id])
+    eventId   String
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+}
+
+model TicketsPurchased {
+    id         String    @id @default(uuid())
+    user       Users     @relation(fields: [userId], references: [id])
+    userId     String
+    event      Events    @relation(fields: [eventId], references: [id])
+    eventId    String
+    ticket     Tickets   @relation(fields: [ticketId], references: [id])
+    ticketId   String
+    quantity   Int
+    totalPrice Decimal
+    createdAt  DateTime? @default(now())
+    updatedAt  DateTime? @updatedAt
+}
+
+model Follows {
+    follower    Users     @relation("Follower", fields: [followerId], references: [id])
+    followerId  String
+    following   Users     @relation("Following", fields: [followingId], references: [id])
+    followingId String
+    createdAt   DateTime? @default(now())
+    updatedAt   DateTime? @updatedAt
+
+    @@id([followerId, followingId])
 }
 
 model NewsLetterSubscribers {
@@ -61,54 +174,23 @@ model EventImages {
 }
 
 model Tickets {
-    id      String @id @default(uuid())
-    event   Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    eventId String
-
-    role             String  @default("General")
-    price            Decimal
-    quantity         Int
-    remainingTickets Int     @default(0)
-
-    createdAt DateTime? @default(now())
-    updatedAt DateTime? @updatedAt
+    id                    String             @id @default(uuid())
+    event                 Events             @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    eventId               String
+    role                  String             @default("General")
+    price                 Decimal
+    quantity              Int
+    remainingTickets      Int                @default(0)
+    ticketsPurchasedCount Int                @default(0)
+    ticketsPurchased      TicketsPurchased[]
+    createdAt             DateTime?          @default(now())
+    updatedAt             DateTime?          @updatedAt
 }
 
 model Tags {
     id     String          @id @default(uuid())
     name   String
     events TagsForEvents[]
-}
-
-model Events {
-    id          String @id @default(uuid())
-    eventId     String
-    user        Users  @relation(fields: [publisherId], references: [id])
-    publisherId String
-
-    title       String
-    description String
-    location    Locations?      @relation(fields: [locationId], references: [id])
-    locationId  String?
-    venue       String?
-    date        DateTime
-    time        String
-    category    String          @default("General")
-    tags        TagsForEvents[]
-    visibility  EventVisibility @default(PUBLIC)
-
-    mainImageUrl String
-    mainImageId  String
-    images       EventImages[]
-
-    currency          String    @default("NGN")
-    tickets           Tickets[]
-    purchaseStartDate DateTime
-    purchaseEndDate   DateTime
-    allowedGuestType  String    @default("Everyone")
-
-    createdAt DateTime? @default(now())
-    updatedAt DateTime? @updatedAt
 }
 
 model TagsForEvents {

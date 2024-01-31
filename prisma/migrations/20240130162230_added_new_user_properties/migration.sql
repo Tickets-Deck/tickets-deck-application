@@ -1,0 +1,14 @@
+-- AlterTable
+ALTER TABLE `users` ADD COLUMN `bio` VARCHAR(191) NULL,
+    ADD COLUMN `emailVerified` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `facebookUrl` VARCHAR(191) NULL,
+    ADD COLUMN `instagramUrl` VARCHAR(191) NULL,
+    ADD COLUMN `isBlocked` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `isDeleted` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `isNewsletterSubscribed` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `isSubscribed` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `isSuperAdmin` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `isSuspended` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `isVerified` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `linkedinUrl` VARCHAR(191) NULL,
+    ADD COLUMN `twitterUrl` VARCHAR(191) NULL;
