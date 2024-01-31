@@ -73,6 +73,9 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
             firstName: retrievedUserInformation?.firstName || null,
             lastName: retrievedUserInformation?.lastName || null,
             phone: retrievedUserInformation?.phone || null,
+            facebookUrl: retrievedUserInformation?.facebookUrl || null,
+            instagramUrl: retrievedUserInformation?.instagramUrl || null,
+            twitterUrl: retrievedUserInformation?.twitterUrl || null,
         }
         // console.log("🚀 ~ handleUpdateUserInformation ~ data:", data);
 
@@ -161,7 +164,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                             <div className={styles.stats}>
                                 <div className={styles.stat}>
                                     <p>Events</p>
-                                    <span>{userInformation?.events?.length}</span>
+                                    <span>{userInformation?.eventsCount}</span>
                                 </div>
                                 <div className={styles.stat}>
                                     <p>Tickets Sold</p>
