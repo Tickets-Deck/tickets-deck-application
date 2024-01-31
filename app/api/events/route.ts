@@ -3,12 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import cloudinary from "cloudinary";
 
-interface EventTagModel {
-  tag: {
-    name: string;
-  };
-}
-
 export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     const request = (await req.json()) as EventRequest;
@@ -47,14 +41,14 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // Check if ticket already exists
+      // Check if event already exists
       const eventExists = await prisma.events.findFirst({
         where: {
           eventId,
         },
       });
 
-      // If email already exists, return 400
+      // If event already exists, return 400
       if (eventExists) {
         return NextResponse.json(
           { error: "Event already exists" },
@@ -62,10 +56,13 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      // Get the image base64 url from the request
       const _imagebase64Url = request.mainImageUrl;
 
+      // Compose the upload string
       var uploadStr = "data:image/jpeg;base64," + _imagebase64Url;
 
+      // Upload the image to cloudinary
       const cloudinaryRes = await cloudinary.v2.uploader.upload(uploadStr, {
         folder: "event_images",
         filename_override: `${eventId}`,
@@ -79,7 +76,7 @@ export async function POST(req: NextRequest) {
       //     { status: 200 }
       //   );
 
-      // If eventId is valid, save it to the database
+      // Create the event
       const event = await prisma.events.create({
         data: {
           eventId: request.eventId,
@@ -120,6 +117,18 @@ export async function POST(req: NextRequest) {
           },
           purchaseStartDate: request.purchaseStartDate,
           purchaseEndDate: request.purchaseEndDate,
+        },
+      });
+
+      // Increment the number of events created by the user
+      await prisma.users.update({
+        where: {
+          id: request.publisherId,
+        },
+        data: {
+          eventsCount: {
+            increment: 1,
+          },
         },
       });
 
@@ -302,7 +311,7 @@ export async function DELETE(req: NextRequest) {
         },
       });
 
-      console.log("Event gotten from db", event);
+      //   console.log("Event gotten from db", event);
 
       // If event is not found, return 404
       if (!event) {
@@ -314,11 +323,26 @@ export async function DELETE(req: NextRequest) {
 
       // If event is found, delete it
       if (event) {
+        // Delete the event's main image from cloudinary
+        await cloudinary.v2.uploader.destroy(event.mainImageId);
+
         await prisma.events.delete({
           where: {
             id: specifiedId,
           },
         });
+
+        // Decrement the number of events created by the user
+        // await prisma.users.update({
+        //   where: {
+        //     id: event.publisherId,
+        //   },
+        //   data: {
+        //     eventsCount: {
+        //       decrement: 1,
+        //     },
+        //   },
+        // });
 
         // Return success message
         return NextResponse.json(
