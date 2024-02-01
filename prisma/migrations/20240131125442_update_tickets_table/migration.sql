@@ -6,6 +6,6 @@
 
 */
 -- AlterTable
-ALTER TABLE `tickets` DROP COLUMN `role`,
+ALTER TABLE `Tickets` DROP COLUMN `role`,
     ADD COLUMN `description` VARCHAR(191) NULL,
     ADD COLUMN `name` VARCHAR(191) NOT NULL;
