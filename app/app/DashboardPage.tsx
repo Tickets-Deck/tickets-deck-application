@@ -40,11 +40,11 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
 
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        if (!session) {
-            push('/auth/signin');
-        }
-    }, [session])
+    // useEffect(() => {
+    //     if (!session) {
+    //         push('/auth/signin');
+    //     }
+    // }, [session])
 
     return (
         <div className={styles.dashboard}>

@@ -131,11 +131,11 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
         }
     }, [triggerInfoUpdate]);
 
-    useEffect(() => {
-        if (!session) {
-            push('/auth/signin');
-        }
-    }, [session])
+    // useEffect(() => {
+    //     if (!session) {
+    //         push('/auth/signin');
+    //     }
+    // }, [session])
 
     return (
         <div className={styles.profilePage}>
