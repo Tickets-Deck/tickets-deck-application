@@ -16,6 +16,7 @@ import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { uploadImageToCloudinary } from "@/app/services/CloudinaryUpload";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
 
 interface CreateEventProps {
 
@@ -29,12 +30,13 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
 
     const [eventCreationStage, setEventCreationStage] = useState<EventCreationStage>(EventCreationStage.BasicInfo);
     const [eventRequest, setEventRequest] = useState<EventRequest>();
-    const [isEventCreated, setIsEventCreated] = useState(false); 
+    const [isEventCreated, setIsEventCreated] = useState(false);
     const [validationStage, setValidationStage] = useState<{ status: ValidationStatus }>();
 
     const [mainImageFile, setMainImageFile] = useState<File>();
-    const [cloudinaryImageUrl, setCloudinaryImageUrl] = useState<string>();
     const [isUploadingMainImage, setIsUploadingMainImage] = useState(false);
+    const [imageValidationMessage, setImageValidationMessage] = useState<FormFieldResponse>();
+    const [ticketValidationMessage, setTicketValidationMessage] = useState<FormFieldResponse>();
     const [disableAllTabs, setDisableAllTabs] = useState(false);
 
     const [isCreatingEvent, setIsCreatingEvent] = useState(false);
@@ -52,7 +54,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
         // Update the event creation stage
         // setEventCreationStage(EventCreationStage.ImageUpload);
 
-        console.log(eventRequest);
+        // console.log(eventRequest);
     };
 
     function moveToNextStage(e: FormEvent<HTMLFormElement>) {
@@ -63,10 +65,18 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                 proceedToImageUpload();
                 break;
             case EventCreationStage.ImageUpload:
-                setEventRequest({ ...eventRequest as EventRequest, tickets: [] });
-                setEventCreationStage(EventCreationStage.TicketDetails);
+                if (eventRequest?.mainImageUrl) {
+                    setEventRequest({ ...eventRequest as EventRequest, tickets: [] });
+                    setEventCreationStage(EventCreationStage.TicketDetails);
+                    break;
+                }
+                setImageValidationMessage({ message: "Please upload an image", status: DefaultFormResponseStatus.Failed });
                 break;
             case EventCreationStage.TicketDetails:
+                if(eventRequest?.tickets?.length === 0) {
+                    setTicketValidationMessage({ message: "Please add at least one ticket", status: DefaultFormResponseStatus.Failed });
+                    break;
+                }
                 setEventCreationStage(EventCreationStage.Confirmation);
                 break;
             case EventCreationStage.Confirmation:
@@ -76,7 +86,17 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
         }
     };
 
-    console.log("User ID: ", session?.user.id);
+    function removeTagFromFormRequest(selectedTag: string) {
+        // Write code to remove tag from form request 
+        const tags = eventRequest?.tags?.filter(tag => tag !== selectedTag);
+        if (!tags) {
+            setEventRequest({ ...eventRequest as EventRequest, tags: [] });
+            return;
+        };
+        setEventRequest({ ...eventRequest as EventRequest, tags: tags });
+    };
+
+    // console.log("User ID: ", session?.user.id);
 
     async function handleEventCreation() {
 
@@ -89,13 +109,13 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
         //     return;
         // }
 
-        // console.log('imageUrlResponse gotten2: ', imageUrlResponse);
+        // console.log('imageUrlResponse gotten2: ', imageUrlResponse); 
 
         // Start loader
         setIsCreatingEvent(true);
 
         // Create the event
-        await createEvent({ ...eventRequest as EventRequest }) 
+        await createEvent({ ...eventRequest as EventRequest })
             .then((response) => {
                 // Update created event state
                 setIsEventCreated(true);
@@ -153,12 +173,16 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                         setEventRequest={setEventRequest}
                         mainImageFile={mainImageFile}
                         setMainImageFile={setMainImageFile}
+                        imageValidationMessage={imageValidationMessage}
+                        setImageValidationMessage={setImageValidationMessage}
                     />}
 
                 {eventCreationStage === EventCreationStage.TicketDetails &&
                     <TicketDetailsSection
                         eventRequest={eventRequest}
                         setEventRequest={setEventRequest}
+                        ticketValidationMessage={ticketValidationMessage}
+                        setTicketValidationMessage={setTicketValidationMessage}
                     />
                 }
 
@@ -171,18 +195,20 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                 }
 
                 <div className={styles.actionButtons}>
-                    <div className={styles.tagSection}>
-                        {
-                            eventRequest?.tags?.map((tag, index) => {
-                                return (
-                                    <span className={styles.tag} key={index}>
-                                        {tag}
-                                        <span><CloseIcon /></span>
-                                    </span>
-                                )
-                            })
-                        }
-                    </div>
+                    {eventCreationStage === EventCreationStage.BasicInfo &&
+                        <div className={styles.tagSection}>
+                            {
+                                eventRequest?.tags?.map((tag, index) => {
+                                    return (
+                                        <span className={styles.tag} key={index}>
+                                            {tag}
+                                            <span onClick={() => removeTagFromFormRequest(tag)}><CloseIcon /></span>
+                                        </span>
+                                    )
+                                })
+                            }
+                        </div>
+                    }
                     <button type="submit" disabled={isCreatingEvent || isUploadingMainImage}>
                         {/* { 'Next'} */}
                         {eventCreationStage === EventCreationStage.Confirmation ? isUploadingMainImage ? 'Uploading images' : isCreatingEvent ? 'Creating event' : 'Create Event' : 'Next'}
