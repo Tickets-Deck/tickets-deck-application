@@ -149,7 +149,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
         setLoader(true);
 
         await fetchEventInfo(id)
-            .then((response) => { 
+            .then((response) => {
 
                 // Log the result
                 console.log('Result:', response.data);
@@ -193,7 +193,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
             // Route to flight not-found page
             router.push(`/event/not-found`);
         }
-    }, [params]); 
+    }, [params]);
 
     useEffect(() => {
         if (eventInfo && (eventInfo.tickets !== null)) {
@@ -271,8 +271,8 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                             smooth={true}
                                             duration={200}
                                             offset={-100}
-                                            onClick={() => setTicketsSelectionContainerIsVisible(true)}>
-                                            <button>Get available tickets</button>
+                                            onClick={() => { }}>
+                                            <button>Edit event information</button>
                                         </ScrollLink>
                                     }
                                 </div>
@@ -308,7 +308,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                         return (
                                             <div className={`${styles.ticket} ${ticketType.selectedTickets > 0 ? styles.active : ''}`} key={index}>
                                                 <div className={styles.ticket__topArea}>
-                                                    <p>{ticketType.role}</p>
+                                                    <p>{ticketType.name}</p>
                                                     <h4>&#8358;{ticketType.price.toLocaleString()}</h4>
                                                 </div>
                                                 <div className={styles.ticket__bottomArea}>
