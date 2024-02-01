@@ -286,6 +286,13 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                                 placeholder="Add event Tags"
                                 value={tag}
                                 onChange={(e) => setTag(e.target.value)}
+                                onKeyDown={(e) => {
+                                    // If enter key was pressed...
+                                    if (e.key === 'Enter') {
+                                        // Add tag to form request
+                                        addTagToFormRequest();
+                                    }
+                                }}
                             />
                             <span
                                 className={styles.addTag}
