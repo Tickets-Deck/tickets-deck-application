@@ -7,6 +7,9 @@ export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     const request = (await req.json()) as EventRequest;
 
+    // Initialize the uploaded image id
+    let uploadedImageId: string = "";
+
     try {
       const { eventId } = request;
 
@@ -68,6 +71,9 @@ export async function POST(req: NextRequest) {
         filename_override: `${eventId}`,
         // use_filename: true,
       });
+
+      // Update the uploaded image id with the cloudinary response
+      uploadedImageId = cloudinaryRes.public_id;
 
       //   console.log({cloudinaryRes});
 
@@ -135,7 +141,12 @@ export async function POST(req: NextRequest) {
       // Return the event
       return NextResponse.json(event, { status: 200 });
     } catch (error) {
-      console.error(error);
+        
+      // Delete the event's main image from cloudinary
+      await cloudinary.v2.uploader.destroy(uploadedImageId);
+
+      // console.error(error);
+
       return NextResponse.json(
         { error: "Something went wrong" },
         { status: 500 }
