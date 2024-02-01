@@ -177,10 +177,12 @@ model Tickets {
     id                    String             @id @default(uuid())
     event                 Events             @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId               String
-    role                  String             @default("General")
+    name                  String
     price                 Decimal
     quantity              Int
     remainingTickets      Int                @default(0)
+    numberOfUsers         Int
+    description           String?
     ticketsPurchasedCount Int                @default(0)
     ticketsPurchased      TicketsPurchased[]
     createdAt             DateTime?          @default(now())
