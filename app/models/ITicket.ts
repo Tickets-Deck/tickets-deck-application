@@ -1,8 +1,10 @@
 export type TicketRequest = {
-  role: string;
+  name: string;
   price: number;
+  numberOfUsers: number;
   quantity: number;
   remainingTickets: number;
+  description: string
 };
 
 export type TicketResponse = TicketRequest & {
