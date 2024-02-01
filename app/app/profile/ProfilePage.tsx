@@ -27,6 +27,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
     const { data: session, update } = useSession();
     const fetchUserInformation = useFetchUserInformation();
     const toastHandler = useContext(ToastContext);
+    const { push, prefetch } = useRouter();
     const updateUserInformation = useUpdateUserInformation();
 
     const [isUpdatingUserInformation, setIsUpdatingUserInformation] = useState(false);
@@ -128,7 +129,13 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
         if (triggerInfoUpdate) {
             handleUpdateUserInformation();
         }
-    }, [triggerInfoUpdate])
+    }, [triggerInfoUpdate]);
+
+    useEffect(() => {
+        if (!session) {
+            push('/auth/signin');
+        }
+    }, [session])
 
     return (
         <div className={styles.profilePage}>
