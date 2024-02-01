@@ -40,11 +40,11 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
 
     const [isLoading, setIsLoading] = useState(false);
 
-    // useEffect(() => {
-    //     if (!session) {
-    //         push('/auth/signin');
-    //     }
-    // }, [session])
+    useEffect(() => {
+        if (!session) {
+            push('/auth/signin');
+        }
+    }, [session])
 
     return (
         <div className={styles.dashboard}>
@@ -59,28 +59,28 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
                 <div className={styles.kpi}>
                     <span><EventIcon /></span>
                     <div className={styles.content}>
-                        <h4>12</h4>
+                        <h4>0</h4>
                         <p>Total Events</p>
                     </div>
                 </div>
                 <div className={styles.kpi}>
                     <span><EventIcon /></span>
                     <div className={styles.content}>
-                        <h4>120</h4>
+                        <h4>0</h4>
                         <p>Tickets Bought</p>
                     </div>
                 </div>
                 <div className={styles.kpi}>
                     <span><EventIcon /></span>
                     <div className={styles.content}>
-                        <h4>120</h4>
+                        <h4>0</h4>
                         <p>Tickets Sold</p>
                     </div>
                 </div>
                 <div className={styles.kpi}>
                     <span><EventIcon /></span>
                     <div className={styles.content}>
-                        <h4>$1200</h4>
+                        <h4>&#8358;0</h4>
                         <p>Total Revenue</p>
                     </div>
                 </div>
