@@ -312,14 +312,14 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                 <div className={styles.ticketsSelectionContainer}>
                                     <div className={styles.topArea}>
                                         <h3>Select the tickets you would like to get, and the number for each.</h3>
-                                        <p>By the way, you can select multiple ticket types.</p>
+                                        <p>You can select multiple tickets.</p>
                                     </div>
                                     <div className={styles.ticketsContainer}>
                                         {eventTicketTypes?.map((ticketType, index) => {
                                             return (
                                                 <div className={`${styles.ticket} ${ticketType.selectedTickets > 0 ? styles.active : ''}`} key={index}>
                                                     <div className={styles.ticket__topArea}>
-                                                        <p>{ticketType.role}</p>
+                                                        <p>{ticketType.name}</p>
                                                         <h4>&#8358;{ticketType.price.toLocaleString()}</h4>
                                                     </div>
                                                     <div className={styles.ticket__bottomArea}>
@@ -347,7 +347,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                 <div className={styles.ticketsFetchErrorMsgContainer}>
                                     <div className={styles.topArea}>
                                         <h3>Oops!</h3>
-                                        {/* <p>By the way, you can select multiple ticket types.</p> */}
+                                        {/* <p>You can select multiple tickets.</p> */}
                                     </div>
                                     <div className={styles.messageContent}>
                                         <div className={styles.messageContent__image}>
