@@ -12,5 +12,11 @@ export interface ITicketPricing {
   ticketId: string;
   ticketType: string;
   price: TicketPrice;
-  priceBreakdown: TicketPriceBreakdown;
+  //   priceBreakdown: TicketPriceBreakdown;
+}
+
+export interface RetrievedITicketPricing extends ITicketPricing {
+  emailId: number;
+  selectedTickets: number;
+  hasEmail: boolean;
 }
