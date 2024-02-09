@@ -110,7 +110,7 @@ export const authOptions: NextAuthOptions = {
         await sendMail({
           to: profile?.email as string,
           name: "Account Created",
-          subject: "Welcome to Tickets Deck",
+          subject: "Welcome to Ticketsdeck",
           body: compileAccountCreationTemplate(
             `${profile?.name?.split(" ")[0]} ${profile?.name?.split(" ")[1]}`
           ),
