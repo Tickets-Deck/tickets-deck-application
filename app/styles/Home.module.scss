@@ -582,11 +582,11 @@
             }
         }
         .servicesContainer {
-            margin: 2rem 0;
+            margin: 4rem 0 6rem;
             display: grid;
             // grid-template-columns: repeat(3, 1fr);
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 16px;
+            gap: 24px;
             @include bigMobilePhone {
                 gap: 20px;
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -598,7 +598,7 @@
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                padding: 32px 40px;
+                padding: 32px 24px;
                 gap: 1rem;
                 border-radius: 24px;
                 background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
@@ -607,8 +607,8 @@
                     padding: 32px 24px;
                 }
                 span {
-                    width: 120px;
-                    height: 120px;
+                    width: 90px;
+                    height: 90px;
                     border-radius: 300px;
                     background: rgba(255, 255, 255, 0.2);
                     display: grid;
@@ -618,8 +618,8 @@
                         height: 100px;
                     }
                     svg {
-                        width: 52px;
-                        height: 52px;
+                        width: 36px;
+                        height: 36px;
                         @include bigMobilePhone {
                             width: 40px;
                             height: 40px;
@@ -631,10 +631,11 @@
                     flex-direction: column;
                     align-items: center;
                     gap: 0.25rem;
-                    width: 75%;
                     h2 {
-                        font-size: $font-size-24;
+                        font-size: $font-size-20;
+                        font-weight: $fontWeight-500;
                         text-align: center;
+                        width: 70%;
                         @include bigMobilePhone {
                             font-size: $font-size-20;
                             font-weight: $fontWeight-500;
@@ -644,6 +645,7 @@
                     p {
                         font-size: $font-size-16 - 0.125rem;
                         font-weight: $fontWeight-300;
+                        opacity: 0.65;
                     }
                 }
             }
@@ -653,8 +655,10 @@
     .createEventSection {
         @include sectionPadding;
         display: flex;
+        justify-content: space-between;
         background-color: $white;
         gap: 3rem;
+        border-top: .25rem solid $primary-color;
         @include bigMobilePhone {
             flex-direction: column;
             padding-top: 3rem;
@@ -663,46 +667,16 @@
         }
 
         &__lhs {
-            flex-basis: 40%;
+            flex-basis: 80%;
             width: 100%;
             position: relative;
-            @include bigMobilePhone {
-                flex-basis: 100%;
-            }
-            .image {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                display: inline-flex;
-                align-items: flex-end;
-                height: 124.5%;
-                @include bigMobilePhone {
-                    position: relative;
-                    height: 12rem;
-                    // height: 60.5%;
-                }
-                // border: 2px solid #000;
-                img {
-                    width: 100%;
-                    height: 100%;
-                    display: inline-flex;
-                    object-fit: contain;
-                }
-            }
-        }
-        &__rhs {
-            flex-basis: 60%;
+            color: $dark-grey;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-            color: $dark-grey;
-            padding: 2rem 0;
+            gap: 0.25rem;
+            justify-content: center;
             @include bigMobilePhone {
-                align-items: center;
-                text-align: center;
-                padding: 0;
+                flex-basis: 100%;
             }
             h3 {
                 font-size: $font-size-30;
@@ -717,6 +691,19 @@
                 @include bigMobilePhone {
                     width: 100%;
                 }
+            }
+        }
+        &__rhs {
+            flex-basis: 20%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 2rem 0;
+            @include bigMobilePhone {
+                align-items: center;
+                text-align: center;
+                padding: 0;
             }
             button {
                 @include secondary-button;
