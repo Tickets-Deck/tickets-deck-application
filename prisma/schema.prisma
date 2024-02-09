@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
+    provider          = "mysql"
+    url               = env("DATABASE_URL")
     shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
@@ -51,12 +51,15 @@ model Users {
     isSubscribed           Boolean @default(false)
     isNewsletterSubscribed Boolean @default(false)
 
-    ticketsPurchasedCount Int                @default(0)
-    ticketsPurchased      TicketsPurchased[]
+    TicketOrdersCount Int            @default(0)
+    TicketOrders      TicketOrders[]
 
-    createdAt DateTime? @default(now())
-    updatedAt DateTime? @updatedAt
+    createdAt DateTime?  @default(now())
+    updatedAt DateTime?  @updatedAt
     events    Events[]
+    Payment   Payments[]
+
+    @@map("Users")
 }
 
 model Events {
@@ -86,15 +89,17 @@ model Events {
     purchaseEndDate   DateTime
     allowedGuestType  String    @default("Everyone")
 
-    bookmarksCount        Int                @default(0)
-    favoritesCount        Int                @default(0)
-    bookmarks             Bookmarks[]
-    favorites             Favorites[]
-    ticketsPurchasedCount Int                @default(0)
-    ticketsPurchased      TicketsPurchased[]
+    bookmarksCount    Int            @default(0)
+    favoritesCount    Int            @default(0)
+    bookmarks         Bookmarks[]
+    favorites         Favorites[]
+    TicketOrdersCount Int            @default(0)
+    TicketOrders      TicketOrders[]
 
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
+
+    @@map("Events")
 }
 
 model Bookmarks {
@@ -105,6 +110,8 @@ model Bookmarks {
     eventId   String
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
+
+    @@map("Bookmarks")
 }
 
 model Favorites {
@@ -115,20 +122,79 @@ model Favorites {
     eventId   String
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
+
+    @@map("Favorites")
 }
 
-model TicketsPurchased {
-    id         String    @id @default(uuid())
-    user       Users     @relation(fields: [userId], references: [id])
+/// OrderedTickets model
+/// The OrderedTickets model is used to store details of tickets ordered by users.
+/// The OrderedTickets model includes a ticket field, defining the reverse relationship between OrderedTickets and Tickets.
+model OrderedTickets {
+    id              String       @id @default(uuid())
+    ticket          Tickets      @relation(fields: [ticketId], references: [id])
+    ticketId        String
+    orderId         String       
+    order           TicketOrders @relation(fields: [orderId], references: [id])
+    associatedEmail String?
+    contactEmail    String
+    price           Decimal
+    orderStatus     OrderStatus
+    paymentId       String?      
+    createdAt       DateTime?    @default(now())
+    updatedAt       DateTime?    @updatedAt
+
+    @@map("OrderedTickets")
+}
+
+/// TicketOrders model
+/// The TicketOrders model is used to store details of ticket orders placed by users.
+/// The TicketOrders model includes a payments field, defining the reverse relationship between TicketOrders and Payment.
+/// The payments field in TicketOrders is annotated with @relation("TicketOrderPayments") to specify the relationship name.
+/// Each ticket order can have multiple associated payments allowing you to track payment transactions for each order efficiently, so the relationship is defined as a one-to-many relationship.
+model TicketOrders {
+    id         String           @id @default(uuid())
+    user       Users            @relation(fields: [userId], references: [id])
     userId     String
-    event      Events    @relation(fields: [eventId], references: [id])
+    event      Events           @relation(fields: [eventId], references: [id])
     eventId    String
-    ticket     Tickets   @relation(fields: [ticketId], references: [id])
-    ticketId   String
+    tickets    OrderedTickets[]
     quantity   Int
     totalPrice Decimal
-    createdAt  DateTime? @default(now())
-    updatedAt  DateTime? @updatedAt
+
+    contactEmail  String
+    orderId       String        @default(uuid())
+    orderStatus   OrderStatus
+    paymentStatus PaymentStatus
+    paymentId     String?       
+    payments      Payments[]    @relation("TicketOrderPayments")
+
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+
+    @@map("TicketOrders")
+}
+
+/// Payment model
+/// This model is used to store payment details for each ticket order.
+/// The Payment model includes a ticketOrder field, establishing a one-to-many relationship between TicketOrders and Payment.
+/// The ticketOrderId field in the Payment model references the id field of the TicketOrders model, establishing the foreign key constraint.
+model Payments {
+    id            String        @id @default(uuid())
+    user          Users         @relation(fields: [userId], references: [id])
+    userId        String
+    // ticketOrder   TicketOrders  @relation(fields: [ticketOrderId], references: [id])
+    ticketOrder   TicketOrders  @relation("TicketOrderPayments", fields: [ticketOrderId], references: [id])
+    ticketOrderId String
+    amount        Decimal
+    amountPaid    Decimal?
+    currency      String
+    paymentStatus PaymentStatus
+    paymentId     String
+    paymentMethod String
+    createdAt     DateTime?     @default(now())
+    updatedAt     DateTime?     @updatedAt
+
+    @@map("Payment")
 }
 
 model Follows {
@@ -140,6 +206,7 @@ model Follows {
     updatedAt   DateTime? @updatedAt
 
     @@id([followerId, followingId])
+    @@map("Follows")
 }
 
 model NewsLetterSubscribers {
@@ -147,6 +214,8 @@ model NewsLetterSubscribers {
     email     String    @unique
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
+
+    @@map("NewsLetterSubscribers")
 }
 
 model Locations {
@@ -159,11 +228,27 @@ model Locations {
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
     events    Events[]
+
+    @@map("Locations")
 }
 
 enum EventVisibility {
     PUBLIC
     PRIVATE
+
+    @@map("EventVisibility")
+}
+
+enum OrderStatus {
+    Pending
+    Confirmed
+    Cancelled
+}
+
+enum PaymentStatus {
+    Pending
+    Paid
+    Failed
 }
 
 model EventImages {
@@ -172,28 +257,34 @@ model EventImages {
     imageId  String
     event    Events @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId  String
+
+    @@map("EventImages")
 }
 
 model Tickets {
-    id                    String             @id @default(uuid())
-    event                 Events             @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    eventId               String
-    name                  String
-    price                 Decimal
-    quantity              Int
-    remainingTickets      Int                @default(0)
-    numberOfUsers         Int
-    description           String?
-    ticketsPurchasedCount Int                @default(0)
-    ticketsPurchased      TicketsPurchased[]
-    createdAt             DateTime?          @default(now())
-    updatedAt             DateTime?          @updatedAt
+    id                String           @id @default(uuid())
+    event             Events           @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    eventId           String
+    name              String
+    price             Decimal
+    quantity          Int
+    remainingTickets  Int              @default(0)
+    numberOfUsers     Int
+    description       String?
+    TicketOrdersCount Int              @default(0)
+    TicketOrders      OrderedTickets[]
+    createdAt         DateTime?        @default(now())
+    updatedAt         DateTime?        @updatedAt
+
+    @@map("Tickets")
 }
 
 model Tags {
     id     String          @id @default(uuid())
     name   String
     events TagsForEvents[]
+
+    @@map("Tags")
 }
 
 model TagsForEvents {
@@ -205,4 +296,5 @@ model TagsForEvents {
     tag   Tags   @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
     @@id([eventId, tagId])
+    @@map("TagsForEvents")
 }
