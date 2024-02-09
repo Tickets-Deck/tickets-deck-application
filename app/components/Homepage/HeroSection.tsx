@@ -26,9 +26,9 @@ const HeroSection: FunctionComponent<HeroSectionProps> = (): ReactElement => {
         {
             img: images.ImageBg2,
         },
-        {
-            img: images.ImageBg3,
-        },
+        // {
+        //     img: images.ImageBg3,
+        // },
         {
             img: images.ImageBg4,
         },
