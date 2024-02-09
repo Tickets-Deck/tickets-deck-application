@@ -19,6 +19,8 @@ import { EventResponse } from '@/app/models/IEvents';
 import { RetrievedTicketResponse } from '@/app/models/ITicket';
 import { useFetchEventById } from '@/app/api/apiClient';
 import { catchError } from '@/app/constants/catchError';
+import TicketsSelectionContainer from '@/app/components/Event/TicketsSelection';
+import TicketsFetchErrorContainer from '@/app/components/Event/TicketsFetchError';
 
 interface EventDetailsProps {
     params: { id: string }
@@ -36,9 +38,9 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     const toasthandler = useContext(ToastContext);
 
     const [eventInfo, setEventInfo] = useState<EventResponse>();
-    const [eventTicketTypes, setEventTicketTypes] = useState<RetrievedTicketResponse[]>();
+    const [eventTickets, setEventTickets] = useState<RetrievedTicketResponse[]>();
+
     const [loader, setLoader] = useState(false);
-    const [totalSelectedTicketsCount, setTotalSelectedTicketsCount] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [ticketsSelectionContainerIsVisible, setTicketsSelectionContainerIsVisible] = useState(false);
 
@@ -46,22 +48,14 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
 
     const eventLocation = eventInfo?.location?.address + ' ' + eventInfo?.location?.city + ', ' + eventInfo?.location?.state + ', ' + eventInfo?.location?.country;
 
-    // useEffect hook to set total selected tickets count
-    useEffect(() => {
-        /**
-         * the reduce function iterates through each ticket in the eventTicketTypes array and adds up the selectedTickets count for each ticket. 
-         * The 0 passed as the second argument to reduce initializes the total variable to 0.
-         */
-        setTotalSelectedTicketsCount(eventTicketTypes?.reduce((total, ticket) => total + ticket.selectedTickets, 0) as number);
-    }, [eventTicketTypes]);
 
     // useEffect hook to set total price 
     useEffect(() => {
         // Filter through event ticket types availableParallelism, then check for only the selected tickets 
-        const selectedTickets = eventTicketTypes?.filter((ticket) => ticket.isSelected);
+        const selectedTickets = eventTickets?.filter((ticket) => ticket.isSelected);
         // iterates through each ticket in the selected tickets array and adds up the multiplication of the ticket price and the selected tickets count for each ticket. 
         setTotalPrice(selectedTickets?.reduce((total, ticket) => total + ticket.price * ticket.selectedTickets, 0) as number);
-    }, [eventTicketTypes]);
+    }, [eventTickets]);
 
     function shareEvent() {
         const eventURL = window.location.href;
@@ -83,7 +77,8 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
         const eventURL = window.location.href;
         if (navigator.share) {
             navigator.share({
-                title: "Check out this event!",
+                // title: "Check out this event!",
+                title: `${eventInfo?.title} - Events@TicketsDeck`,
                 text: "I found this amazing event. You should check it out!",
                 url: eventURL
             })
@@ -105,40 +100,6 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
         const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${eventTime}%2F${eventDate}T${eventTime}&location=${encodeURIComponent(location)}`;
 
         window.open(googleCalendarUrl, "_blank");
-    }
-
-    function incrementTicket(selectedTicketType: RetrievedTicketResponse) {
-        const updatedTicketsCount = eventTicketTypes?.map(ticketType => {
-            if (ticketType === selectedTicketType) {
-                return {
-                    ...ticketType,
-                    selectedTickets: ticketType.selectedTickets + 1,
-                    isSelected: true
-                };
-            }
-            return ticketType;
-        })
-        setEventTicketTypes(updatedTicketsCount);
-    }
-    function decrementTicket(selectedTicketType: RetrievedTicketResponse) {
-        const updatedTicketsCount = eventTicketTypes?.map(ticketType => {
-            if (ticketType === selectedTicketType) {
-                if (selectedTicketType.selectedTickets == 1) {
-                    return {
-                        ...ticketType,
-                        selectedTickets: ticketType.selectedTickets - 1,
-                        isSelected: false
-                    };
-                }
-                return {
-                    ...ticketType,
-                    selectedTickets: ticketType.selectedTickets - 1,
-                    isSelected: true
-                };
-            }
-            return ticketType;
-        })
-        setEventTicketTypes(updatedTicketsCount);
     }
 
     async function handleFetchEventInfo() {
@@ -181,7 +142,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     useEffect(() => {
         // Clear previous info
         setEventInfo(undefined);
-        setEventTicketTypes(undefined);
+        setEventTickets(undefined);
         setTicketsSelectionContainerIsVisible(false);
 
         if (id) {
@@ -196,8 +157,8 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                 isSelected: false,
                 selectedTickets: 0
             }));
-            setEventTicketTypes(updatedTicketTypes);
-            console.log(eventTicketTypes);
+            setEventTickets(updatedTicketTypes);
+            // console.log(eventTickets);
         }
     }, [eventInfo]);
 
@@ -207,7 +168,9 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
             <TicketDelivery
                 visibility={ticketDeliveryModalIsVisible}
                 setVisibility={setTicketDeliveryModalIsVisible}
-                eventTicketTypes={eventTicketTypes}
+                eventTickets={eventTickets}
+                eventInfo={eventInfo}
+                totalPrice={totalPrice}
             />
             <div className={styles.eventDetailsPage}>
                 <section className={styles.heroSection}>
@@ -308,55 +271,17 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                             </div>
                         </div>
                         <div className={styles.optionalSection} id='optionalSection'>
-                            {ticketsSelectionContainerIsVisible && eventTicketTypes && eventTicketTypes.length > 0 &&
-                                <div className={styles.ticketsSelectionContainer}>
-                                    <div className={styles.topArea}>
-                                        <h3>Select the tickets you would like to get, and the number for each.</h3>
-                                        <p>You can select multiple tickets.</p>
-                                    </div>
-                                    <div className={styles.ticketsContainer}>
-                                        {eventTicketTypes?.map((ticketType, index) => {
-                                            return (
-                                                <div className={`${styles.ticket} ${ticketType.selectedTickets > 0 ? styles.active : ''}`} key={index}>
-                                                    <div className={styles.ticket__topArea}>
-                                                        <p>{ticketType.name}</p>
-                                                        <h4>&#8358;{ticketType.price.toLocaleString()}</h4>
-                                                    </div>
-                                                    <div className={styles.ticket__bottomArea}>
-                                                        <span onClick={() => { ticketType.selectedTickets > 0 && decrementTicket(ticketType) }}>-</span>
-                                                        <p>{ticketType.selectedTickets} ticket</p>
-                                                        <span onClick={() => incrementTicket(ticketType)}>+</span>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                    <div className={styles.bottomContainer}>
-                                        <div className={styles.left}>
-                                            <p>{totalSelectedTicketsCount} {totalSelectedTicketsCount > 1 ? 'tickets' : 'ticket'} selected</p>
-                                            <div className={styles.price}>
-                                                <p>Total Price:</p>
-                                                <h1>&#8358;{totalPrice?.toLocaleString()}</h1>
-                                            </div>
-                                        </div>
-                                        <button onClick={() => setTicketDeliveryModalIsVisible(true)}>Purchase {totalSelectedTicketsCount > 1 ? 'tickets' : 'ticket'}</button>
-                                    </div>
-                                </div>
+                            {ticketsSelectionContainerIsVisible && eventTickets && eventTickets.length > 0 &&
+                                <TicketsSelectionContainer
+                                    eventTickets={eventTickets}
+                                    setEventTickets={setEventTickets}
+                                    totalPrice={totalPrice}
+                                    setTicketDeliveryModalIsVisible={setTicketDeliveryModalIsVisible}
+                                />
                             }
-                            {ticketsSelectionContainerIsVisible && (!eventTicketTypes || eventTicketTypes?.length == 0) &&
-                                <div className={styles.ticketsFetchErrorMsgContainer}>
-                                    <div className={styles.topArea}>
-                                        <h3>Oops!</h3>
-                                        {/* <p>You can select multiple tickets.</p> */}
-                                    </div>
-                                    <div className={styles.messageContent}>
-                                        <div className={styles.messageContent__image}>
-                                            <Image src={images.sad_face} alt='Sad face' />
-                                        </div>
-                                        <h4>We encountered an issue, while trying to get the available tickets.</h4>
-                                        <p>Please <span onClick={() => router.refresh()}>reload</span> the page, and keep your fingers crossed while try our best again.</p>
-                                    </div>
-                                </div>}
+                            {ticketsSelectionContainerIsVisible && (!eventTickets || eventTickets?.length == 0) &&
+                                <TicketsFetchErrorContainer />
+                            }
                         </div>
                     </section> :
                     <SkeletonEventInfo />
@@ -365,7 +290,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                     title='Similar Events'
                     subText='Dear superstar, below is a list of all events available at the moment.'
                     eventsData={events}
-                /> 
+                />
             </div>
         </>
     );
