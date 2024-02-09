@@ -17,7 +17,7 @@ const UserAvatarContainer: FunctionComponent<UserAvatarContainerProps> = ({ user
                 <Image
                     src={
                         userInformation.profilePhoto ??
-                        `https://placehold.co/300x300/8133F1/FFFFFF/png?text=${userInformation.firstName[0]}${userInformation.lastName[0]}`
+                        `https://placehold.co/300x300/8133F1/FFFFFF/png?text=${userInformation.firstName[0].toUpperCase()}${userInformation.lastName[0].toUpperCase()}`
                     }
                     alt="avatar"
                     fill
