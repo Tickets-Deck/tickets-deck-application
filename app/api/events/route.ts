@@ -142,8 +142,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(event, { status: 200 });
     } catch (error) {
         
-      // Delete the event's main image from cloudinary
-      await cloudinary.v2.uploader.destroy(uploadedImageId);
+      // If the image was uploaded to cloudinary...
+      if (uploadedImageId) {
+        // Delete the event's main image from cloudinary
+        await cloudinary.v2.uploader.destroy(uploadedImageId);
+      }
 
       // console.error(error);
 
@@ -177,7 +180,11 @@ export async function GET(req: NextRequest) {
         },
         include: {
           user: true,
-          tickets: true,
+          tickets: {
+            orderBy: {
+              price: "asc",
+            },
+          },
           images: true,
           tags: {
             select: { tag: { select: { name: true } } },
@@ -225,7 +232,11 @@ export async function GET(req: NextRequest) {
         },
         include: {
           user: true,
-          tickets: true,
+          tickets: {
+            orderBy: {
+              price: "asc",
+            },
+          },
           images: true,
           tags: {
             select: { tag: { select: { name: true } } },
