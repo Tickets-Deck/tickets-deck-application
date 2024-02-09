@@ -1,20 +1,24 @@
 import { ToastContext } from "../../extensions/toast";
 import { FunctionComponent, ReactElement, useState, useContext, Dispatch, SetStateAction, useEffect, ChangeEvent } from "react";
-import styles from "../../styles/TicketDelivery.module.scss"; 
+import styles from "../../styles/TicketDelivery.module.scss";
 import ModalWrapper from "./ModalWrapper";
 import Image from "next/image";
 import images from "../../../public/images";
 import { CheckIcon, CloseIcon } from "../SVGs/SVGicons";
-import { ITicketPricing } from "../../models/ITicketPricing";
+import { ITicketPricing, RetrievedITicketPricing } from "../../models/ITicketPricing";
 import { emailRegex } from "../../constants/emailRegex";
 import useResponsive from "../../hooks/useResponsiveness";
 import PanelWrapper from "./PanelWrapper";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
+import { EventResponse } from "@/app/models/IEvents";
+import OrderSummarySection from "../TicketDelivery/OrderSummarySection";
 
 interface TicketDeliveryProps {
     setVisibility: Dispatch<SetStateAction<boolean>>
     visibility: boolean
-    eventTicketTypes: RetrievedTicketResponse[] | undefined
+    eventTickets: RetrievedTicketResponse[] | undefined
+    eventInfo: EventResponse | undefined
+    totalPrice: number
 }
 
 enum ValidationStatus {
@@ -23,113 +27,22 @@ enum ValidationStatus {
     NotInitiated = 2,
 }
 
-interface RetrievedITicketPricing extends ITicketPricing {
-    hasEmail: boolean
-}
 
-const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({ visibility, setVisibility, eventTicketTypes }): ReactElement => {
+const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
+    { visibility, setVisibility, eventTickets, eventInfo, totalPrice }): ReactElement => {
 
     const toastHandler = useContext(ToastContext);
 
-    
+
     const windowRes = useResponsive();
     const onMobile = windowRes.width && windowRes.width < 768;
 
-    const [isInputActive, setIsInputActive] = useState(false);
-    const [isLoading, setisLoading] = useState(false);
-
-    useEffect(() => {
-        console.log(eventTicketTypes);
-    }, [eventTicketTypes]);
-
-    const dummyTicketPricings: ITicketPricing[] = [
-        {
-            ticketId: "1",
-            ticketType: "REGULAR",
-            price: {
-                currency: "NGN",
-                total: "5000",
-            },
-            priceBreakdown: {
-                base: 4900,
-                taxesAndFees: 100,
-                total: 5000,
-            },
-            // hasEmail: false
-        },
-        {
-            ticketId: "2",
-            ticketType: "REGULAR",
-            price: {
-                currency: "NGN",
-                total: "5000",
-            },
-            priceBreakdown: {
-                base: 4900,
-                taxesAndFees: 100,
-                total: 5000,
-            },
-            // hasEmail: false
-        },
-        {
-            ticketId: "3",
-            ticketType: "REGULAR",
-            price: {
-                currency: "NGN",
-                total: "5000",
-            },
-            priceBreakdown: {
-                base: 4900,
-                taxesAndFees: 100,
-                total: 5000,
-            },
-            // hasEmail: false
-        },
-        {
-            ticketId: "1",
-            ticketType: "VIP GOLD",
-            price: {
-                currency: "NGN",
-                total: "5000",
-            },
-            priceBreakdown: {
-                base: 4900,
-                taxesAndFees: 100,
-                total: 5000,
-            },
-            // hasEmail: false
-        },
-    ];
+    // useEffect(() => {
+    //     console.log(eventTickets);
+    // }, [eventTickets]);
 
     const [ticketPricings, setTicketPricings] = useState<RetrievedITicketPricing[]>([]);
-
-    // useEffect(() => {
-    //     // Create the new pricing object with hasEmail set to false
-    //     const newPricing: RetrievedITicketPricing = {
-    //         hasEmail: false
-    //     } as RetrievedITicketPricing;
-
-    //     // Update the ticketPricings state with the new object
-    //     setTicketPricings([newPricing]);
-    // }, []);
-
-    useEffect(() => {
-        // Function to fetch ticket pricing data...
-        const fetchTicketPricingData = () => {
-
-            // Add hasEmail property to each pricing object
-            const ticketPricingsWithHasEmailProperty = dummyTicketPricings.map((pricing: ITicketPricing) => ({
-                ...pricing,
-                hasEmail: false,
-            }));// Update the hasEmail property based on formValues
-
-            // Update the ticketPricings state with the modified data
-            setTicketPricings(ticketPricingsWithHasEmailProperty);
-        };
-
-        // Call the fetch function
-        fetchTicketPricingData();
-    }, []);
+    // const [ticketsTotalPrice, setTicketsTotalPrice] = useState<number>(0);
 
     const [isValidating, setIsValidating] = useState(false);
     const [canCodeBeValidated, setCanCodeBeValidated] = useState(false);
@@ -144,6 +57,52 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({ visibility, se
 
     // Ticket details form values
     const [formValues, setFormValues] = useState<any>({});
+
+    /**
+     * Function to generate each ticket
+     */
+    function getSelectedTickets() {
+
+        // Initialize selected tickets
+        const selectedTickets: RetrievedITicketPricing[] = [];
+
+        // Initialize email index
+        let emailIndex = 1;
+
+        // Initialize total price
+        let totalPrice = 0;
+
+        // Map through the event tickets
+        eventTickets?.forEach((ticket) => {
+            // If the ticket is selected and the selected tickets are more than 0
+            if (ticket.isSelected && ticket.selectedTickets > 0) {
+                // Map through using the count
+                for (let i = 0; i < ticket.selectedTickets; i++) {
+                    // Update the total price
+                    totalPrice += ticket.price;
+
+                    // Update the array
+                    selectedTickets.push({
+                        emailId: emailIndex++,
+                        ticketId: ticket.id,
+                        ticketType: ticket.name,
+                        selectedTickets: ticket.selectedTickets,
+                        price: {
+                            currency: eventInfo?.currency || 'NGN',
+                            total: ticket.price.toString(),
+                        },
+                        hasEmail: false
+                    });
+                }
+
+                // Reset the email index
+                emailIndex = 1;
+            }
+        })
+
+        // Update the state after the iteration is complete
+        setTicketPricings(selectedTickets);
+    };
 
     function convertNumberToText(number: number) {
         switch (number) {
@@ -180,8 +139,6 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({ visibility, se
                 setShowErrorMessages(true);
             }
         });
-        console.log(formValues);
-        console.log(primaryEmail);
     };
 
     const updateHasEmail = (ticketType: string, ticketId: string) => {
@@ -231,7 +188,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({ visibility, se
 
         ticketPricings?.forEach((ticketPricing) => {
             // If a ticket pricing was changed...
-            if (name !== `${ticketPricing.ticketType}${ticketPricing.ticketId}`) {
+            if (name !== `${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`) {
                 return;
             }
             if (value.length == 0) {
@@ -256,12 +213,10 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({ visibility, se
         });
 
     };
-
-    // useEffect(() => {
-    //     console.log(formValues);
-    // }, [formValues]);
+    console.log({ formValues })
 
     const validCoupons = ['SMARTFUS34', 'DE2CCERO03', 'LKJNDUipl3', 'uIMLP34NpY', 'Simlex'];
+
     function checkCoupon() {
         if (couponCodeValue === undefined || couponCodeValue.length < 1) {
             return;
@@ -291,11 +246,11 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({ visibility, se
         }
     }, [couponCodeValue]);
 
-    // useEffect(() => {
-    //     if (primaryEmail) {
-
-    //     }
-    // }, [primaryEmail]);
+    useEffect(() => {
+        if (visibility && eventTickets?.find((ticket) => ticket.selectedTickets > 0)) {
+            getSelectedTickets();
+        }
+    }, [eventTickets, visibility]);
 
 
     // useEffect(() => {
@@ -316,9 +271,9 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({ visibility, se
     useEffect(() => {
         ticketPricings.map((ticketPricing) => {
             const previousEmail = formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`];
-            console.log({previousEmail});
-            console.log(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]);
-            console.log({primaryEmail}); 
+            // console.log({ previousEmail });
+            // console.log(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]);
+            // console.log({ primaryEmail });
 
             if (previousEmail !== undefined && previousEmail === primaryEmail) {
                 if (previousEmail.length === 0 || '') {
@@ -341,61 +296,38 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({ visibility, se
                                 <span>Note: All tickets will also be sent to the selected primary email.</span>
                             </div>
                             <div className={styles.ticketsEmailForms}>
-                                {ticketPricings.map((ticketPricing, index) =>
-                                    <div className={styles.ticketFormFieldContainer} key={index}>
-                                        <label htmlFor={`${ticketPricing.ticketType}${ticketPricing.ticketId}`}>{convertNumberToText(parseInt(ticketPricing.ticketId))} <span className={styles.ticketType}>{ticketPricing.ticketType}</span> ticket</label>
-                                        <input
-                                            type="text"
-                                            placeholder="Enter email"
-                                            name={`${ticketPricing.ticketType}${ticketPricing.ticketId}`}
-                                            onChange={onFormValueChanged} />
-                                        <div className={styles.ticketFormFieldContainer__selectionArea}>
-                                            {/* {!primaryEmail &&
+                                {
+                                    ticketPricings.map((ticketPricing, index) =>
+                                        <div className={styles.ticketFormFieldContainer} key={index}>
+                                            <label htmlFor={`${ticketPricing.ticketType}${ticketPricing.ticketId}`}>
+                                                {ticketPricing.selectedTickets > 1 && convertNumberToText(ticketPricing.emailId)}&nbsp;
+                                                <span className={styles.ticketType}>{ticketPricing.ticketType}</span> ticket
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter email"
+                                                name={`${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`}
+                                                onChange={onFormValueChanged} />
+                                            <div className={styles.ticketFormFieldContainer__selectionArea}>
+                                                {/* {!primaryEmail &&
                                         <button onClick={() => updatePrimaryEmail(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`])}>
                                             Set as primary email
                                         </button>} */}
-                                            {primaryEmail && primaryEmail == formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`] &&
-                                                <div className={styles.selectedEmail}>
-                                                    <button>Selected as primary email</button>
-                                                    <span onClick={unsetPrimaryEmail}>Remove</span>
-                                                </div>}
-                                            {!primaryEmail && <button onClick={() => updatePrimaryEmail(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`])}>
-                                                Set as primary email
-                                            </button>}
+                                                {primaryEmail && primaryEmail == formValues[`${ticketPricing.ticketType}${ticketPricing.emailId}`] &&
+                                                    <div className={styles.selectedEmail}>
+                                                        <button>Selected as primary email</button>
+                                                        <span onClick={unsetPrimaryEmail}>Remove</span>
+                                                    </div>}
+                                                {!primaryEmail && <button onClick={() => updatePrimaryEmail(formValues[`${ticketPricing.ticketType}${ticketPricing.emailId}`])}>
+                                                    Set as primary email
+                                                </button>}
+                                            </div>
+                                            {!primaryEmail && <>
+                                                {showErrorMessages && !ticketPricing.hasEmail && <span className={styles.errorMsg}>Input correct email</span>}
+                                            </>}
                                         </div>
-                                        {!primaryEmail && <>
-                                            {showErrorMessages && !ticketPricing.hasEmail && <span className={styles.errorMsg}>Input correct email</span>}
-                                        </>}
-                                    </div>
-                                )}
-                                {/* <div className={styles.ticketFormFieldContainer}>
-                            <label htmlFor="2ndRegularTicket">2nd Regular ticket</label>
-                            <input type="text" placeholder="Enter email" />
-                            <div className={styles.ticketFormFieldContainer__selectionArea}>
-                                <button>Set as primary email</button>
-                            </div>
-                        </div>
-                        <div className={styles.ticketFormFieldContainer}>
-                            <label htmlFor="3rdRegularTicket">3rd Regular ticket</label>
-                            <input type="text" placeholder="Enter email" />
-                            <div className={styles.ticketFormFieldContainer__selectionArea}>
-                                <button>Set as primary email</button>
-                            </div>
-                        </div>
-                        <div className={styles.ticketFormFieldContainer}>
-                            <label htmlFor="1stPremiumTicket">1st Premium ticket</label>
-                            <input type="text" placeholder="Enter email" />
-                            <div className={styles.ticketFormFieldContainer__selectionArea}>
-                                <button>Set as primary email</button>
-                            </div>
-                        </div>
-                        <div className={styles.ticketFormFieldContainer}>
-                            <label htmlFor="2ndPremiumTicket">2nd Premium ticket</label>
-                            <input type="text" placeholder="Enter email" />
-                            <div className={styles.ticketFormFieldContainer__selectionArea}>
-                                <button>Set as primary email</button>
-                            </div>
-                        </div> */}
+                                    )
+                                }
                             </div>
                             <div className={styles.ticketCouponArea}>
                                 <label htmlFor="coupon">Do you have any coupon code?</label>
@@ -413,49 +345,19 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({ visibility, se
                                 </div>
                             </div>
                             <div className={styles.bottomArea}>
-                                <p>5 tickets selected</p>
+                                <p>{ticketPricings.length} tickets selected</p>
                                 <span>
                                     <span>Total Price</span>
-                                    <span className={styles.amount}>&#8358;<span>{(19950).toLocaleString()}</span></span>
+                                    <span className={styles.amount}>&#8358;<span>{totalPrice?.toLocaleString()}</span></span>
                                 </span>
                             </div>
                         </div>
-                        <div className={styles.rhs}>
-                            <div className={styles.eventImage}>
-                                <Image src={images.event_flyer} alt="Flyer" />
-                            </div>
-                            <h3>Order summary</h3>
-                            <div className={styles.summaryInfo}>
-                                <div className={styles.summaryInfo__ticket}>
-                                    <span>3 x Regular</span>
-                                    <span className={styles.value}>&#8358;{(9000).toLocaleString()}</span>
-                                </div>
-                                {/* <div className={styles.summaryInfo__ticket}>
-                            <span>3 x Premium</span>
-                            <span className={styles.value}>&#8358;{(12000).toLocaleString()}</span>
-                        </div> */}
-                                <div className={styles.summaryInfo__ticket}>
-                                    <span>3 x Premium</span>
-                                    <span className={styles.value}>&#8358;{(12000).toLocaleString()}</span>
-                                </div>
-                                <div className={styles.summaryInfo__subs}>
-                                    <span>Subtotal</span>
-                                    <span className={styles.value}>&#8358;{(21000).toLocaleString()}</span>
-                                </div>
-                                <div className={styles.summaryInfo__subs}>
-                                    <span>Discount (5% off)</span>
-                                    <span className={styles.value}>-&nbsp;&#8358;{(1050).toLocaleString()}</span>
-                                </div>
-                                <div className={styles.summaryInfo__subs}>
-                                    <span>Total</span>
-                                    <span className={styles.value}>&#8358;{(19950).toLocaleString()}</span>
-                                </div>
-                            </div>
-                            <div className={styles.actionButtons}>
-                                <button onClick={() => setVisibility(false)}>Cancel</button>
-                                <button onClick={() => validateFields()}>Pay now</button>
-                            </div>
-                        </div>
+                        <OrderSummarySection
+                            eventTickets={eventTickets}
+                            totalPrice={totalPrice}
+                            setVisibility={setVisibility}
+                            validateFields={validateFields}
+                        />
                     </div>
                 </ModalWrapper>
             }
