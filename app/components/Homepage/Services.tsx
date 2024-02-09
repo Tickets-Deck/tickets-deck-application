@@ -26,14 +26,14 @@ const Services: FunctionComponent<ServicesProps> = (): ReactElement => {
             subText: 'Create and publish events by entering the necessary information',
         },
         {
-            icon: <EfficientPaymentIcon />,
-            title: 'Efficient Payment',
-            subText: 'Easily manage and track sales and commissions.',
-        },
-        {
             icon: <EasyManagementIcon />,
             title: 'Easy Event Management',
             subText: 'Easily manage events from anywhere on your dashboard.',
+        },
+        {
+            icon: <EfficientPaymentIcon />,
+            title: 'Efficient Payment',
+            subText: 'Easily manage and track sales and commissions.',
         },
         {
             icon: <TrackPerformanceIcon />,
