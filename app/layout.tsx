@@ -8,8 +8,8 @@ import { Provider } from './components/Provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: 'Tickets Deck',
-    description: 'The website application for Tickets Deck',
+    title: 'Ticketsdeck',
+    description: 'Unlocking best experiences, easily.'
 }
 
 export default function RootLayout({
