@@ -16,8 +16,8 @@ import { useSession } from 'next-auth/react';
 import { IToastOptions } from '../models/toastOptions';
 
 export const metadata: Metadata = {
-    title: 'Ticket wave web application',
-    description: 'Ticket wave web application',
+    title: 'Ticketsdeck web application',
+    description: 'Unlocking best experiences, easily.'
 }
 
 interface LayoutProps {
