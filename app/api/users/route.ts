@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
     await sendMail({
       to: request.email,
       name: "Account Created",
-      subject: "Welcome to Tickets Deck",
+      subject: "Welcome to Ticketsdeck",
       body: compileAccountCreationTemplate(
         `${request.firstName}`
       ),
