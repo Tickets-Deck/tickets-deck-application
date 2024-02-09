@@ -134,9 +134,9 @@
                         color: $purple-grey;
                     }
                 }
-                .ticketType {
-                    text-transform: lowercase;
-                }
+                // .ticketType {
+                    // text-transform: lowercase;
+                // }
             }
         }
         .ticketCouponArea {
@@ -298,6 +298,7 @@
             overflow-y: auto;
             padding-right: 0.375rem;
             @extend .scrollArea;
+            scrollbar-width: thin;
             &::-webkit-scrollbar {
                 width: 0.35rem;
             }
