@@ -21,13 +21,14 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
     return (
         <section className={styles.createEventSection}>
             <div className={styles.createEventSection__lhs}>
-                <div className={styles.image}>
+                {/* <div className={styles.image}>
                     {typeof (onMobile) == "boolean" && onMobile ? <Image src={images.createImageMobile} alt='Create image' /> : <Image src={images.createImage} alt='Create image' />}
-                </div>
+                </div> */}
+                <h3>Create your own Event</h3>
+                {/* <p>Lets help you manage your ticketing, while you make your events with us.</p> */}
+                <p>Time to enjoy seamless ticketing, and event creation process.</p>
             </div>
             <div className={styles.createEventSection__rhs}>
-                <h3>Create your own Event</h3>
-                <p>Lets help you manage your ticketing while you make your events with us</p>
                 <Link href={user ? "/app/event/create" : "/api/auth/signin"}>
                     <button>Create Events</button>
                 </Link>
