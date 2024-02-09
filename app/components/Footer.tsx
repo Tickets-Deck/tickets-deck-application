@@ -31,21 +31,21 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                     <p className={styles.name}>Ticketsdeck</p>
                 </div>
                 <div className={styles.lhs__info}>
-                    <p>Ticket wave is a global self-service ticketing platform for live experiences that allows anyone to create, share, find and attend events in schools that fuel their passions and enrich their lives.</p>
+                    <p>Events@Ticketsdeck is a global self-service ticketing platform for live experiences that allows anyone to create, share, find and attend events that fuel their passions and enrich their lives.</p>
                 </div>
                 <div className={styles.lhs__socials}>
-                    <Link href='https://www.facebook.com/ticketsdeck0' target="_blank">
+                    {/* <Link href='https://www.facebook.com/ticketsdeck0' target="_blank">
                         <span><FacebookIcon /></span>
-                    </Link>
+                    </Link> */}
                     <Link href='https://twitter.com/theticketsdeck?t=iEC9AjmBaJxk7go7TEXgXQ&s=09' target="_blank">
                         <span><TwitterIcon /></span>
                     </Link>
                     <Link href='https://www.instagram.com/theticketsdeck/' target="_blank">
                         <span><InstagramIcon /></span>
                     </Link>
-                    <Link href='https://www.linkedin.com/company/theticketsdeck/?viewAsMember=true' target="_blank">
+                    {/* <Link href='https://www.linkedin.com/company/theticketsdeck/?viewAsMember=true' target="_blank">
                         <span><LinkedInIcon /></span>
-                    </Link>
+                    </Link> */}
                 </div>
             </div>
             <div className={styles.rhs}>
