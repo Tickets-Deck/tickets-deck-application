@@ -13,19 +13,19 @@ const UserSocials: FunctionComponent<UserSocialsProps> = ({ userInformation }): 
         <div className={styles.userSocials}>
             {
                 userInformation.facebookUrl &&
-                <Link href="#">
+                <Link href={userInformation.facebookUrl} target="_blank">
                     <span><FacebookIcon /></span>
                 </Link>
             }
             {
                 userInformation.instagramUrl &&
-                <Link href={userInformation.instagramUrl}>
+                <Link href={userInformation.instagramUrl} target="_blank">
                     <span><InstagramIcon /></span>
                 </Link>
             }
             {
                 userInformation.twitterUrl &&
-                <Link href="#">
+                <Link href={userInformation.twitterUrl} target="_blank">
                     <span><TwitterIcon /></span>
                 </Link>
             }

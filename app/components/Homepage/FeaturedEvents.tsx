@@ -6,14 +6,13 @@ import Image from 'next/image';
 import images from '../../../public/images';
 import { CaretLeftIcon, CaretRightIcon } from '../SVGs/SVGicons';
 import Link from 'next/link';
-import { events } from '../demoData/Events';
 import Tooltip from '../custom/Tooltip';
 import { ToastContext } from '../../extensions/toast';
-import useResponsive from '../../hooks/useResponsiveness';
 import EventCard from '../Event/EventCard';
 import { useFetchEvents } from '@/app/api/apiClient';
 import { EventResponse } from '@/app/models/IEvents';
 import ComponentLoader from '../Loader/ComponentLoader';
+import useResponsiveness from '../../hooks/useResponsiveness';
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean
@@ -25,9 +24,11 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
     const toasthandler = useContext(ToastContext);
     const [events, setEvents] = useState<EventResponse[]>([]);
     const [isFetchingEvents, setIsFetchingEvents] = useState(true);
-
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < 768;
+    
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     function shareEvent(eventInfo: EventResponse) {
         const eventURL = window.location.href;

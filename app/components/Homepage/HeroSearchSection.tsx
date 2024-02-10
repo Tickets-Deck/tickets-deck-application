@@ -2,7 +2,6 @@ import { ChangeEvent, FunctionComponent, ReactElement, useEffect, useRef, useSta
 import styles from '../../styles/Home.module.scss';
 import useOuterClick from "@/app/hooks/useOuterClick";
 import { EventResponse } from "@/app/models/IEvents";
-import useResponsive from "@/app/hooks/useResponsiveness copy";
 import Link from "next/link";
 import moment from "moment";
 import { InfoIcon } from "../SVGs/SVGicons";
@@ -10,6 +9,7 @@ import { scrollWindow } from "../PageScroll/ScrollWindow";
 import Image from "next/image";
 import images from "@/public/images";
 import { events } from "../demoData/Events";
+import useResponsiveness from "@/app/hooks/useResponsiveness";
 
 interface HeroSearchSectionProps {
 
@@ -17,8 +17,11 @@ interface HeroSearchSectionProps {
 
 const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = (): ReactElement => {
 
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < 768;
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
     const [eventName, setEventName] = useState<string>();
     const [eventNameErrorMsg, setEventNameErrorMsg] = useState(false);
     const [searchResults, setSearchResults] = useState<EventResponse[]>();
@@ -73,7 +76,7 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = (): ReactEl
                         type="text"
                         value={eventName}
                         placeholder='Event name'
-                        onClick={() => typeof (onMobile) == "boolean" && onMobile ? scrollWindow(160) : {}}
+                        onClick={() => onMobile && scrollWindow(160)}
                         onChange={(e) => {
                             if (e.target.value.length == 1) {
                                 setEventName(e.target.value);

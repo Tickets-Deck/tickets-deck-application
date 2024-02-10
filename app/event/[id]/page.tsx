@@ -10,7 +10,6 @@ import { events } from '../../components/demoData/Events';
 import { ToastContext } from '../../extensions/toast';
 import moment from 'moment';
 import EventsGroup from '../../components/events/EventsGroup';
-import useResponsive from '../../hooks/useResponsiveness';
 import Link from 'next/link';
 import { Link as ScrollLink } from 'react-scroll';
 import TicketDelivery from '../../components/Modal/TicketDelivery';
@@ -21,6 +20,7 @@ import { useFetchEventById } from '@/app/api/apiClient';
 import { catchError } from '@/app/constants/catchError';
 import TicketsSelectionContainer from '@/app/components/Event/TicketsSelection';
 import TicketsFetchErrorContainer from '@/app/components/Event/TicketsFetchError';
+import useResponsiveness from '../../hooks/useResponsiveness';
 
 interface EventDetailsProps {
     params: { id: string }
@@ -30,8 +30,11 @@ interface EventDetailsProps {
 const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactElement => {
     const router = useRouter();
 
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < 768;
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
     const id = params.id;
 
     const fetchEventInfo = useFetchEventById();
@@ -257,10 +260,10 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                             style={{ backgroundColor: '#D5542A' }}
                                             onClick={() => {
                                                 shareEventMobile()
-                                                // if (typeof (onMobile) == "boolean" && onMobile) {
+                                                // if (onMobile) {
                                                 //     shareEventMobile();
                                                 //     return;
-                                                // } else if (typeof (onMobile) == "boolean" && !onMobile) {
+                                                // } else if (onDesktop) {
                                                 //     shareEvent()
                                                 // }
                                             }}>

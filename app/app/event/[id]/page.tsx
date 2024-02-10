@@ -9,7 +9,6 @@ import Tooltip from '../../../components/custom/Tooltip';
 import { events } from '../../../components/demoData/Events';
 import { ToastContext } from '../../../extensions/toast';
 import moment from 'moment';
-import useResponsive from '../../../hooks/useResponsiveness';
 import Link from 'next/link';
 import { Link as ScrollLink } from 'react-scroll';
 import SkeletonEventInfo from '../../../components/Skeletons/SkeletonEventInfo';
@@ -17,6 +16,7 @@ import { RetrievedTicketResponse, TicketResponse } from '@/app/models/ITicket';
 import { EventResponse } from '@/app/models/IEvents';
 import { useFetchEventById } from '@/app/api/apiClient';
 import { catchError } from '@/app/constants/catchError';
+import useResponsiveness from '@/app/hooks/useResponsiveness';
 
 interface EventDetailsProps {
     params: { id: string }
@@ -27,8 +27,11 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
 
     const router = useRouter();
 
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < 768;
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
     const id = params.id;
 
     const fetchEventInfo = useFetchEventById();
@@ -288,8 +291,19 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                         <HeartIcon />
                                     </div>
                                 </Tooltip>
+                                {/* {
+                                    onDesktop &&
+                                    <Tooltip tooltipText='Share event'>
+                                        <div className={styles.actionButton} style={{ backgroundColor: '#D5542A' }} onClick={() => shareEvent()}>
+                                            <ShareIcon />
+                                        </div>
+                                    </Tooltip>
+                                }
+                                {
+                                    onMobile &&
+                                } */}
                                 <Tooltip tooltipText='Share event'>
-                                    <div className={styles.actionButton} style={{ backgroundColor: '#D5542A' }} onClick={() => typeof (onMobile) == "boolean" && onMobile ? shareEventMobile() : shareEvent()}>
+                                    <div className={styles.actionButton} style={{ backgroundColor: '#D5542A' }} onClick={() => shareEventMobile()}>
                                         <ShareIcon />
                                     </div>
                                 </Tooltip>

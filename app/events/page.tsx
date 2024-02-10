@@ -8,6 +8,7 @@ import EventsGroup from "../components/events/EventsGroup";
 import { useFetchEvents } from "../api/apiClient";
 import { EventResponse } from "../models/IEvents";
 import { ToastContext } from "../extensions/toast";
+import useResponsiveness from "../hooks/useResponsiveness";
 
 interface AllEventsProps {
 
@@ -18,8 +19,11 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
     const fetchEvents = useFetchEvents();
 
     const toasthandler = useContext(ToastContext);
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < 768;
+    
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     const [isFetchingEvents, setIsFetchingEvents] = useState(true);
     const [events, setEvents] = useState<EventResponse[]>([]);

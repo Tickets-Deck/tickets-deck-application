@@ -5,11 +5,11 @@ import Image from 'next/image';
 import images from '../../public/images';
 import { CaretDownIcon, CloseMenuIcon, HamburgerMenuIcon, MoonIcon, SunIcon, UserIcon } from './SVGs/SVGicons';
 import useOuterClick from '../hooks/useOuterClick';
-import useResponsive from '../hooks/useResponsiveness';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { WindowSizes } from '../constants/windowSizes';
 import { signOut, useSession } from 'next-auth/react';
+import useResponsiveness from '../hooks/useResponsiveness';
 
 interface NavbarProps {
 
@@ -21,9 +21,10 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
     const user = session?.user;
     const pathname = usePathname();
 
-    // const onMobile = useResponsive();    
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < WindowSizes.Tablet_Size;
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     const [navbarDropdownIsVisible, setNavbarDropdownIsVisible] = useState(false);
     // const [mobileNavbarIsVisible, setMobileNavbarIsVisible] = useState(false);
@@ -50,7 +51,7 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
     return (
         <>
             {
-                typeof (onMobile) == "boolean" && onMobile &&
+                onMobile &&
                 <section className={styles.mobileNavbarContainer}>
                     <Link href='/'>
                         <div className={styles.logo}>
@@ -96,14 +97,14 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                 </section>
             }
             {
-                typeof (onMobile) == "boolean" && !onMobile &&
+                onDesktop &&
                 <section className={styles.navbarContainer}>
                     <Link href='/'>
                         <div className={styles.navbarContainer__lhs}>
                             <div className={styles.logo}>
                                 <Image src={images.logoWhite} alt='Logo' />
                             </div>
-                            <p>Ticketsdeck</p>
+                            <p>Events@Ticketsdeck</p>
                         </div>
                     </Link>
                     <div className={styles.navbarContainer__rhs}>

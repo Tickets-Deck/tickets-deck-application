@@ -28,10 +28,10 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                     <div className={styles.logoImage}>
                         <Image src={images.logoPurple} alt="logo" />
                     </div>
-                    <p className={styles.name}>Ticketsdeck</p>
+                    <p className={styles.name}>Events@Ticketsdeck</p>
                 </div>
                 <div className={styles.lhs__info}>
-                    <p>Events@Ticketsdeck is a global self-service ticketing platform for live experiences that allows anyone to create, share, find and attend events that fuel their passions and enrich their lives.</p>
+                    <p>Our goal is to provide a global self-service ticketing platform for live experiences that allows anyone to create, share, find and attend events that fuel their passions and enrich their lives.</p>
                 </div>
                 <div className={styles.lhs__socials}>
                     {/* <Link href='https://www.facebook.com/ticketsdeck0' target="_blank">

@@ -3,11 +3,11 @@ import { FunctionComponent, ReactElement, useContext, Dispatch, SetStateAction }
 import { DeleteIcon, HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
 import Image from "next/image";
 import images from "../../../public/images";
-import useResponsive from "../../hooks/useResponsiveness";
 import styles from "../../styles/EventCard.module.scss";
 import moment from "moment";
 import { ToastContext } from "../../extensions/toast";
 import { EventResponse } from "@/app/models/IEvents";
+import useResponsiveness from "@/app/hooks/useResponsiveness";
 
 interface EventCardProps {
     event: EventResponse
@@ -21,15 +21,17 @@ const EventCard: FunctionComponent<EventCardProps> = (
     { event, mobileAndActionButtonDismiss, consoleDisplay,
         setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
 
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < 768;
     const toasthandler = useContext(ToastContext);
 
     function shareEvent(eventUrl: string) {
         // const eventURL = window.location.href;
         // If we are using a mobile device
-        if (typeof (onMobile) == "boolean" && onMobile) {
+        if (onMobile) {
             if (navigator.share) {
                 navigator.share({
                     title: "Check out this event!",
@@ -44,7 +46,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
                 console.log("Web Share API not supported");
             }
         }
-        if (typeof (onMobile) == "boolean" && !onMobile) {
+        if (onDesktop) {
             try {
                 navigator.clipboard.writeText(eventUrl);
                 toasthandler?.logSuccess('Event link copied.', `The link to ${event.title} has been copied.`)

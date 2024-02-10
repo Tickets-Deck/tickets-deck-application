@@ -3,11 +3,11 @@ import { HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVG
 import Image from "next/image";
 import images from "../../../public/images";
 import styles from '../../styles/EventGroupSection.module.scss';
-import useResponsive from "../../hooks/useResponsiveness";
 import EventCard from "../Event/EventCard";
 import { useRouter } from "next/navigation";
 import { EventResponse } from "@/app/models/IEvents";
 import ComponentLoader from "../Loader/ComponentLoader";
+import useResponsiveness from "../../hooks/useResponsiveness";
 
 interface EventsGroupProps {
     title: string
@@ -23,9 +23,11 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
     { title, subText, eventsData, consoleDisplay, isFetchingEvents, 
         setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
 
- 
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < 768;
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
     const { push } = useRouter();
 
 
