@@ -8,28 +8,28 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `ticketspurchased` DROP FOREIGN KEY `TicketsPurchased_eventId_fkey`;
+ALTER TABLE `TicketsPurchased` DROP FOREIGN KEY `TicketsPurchased_eventId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `ticketspurchased` DROP FOREIGN KEY `TicketsPurchased_ticketId_fkey`;
+ALTER TABLE `TicketsPurchased` DROP FOREIGN KEY `TicketsPurchased_ticketId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `ticketspurchased` DROP FOREIGN KEY `TicketsPurchased_userId_fkey`;
+ALTER TABLE `TicketsPurchased` DROP FOREIGN KEY `TicketsPurchased_userId_fkey`;
 
 -- AlterTable
-ALTER TABLE `events` DROP COLUMN `ticketsPurchasedCount`,
+ALTER TABLE `Events` DROP COLUMN `ticketsPurchasedCount`,
     ADD COLUMN `TicketOrdersCount` INTEGER NOT NULL DEFAULT 0;
 
 -- AlterTable
-ALTER TABLE `tickets` DROP COLUMN `ticketsPurchasedCount`,
+ALTER TABLE `Tickets` DROP COLUMN `ticketsPurchasedCount`,
     ADD COLUMN `TicketOrdersCount` INTEGER NOT NULL DEFAULT 0;
 
 -- AlterTable
-ALTER TABLE `users` DROP COLUMN `ticketsPurchasedCount`,
+ALTER TABLE `Users` DROP COLUMN `ticketsPurchasedCount`,
     ADD COLUMN `TicketOrdersCount` INTEGER NOT NULL DEFAULT 0;
 
 -- DropTable
-DROP TABLE `ticketspurchased`;
+DROP TABLE `TicketsPurchased`;
 
 -- CreateTable
 CREATE TABLE `TicketOrders` (
