@@ -17,6 +17,8 @@ import UserNameUpdateContainer from "@/app/components/ProfilePage/UserNameUpdate
 import UserCoverContainer from "@/app/components/ProfilePage/UserCoverContainer";
 import AccountSettingsFormContainer from "@/app/components/ProfilePage/AccountSettingsFormContainer";
 import Link from "next/link"
+import { useDispatch } from "react-redux";
+import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
 
 interface ProfilePageProps {
 
@@ -41,6 +43,8 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
     const [emailErrorMsg, setEmailErrorMsg] = useState(false);
     const [triggerInfoUpdate, setTriggerInfoUpdate] = useState(false);
 
+    const dispatch = useDispatch();
+
     function showSuccessToast() {
         toastHandler?.logSuccess("Success", "This is a success message");
     };
@@ -52,6 +56,8 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
 
         await fetchUserInformation(session?.user.id as string)
             .then((response) => {
+                // Save to redux
+                dispatch(updateUserCredentials(response.data));
                 // console.log(response.data);
                 setUserInformation(response.data);
             })
@@ -83,7 +89,12 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
         // Update user information
         await updateUserInformation(userInformation?.id as string, data)
             .then(async (response) => {
-                console.log(response);
+                // console.log(response);
+
+                // Save to redux
+                dispatch(updateUserCredentials(response.data));
+
+                // Fetch user information again
                 await handleFetchUserInformation();
 
                 // Update the user's profile photo in the session
