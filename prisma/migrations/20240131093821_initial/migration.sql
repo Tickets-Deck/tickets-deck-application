@@ -97,7 +97,7 @@ CREATE TABLE `TicketsPurchased` (
     `eventId` VARCHAR(191) NOT NULL,
     `ticketId` VARCHAR(191) NOT NULL,
     `quantity` INTEGER NOT NULL,
-    `totalPrice` DECIMAL(65, 30) NOT NULL,
+    `totalPrice` DECIMAL(65, 2) NOT NULL,
     `createdAt` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NULL,
 
@@ -154,7 +154,7 @@ CREATE TABLE `Tickets` (
     `id` VARCHAR(191) NOT NULL,
     `eventId` VARCHAR(191) NOT NULL,
     `role` VARCHAR(191) NOT NULL DEFAULT 'General',
-    `price` DECIMAL(65, 30) NOT NULL,
+    `price` DECIMAL(65, 2) NOT NULL,
     `quantity` INTEGER NOT NULL,
     `remainingTickets` INTEGER NOT NULL DEFAULT 0,
     `ticketsPurchasedCount` INTEGER NOT NULL DEFAULT 0,
