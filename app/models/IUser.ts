@@ -20,7 +20,7 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   profilePhotoId: string | undefined;
   coverPhotoId: string | undefined;
   events: Event[] | undefined;
-  
+
   occupation: string | undefined;
   bio: string | undefined;
 
@@ -32,9 +32,11 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   followersCount: number;
   followingCount: number;
   eventsCount: number;
-  ticketsCount: number;
   bookmarksCount: number;
   favoritesCount: number;
+  ticketsBought: number;
+  ticketsSold: number;
+  totalRevenue: number;
 
   bookmarks: Bookmarks[];
   favorites: Favourites[];
@@ -47,7 +49,6 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   isSubscribed: boolean;
   isNewsletterSubscribed: boolean;
 
-  ticketsPurchasedCount: number;
   ticketsPurchased: TicketPurchased[];
 };
 
@@ -64,11 +65,11 @@ export type UsernameRequest = {
 };
 
 export type UserCredentialsUpdateRequest = {
-    email: string | null;
-    firstName: string | null;
-    lastName: string | null;
-    phone: string | null;
-    facebookUrl: string | null;
-    twitterUrl: string | null;
-    instagramUrl: string | null;
-  };
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  phone: string | null;
+  facebookUrl: string | null;
+  twitterUrl: string | null;
+  instagramUrl: string | null;
+};
