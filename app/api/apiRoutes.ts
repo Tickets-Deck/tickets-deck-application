@@ -41,4 +41,14 @@ export class ApiRoutes {
    * The route to UpdateUserName endpoint
    */
   static UpdateUserName: string = "api/users/username";
+
+  /**
+   * The route to TicketOrder endpoint
+   */
+  static TicketOrder: string = "api/events/tickets/order";
+
+  /**
+   * The route to Payment endpoint
+   */
+  static Payment: string = "api/events/tickets/payment";
 }
