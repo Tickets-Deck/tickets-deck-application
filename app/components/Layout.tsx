@@ -8,33 +8,61 @@ import { ToastMessageType } from '../models/ToastMessageType';
 import ToastCard from './Card/ToastCard';
 import Sidebar from './shared/Sidebar';
 import Topbar from './shared/Topbar';
-import { usePathname, useRouter } from 'next/navigation';
-import { Provider } from './Provider';
+import { usePathname } from 'next/navigation';
 import images from '@/public/images';
 import Image from "next/image";
-import { useSession } from 'next-auth/react';
 import { IToastOptions } from '../models/toastOptions';
+import { Session } from 'next-auth';
+import { useFetchUserInformation } from '../api/apiClient';
+import { useDispatch } from 'react-redux';
+import { updateUserCredentials } from '../redux/features/user/userSlice';
+import { catchError } from '../constants/catchError';
 
 export const metadata: Metadata = {
-    title: 'Ticketsdeck web application',
+    title: 'Events@Ticketsdeck',
     description: 'Unlocking best experiences, easily.'
 }
 
 interface LayoutProps {
     children?: ReactNode;
+    session: Session | null
 }
 
-const Layout: FunctionComponent<LayoutProps> = ({ children }): ReactElement => {
+const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactElement => {
 
     const [loaderIsVisible, setLoaderIsVisible] = useState(true);
 
     const iswindow = typeof window !== "undefined" ? true : false;
+    
+    const fetchUserInformation = useFetchUserInformation();
+
+    const dispatch = useDispatch();
+
+    async function handleFetchUserInformation() {
+
+        await fetchUserInformation(session?.user.id as string)
+            .then((response) => {
+                // Save to redux
+                dispatch(updateUserCredentials(response.data));
+            })
+            .catch((error) => {
+                // console.log(error);
+                catchError(error);
+            })
+    };
+
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             setLoaderIsVisible(false);
         }
     }, [iswindow]);
+
+    useEffect(() => {
+        if (session) {
+            handleFetchUserInformation();
+        }
+    }, [session])
 
     const pathname = usePathname();
 
