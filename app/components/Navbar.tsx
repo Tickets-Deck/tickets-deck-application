@@ -10,6 +10,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { WindowSizes } from '../constants/windowSizes';
 import { signOut, useSession } from 'next-auth/react';
 import useResponsiveness from '../hooks/useResponsiveness';
+import { useDispatch } from 'react-redux';
+import { clearUserCredentials } from '../redux/features/user/userSlice';
 
 interface NavbarProps {
 
@@ -25,6 +27,8 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
     const isMobile = windowRes.width && windowRes.width < 768;
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
     const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
+    const dispatch = useDispatch();
 
     const [navbarDropdownIsVisible, setNavbarDropdownIsVisible] = useState(false);
     // const [mobileNavbarIsVisible, setMobileNavbarIsVisible] = useState(false);
@@ -135,7 +139,11 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                                         <div className={styles.dropdownContainer}>
                                             <Link href='/app'>Dashboard</Link>
                                             <Link href='/app/profile'>Profile</Link>
-                                            <span onClick={() => signOut()}>Log out</span>
+                                            <span onClick={() => {
+                                                signOut();
+                                                // Clear user credentials from redux store
+                                                dispatch(clearUserCredentials());
+                                            }}>Log out</span>
                                         </div>
                                     }
                                 </>
