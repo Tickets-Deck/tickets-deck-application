@@ -3,16 +3,18 @@ import Image from "next/image";
 import styles from "../../styles/TicketDelivery.module.scss";
 import { FunctionComponent, ReactElement, Dispatch, SetStateAction } from "react";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
+import ComponentLoader from "../Loader/ComponentLoader";
 
 interface OrderSummarySectionProps {
     eventTickets: RetrievedTicketResponse[] | undefined
     totalPrice: number
     setVisibility: Dispatch<SetStateAction<boolean>>
-    validateFields: () => void
+    handleTicketOrderCreation(): Promise<void>
+    isProcessingOrder: boolean
 }
 
 const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
-    { eventTickets, totalPrice, setVisibility, validateFields }): ReactElement => {
+    { eventTickets, totalPrice, setVisibility, handleTicketOrderCreation, isProcessingOrder }): ReactElement => {
 
     return (
         <div className={styles.rhs}>
@@ -55,8 +57,11 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
                 </div>
             </div>
             <div className={styles.actionButtons}>
-                <button onClick={() => setVisibility(false)}>Cancel</button>
-                <button onClick={() => validateFields()}>Pay now</button>
+                <button onClick={() => setVisibility(false)} disabled={isProcessingOrder}>Cancel</button>
+                <button onClick={() => handleTicketOrderCreation()} disabled={isProcessingOrder}>
+                    Pay now
+                    {isProcessingOrder && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
+                </button>
             </div>
         </div>
     );
