@@ -12,6 +12,10 @@ import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import { EventResponse } from "@/app/models/IEvents";
 import OrderSummarySection from "../TicketDelivery/OrderSummarySection";
 import useResponsiveness from "../../hooks/useResponsiveness";
+import { useCreateTicketOrder, useInitializePaystackPayment } from "@/app/api/apiClient";
+import { SingleTicketOrderRequest, TicketOrderRequest } from "@/app/models/ITicketOrder";
+import { useSelector } from "react-redux";
+import { UserCredentialsResponse } from "@/app/models/IUser";
 
 interface TicketDeliveryProps {
     setVisibility: Dispatch<SetStateAction<boolean>>
@@ -31,6 +35,9 @@ enum ValidationStatus {
 const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     { visibility, setVisibility, eventTickets, eventInfo, totalPrice }): ReactElement => {
 
+    const createTicketOrder = useCreateTicketOrder();
+    const initializePaystackPayment = useInitializePaystackPayment();
+
     const toastHandler = useContext(ToastContext);
 
     const windowRes = useResponsiveness();
@@ -41,6 +48,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     // useEffect(() => {
     //     console.log(eventTickets);
     // }, [eventTickets]);
+
+    const userInformation = useSelector((state: UserCredentialsResponse) => state);
 
     const [ticketPricings, setTicketPricings] = useState<RetrievedITicketPricing[]>([]);
     // const [ticketsTotalPrice, setTicketsTotalPrice] = useState<number>(0);
@@ -55,6 +64,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     const [showErrorMessages, setShowErrorMessages] = useState(false);
 
     const [primaryEmail, setPrimaryEmail] = useState<string>();
+
+    const [isProcessingOrder, setIsProcessingOrder] = useState(false);
 
     // Ticket details form values
     const [formValues, setFormValues] = useState<any>({});
@@ -142,6 +153,59 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         });
     };
 
+    // console.log("ticketPricings: ", ticketPricings);
+
+    /**
+     * Function to handle ticket order creation
+     */
+    async function handleTicketOrderCreation() {
+
+        validateFields();
+
+        const collatedTicketOrderRequests: SingleTicketOrderRequest[] = ticketPricings.map((ticketPricing) => {
+            console.log(ticketPricing.ticketType, ticketPricing.emailId);
+            return {
+                ticketId: ticketPricing.ticketId,
+                price: parseInt(ticketPricing.price.total),
+                associatedEmail: formValues[`${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`],
+                contactEmail: primaryEmail ?? userInformation.email,
+            }
+        });
+
+        const ticketOrder: TicketOrderRequest = {
+            eventId: eventInfo?.eventId as string,
+            tickets: collatedTicketOrderRequests,
+            contactEmail: primaryEmail ?? userInformation.email,
+            userId: 'rndomUserId',
+        };
+
+        console.log({ ticketOrder });
+
+        try {
+            // Start processing order
+            setIsProcessingOrder(true);
+
+            const response = await createTicketOrder(ticketOrder);
+
+            console.log("Ticket order response: ", response);
+
+            if (response) {
+                const paymentInit = await initializePaystackPayment({ ticketOrderId: response.data.id, callbackUrl: `${window.location.origin}/verify-payment` });
+
+                console.log({ paymentInit });
+
+                if (paymentInit) {
+                    window.location.href = paymentInit.data.data.authorization_url;
+                }
+            }
+        } catch (error) {
+            // Stop processing order
+            setIsProcessingOrder(false);
+            // Log the error
+            console.log("Error creating ticket order: ", error);
+        }
+    }
+
     const updateHasEmail = (ticketType: string, ticketId: string) => {
         setTicketPricings(prevTicketPricings => {
             return prevTicketPricings.map(pricing => {
@@ -188,10 +252,17 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         const isCheck = e.target.type === 'checkbox';
 
         ticketPricings?.forEach((ticketPricing) => {
+
+            // If the ticket pricing email is the current primary email...
+            if (primaryEmail == formValues[`${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`]) {
+                unsetPrimaryEmail();
+            }
+
             // If a ticket pricing was changed...
             if (name !== `${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`) {
                 return;
             }
+            
             if (value.length == 0) {
                 // Update the form value
                 setFormValues({ ...formValues, [name]: isCheck ? checked : value });
@@ -214,7 +285,6 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         });
 
     };
-    console.log({ formValues })
 
     const validCoupons = ['SMARTFUS34', 'DE2CCERO03', 'LKJNDUipl3', 'uIMLP34NpY', 'Simlex'];
 
@@ -271,7 +341,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
 
     useEffect(() => {
         ticketPricings.map((ticketPricing) => {
-            const previousEmail = formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`];
+            const previousEmail = formValues[`${ticketPricing.ticketType}${ticketPricing.emailId}`];
             // console.log({ previousEmail });
             // console.log(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]);
             // console.log({ primaryEmail });
@@ -314,12 +384,12 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                         <button onClick={() => updatePrimaryEmail(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`])}>
                                             Set as primary email
                                         </button>} */}
-                                                {primaryEmail && primaryEmail == formValues[`${ticketPricing.ticketType}${ticketPricing.emailId}`] &&
+                                                {primaryEmail && primaryEmail == formValues[`${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`] &&
                                                     <div className={styles.selectedEmail}>
                                                         <button>Selected as primary email</button>
                                                         <span onClick={unsetPrimaryEmail}>Remove</span>
                                                     </div>}
-                                                {!primaryEmail && <button onClick={() => updatePrimaryEmail(formValues[`${ticketPricing.ticketType}${ticketPricing.emailId}`])}>
+                                                {!primaryEmail && <button onClick={() => updatePrimaryEmail(formValues[`${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`])}>
                                                     Set as primary email
                                                 </button>}
                                             </div>
@@ -357,7 +427,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                             eventTickets={eventTickets}
                             totalPrice={totalPrice}
                             setVisibility={setVisibility}
-                            validateFields={validateFields}
+                            handleTicketOrderCreation={handleTicketOrderCreation}
+                            isProcessingOrder={isProcessingOrder}
                         />
                     </div>
                 </ModalWrapper>
@@ -399,12 +470,12 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                         <button onClick={() => updatePrimaryEmail(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`])}>
                                             Set as primary email
                                         </button>} */}
-                                            {primaryEmail && primaryEmail == formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`] &&
+                                            {primaryEmail && primaryEmail == formValues[`${ticketPricing.ticketType}${ticketPricing.emailId}`] &&
                                                 <div className={styles.selectedEmail}>
                                                     <button>Selected as primary email</button>
                                                     <span onClick={unsetPrimaryEmail}>Remove</span>
                                                 </div>}
-                                            {!primaryEmail && <button onClick={() => updatePrimaryEmail(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`])}>
+                                            {!primaryEmail && <button onClick={() => updatePrimaryEmail(formValues[`${ticketPricing.ticketType}${ticketPricing.emailId}`])}>
                                                 Set as primary email
                                             </button>}
                                         </div>
