@@ -75,12 +75,14 @@ export async function POST(req: NextRequest) {
       // Update the uploaded image id with the cloudinary response
       uploadedImageId = cloudinaryRes.public_id;
 
-      //   console.log({cloudinaryRes});
+      // Declare the tickets array
+      const tickets = request.tickets;
 
-      //   return NextResponse.json(
-      //     { cloudinaryRes },
-      //     { status: 200 }
-      //   );
+      // Update the tickets array so the remainingTickets is equal to the quantity
+      const updatedTickets = tickets.map((ticket) => ({
+        ...ticket,
+        remainingTickets: ticket.quantity,
+      }));
 
       // Create the event
       const event = await prisma.events.create({
@@ -118,7 +120,7 @@ export async function POST(req: NextRequest) {
           currency: request.currency,
           tickets: {
             createMany: {
-              data: request.tickets,
+              data: updatedTickets,
             },
           },
           purchaseStartDate: request.purchaseStartDate,
@@ -141,7 +143,6 @@ export async function POST(req: NextRequest) {
       // Return the event
       return NextResponse.json(event, { status: 200 });
     } catch (error) {
-        
       // If the image was uploaded to cloudinary...
       if (uploadedImageId) {
         // Delete the event's main image from cloudinary
@@ -355,16 +356,16 @@ export async function DELETE(req: NextRequest) {
         });
 
         // Decrement the number of events created by the user
-        // await prisma.users.update({
-        //   where: {
-        //     id: event.publisherId,
-        //   },
-        //   data: {
-        //     eventsCount: {
-        //       decrement: 1,
-        //     },
-        //   },
-        // });
+        await prisma.users.update({
+          where: {
+            id: event.publisherId,
+          },
+          data: {
+            eventsCount: {
+              decrement: 1,
+            },
+          },
+        });
 
         // Return success message
         return NextResponse.json(
