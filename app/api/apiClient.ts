@@ -6,7 +6,7 @@ import { TicketOrderRequest } from "../models/ITicketOrder";
 import { InitializePayStack } from "../models/IInitializePayStack";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_DEV,
+  baseURL: ApiRoutes.BASE_URL_TEST,
 });
 
 export function useCreateNewsletterSubscriber() {
