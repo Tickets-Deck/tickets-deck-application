@@ -3,20 +3,25 @@ import { Inter } from 'next/font/google'
 import './styles/globals.scss'
 import NextTopLoader from 'nextjs-toploader'
 import Layout from './components/Layout'
-import { Provider } from './components/Provider'
+import { GlobalProvider } from './components/Provider'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/auth'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: 'Ticketsdeck',
+    title: 'Events@Ticketsdeck',
     description: 'Unlocking best experiences, easily.'
 }
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+
+    const session = await getServerSession(authOptions);
+
     return (
         <html lang="en">
             <body className={inter.className}>
@@ -31,9 +36,9 @@ export default function RootLayout({
                     speed={200}
                     shadow="0 0 10px #d39efa,0 0 5px #5116a2"
                 />
-                <Provider>
-                    <Layout children={children} />
-                </Provider>
+                <GlobalProvider>
+                    <Layout children={children} session={session} />
+                </GlobalProvider>
             </body>
         </html>
     )
