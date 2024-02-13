@@ -35,7 +35,6 @@ model Users {
     followersCount Int         @default(0)
     followingCount Int         @default(0)
     eventsCount    Int         @default(0)
-    ticketsCount   Int         @default(0)
     bookmarksCount Int         @default(0)
     favoritesCount Int         @default(0)
     bookmarks      Bookmarks[]
@@ -51,8 +50,10 @@ model Users {
     isSubscribed           Boolean @default(false)
     isNewsletterSubscribed Boolean @default(false)
 
-    TicketOrdersCount Int            @default(0)
-    TicketOrders      TicketOrders[]
+    ticketOrders  TicketOrders[]
+    ticketsBought Int            @default(0)
+    ticketsSold   Int            @default(0)
+    totalRevenue  Decimal        @default(0)
 
     createdAt DateTime?  @default(now())
     updatedAt DateTime?  @updatedAt
@@ -93,7 +94,7 @@ model Events {
     favoritesCount    Int            @default(0)
     bookmarks         Bookmarks[]
     favorites         Favorites[]
-    TicketOrdersCount Int            @default(0)
+    ticketOrdersCount Int            @default(0)
     TicketOrders      TicketOrders[]
 
     createdAt DateTime? @default(now())
@@ -133,13 +134,13 @@ model OrderedTickets {
     id              String       @id @default(uuid())
     ticket          Tickets      @relation(fields: [ticketId], references: [id])
     ticketId        String
-    orderId         String       
-    order           TicketOrders @relation(fields: [orderId], references: [id])
+    orderId         String
+    order           TicketOrders @relation(fields: [orderId], references: [orderId])
     associatedEmail String?
     contactEmail    String
     price           Decimal
     orderStatus     OrderStatus
-    paymentId       String?      
+    paymentId       String?
     createdAt       DateTime?    @default(now())
     updatedAt       DateTime?    @updatedAt
 
@@ -153,8 +154,8 @@ model OrderedTickets {
 /// Each ticket order can have multiple associated payments allowing you to track payment transactions for each order efficiently, so the relationship is defined as a one-to-many relationship.
 model TicketOrders {
     id         String           @id @default(uuid())
-    user       Users            @relation(fields: [userId], references: [id])
-    userId     String
+    user       Users?           @relation(fields: [userId], references: [id])
+    userId     String?
     event      Events           @relation(fields: [eventId], references: [id])
     eventId    String
     tickets    OrderedTickets[]
@@ -162,10 +163,10 @@ model TicketOrders {
     totalPrice Decimal
 
     contactEmail  String
-    orderId       String        @default(uuid())
+    orderId       String        @unique @default(uuid())
     orderStatus   OrderStatus
     paymentStatus PaymentStatus
-    paymentId     String?       
+    paymentId     String?
     payments      Payments[]    @relation("TicketOrderPayments")
 
     createdAt DateTime? @default(now())
@@ -179,20 +180,21 @@ model TicketOrders {
 /// The Payment model includes a ticketOrder field, establishing a one-to-many relationship between TicketOrders and Payment.
 /// The ticketOrderId field in the Payment model references the id field of the TicketOrders model, establishing the foreign key constraint.
 model Payments {
-    id            String        @id @default(uuid())
-    user          Users         @relation(fields: [userId], references: [id])
-    userId        String
+    id                     String                 @id @default(uuid())
+    user                   Users?                 @relation(fields: [userId], references: [id])
+    userId                 String?
     // ticketOrder   TicketOrders  @relation(fields: [ticketOrderId], references: [id])
-    ticketOrder   TicketOrders  @relation("TicketOrderPayments", fields: [ticketOrderId], references: [id])
-    ticketOrderId String
-    amount        Decimal
-    amountPaid    Decimal?
-    currency      String
-    paymentStatus PaymentStatus
-    paymentId     String
-    paymentMethod String
-    createdAt     DateTime?     @default(now())
-    updatedAt     DateTime?     @updatedAt
+    ticketOrder            TicketOrders           @relation("TicketOrderPayments", fields: [ticketOrderId], references: [id])
+    ticketOrderId          String
+    amount                 Decimal
+    amountPaid             Decimal?
+    currency               String?
+    paymentStatus          PaymentStatus
+    paymentReference       String
+    paymentServiceProvider PaymentServiceProvider
+    paidAt                 DateTime?
+    createdAt              DateTime?              @default(now())
+    updatedAt              DateTime?              @updatedAt
 
     @@map("Payment")
 }
@@ -240,15 +242,23 @@ enum EventVisibility {
 }
 
 enum OrderStatus {
-    Pending
-    Confirmed
-    Cancelled
+    Pending          @map("1")
+    PaymentInitiated @map("2")
+    Confirmed        @map("3")
+    Cancelled        @map("4")
 }
 
 enum PaymentStatus {
-    Pending
-    Paid
-    Failed
+    Pending @map("1")
+    Paid    @map("2")
+    Failed  @map("3")
+}
+
+enum PaymentServiceProvider {
+    Paystack     @map("1")
+    Flutterwave  @map("2")
+    Cash         @map("3")
+    BankTransfer @map("4")
 }
 
 model EventImages {
@@ -271,7 +281,7 @@ model Tickets {
     remainingTickets  Int              @default(0)
     numberOfUsers     Int
     description       String?
-    TicketOrdersCount Int              @default(0)
+    ticketOrdersCount Int              @default(0)
     TicketOrders      OrderedTickets[]
     createdAt         DateTime?        @default(now())
     updatedAt         DateTime?        @updatedAt
