@@ -2,9 +2,11 @@ import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
 import { CoverPhotoRequest, ProfilePhotoRequest, UserCredentialsRequest, UserCredentialsUpdateRequest, UsernameRequest } from "../models/IUser";
 import { EventRequest } from "../models/IEvents";
+import { TicketOrderRequest } from "../models/ITicketOrder";
+import { InitializePayStack } from "../models/IInitializePayStack";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_TEST,
+  baseURL: ApiRoutes.BASE_URL_DEV,
 });
 
 export function useCreateNewsletterSubscriber() {
@@ -120,4 +122,28 @@ export function useUpdateUserInformation() {
     }
     
     return updateUserInformation;
+}
+
+export function useCreateTicketOrder() {
+    async function createTicketOrder(data: TicketOrderRequest) {
+        return API.post(ApiRoutes.TicketOrder, data);
+    }
+    
+    return createTicketOrder;
+}
+
+export function useInitializePaystackPayment() {
+    async function initializePaystackPayment(data: InitializePayStack) {
+        return API.post(ApiRoutes.Payment, data);
+    }
+
+    return initializePaystackPayment;
+}
+
+export function useVerifyPaystackPayment() {
+    async function verifyPaystackPayment(reference: string) {
+        return API.get(`${ApiRoutes.Payment}?trxref=${reference}`);
+    }
+
+    return verifyPaystackPayment;
 }
