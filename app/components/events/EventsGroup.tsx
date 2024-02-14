@@ -57,12 +57,19 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                                 event={event}
                                 mobileAndActionButtonDismiss
                                 key={index}
+                                gridDisplay={true}
                                 consoleDisplay={consoleDisplay}
                                 setIsDeleteConfirmationModalVisible={setIsDeleteConfirmationModalVisible}
                                 setSelectedEvent={setSelectedEvent}
                             />
                         )
-                    }
+                    } 
+                    {/* {
+                        ([...Array(10)]).map((_, index) =>
+                            <EventCard
+                            gridDisplay={true} event={eventsData?.[0] as EventResponse} key={index} />
+                        )
+                    } */}
                 </div>
                 {
                     isFetchingEvents &&
