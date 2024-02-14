@@ -117,7 +117,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
                     !isFetchingEvents && events.length > 0 &&
                     <div className={styles.eventsContainerCarousel}>
                         {
-                            events.map((event, index) =>
+                            events.slice(0, 3).map((event, index) =>
                                 <EventCard event={event} key={index} />
                             )
                         }
@@ -140,13 +140,13 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
                     </div>
                 }
             </div>
-            {
+            {/* {
                 events.length > 3 &&
                 <>
                     <span className={styles.controller}><CaretLeftIcon /></span>
                     <span className={styles.controller}><CaretRightIcon /></span>
                 </>
-            }
+            } */}
         </section>
     );
 }
