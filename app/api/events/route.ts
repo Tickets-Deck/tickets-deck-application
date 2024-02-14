@@ -179,6 +179,9 @@ export async function GET(req: NextRequest) {
         where: {
           id: specifiedId,
         },
+        orderBy: {
+          date: "asc",
+        },
         include: {
           user: true,
           tickets: {
@@ -230,6 +233,9 @@ export async function GET(req: NextRequest) {
       const event = await prisma.events.findFirst({
         where: {
           eventId: specifiedEventId,
+        },
+        orderBy: {
+          date: "asc",
         },
         include: {
           user: true,
