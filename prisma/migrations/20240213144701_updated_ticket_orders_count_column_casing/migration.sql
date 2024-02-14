@@ -6,9 +6,9 @@
 
 */
 -- AlterTable
-ALTER TABLE `events` DROP COLUMN `TicketOrdersCount`,
+ALTER TABLE `Events` DROP COLUMN `TicketOrdersCount`,
     ADD COLUMN `ticketOrdersCount` INTEGER NOT NULL DEFAULT 0;
 
 -- AlterTable
-ALTER TABLE `tickets` DROP COLUMN `TicketOrdersCount`,
+ALTER TABLE `Tickets` DROP COLUMN `TicketOrdersCount`,
     ADD COLUMN `ticketOrdersCount` INTEGER NOT NULL DEFAULT 0;

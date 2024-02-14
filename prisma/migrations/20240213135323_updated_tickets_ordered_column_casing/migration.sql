@@ -5,5 +5,5 @@
 
 */
 -- AlterTable
-ALTER TABLE `users` DROP COLUMN `TicketOrdersCount`,
+ALTER TABLE `Users` DROP COLUMN `TicketOrdersCount`,
     ADD COLUMN `ticketOrdersCount` INTEGER NOT NULL DEFAULT 0;

@@ -5,7 +5,7 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `orderedtickets` DROP FOREIGN KEY `OrderedTickets_orderId_fkey`;
+ALTER TABLE `OrderedTickets` DROP FOREIGN KEY `OrderedTickets_orderId_fkey`;
 
 -- CreateIndex
 CREATE UNIQUE INDEX `TicketOrders_orderId_key` ON `TicketOrders`(`orderId`);

@@ -8,11 +8,11 @@
 
 */
 -- AlterTable
-ALTER TABLE `orderedtickets` MODIFY `orderStatus` ENUM('1', '2', '3', '4') NOT NULL;
+ALTER TABLE `OrderedTickets` MODIFY `orderStatus` ENUM('1', '2', '3', '4') NOT NULL;
 
 -- AlterTable
-ALTER TABLE `payment` MODIFY `paymentStatus` ENUM('1', '2', '3') NOT NULL;
+ALTER TABLE `Payment` MODIFY `paymentStatus` ENUM('1', '2', '3') NOT NULL;
 
 -- AlterTable
-ALTER TABLE `ticketorders` MODIFY `orderStatus` ENUM('1', '2', '3', '4') NOT NULL,
+ALTER TABLE `TicketOrders` MODIFY `orderStatus` ENUM('1', '2', '3', '4') NOT NULL,
     MODIFY `paymentStatus` ENUM('1', '2', '3') NOT NULL;

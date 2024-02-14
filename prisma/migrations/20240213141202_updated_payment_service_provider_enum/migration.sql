@@ -5,4 +5,4 @@
 
 */
 -- AlterTable
-ALTER TABLE `payment` MODIFY `paymentServiceProvider` ENUM('1', '2', '3', '4') NOT NULL;
+ALTER TABLE `Payment` MODIFY `paymentServiceProvider` ENUM('1', '2', '3', '4') NOT NULL;

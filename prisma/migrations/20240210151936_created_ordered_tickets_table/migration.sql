@@ -6,10 +6,10 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `ticketorders` DROP FOREIGN KEY `TicketOrders_ticketId_fkey`;
+ALTER TABLE `TicketOrders` DROP FOREIGN KEY `TicketOrders_ticketId_fkey`;
 
 -- AlterTable
-ALTER TABLE `ticketorders` DROP COLUMN `associatedEmail`,
+ALTER TABLE `TicketOrders` DROP COLUMN `associatedEmail`,
     DROP COLUMN `ticketId`;
 
 -- CreateTable

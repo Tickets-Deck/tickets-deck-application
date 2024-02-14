@@ -6,10 +6,10 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `payment` DROP FOREIGN KEY `Payment_userId_fkey`;
+ALTER TABLE `Payment` DROP FOREIGN KEY `Payment_userId_fkey`;
 
 -- AlterTable
-ALTER TABLE `payment` DROP COLUMN `paymentMethod`,
+ALTER TABLE `Payment` DROP COLUMN `paymentMethod`,
     ADD COLUMN `paymentServiceProvider` ENUM('Paystack', 'Flutterwave', 'Cash', 'BankTransfer') NOT NULL,
     MODIFY `userId` VARCHAR(191) NULL;
 

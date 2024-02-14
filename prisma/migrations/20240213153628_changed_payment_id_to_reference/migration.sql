@@ -6,5 +6,5 @@
 
 */
 -- AlterTable
-ALTER TABLE `payment` DROP COLUMN `paymentId`,
+ALTER TABLE `Payment` DROP COLUMN `paymentId`,
     ADD COLUMN `paymentReference` VARCHAR(191) NOT NULL;
