@@ -13,12 +13,13 @@ interface EventCardProps {
     event: EventResponse
     mobileAndActionButtonDismiss?: boolean
     consoleDisplay?: boolean
+    gridDisplay?: boolean
     setIsDeleteConfirmationModalVisible?: Dispatch<SetStateAction<boolean>>
     setSelectedEvent?: Dispatch<SetStateAction<EventResponse | undefined>>
 }
 
 const EventCard: FunctionComponent<EventCardProps> = (
-    { event, mobileAndActionButtonDismiss, consoleDisplay,
+    { event, mobileAndActionButtonDismiss, consoleDisplay, gridDisplay,
         setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
 
     const windowRes = useResponsiveness();
@@ -54,7 +55,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
             } catch (error) {
                 console.error("Copying to clipboard failed:", error);
             }
-        
+
         }
     }
     function shareEventMobile(eventUrl: string) {
@@ -73,7 +74,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
     }
 
     return (
-        <div className={styles.event} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
+        <div className={`${styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
             <div className={styles.backgroundImage}>
                 <Image src={images.ticketbg} alt='Ticket background' />
             </div>
