@@ -52,7 +52,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
             <div className={styles.eventsContainer}>
                 <div className={styles.eventsContainerCarousel}>
                     {
-                        !isFetchingEvents && eventsData?.map((event, index) =>
+                        !isFetchingEvents && (eventsData && eventsData?.length > 0) && eventsData.map((event, index) =>
                             <EventCard
                                 event={event}
                                 mobileAndActionButtonDismiss
@@ -81,7 +81,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                     </>
                 }
                 {
-                    !isFetchingEvents && (!eventsData || eventsData?.length == 0) &&
+                    !isFetchingEvents && !eventsData || (eventsData && eventsData?.length == 0) &&
                     <div className={styles.noEvents}>
                         <br />
                         <br />
