@@ -39,9 +39,11 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     const dispatch = useDispatch();
 
     async function handleFetchUserInformation() {
+        // console.log("Session on layout: ", session);
 
         await fetchUserInformation(session?.user.id as string)
             .then((response) => {
+                // console.log("User information on layout: ", response.data);
                 // Save to redux
                 dispatch(updateUserCredentials(response.data));
             })
@@ -170,7 +172,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                             timeout={toastContext?.toastOptions?.timeout ?? 0.01} />
                         {
                             !isAppPage && <>
-                                <Navbar />
+                                <Navbar session={session} />
                                 {children}
                                 <Footer />
                             </>
