@@ -186,7 +186,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                 </div>
                                 <div className={styles.stat}>
                                     <p>Tickets Sold</p>
-                                    <span>0</span>
+                                    <span>{userInformation.ticketsSold}</span>
                                 </div> 
                                 <div className={styles.stat}>
                                     <p className={styles.userLink}>
