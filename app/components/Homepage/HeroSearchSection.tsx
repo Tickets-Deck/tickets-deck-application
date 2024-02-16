@@ -8,7 +8,6 @@ import { InfoIcon } from "../SVGs/SVGicons";
 import { scrollWindow } from "../PageScroll/ScrollWindow";
 import Image from "next/image";
 import images from "@/public/images";
-import { events } from "../demoData/Events";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 
 interface HeroSearchSectionProps {
@@ -16,6 +15,8 @@ interface HeroSearchSectionProps {
 }
 
 const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = (): ReactElement => {
+
+    const events: EventResponse[] = [];
 
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
