@@ -4,6 +4,7 @@ import styles from "../../styles/TicketDelivery.module.scss";
 import { FunctionComponent, ReactElement, Dispatch, SetStateAction } from "react";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import ComponentLoader from "../Loader/ComponentLoader";
+import { EventResponse } from "@/app/models/IEvents";
 
 interface OrderSummarySectionProps {
     eventTickets: RetrievedTicketResponse[] | undefined
@@ -11,15 +12,17 @@ interface OrderSummarySectionProps {
     setVisibility: Dispatch<SetStateAction<boolean>>
     handleTicketOrderCreation(): Promise<void>
     isProcessingOrder: boolean
+    eventInfo: EventResponse | undefined
 }
 
 const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
-    { eventTickets, totalPrice, setVisibility, handleTicketOrderCreation, isProcessingOrder }): ReactElement => {
+    { eventTickets, totalPrice, setVisibility,
+        handleTicketOrderCreation, isProcessingOrder, eventInfo }): ReactElement => {
 
     return (
         <div className={styles.rhs}>
             <div className={styles.eventImage}>
-                <Image src={images.event_flyer} alt="Flyer" />
+                <Image src={eventInfo?.mainImageUrl as string} fill alt="Flyer" />
             </div>
             <h3>Order summary</h3>
             <div className={styles.summaryInfo}>
