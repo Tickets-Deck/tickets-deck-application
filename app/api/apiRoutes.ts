@@ -51,4 +51,9 @@ export class ApiRoutes {
    * The route to Payment endpoint
    */
   static Payment: string = "api/events/tickets/payment";
+
+  /**
+   * The route to Dashboard endpoint
+   */
+  static Dashboard: string = "api/users/dashboard";
 }
