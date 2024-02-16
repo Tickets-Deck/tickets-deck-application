@@ -9,6 +9,7 @@ import {
 } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import Paystack from "paystack";
+import { handleSuccessfulPayment } from "@/app/api/services/payment/paymentsService";
 
 /**
  * Function to initialize the payment
@@ -162,6 +163,7 @@ export async function POST(req: NextRequest) {
  */
 export async function GET(req: NextRequest) {
   if (req.method === "GET") {
+    
     // Get the search params from the request url
     const searchParams = new URLSearchParams(req.url.split("?")[1]);
 
@@ -181,146 +183,14 @@ export async function GET(req: NextRequest) {
       process.env.PAYSTACK_SECRET_URL as string
     ).transaction.verify(trxref);
 
-    // console.log(paymentResult);
-
-    // If the payment result is successful...
+    // If the payment is successful...
     if (paymentResult.status === true) {
-      // Get the data from the payment result
-      const { data } = paymentResult;
-      const {
-        reference,
-        amount,
-        paid_at,
-        status,
-        metadata,
-        currency,
-      }: PaymentResultData = data;
-
-      // Get the ticket order id from the metadata
-      const ticketOrderId = metadata.ticketOrderId;
-
-      // Fetch the ticket order from the database using the ticket order id
-      const existingTicketOrder = await prisma.ticketOrders.findUnique({
-        where: {
-          id: ticketOrderId,
-        },
-      });
-
-      // If ticket order does not exist in database...
-      if (!existingTicketOrder) {
-        return NextResponse.json(
-          {
-            error:
-              "Ticket order based on the ticket order id provided could not be found",
-          },
-          { status: 400 }
-        );
-      }
-
-      // If the amount paid is not equal to the total price of the ticket order - Isn't needed now.
-      //   if (amount !== existingTicketOrder.totalPrice.toNumber() * 100) {
-      //     return NextResponse.json(
-      //       {
-      //         error:
-      //           "Amount paid is not equal to the total price of the ticket order",
-      //       },
-      //       { status: 400 }
-      //     );
-      //   }
-
-      // Find the payment associated with the ticket order's id from the database
-      const existingPayment = await prisma.payments.findFirst({
-        where: {
-          ticketOrderId: existingTicketOrder.id,
-        },
-      });
-
-      // If payment based on the ticket order id does not exist in the database...
-      if (!existingPayment) {
-        return NextResponse.json(
-          { error: "Payment based on the ticket order id provided not found" },
-          { status: 400 }
-        );
-      }
-
-      // Update the payment
-      await prisma.payments.update({
-        where: {
-          id: existingPayment.id,
-        },
-        data: {
-          amountPaid: amount / 100,
-          currency: currency,
-          paidAt: new Date(paid_at),
-          paymentStatus:
-            status === "success" ? PaymentStatus.Paid : PaymentStatus.Failed,
-        },
-      });
-
-      // Update the order status and payment status of the order
-      const updatedTicketOrders = await prisma.ticketOrders.update({
-        where: {
-          id: ticketOrderId,
-        },
-        data: {
-          orderStatus: OrderStatus.Confirmed,
-          paymentStatus: PaymentStatus.Paid,
-          paymentId: existingPayment.id,
-        },
-      });
-
-      // Update the each ordered ticket status
-      await prisma.orderedTickets.updateMany({
-        where: {
-          orderId: updatedTicketOrders.orderId,
-        },
-        data: {
-          orderStatus: OrderStatus.Confirmed,
-          paymentId: existingPayment.id,
-        },
-      });
-
-      // Update the ticket order count of the event from the ticket order id
-      const updatedEvent = await prisma.events.update({
-        where: {
-          id: updatedTicketOrders.eventId,
-        },
-        data: {
-          ticketOrdersCount: {
-            increment: 1,
-          },
-        },
-      });
-
-      // If a registered user bought the ticket, update the tickets bought count for the user
-      if (updatedTicketOrders.userId) {
-        await prisma.users.update({
-          where: {
-            id: updatedTicketOrders.userId,
-          },
-          data: {
-            ticketsBought: {
-              increment: 1,
-            },
-          },
-        });
-      }
-
-      // Find the user who published the event, then update the ticketSold count property
-      await prisma.users.update({
-        where: {
-          id: updatedEvent.publisherId,
-        },
-        data: {
-          ticketsSold: {
-            increment: 1,
-          },
-        },
-      });
+      // Process the payment result
+      await handleSuccessfulPayment(paymentResult);
 
       return NextResponse.json({ data: paymentResult.data }, { status: 200 });
     } else {
-      return NextResponse.json({ paymentResult }, { status: 400 });
+        return NextResponse.json({ message: paymentResult.message }, { status: 400 });
     }
   } else {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
