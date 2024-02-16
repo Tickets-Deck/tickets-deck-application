@@ -22,17 +22,7 @@ export async function POST(req: NextRequest) {
     // Get the body of the request
     const request = (await req.json()) as TicketOrderRequest;
 
-    // Get the user from the request
-    const user = await prisma.users.findUnique({
-      where: {
-        id: request.userId,
-      },
-    });
-
-    // If user was not found
-    // if (!user) {
-    //   return NextResponse.json({ error: "User not found" }, { status: 404 });
-    // }
+    console.log("create order request: ", request);
 
     // Get the event from the request
     const event = await prisma.events.findFirst({
@@ -49,10 +39,10 @@ export async function POST(req: NextRequest) {
     // Create the order
     const ticketOrder = await prisma.ticketOrders.create({
       data: {
-        user: user
+        user: request.userId
           ? {
               connect: {
-                id: user.id,
+                id: request.userId,
               },
             }
           : undefined,
@@ -91,11 +81,11 @@ export async function POST(req: NextRequest) {
     }
 
     // If the order was created by an exisitng user...
-    if (user) {
+    if (request.userId) {
       // Update the user's orders
       await prisma.users.update({
         where: {
-          id: user.id,
+          id: request.userId,
         },
         data: {
           ticketOrders: {
