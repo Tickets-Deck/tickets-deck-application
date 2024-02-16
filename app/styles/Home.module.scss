@@ -217,14 +217,14 @@
                 box-shadow: 0px 10px 24px 2px rgba(83, 215, 255, 0.15);
                 // box-shadow: 0px 16px 16px 2px rgba(255, 255, 255, 0.52);
 
-                animation: move 1200ms ease-in-out infinite alternate;
+                // animation: move 1200ms ease-in-out infinite alternate;
 
-                @keyframes move {
-                    from {
-                        transform: translateY(-0.5rem);
-                        box-shadow: 0px 10px 24px 2px rgba(83, 215, 255, 0);
-                    }
-                }
+                // @keyframes move {
+                //     from {
+                //         transform: translateY(-0.5rem);
+                //         box-shadow: 0px 10px 24px 2px rgba(83, 215, 255, 0);
+                //     }
+                // }
 
                 @include bigMobilePhone {
                     width: 100%;
