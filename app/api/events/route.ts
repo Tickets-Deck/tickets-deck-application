@@ -173,14 +173,14 @@ export async function GET(req: NextRequest) {
     // Get the publisherId from the search params
     const specifiedPublisherId = searchParams.get("publisherId");
 
+    // Get the tags from the search params
+    const specifiedTags = searchParams.get("tags");
+
     // If a specifiedId is provided, fetch the event with that id
     if (specifiedId) {
       const event = await prisma.events.findFirst({
         where: {
           id: specifiedId,
-        },
-        orderBy: {
-          date: "asc",
         },
         include: {
           user: true,
@@ -233,9 +233,6 @@ export async function GET(req: NextRequest) {
       const event = await prisma.events.findFirst({
         where: {
           eventId: specifiedEventId,
-        },
-        orderBy: {
-          date: "asc",
         },
         include: {
           user: true,
@@ -311,11 +308,84 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // If specifiedTags and eventId are provided, fetch the events with those tags, excluding the private ones, those that are over, and the specified event
+    if (specifiedTags) {
+        
+      if (!specifiedEventId) {
+        return NextResponse.json(
+          { error: "Event ID is required" },
+          { status: 400 }
+        );
+      }
+
+      const tags = specifiedTags.split(",");
+
+      const events = await prisma.events.findMany({
+        where: {
+          tags: {
+            some: {
+              tag: {
+                name: {
+                  in: tags,
+                },
+              },
+            },
+          },
+          AND: {
+            visibility: "PUBLIC",
+            date: {
+              gte: new Date(),
+            },
+            purchaseEndDate: {
+              gte: new Date(),
+            },
+            eventId: {
+              not: specifiedEventId,
+            },
+          },
+        },
+      });
+      
+
+      // If event is not found, return 404
+      if (!events || events.length === 0) {
+        return NextResponse.json(
+          { error: "No events found with specified tags" },
+          { status: 404 }
+        );
+      }
+
+      // If we just have one event, return it as an array
+      if (events.length === 1) {
+        return NextResponse.json([events[0]], { status: 200 });
+      }
+
+      // If we have mulitple similar events, return them
+        if (events) {
+            return NextResponse.json(events, { status: 200 });
+        }
+    }
+
     // Else, Fetch all events
     const events = await prisma.events.findMany({
-      // exclude events that have visibility set to private
+      // Show only public events that are not yet over (both event date and end date for tickets purchase)
       where: {
         visibility: "PUBLIC",
+        OR: [
+          {
+            date: {
+              gte: new Date(),
+            },
+          },
+          {
+            purchaseEndDate: {
+              gte: new Date(),
+            },
+          },
+        ],
+      },
+      orderBy: {
+        date: "asc",
       },
     });
 
