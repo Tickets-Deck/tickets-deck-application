@@ -16,6 +16,7 @@ import { useCreateTicketOrder, useInitializePaystackPayment } from "@/app/api/ap
 import { SingleTicketOrderRequest, TicketOrderRequest } from "@/app/models/ITicketOrder";
 import { useSelector } from "react-redux";
 import { UserCredentialsResponse } from "@/app/models/IUser";
+import { RootState } from "@/app/redux/store";
 
 interface TicketDeliveryProps {
     setVisibility: Dispatch<SetStateAction<boolean>>
@@ -49,7 +50,9 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     //     console.log(eventTickets);
     // }, [eventTickets]);
 
-    const userInformation = useSelector((state: UserCredentialsResponse) => state);
+    const userInfo = useSelector((state: RootState) => state.userCredentials.userInfo);
+
+    // console.log({ userInfo });
 
     const [ticketPricings, setTicketPricings] = useState<RetrievedITicketPricing[]>([]);
     // const [ticketsTotalPrice, setTicketsTotalPrice] = useState<number>(0);
@@ -168,18 +171,19 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                 ticketId: ticketPricing.ticketId,
                 price: parseInt(ticketPricing.price.total),
                 associatedEmail: formValues[`${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`],
-                contactEmail: primaryEmail ?? userInformation.email,
+                contactEmail: primaryEmail ?? userInfo?.email as string,
             }
         });
 
         const ticketOrder: TicketOrderRequest = {
             eventId: eventInfo?.eventId as string,
             tickets: collatedTicketOrderRequests,
-            contactEmail: primaryEmail ?? userInformation.email,
-            userId: 'rndomUserId',
+            contactEmail: primaryEmail ?? userInfo?.email as string,
+            userId: userInfo?.id as string,
         };
 
-        console.log({ ticketOrder });
+        // console.log({ ticketOrder });
+        // return;
 
         try {
             // Start processing order
@@ -262,7 +266,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             if (name !== `${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`) {
                 return;
             }
-            
+
             if (value.length == 0) {
                 // Update the form value
                 setFormValues({ ...formValues, [name]: isCheck ? checked : value });
@@ -429,6 +433,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                             setVisibility={setVisibility}
                             handleTicketOrderCreation={handleTicketOrderCreation}
                             isProcessingOrder={isProcessingOrder}
+                            eventInfo={eventInfo}
                         />
                     </div>
                 </ModalWrapper>
