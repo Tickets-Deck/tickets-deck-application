@@ -2,8 +2,6 @@
 import { FunctionComponent, ReactElement, useContext, useEffect, useState } from "react";
 import styles from "../styles/Events.module.scss";
 import FeaturedEvents from "../components/Homepage/FeaturedEvents";
-import useResponsive from "../hooks/useResponsiveness";
-import { events } from "../components/demoData/Events";
 import EventsGroup from "../components/events/EventsGroup";
 import { useFetchEvents } from "../api/apiClient";
 import { EventResponse } from "../models/IEvents";
@@ -36,7 +34,7 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
         await fetchEvents()
             .then((response) => {
                 if (response) {
-                    console.log(response.data);
+                    console.log("Events: ", response.data);
                     setEvents(response.data);
                 }
             })
