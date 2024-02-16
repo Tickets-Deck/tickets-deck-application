@@ -10,14 +10,14 @@
 
 */
 -- AlterTable
-ALTER TABLE `Orderedtickets` MODIFY `price` DECIMAL(65, 30) NOT NULL;
+ALTER TABLE `OrderedTickets` MODIFY `price` DECIMAL(65, 30) NOT NULL;
 
 -- AlterTable
 ALTER TABLE `Payment` MODIFY `amount` DECIMAL(65, 30) NOT NULL,
     MODIFY `amountPaid` DECIMAL(65, 30) NULL;
 
 -- AlterTable
-ALTER TABLE `Ticketorders` MODIFY `totalPrice` DECIMAL(65, 30) NOT NULL;
+ALTER TABLE `TicketOrders` MODIFY `totalPrice` DECIMAL(65, 30) NOT NULL;
 
 -- AlterTable
 ALTER TABLE `Tickets` MODIFY `price` DECIMAL(65, 30) NOT NULL;
