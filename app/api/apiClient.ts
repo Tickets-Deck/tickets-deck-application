@@ -65,6 +65,14 @@ export function useFetchEventsByPublisherId() {
   return fetchEventsByPublisherId;
 }
 
+export function useFetchEventsByTags() {
+  async function fetchEventsByPublisherId(tags: string[], eventId: string) {
+    return API.get(`${ApiRoutes.Events}?tags=${tags.join(',')}&eventId=${eventId}`);
+  }
+
+  return fetchEventsByPublisherId;
+}
+
 export function useCreateUser() {
   async function createUser(user: UserCredentialsRequest) {
     return API.post(ApiRoutes.Users, user);
@@ -146,4 +154,12 @@ export function useVerifyPaystackPayment() {
     }
 
     return verifyPaystackPayment;
+}
+
+export function useFetchDashboardInfo() {
+    async function fetchDashboardInfo(userId: string) {
+        return API.get(`${ApiRoutes.Dashboard}?userId=${userId}`);
+    }
+
+    return fetchDashboardInfo;
 }
