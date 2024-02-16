@@ -12,9 +12,10 @@ import { signOut, useSession } from 'next-auth/react';
 import useResponsiveness from '../hooks/useResponsiveness';
 import { useDispatch } from 'react-redux';
 import { clearUserCredentials } from '../redux/features/user/userSlice';
+import { Session } from 'next-auth';
 
 interface NavbarProps {
-
+    session: Session | null
 }
 
 const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
