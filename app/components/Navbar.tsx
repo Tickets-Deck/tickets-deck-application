@@ -109,7 +109,7 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                             <div className={styles.logo}>
                                 <Image src={images.logoWhite} alt='Logo' />
                             </div>
-                            <p>Events@Ticketsdeck</p>
+                            <p>Ticketsdeck Events</p>
                         </div>
                     </Link>
                     <div className={styles.navbarContainer__rhs}>
