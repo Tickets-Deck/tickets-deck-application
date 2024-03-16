@@ -1,5 +1,5 @@
 "use client"
-import { ReactElement, FunctionComponent, useState, FormEvent, useContext } from "react";
+import { ReactElement, FunctionComponent, useState, FormEvent, useContext, useEffect } from "react";
 import styles from "../../styles/AuthStyles.module.scss";
 import Image from "next/image";
 import images from "../../../public/images";
@@ -47,6 +47,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
     const [confirmPasswordErrorMsg, setConfirmPasswordErrorMsg] = useState<{ value: string, status: PasswordConfirmationStatus }>();
 
     const [formValues, setFormValues] = useState<UserCredentialsRequest>();
+    const [registrationError, setRegistrationError] = useState<string>();
 
     function onFormValueChange(e: React.ChangeEvent<HTMLInputElement>) {
         // Desctructure the name and value from the event target
@@ -144,6 +145,11 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
         })
         .catch((error) => {
             console.log(error);
+            // console.log(error.response.data);
+            if(error.response.data.detail == "User with this email already exist.") {
+                console.log(error.response.data.detail);
+                setRegistrationError('User with this email already exists!');
+            }
             // Display error message
             toastHandler?.logError('Error', 'An error occurred while creating your account');
         })
@@ -151,32 +157,15 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
             // Stop loading
             setIsCreatingUser(false);
         });
+    };
 
-        // try {
-        //     const response = await signUp(formValues?.email, formValues?.password, formValues?.firstName, formValues?.lastName);
-
-        //     console.log("Sign up response: ", response);
-
-        //     // Display success message
-        //     toastHandler?.logSuccess('Success', 'You have successfully subscribed to our newsletter');
-
-        //     // Clear input fields
-        //     setFormValues({} as UserCredentialsRequest);
-        //     setConfirmPassword('');
-
-        //     // Redirect to login page
-        //     router.push('/auth/signin');
-        // }
-        // catch (error) {
-        //     console.log(error);
-        //     // Display error message
-        //     toastHandler?.logError('Error', 'An error occurred while creating your account');
-        // }
-        // finally {
-        //     // Stop loading
-        //     setIsCreatingUser(false);
-        // }
-    }
+    useEffect(() => {
+        if(registrationError) {
+            setTimeout(() => {
+                setRegistrationError(undefined);
+            }, 3000);
+        }
+    }, [registrationError])
 
     return (
         <div className={styles.main}>
@@ -285,6 +274,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                                 {confirmPasswordErrorMsg?.value && <span className={styles.errorMsg}>{confirmPasswordErrorMsg.value}</span>}
                             </div>
                         </div>
+                        {registrationError && <span className={styles.errorMsg}>{registrationError}</span>}
                         <button type="submit" disabled={isCreatingUser}>
                             Sign up
                             {isCreatingUser && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
