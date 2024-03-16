@@ -10,6 +10,7 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 import Paystack from "paystack";
 import { handleSuccessfulPayment } from "@/app/api/services/payment/paymentsService";
+import { processEmailNotification } from "@/app/api/services/notification/emailNotification";
 
 /**
  * Function to initialize the payment
@@ -163,7 +164,6 @@ export async function POST(req: NextRequest) {
  */
 export async function GET(req: NextRequest) {
   if (req.method === "GET") {
-    
     // Get the search params from the request url
     const searchParams = new URLSearchParams(req.url.split("?")[1]);
 
@@ -178,19 +178,44 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // Check if the payment has been verified ~ by checking if the payment reference id exists in the database, and the payment status is paid
+    const existingPayment = await prisma.payments.findFirst({
+      where: {
+        paymentReference: trxref,
+        AND: {
+          paymentStatus: PaymentStatus.Paid,
+        },
+      },
+    });
+
+    if (existingPayment) {
+      return NextResponse.json(
+        { error: "Payment has already been verified" },
+        { status: 400 }
+      );
+    }
+
     // Verify the transaction
     const paymentResult = await Paystack(
       process.env.PAYSTACK_SECRET_URL as string
     ).transaction.verify(trxref);
+
+    // console.log("payment result: ", paymentResult);
 
     // If the payment is successful...
     if (paymentResult.status === true) {
       // Process the payment result
       await handleSuccessfulPayment(paymentResult);
 
+      // Process the email notification to the user
+      await processEmailNotification(paymentResult);
+
       return NextResponse.json({ data: paymentResult.data }, { status: 200 });
     } else {
-        return NextResponse.json({ message: paymentResult.message }, { status: 400 });
+      return NextResponse.json(
+        { message: paymentResult.message },
+        { status: 400 }
+      );
     }
   } else {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
