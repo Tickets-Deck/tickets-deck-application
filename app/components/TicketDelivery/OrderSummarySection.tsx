@@ -60,8 +60,8 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
                 </div>
             </div>
             <div className={styles.actionButtons}>
-                <button onClick={() => setVisibility(false)} disabled={isProcessingOrder}>Cancel</button>
-                <button onClick={() => handleTicketOrderCreation()} disabled={isProcessingOrder}>
+                <button onClick={() => setVisibility(false)} disabled={isProcessingOrder} tabIndex={1}>Cancel</button>
+                <button onClick={() => handleTicketOrderCreation()} disabled={isProcessingOrder} tabIndex={1}>
                     Pay now
                     {isProcessingOrder && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
                 </button>
