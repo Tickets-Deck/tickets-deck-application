@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { useFetchDashboardInfo } from "../api/apiClient";
 import { DashboardInfoResponse } from "../models/IDashboardInfoResponse";
 import { catchError } from "../constants/catchError";
+import ComponentLoader from "../components/Loader/ComponentLoader";
 
 interface DashboardPageProps {
 }
@@ -38,12 +39,12 @@ interface DashboardPageProps {
 const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement => {
 
     const fetchDashboardInfo = useFetchDashboardInfo();
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const user = session?.user;
     const { push, prefetch } = useRouter();
 
     const [dashboardInfo, setDashboardInfo] = useState<DashboardInfoResponse>();
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     async function handleFetchDashboardInfo() {
         // Start loader
@@ -64,6 +65,12 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
         }
     }, [user]);
 
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            push("/auth/signin");
+        }
+    }, [status]);
+
     return (
         <div className={styles.dashboard}>
             <div className={styles.topArea}>
@@ -74,36 +81,42 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
             </div>
 
             {
-                dashboardInfo &&
+                !isLoading && dashboardInfo && 
                 <div className={styles.kpiSection}>
-                    <div className={styles.kpi}>
+                    <Link href="/app/events" className={styles.kpi}>
                         <span><EventIcon /></span>
                         <div className={styles.content}>
                             <h4>{dashboardInfo.totalEvents}</h4>
-                            <p>Total Events</p>
+                            <p>Total {dashboardInfo.totalEvents > 1 ? "Events" : "Event"}</p>
                         </div>
-                    </div>
-                    <div className={styles.kpi}>
+                    </Link>
+                    <Link href="/app/tickets?t=1" className={styles.kpi}>
                         <span><EventIcon /></span>
                         <div className={styles.content}>
                             <h4>{dashboardInfo.ticketsBought}</h4>
                             <p>Tickets Bought</p>
                         </div>
-                    </div>
-                    <div className={styles.kpi}>
+                    </Link>
+                    <Link href="/app/tickets?t=2" className={styles.kpi}>
                         <span><EventIcon /></span>
                         <div className={styles.content}>
                             <h4>{dashboardInfo.ticketsSold}</h4>
                             <p>Tickets Sold</p>
                         </div>
-                    </div>
-                    <div className={styles.kpi}>
+                    </Link>
+                    <Link href="/wallet" className={styles.kpi}>
                         <span><EventIcon /></span>
                         <div className={styles.content}>
                             <h4>&#8358;{dashboardInfo.totalRevenue.toLocaleString()}</h4>
                             <p>Total Revenue</p>
                         </div>
-                    </div>
+                    </Link>
+                </div>
+            }
+            {
+                isLoading &&
+                <div className={styles.loaderArea}>
+                    <ComponentLoader customLoaderColor="#fff" />
                 </div>
             }
         </div>
