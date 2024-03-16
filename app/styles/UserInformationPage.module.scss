@@ -120,6 +120,14 @@
                 text-align: center;
             }
 
+            .userEvents {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+                gap: 1rem;
+                margin-top: 1.5rem;
+                @include sectionPadding;
+            }
+
             .noHighlightsContainer {
                 display: flex;
                 flex-direction: column;
@@ -131,6 +139,16 @@
                     font-weight: 400;
                     color: $text-grey;
                 }
+            }
+
+            .loaderContainer {
+                width: 100%;
+                height: 15vh;
+                background-color: transparent;
+                position: relative;
+                grid-column: 1 / 4;
+                display: grid;
+                place-items: center
             }
         }
 
