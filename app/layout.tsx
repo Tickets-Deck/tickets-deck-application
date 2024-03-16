@@ -10,7 +10,7 @@ import { authOptions } from '@/auth'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: 'Events@Ticketsdeck',
+    title: 'Ticketsdeck Events',
     description: 'Unlocking best experiences, easily.'
 }
 
