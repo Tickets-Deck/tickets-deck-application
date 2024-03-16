@@ -1,7 +1,7 @@
 "use client"
 import { CSSProperties, FunctionComponent, ReactElement, useState } from "react";
 import styles from "../../styles/ConsoleSidebar.module.scss";
-import { AddEventIcon, CaretRightIcon, DashboardIcon, EventIcon, LogoutIcon, ProfileIcon } from "../SVGs/SVGicons";
+import { AddEventIcon, CaretRightIcon, DashboardIcon, EventIcon, LogoutIcon, OrderIcon, ProfileIcon } from "../SVGs/SVGicons";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
@@ -40,6 +40,12 @@ const Sidebar: FunctionComponent<SidebarProps> = (): ReactElement => {
                             <li className={currentPageIsCreateEvent ? styles.active : ''}><AddEventIcon /> Create Event</li>
                         </Link>
                     </div>
+                    {/* <Link href="/app/orders">
+                        <li className={currentPageIsOrder ? styles.active : ''}><OrderIcon /> Orders</li>
+                    </Link> */}
+                    <Link href="/app/wallet">
+                        <li className={currentPageIsProfile ? styles.active : ''}><ProfileIcon /> Wallet</li>
+                    </Link>
                     <Link href="/app/profile">
                         <li className={currentPageIsProfile ? styles.active : ''}><ProfileIcon /> Profile</li>
                     </Link>
