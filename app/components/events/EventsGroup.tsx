@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { EventResponse } from "@/app/models/IEvents";
 import ComponentLoader from "../Loader/ComponentLoader";
 import useResponsiveness from "../../hooks/useResponsiveness";
+import Link from "next/link";
 
 interface EventsGroupProps {
     title: string
@@ -20,7 +21,7 @@ interface EventsGroupProps {
 }
 
 const EventsGroup: FunctionComponent<EventsGroupProps> = (
-    { title, subText, eventsData, consoleDisplay, isFetchingEvents, 
+    { title, subText, eventsData, consoleDisplay, isFetchingEvents,
         setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
 
     const windowRes = useResponsiveness();
@@ -44,7 +45,9 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                 <div className={styles.topArea__rhs}>
                     {
                         consoleDisplay ?
-                            <button onClick={() => { push('/app/event/create') }}>Create event</button> :
+                            <Link href="/app/event/create"> 
+                                <button onClick={() => { push('/app/event/create') }}>Create event</button>
+                            </Link> :
                             <button>Filter</button>
                     }
                 </div>
@@ -63,7 +66,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                                 setSelectedEvent={setSelectedEvent}
                             />
                         )
-                    } 
+                    }
                     {/* {
                         ([...Array(10)]).map((_, index) =>
                             <EventCard
