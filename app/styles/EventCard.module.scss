@@ -13,6 +13,7 @@
     overflow: hidden;
     height: 300px;
     max-height: 100%;
+    background-color: #3E3D44;
     @include tablet {
         min-width: 18.75rem;
         max-width: 18.75rem;
@@ -50,7 +51,8 @@
 
     &__image {
         z-index: 2;
-        height: 8.5rem;
+        min-height: 7.5rem;
+        max-height: 7.5rem;
         border-radius: 0.75rem;
         overflow: hidden;
         position: relative;
@@ -102,8 +104,15 @@
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
+            h3 {
+                text-align: left;
+                max-width: 100%;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
             .title {
-                font-size: $font-size-16;
+                font-size: $font-size-16 + 0.125rem;
                 font-family: Mona-Sans-Wide, "sans-serif";
                 font-weight: $fontWeight-500;
             }

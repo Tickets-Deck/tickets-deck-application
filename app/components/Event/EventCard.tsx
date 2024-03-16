@@ -75,18 +75,18 @@ const EventCard: FunctionComponent<EventCardProps> = (
 
     return (
         <div className={`${styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
-            <div className={styles.backgroundImage}>
+            {/* <div className={styles.backgroundImage}>
                 <Image src={images.ticketbg} alt='Ticket background' />
-            </div>
+            </div> */}
             <span className={styles.event__tag}>Latest</span>
             <div className={styles.event__image}>
                 <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
                     <Image src={event.mainImageUrl} alt='Event flyer' fill />
                 </Link>
             </div>
-            <span className={styles.hLine}>
+            {/* <span className={styles.hLine}>
                 <HorizontalLineIcon />
-            </span>
+            </span> */}
             <div className={styles.eventInfo}>
                 <div className={styles.eventInfo__lhs}>
                     <h3 className={styles.title}>{event.title}</h3>
