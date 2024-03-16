@@ -165,7 +165,7 @@ export async function handleSuccessfulPayment(
           },
         },
       });
-    }
+    };
 
     // Get the event publisher
     const eventPublisher = await prisma.events.findUnique({
@@ -193,7 +193,7 @@ export async function handleSuccessfulPayment(
           },
         },
       });
-    }
+    };
 
     return { data: paymentResult.data };
   } catch (error) {
