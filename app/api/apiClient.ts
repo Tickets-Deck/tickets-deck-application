@@ -4,6 +4,7 @@ import { CoverPhotoRequest, ProfilePhotoRequest, UserCredentialsRequest, UserCre
 import { EventRequest } from "../models/IEvents";
 import { TicketOrderRequest } from "../models/ITicketOrder";
 import { InitializePayStack } from "../models/IInitializePayStack";
+import { TicketCategory } from "../enums/ITicket";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_TEST,
@@ -39,6 +40,14 @@ export function useFetchEventById() {
   }
 
   return fetchEvent;
+}
+
+export function useFetchUserEventsByUserId() {
+    async function fetchUserEventsByUserId(userId: string) {
+        return API.get(`${ApiRoutes.Events}?publisherId=${userId}`);
+    }
+    
+    return fetchUserEventsByUserId;
 }
 
 export function useDeleteEvent() {
@@ -162,4 +171,12 @@ export function useFetchDashboardInfo() {
     }
 
     return fetchDashboardInfo;
+}
+
+export function useFetchUserTicketOrders() {
+    async function fetchUserTicketOrders(userId: string, category?: TicketCategory) {
+        return API.get(`${ApiRoutes.UserTicketOrder}?userId=${userId}&category=${category}`);
+    }
+
+    return fetchUserTicketOrders;
 }
