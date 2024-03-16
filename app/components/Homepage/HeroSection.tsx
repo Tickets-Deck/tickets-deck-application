@@ -80,14 +80,14 @@ const HeroSection: FunctionComponent<HeroSectionProps> = (): ReactElement => {
             <div className={styles.heroSection__rhs}>
                 <HeroSearchSection />
             </div>
-            <div className={styles.colors}>
+            {/* <div className={styles.colors}>
                 <span></span>
                 <span></span>
                 <span></span>
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </div> */}
         </section>
     );
 }
