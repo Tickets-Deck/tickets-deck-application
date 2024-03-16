@@ -17,6 +17,8 @@ import { SingleTicketOrderRequest, TicketOrderRequest } from "@/app/models/ITick
 import { useSelector } from "react-redux";
 import { UserCredentialsResponse } from "@/app/models/IUser";
 import { RootState } from "@/app/redux/store";
+import Toggler from "../custom/Toggler";
+import { toast } from "sonner";
 
 interface TicketDeliveryProps {
     setVisibility: Dispatch<SetStateAction<boolean>>
@@ -31,7 +33,6 @@ enum ValidationStatus {
     Invalid = 1,
     NotInitiated = 2,
 }
-
 
 const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     { visibility, setVisibility, eventTickets, eventInfo, totalPrice }): ReactElement => {
@@ -67,6 +68,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     const [showErrorMessages, setShowErrorMessages] = useState(false);
 
     const [primaryEmail, setPrimaryEmail] = useState<string>();
+    const [userEmailIsPrimaryEmail, setUserEmailIsPrimaryEmail] = useState(false);
 
     const [isProcessingOrder, setIsProcessingOrder] = useState(false);
 
@@ -166,7 +168,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         validateFields();
 
         const collatedTicketOrderRequests: SingleTicketOrderRequest[] = ticketPricings.map((ticketPricing) => {
-            console.log(ticketPricing.ticketType, ticketPricing.emailId);
+            // console.log(ticketPricing.ticketType, ticketPricing.emailId);
+
             return {
                 ticketId: ticketPricing.ticketId,
                 price: parseInt(ticketPricing.price.total),
@@ -183,7 +186,11 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         };
 
         // console.log({ ticketOrder });
-        // return;
+
+        if (ticketOrder.contactEmail === undefined || ticketOrder.contactEmail.length < 1) {
+            toast.error("Please select a primary email address to continue.");
+            return;
+        }
 
         try {
             // Start processing order
@@ -207,8 +214,10 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             setIsProcessingOrder(false);
             // Log the error
             console.log("Error creating ticket order: ", error);
+            // Show error message
+            toast.error("An error occurred while processing your order. Please try again.");
         }
-    }
+    };
 
     const updateHasEmail = (ticketType: string, ticketId: string) => {
         setTicketPricings(prevTicketPricings => {
@@ -233,7 +242,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             setPrimaryEmail(email);
             return;
         }
-    }
+    };
 
     /**
      * Function to unset primary email
@@ -241,7 +250,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
      */
     function unsetPrimaryEmail() {
         setPrimaryEmail(undefined);
-    }
+    };
 
     /**
      * Set input fields value on change
@@ -311,7 +320,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                 }
             }, 3000);
         }
-    }
+    };
 
     useEffect(() => {
         if (couponCodeValue && couponCodeValue?.length > 4) {
@@ -326,7 +335,6 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             getSelectedTickets();
         }
     }, [eventTickets, visibility]);
-
 
     // useEffect(() => {
     //     ticketPricings.map((ticketPricing) => {
@@ -370,6 +378,18 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                 <p>Enter the email addresses of all attendees. <br />Each ticket will be sent to the respective email addresses provided.</p>
                                 <span>Note: All tickets will also be sent to the selected primary email.</span>
                             </div>
+                            {
+                                userInfo &&
+                                <div className={styles.toggleSection}>
+                                    <p>Use My Email as Primary Email</p>
+                                    <Toggler
+                                        mainColor='77b255'
+                                        disabledColor='dadada'
+                                        togglerIndicatorColor='ffffff'
+                                        setCheckboxValue={setUserEmailIsPrimaryEmail}
+                                        checkboxValue={userEmailIsPrimaryEmail} />
+                                </div>
+                            }
                             <div className={styles.ticketsEmailForms}>
                                 {
                                     ticketPricings.map((ticketPricing, index) =>
@@ -379,6 +399,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                                 <span className={styles.ticketType}>{ticketPricing.ticketType}</span> ticket
                                             </label>
                                             <input
+                                                tabIndex={1}
                                                 type="text"
                                                 placeholder="Enter email"
                                                 name={`${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`}
@@ -408,7 +429,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                 <label htmlFor="coupon">Do you have any coupon code?</label>
                                 <div className={styles.ticketCouponInputFieldContainer}>
                                     <div className={styles.inputContainer}>
-                                        <input type="text" value={couponCodeValue} maxLength={10}
+                                        <input tabIndex={1} type="text" value={couponCodeValue} maxLength={10}
                                             onChange={(e) => {
                                                 setCouponCodeValue(e.target.value.trim())
                                                 setCodeValidationStatus(ValidationStatus.NotInitiated)
@@ -466,7 +487,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                     <div className={styles.ticketFormFieldContainer} key={index}>
                                         <label htmlFor={`${ticketPricing.ticketType}${ticketPricing.ticketId}`}>{convertNumberToText(parseInt(ticketPricing.ticketId))} <span className={styles.ticketType}>{ticketPricing.ticketType}</span> ticket</label>
                                         <input
-                                            type="text"
+                                            type="text" 
+                                            // tabIndex={1}
                                             placeholder="Enter email"
                                             name={`${ticketPricing.ticketType}${ticketPricing.ticketId}`}
                                             onChange={onFormValueChanged} />
