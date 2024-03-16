@@ -67,16 +67,24 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
                 
                 // Route to user dashboard
                 if (userInfo) {
-                    router.push('/app');
+                    router.push('/app/tickets?t=1');
                     return;
                 } else {
                     router.push('/');
                 }
             })
             .catch((error) => {
+                if(error.response) {
+                    if(error.response.data.error == "Payment has already been verified") {
+                        // Set payment status state
+                        setPaymentStatus(PaymentStatus.Success);
+                        return;
+                    }
+                }
+
                 // Set payment status state
                 setPaymentStatus(PaymentStatus.Failed);
-                console.log(error);
+                // console.log(error);
             })
     };
 
@@ -88,10 +96,22 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
         }
     }, [trxref]);
 
+    useEffect(() => {
+        if(paymentStatus === PaymentStatus.Success) {
+            setTimeout(() => {
+                if (userInfo) {
+                    router.push('/app');
+                    return;
+                }
+                router.push('/events');
+            }, 5000);
+        }
+    }, [paymentStatus]);
+
     return (
         <main className={styles.verifyPaymentPage}>
             {
-                (paymentStatus == PaymentStatus.Verifying || paymentStatus == PaymentStatus.Success) &&
+                (paymentStatus == PaymentStatus.Verifying) &&
                 <div className={styles.loaderAreaContainer}>
                     <div className={styles.loaderArea}>
                         <ComponentLoader customLoaderColor="#fff" />
@@ -105,6 +125,17 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
                 <div className={styles.loaderAreaContainer}>
                     <h3>An error occured while verifying your payment</h3>
                     <p>A customer care representative would be in touch soon.</p>
+                </div>
+            }
+            {
+                paymentStatus == PaymentStatus.Success &&
+                <div className={styles.loaderAreaContainer}>
+                    <h3>This payment has already been verified</h3>
+                    {
+                        userInfo ? 
+                        <p>You will be redirected to your dashboard in seconds.</p> :
+                        <p>You will be redirected to see all events in seconds.</p>
+                    }
                 </div>
             }
         </main>
