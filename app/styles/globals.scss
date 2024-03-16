@@ -26,13 +26,12 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  transition: all 300ms ease !important;
   scroll-behavior: smooth;
   font-family: $normal-font, sans-serif;
 
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -ms-user-select: none;
+//   user-select: none;
+//   -ms-user-select: none;
 }
 
 html,
