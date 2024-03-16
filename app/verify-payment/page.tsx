@@ -6,7 +6,7 @@ interface VerifyPaymentProps {
 }
 
 export const metadata: Metadata = {
-    title: 'Verify payment | Events@Ticketsdeck',
+    title: 'Verify payment | Ticketsdeck Events',
     description: 'Unlocking best experiences, easily.'
 }
 
