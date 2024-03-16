@@ -289,23 +289,23 @@ export async function GET(req: NextRequest) {
       });
 
       // If event is not found, return 404
-      if (!events || events.length === 0) {
-        return NextResponse.json(
-          { error: "This user does not have any events created yet." },
-          { status: 404 }
-        );
-      }
+    //   if (!events || events.length === 0) {
+    //     return NextResponse.json(
+    //       { error: "This user does not have any events created yet." },
+    //       { status: 404 }
+    //     );
+    //   }
 
+      return NextResponse.json(events, { status: 200 });
       // If event is found, return it
-      if (events) {
-        return NextResponse.json(events, { status: 200 });
-      }
+    //   if (events) {
+    //   }
 
-      // If event is not found, return 404
-      return NextResponse.json(
-        { error: "This user does not have any events created yet." },
-        { status: 404 }
-      );
+    //   // If event is not found, return 404
+    //   return NextResponse.json(
+    //     { error: "This user does not have any events created yet." },
+    //     { status: 404 }
+    //   );
     }
 
     // If specifiedTags and eventId are provided, fetch the events with those tags, excluding the private ones, those that are over, and the specified event
