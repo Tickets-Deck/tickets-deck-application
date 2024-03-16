@@ -5,7 +5,6 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import { ToastContext } from '../extensions/toast';
 import { ToastMessageType } from '../models/ToastMessageType';
-import ToastCard from './Card/ToastCard';
 import Sidebar from './shared/Sidebar';
 import Topbar from './shared/Topbar';
 import { usePathname } from 'next/navigation';
@@ -17,9 +16,10 @@ import { useFetchUserInformation } from '../api/apiClient';
 import { useDispatch } from 'react-redux';
 import { updateUserCredentials } from '../redux/features/user/userSlice';
 import { catchError } from '../constants/catchError';
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-    title: 'Events@Ticketsdeck',
+    title: 'Ticketsdeck Events',
     description: 'Unlocking best experiences, easily.'
 }
 
@@ -33,7 +33,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     const [loaderIsVisible, setLoaderIsVisible] = useState(true);
 
     const iswindow = typeof window !== "undefined" ? true : false;
-    
+
     const fetchUserInformation = useFetchUserInformation();
 
     const dispatch = useDispatch();
@@ -98,7 +98,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
             timeout: timeout,
             visible: true
         });
-    }
+    };
 
     /**
      * Logs info message
@@ -114,7 +114,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
             timeout: timeout,
             visible: true
         });
-    }
+    };
 
     /**
      * Logs warning message
@@ -130,7 +130,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
             timeout: timeout,
             visible: true
         });
-    }
+    };
 
     /**
      * Logs error message
@@ -146,7 +146,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
             timeout: timeout,
             visible: true
         });
-    }
+    };
 
     function closeToast() {
         setToastOptions({
@@ -156,7 +156,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
             timeout: 0.01,
             visible: false
         });
-    }
+    };
 
     return (
         <>
@@ -164,12 +164,21 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                 !loaderIsVisible &&
                 <>
                     <ToastContext.Provider value={{ toastOptions, logSuccess, logInfo, logWarning, logError, closeToast }}>
-                        <ToastCard
+                        {/* <ToastCard
                             visibility={toastContext?.toastOptions?.visible ?? false}
                             title={toastContext?.toastOptions?.title ?? 'Welcome'}
                             description={toastContext?.toastOptions?.description ?? ''}
                             messageType={toastContext?.toastOptions?.type ?? ToastMessageType.Info}
-                            timeout={toastContext?.toastOptions?.timeout ?? 0.01} />
+                            timeout={toastContext?.toastOptions?.timeout ?? 0.01} /> */}
+                        <Toaster
+                            position="top-center"
+                            richColors
+                            closeButton
+                            toastOptions={{
+                                duration: 3000,
+                                unstyled: false,
+                            }}
+                        />
                         {
                             !isAppPage && <>
                                 <Navbar session={session} />
