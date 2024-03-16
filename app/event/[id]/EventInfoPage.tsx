@@ -20,6 +20,7 @@ import { catchError } from '@/app/constants/catchError';
 import TicketsSelectionContainer from '@/app/components/Event/TicketsSelection';
 import TicketsFetchErrorContainer from '@/app/components/Event/TicketsFetchError';
 import useResponsiveness from '../../hooks/useResponsiveness';
+import EventMainInfo from '@/app/components/Event/EventInfo';
 
 interface EventDetailsPageProps {
     params: { id: string }
@@ -29,7 +30,6 @@ interface EventDetailsPageProps {
 const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }): ReactElement => {
     const router = useRouter();
 
-    const fetchEventsByTags = useFetchEventsByTags();
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
@@ -40,10 +40,8 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
     const fetchEventInfo = useFetchEventById();
     const toasthandler = useContext(ToastContext);
 
-    const [events, setEvents] = useState<EventResponse[]>([]);
     const [eventInfo, setEventInfo] = useState<EventResponse>();
     const [eventTickets, setEventTickets] = useState<RetrievedTicketResponse[]>();
-    const [isFetchingSimilarEvents, setIsFetchingSimilarEvents] = useState(false);
 
     const [loader, setLoader] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -62,37 +60,6 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
         setTotalPrice(selectedTickets?.reduce((total, ticket) => total + ticket.price * ticket.selectedTickets, 0) as number);
     }, [eventTickets]);
 
-    function shareEvent() {
-        const eventURL = window.location.href;
-        // const tempInput = document.createElement("input");
-        // document.body.appendChild(tempInput);
-        // tempInput.value = eventURL;
-        // tempInput.select();
-        // document.execCommand("copy");
-        // document.body.removeChild(tempInput);
-        try {
-            navigator.clipboard.writeText(eventURL);
-            // alert("Event link copied to clipboard!");
-            toasthandler?.logSuccess('Event link copied.', `The link to ${eventInfo?.title} has been copied.`)
-        } catch (error) {
-            console.error("Copying to clipboard failed:", error);
-        }
-    }
-    function shareEventMobile() {
-        const eventURL = window.location.href;
-        if (navigator.share) {
-            navigator.share({
-                // title: "Check out this event!",
-                title: `${eventInfo?.title} - Events@TicketsDeck`,
-                text: "I found this amazing event. You should check it out!",
-                url: eventURL
-            })
-                .then(() => console.log("Shared successfully"))
-                .catch(error => console.log("Sharing failed:", error));
-        } else {
-            console.log("Web Share API not supported");
-        }
-    }
     function addEventToGoogleCalender() {
         if (!eventInfo) {
             return;
@@ -105,7 +72,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
         const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${eventTime}%2F${eventDate}T${eventTime}&location=${encodeURIComponent(location)}`;
 
         window.open(googleCalendarUrl, "_blank");
-    }
+    };
 
     async function handleFetchEventInfo() {
 
@@ -148,7 +115,8 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                 // Unset running flag
                 setLoader(false);
             })
-    }
+    };
+
     // async function handleFetchSimilarEvents() {
     //     try {
     //         await fetchEventsByTags(eventInfo?.tags ?? [], eventInfo?.eventId as string)
@@ -206,7 +174,6 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
         }
     }, [eventInfo]);
 
-
     return (
         <>
             <TicketDelivery
@@ -232,88 +199,11 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                 </section>
                 {eventInfo ?
                     <section className={styles.eventInfoContainer}>
-                        <div className={styles.mainSection}>
-                            <div className={styles.eventImage}>
-                                <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill />
-                            </div>
-                            <span className={styles.tag}>Latest</span>
-                            <div className={styles.eventDetails}>
-                                <div className={styles.leftInfo}>
-                                    <h2 className={styles.title}>{eventInfo?.title}</h2>
-                                    <p className={styles.datePosted}>Posted on: {moment(eventInfo.createdAt).format('Do MMMM YYYY')}</p>
-                                    <Link className={styles.publisherInfo} href={`/u/${eventInfo.user.username ?? eventInfo.user.id}`}>
-                                        <div className={styles.publisherInfo__image}>
-                                            <Image src={eventInfo.user.profilePhoto ?? images.user_avatar} alt='Avatar' fill />
-                                        </div>
-                                        <div className={styles.publisherInfo__name}>{`${eventInfo?.user.firstName} ${eventInfo?.user.lastName}`}</div>
-                                    </Link>
-                                    <div className={styles.dateTime}>
-                                        <h4>{moment(eventInfo?.date).format("MMM. Do YYYY")}</h4>
-                                        <h4>{eventInfo.time}</h4>
-                                    </div>
-                                    {/* <div className={styles.location}>
-                                        <p>{eventInfo?.location.blockNumber + ' ' + eventInfo?.location.street + ' ' + eventInfo?.location.city + ', ' + eventInfo?.location.state + ', ' + eventInfo?.location.country}</p>
-                                        <Link href={`https://www.google.com/maps/search/?api=1&query=${eventInfo?.location.blockNumber},+${eventInfo?.location.street},+${eventInfo?.location.city}+${eventInfo?.location.state}+${eventInfo?.location.country}`} target='_blank'>
-                                            <button>Get directions on map</button>
-                                        </Link>
-                                    </div> */}
-                                    <div className={styles.location}>
-                                        <p>{eventInfo.venue}</p>
-                                        <Link href={`https://www.google.com/maps/search/?api=1&query=${eventInfo.venue}`} target='_blank'>
-                                            <button>Get directions on map</button>
-                                        </Link>
-                                    </div>
-                                    <div className={styles.bottomArea}>
-                                        {eventInfo && eventInfo?.tickets == null ?
-                                            <>
-                                                <div className={styles.priceArea}>
-                                                    <span>Ticket price:</span>
-                                                    {/* <h2>&#8358;{eventInfo?.ticketPrice.amount.toLocaleString()}</h2> */}
-                                                </div>
-                                                <button>Purchase your ticket(s)</button>
-                                            </>
-                                            :
-                                            <ScrollLink
-                                                to="optionalSection"
-                                                smooth={true}
-                                                duration={200}
-                                                offset={-100}
-                                                onClick={() => setTicketsSelectionContainerIsVisible(true)}>
-                                                <button>Get available tickets</button>
-                                            </ScrollLink>
-                                        }
-                                    </div>
-                                </div>
-                                <div className={styles.actionButtons}>
-                                    <Tooltip tooltipText='Add to calender'>
-                                        <div className={styles.actionButton} onClick={() => addEventToGoogleCalender()}>
-                                            <CalenderIcon />
-                                        </div>
-                                    </Tooltip>
-                                    <Tooltip tooltipText='Like event'>
-                                        <div className={styles.actionButton}>
-                                            <HeartIcon />
-                                        </div>
-                                    </Tooltip>
-                                    <Tooltip tooltipText='Share event'>
-                                        <div
-                                            className={styles.actionButton}
-                                            style={{ backgroundColor: '#D5542A' }}
-                                            onClick={() => {
-                                                shareEventMobile()
-                                                // if (onMobile) {
-                                                //     shareEventMobile();
-                                                //     return;
-                                                // } else if (onDesktop) {
-                                                //     shareEvent()
-                                                // }
-                                            }}>
-                                            <ShareIcon />
-                                        </div>
-                                    </Tooltip>
-                                </div>
-                            </div>
-                        </div>
+                        <EventMainInfo
+                            eventInfo={eventInfo}
+                            setTicketsSelectionContainerIsVisible={setTicketsSelectionContainerIsVisible}
+                            addEventToGoogleCalender={addEventToGoogleCalender}
+                        />
                         <div className={styles.optionalSection} id='optionalSection'>
                             {ticketsSelectionContainerIsVisible && eventTickets && eventTickets.length > 0 &&
                                 <TicketsSelectionContainer
