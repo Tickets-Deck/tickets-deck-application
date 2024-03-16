@@ -26,7 +26,7 @@ interface ProfilePageProps {
 
 const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
 
-    const { data: session, update } = useSession();
+    const { data: session, update, status } = useSession();
     const fetchUserInformation = useFetchUserInformation();
     const toastHandler = useContext(ToastContext);
     const { push, prefetch } = useRouter();
@@ -125,6 +125,12 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
             handleFetchUserInformation();
         }
     }, [session]);
+
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            push("/auth/signin");
+        }
+    }, [status]);
 
     useEffect(() => {
         setRetrievedUserInformation(userInformation);
