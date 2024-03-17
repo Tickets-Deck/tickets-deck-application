@@ -62,6 +62,7 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                         <div className={styles.logo}>
                             <Image src={images.logoWhite} alt='Logo' />
                         </div>
+                        <p>Ticketsdeck <br /> Events</p>
                     </Link>
                     <div className={styles.buttons}>
                         <span><SunIcon /></span>
@@ -86,8 +87,8 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                                             <span className={pathname == '/support' ? styles.active : ''}>Support</span>
                                         </Link> */}
                                     {user ? <>
-                                        <Link href='/account' onClick={() => setNavbarIsVisible(false)}>
-                                            <span className={pathname == '/account' ? styles.active : ''}>Account</span>
+                                        <Link href='/app/app' onClick={() => setNavbarIsVisible(false)}>
+                                            <span className={pathname == '/app/app' ? styles.active : ''}>Dashboard</span>
                                         </Link>
                                         <Link href='/api/auth/logout' onClick={() => setNavbarIsVisible(false)}>
                                             <span>Log out</span>
