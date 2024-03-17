@@ -90,14 +90,14 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
                             <p>Total {dashboardInfo.totalEvents > 1 ? "Events" : "Event"}</p>
                         </div>
                     </Link>
-                    <Link href="/app/tickets?t=1" className={styles.kpi}>
+                    <Link href="/app/tickets?t=0" className={styles.kpi}>
                         <span><EventIcon /></span>
                         <div className={styles.content}>
                             <h4>{dashboardInfo.ticketsBought}</h4>
                             <p>Tickets Bought</p>
                         </div>
                     </Link>
-                    <Link href="/app/tickets?t=2" className={styles.kpi}>
+                    <Link href="/app/tickets?t=1" className={styles.kpi}>
                         <span><EventIcon /></span>
                         <div className={styles.content}>
                             <h4>{dashboardInfo.ticketsSold}</h4>
