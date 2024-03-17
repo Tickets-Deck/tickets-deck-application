@@ -1,38 +1,43 @@
-import { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, LegacyRef, ReactElement } from "react";
 import styles from "@/app/styles/components/TicketUi.module.scss";
 import Image from "next/image";
 import images from "@/public/images";
+import { TicketPass } from "@/app/models/ITicketPass";
+import moment from "moment";
+import QRCode from 'qrcode.react';
 
 interface TicketUiProps {
-    
+    ticketInfo: TicketPass
 }
- 
-const TicketUi: FunctionComponent<TicketUiProps> = ():ReactElement => {
-    return ( 
+
+const TicketUi: FunctionComponent<TicketUiProps> = ({ ticketInfo }): ReactElement => {
+    return (
         <div className={styles.ticketContainer}>
             <div className={styles.topSection}>
-                <h3>AIT Music Plus Festival here</h3>
+                <h3>{ticketInfo.eventInfo.title}</h3>
                 <div className={styles.image}>
-                    <Image src={images.event_flyer} alt="Event flyer" />
+                    <Image src={ticketInfo.eventInfo.mainImageUrl} fill alt="Event flyer" />
                 </div>
             </div>
             <div className={styles.passSegment}>
-                <h1>PASS</h1>
+                <h1>{ticketInfo.ticketType}</h1>
                 {/* <p>~ Simlex</p> */}
             </div>
             <div className={styles.eventInfo}>
                 <div className={styles.main}>
                     <div className={styles.lhs}>
                         <h5>Date:</h5>
-                        <p>25th of March 2024</p>
+                        <p>{moment(ticketInfo.eventInfo.date).format("Do of MMM YYYY")}</p>
                         <h5>Time:</h5>
-                        <p>08:00pm</p>
+                        <p>{ticketInfo.eventInfo.time}</p>
                         <h5>Location:</h5>
-                        <p>Number 7, Shorta street, off giblo road, Agriz area, Ikorodu</p>
+                        <p>{ticketInfo.eventInfo.venue}</p>
                     </div>
                     <div className={styles.rhs}>
                         <div className={styles.qr}>
-                            <Image src={images.event_flyer} alt="QR code" />
+                            {ticketInfo.qr}
+                            {/* <QRCode value={ticketInfo.qr} /> */}
+                            {/* <Image src={ticketInfo.qr} alt="QR code" /> */}
                         </div>
                         {/* <p>Info on qr</p> */}
                     </div>
@@ -40,7 +45,7 @@ const TicketUi: FunctionComponent<TicketUiProps> = ():ReactElement => {
                 <p className={styles.order}>Order #Y45SHF-3328JDC</p>
             </div>
         </div>
-     );
+    );
 }
- 
+
 export default TicketUi;
