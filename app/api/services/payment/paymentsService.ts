@@ -161,7 +161,7 @@ export async function handleSuccessfulPayment(
         },
         data: {
           ticketsBought: {
-            increment: 1,
+            increment: orderedTickets.length,
           },
         },
       });
@@ -186,7 +186,7 @@ export async function handleSuccessfulPayment(
         },
         data: {
           ticketsSold: {
-            increment: 1,
+            increment: orderedTickets.length,
           },
           totalRevenue: {
             increment: amountPaid,
