@@ -9,12 +9,14 @@ import Link from 'next/link';
 import useResponsive from '../../hooks/useResponsiveness';
 import HeroSearchSection from './HeroSearchSection';
 import { useSession } from 'next-auth/react';
+import { EventResponse } from '@/app/models/IEvents';
 
 interface HeroSectionProps {
-
+    events: EventResponse[]
+    isFetchingEvents: boolean
 }
 
-const HeroSection: FunctionComponent<HeroSectionProps> = (): ReactElement => {
+const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEvents }): ReactElement => {
 
     const { data: session } = useSession();
     const user = session?.user;
@@ -78,7 +80,10 @@ const HeroSection: FunctionComponent<HeroSectionProps> = (): ReactElement => {
                 </div>
             </div>
             <div className={styles.heroSection__rhs}>
-                <HeroSearchSection />
+                <HeroSearchSection
+                    isFetchingEvents={isFetchingEvents}
+                    events={events}
+                />
             </div>
             {/* <div className={styles.colors}>
                 <span></span>

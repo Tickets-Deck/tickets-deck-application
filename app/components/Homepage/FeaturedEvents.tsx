@@ -16,14 +16,15 @@ import useResponsiveness from '../../hooks/useResponsiveness';
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean
+    events: EventResponse[]
+    isFetchingEvents: boolean
 }
 
-const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage }): ReactElement => {
+const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage, events, isFetchingEvents }): ReactElement => {
 
-    const fetchEvents = useFetchEvents();
     const toasthandler = useContext(ToastContext);
-    const [events, setEvents] = useState<EventResponse[]>([]);
-    const [isFetchingEvents, setIsFetchingEvents] = useState(true);
+    // const [events, setEvents] = useState<EventResponse[]>([]);
+    // const [isFetchingEvents, setIsFetchingEvents] = useState(true);
     
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
@@ -60,31 +61,6 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
             console.log("Web Share API not supported");
         }
     };
-
-    async function handleFetchEvents() {
-        // Start loader
-        setIsFetchingEvents(true);
-
-        await fetchEvents()
-            .then((response) => {
-                if (response) {
-                    console.log(response.data);
-                    setEvents(response.data);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                toasthandler?.logError('Error', 'An error occurred while fetching events.');
-            })
-            .finally(() => {
-                // Stop loader
-                setIsFetchingEvents(false);
-            });
-    };
-
-    useEffect(() => {
-        handleFetchEvents();
-    }, []);
 
     return (
         <section className={styles.featuredEvents}>

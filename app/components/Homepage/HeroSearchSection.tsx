@@ -11,12 +11,13 @@ import images from "@/public/images";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 
 interface HeroSearchSectionProps {
-
+    events: EventResponse[]
+    isFetchingEvents: boolean
 }
 
-const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = (): ReactElement => {
+const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({ events, isFetchingEvents }): ReactElement => {
 
-    const events: EventResponse[] = [];
+    // const events: EventResponse[] = [];
 
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
@@ -29,7 +30,7 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = (): ReactEl
     const [searchResultsIsVisible, setSearchResultsIsVisible] = useState(false);
 
     const inputAreaContainerRef = useRef<HTMLDivElement>(null);
-    
+
     async function handleEventSearch(e: ChangeEvent<HTMLInputElement>) {
 
         if (!searchResults || !eventName) {
@@ -89,7 +90,8 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = (): ReactEl
                         }} />
                     {eventNameErrorMsg && <div className={styles.searchErrorMsg}><InfoIcon /> <p>Please type the name of the event</p></div>}
                 </div>
-                {searchResultsIsVisible &&
+                {
+                    searchResultsIsVisible &&
                     <div className={styles.resultsDropdown}>
                         {searchResults?.map((event, index) =>
                             <Link href={`/event/${event.id}`} onClick={() => setSearchResultsIsVisible(false)}>
@@ -110,7 +112,8 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = (): ReactEl
                                 <p>There are no events based on your search keyword</p>
                             </div>
                         }
-                    </div>}
+                    </div>
+                }
             </div>
             {/* <button type="submit" style={isLoading ? { opacity: 0.6, pointerEvents: 'none' } : {}} disabled={isLoading}>
                         {
