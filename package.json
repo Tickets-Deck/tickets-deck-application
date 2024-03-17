@@ -35,10 +35,12 @@
         "nodemailer": "^6.9.8",
         "paystack": "^2.0.1",
         "plaiceholder": "^3.0.0",
+        "qrcode.react": "^3.1.0",
         "react": "^18",
         "react-dom": "^18",
         "react-redux": "^9.1.0",
         "react-scroll": "^1.9.0",
+        "react-to-print": "^2.15.1",
         "sass": "^1.69.5",
         "sharp": "^0.33.2",
         "sonner": "^1.4.3"
