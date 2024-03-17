@@ -174,14 +174,15 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                 ticketId: ticketPricing.ticketId,
                 price: parseInt(ticketPricing.price.total),
                 associatedEmail: formValues[`${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`],
-                contactEmail: primaryEmail ?? userInfo?.email as string,
+                contactEmail: primaryEmail ?? (userEmailIsPrimaryEmail ? userInfo?.email as string : ""),
             }
         });
 
         const ticketOrder: TicketOrderRequest = {
             eventId: eventInfo?.eventId as string,
             tickets: collatedTicketOrderRequests,
-            contactEmail: primaryEmail ?? userInfo?.email as string,
+            // contactEmail: primaryEmail ?? userInfo?.email as string,
+            contactEmail: primaryEmail ?? (userEmailIsPrimaryEmail ? userInfo?.email as string : ""),
             userId: userInfo?.id as string,
         };
 
