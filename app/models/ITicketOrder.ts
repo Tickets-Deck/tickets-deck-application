@@ -57,7 +57,7 @@ export interface TicketOrderResponse {
   event: TicketEventOrderResponse;
 }
 
-export interface UserTicketOrders {
+export interface UserTicketOrder {
   id: string;
   ticketId: string;
   orderId: string;

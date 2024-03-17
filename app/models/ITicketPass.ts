@@ -1,8 +1,9 @@
-import { EventResponse } from "./IEvents";
+import { ReactNode } from "react";
+import { TicketEventOrderResponse } from "./ITicketOrder";
 
 export interface TicketPass {
-    eventInfo: EventResponse;
+    eventInfo: TicketEventOrderResponse;
     ticketType: string;
-    qr: string;
+    qr: ReactNode;
     orderId: string;
 }
