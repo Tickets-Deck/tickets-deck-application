@@ -1,8 +1,8 @@
 "use client";
-import { FunctionComponent, ReactElement, useEffect, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useRef, useState } from "react";
 import styles from "@/app/styles/Tickets.module.scss";
 import DynamicTab from "@/app/components/custom/DynamicTab";
-import { CaretDownIcon, DownloadIcon } from "@/app/components/SVGs/SVGicons";
+import { DownloadIcon } from "@/app/components/SVGs/SVGicons";
 import { useFetchUserTicketOrders } from "@/app/api/apiClient";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
@@ -10,10 +10,16 @@ import { catchError } from "@/app/constants/catchError";
 import { toast } from "sonner";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { TicketCategory } from "@/app/enums/ITicket";
-import { UserTicketOrders } from "@/app/models/ITicketOrder";
+import { UserTicketOrder } from "@/app/models/ITicketOrder";
 import moment from "moment";
 import { serializeOrderStatus } from "@/app/constants/serializer";
 import { OrderStatus } from "@/app/enums/IOrderStatus";
+import ModalWrapper from "@/app/components/Modal/ModalWrapper";
+import TicketUi from "@/app/components/Ticket/TicketUi";
+import { TicketPass } from "@/app/models/ITicketPass";
+import QRCode from "qrcode.react";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface TicketsPageProps {
 
@@ -26,12 +32,22 @@ export enum TicketTab {
 
 const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
 
+    // const router = useRouter();
+
     const fetchUserTicketOrders = useFetchUserTicketOrders();
+    const params = useSearchParams();
+    const tab = params.get('t');
 
     const userInfo = useSelector((state: RootState) => state.userCredentials.userInfo);
     const [selectedTicketTab, setSelectedTicketTab] = useState(TicketTab.Bought);
     const [isFetchingUserTicketOrders, setIsFetchingUserTicketOrders] = useState(true);
-    const [userTicketOrders, setUserTicketOrders] = useState<UserTicketOrders[]>([]);
+    const [UserTicketOrder, setUserTicketOrders] = useState<UserTicketOrder[]>([]);
+
+    // const [selectedTicketOrder, setSelectedTicketOrder] = useState<UserTicketOrder>();
+    const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] = useState<TicketPass>();
+    const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+
+    const [isTicketVisible, setIsTicketVisible] = useState(false);
 
     const ticketTabOptions = [
         {
@@ -63,6 +79,9 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
         // Start loader
         setIsFetchingUserTicketOrders(true);
 
+        // Unset ticket orders
+        setUserTicketOrders([]);
+
         await fetchUserTicketOrders(userInfo?.id as string, selectedTicketTab === TicketTab.Bought ? TicketCategory.Bought : TicketCategory.Sold)
             .then((response) => {
                 // Log response
@@ -84,6 +103,53 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
             })
     };
 
+    function showTicketUi(ticketOrder: UserTicketOrder) {
+        setSelectedTicketOrderInfo({
+            ticketType: ticketOrder.ticket.name,
+            eventInfo: ticketOrder.ticket.event,
+            qr: <QRCode value={ticketOrder?.contactEmail as string} />,
+            orderId: ticketOrder?.orderId as string
+        });
+    };
+
+    const pdfRef = useRef<HTMLDivElement>(null);
+
+    const getPdfForPrint = useReactToPrint({
+        content: () => pdfRef.current,
+        bodyClass: "printElement",
+        documentTitle: selectedTicketOrderInfo ? `${selectedTicketOrderInfo.eventInfo.title}_${selectedTicketOrderInfo.ticketType}_Ticketsdeck_Event.pdf` : "Ticketsdeck_Event_Ticket.pdf",
+        onBeforeGetContent: () => {
+            setIsDownloadingPdf(true);
+        },
+        onAfterPrint: () => {
+            setIsDownloadingPdf(false);
+            setIsTicketVisible(false);
+        }
+    });
+
+    function handleSelectPdfForDownload(ticketOrder: UserTicketOrder) {
+        // Start downloading loader
+        setIsDownloadingPdf(true);
+
+        setSelectedTicketOrderInfo({
+            ticketType: ticketOrder.ticket.name,
+            eventInfo: ticketOrder.ticket.event,
+            qr: <QRCode value={ticketOrder?.contactEmail as string} />,
+            orderId: ticketOrder?.orderId as string
+        });
+    };
+
+    useEffect(() => {
+        if (selectedTicketOrderInfo && !isDownloadingPdf) {
+            setIsTicketVisible(true);
+            return;
+        }
+        if (selectedTicketOrderInfo && isDownloadingPdf) {
+            getPdfForPrint();
+            return;
+        }
+    }, [selectedTicketOrderInfo, isDownloadingPdf]);
+
     useEffect(() => {
         if (userInfo) {
             handleFetchUserTicketOrders();
@@ -96,86 +162,119 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                 toast.dismiss();
             }, 3000);
         }
-    }, [isFetchingUserTicketOrders])
+    }, [isFetchingUserTicketOrders]);
+
+    useEffect(() => {
+
+        if (tab == "0") {
+            setSelectedTicketTab(TicketTab.Bought);
+            return;
+        }
+        if (tab == "1") {
+            setSelectedTicketTab(TicketTab.Sold);
+            return;
+        }
+    }, [tab]);
 
     return (
-        <div className={styles.ticketsPage}>
-            <div className={styles.topArea}>
-                <h3>Tickets page</h3>
-            </div>
-            <div className={styles.filterSection}>
-                <DynamicTab
-                    currentTab={selectedTicketTab}
-                    setCurrentTab={setSelectedTicketTab}
-                    arrayOfTabOptions={ticketTabOptions}
-                    tabCustomWidth={140}
-                    tabCustomHeight={44}
-                    indicatorColor='#8133F1'
-                    containerbackgroundColor="#fff"
-                />
-            </div>
-            <div className={styles.tableContainer}>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>Event name</th>
-                            <th>Ticket name</th>
-                            <th>Amount</th>
-                            <th>Assigned email</th>
-                            <th>Transaction date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
+        <>
+            <ModalWrapper visibility={isTicketVisible && (selectedTicketOrderInfo !== undefined)} setVisibility={setIsTicketVisible} styles={{ backgroundColor: '#fff', borderRadius: '24px', color: '#fff', width: "fit-content" }}>
+                <div className={styles.ticketUIModal} ref={pdfRef}>
+                    {
+                        selectedTicketOrderInfo &&
+                        <TicketUi
+                            ticketInfo={selectedTicketOrderInfo}
+                        />
+                    }
+                    {/* {
+                        !isDownloadingPdf &&
+                        <button onClick={getPdfForPrint}>
+                            Download
+                            {isDownloadingPdf && <ComponentLoader isSmallLoader customBackground="#8133F1" lightTheme customLoaderColor="#fff" />}
+                        </button>
+                    } */}
+                </div>
+            </ModalWrapper>
+            <div className={styles.ticketsPage}>
+                <div className={styles.topArea}>
+                    <h3>Tickets page</h3>
+                </div>
+                <div className={styles.filterSection}>
+                    <DynamicTab
+                        currentTab={selectedTicketTab}
+                        setCurrentTab={setSelectedTicketTab}
+                        arrayOfTabOptions={ticketTabOptions}
+                        tabCustomWidth={140}
+                        tabCustomHeight={44}
+                        indicatorColor='#8133F1'
+                        containerbackgroundColor="#fff"
+                    />
+                </div>
+                <div className={styles.tableContainer}>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Event name</th>
+                                <th>Ticket name</th>
+                                <th>Amount</th>
+                                <th>Assigned email</th>
+                                <th>Transaction date</th>
+                                <th>Status</th>
+                                {selectedTicketTab === TicketTab.Bought && <th>Actions</th>}
+                            </tr>
 
-                        {
-                            userTicketOrders.map((userTicketOrder, index) => {
-                                return (
-                                    <tr key={index}>
-                                        <td>{userTicketOrder.ticket.event.title}</td>
-                                        <td>{userTicketOrder.ticket.name}</td>
-                                        <td>&#8358;{Number(userTicketOrder.ticket.price).toLocaleString()}</td>
-                                        <td>
-                                            <a href={`mailto:${userTicketOrder.associatedEmail}`}>{userTicketOrder.associatedEmail}</a>
-                                        </td>
-                                        <td>{moment(userTicketOrder.createdAt).format("ddd Do MMM, YYYY | hh:mma")}</td>
-                                        <td>
-                                            <span className={styles[`${serializeOrderStatus(userTicketOrder.orderStatus).toLowerCase()}Tag`]}>
-                                                {serializeOrderStatus(userTicketOrder.orderStatus)}
-                                            </span>
-                                        </td>
-                                        <td className={styles.actionsDropdownContainer}>
-                                            <button>View Info</button>
-                                            <span><DownloadIcon /></span>
-                                            {/* <span className={styles.dropdownBtn}>
-                                                <CaretDownIcon />
-                                            </span>
-                                            <div className={styles.dropdownOptions}>
-                                                <span>Option</span>
-                                                <span>Option</span>
-                                                <span>Option</span>
-                                            </div> */}
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </table>
+                            {
+                                UserTicketOrder.map((userTicketOrder, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td>{userTicketOrder.ticket.event.title}</td>
+                                            <td>{userTicketOrder.ticket.name}</td>
+                                            <td>&#8358;{Number(userTicketOrder.ticket.price).toLocaleString()}</td>
+                                            <td>
+                                                <a href={`mailto:${userTicketOrder.associatedEmail}`}>{userTicketOrder.associatedEmail}</a>
+                                            </td>
+                                            <td>{moment(userTicketOrder.createdAt).format("ddd Do MMM, YYYY | hh:mma")}</td>
+                                            <td>
+                                                <span className={showTagStyle(userTicketOrder.orderStatus)}>
+                                                    {serializeOrderStatus(userTicketOrder.orderStatus)}
+                                                </span>
+                                            </td>
+                                            {
+                                                selectedTicketTab === TicketTab.Bought &&
+                                                <td className={styles.actionsDropdownContainer}>
+                                                    <button onClick={() => showTicketUi(userTicketOrder)}>View Info</button>
+                                                    <span
+                                                        onClick={() => {
+                                                            handleSelectPdfForDownload(userTicketOrder)
+                                                        }}
+                                                        style={isDownloadingPdf ? { opacity: 0.45, pointerEvents: 'none' } : {}}>
+                                                        <DownloadIcon />
+                                                        {/* {isDownloadingPdf && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />} */}
+                                                    </span>
+                                                </td>
+                                            }
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
 
-                {
-                    userTicketOrders.length == 0 && !isFetchingUserTicketOrders &&
-                    <div className={styles.tableInfoUnavailable}>
-                        <p>There is no data available</p>
-                    </div>
-                }
-                {
-                    userTicketOrders.length == 0 && isFetchingUserTicketOrders &&
-                    <div className={styles.tableLoader}>
-                        <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />
-                    </div>
-                }
+                    {
+                        UserTicketOrder.length == 0 && !isFetchingUserTicketOrders &&
+                        <div className={styles.tableInfoUnavailable}>
+                            <p>There is no data available</p>
+                        </div>
+                    }
+                    {
+                        UserTicketOrder.length == 0 && isFetchingUserTicketOrders &&
+                        <div className={styles.tableLoader}>
+                            <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />
+                        </div>
+                    }
+                </div>
             </div>
-        </div >
+        </>
     );
 }
 

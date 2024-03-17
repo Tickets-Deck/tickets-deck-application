@@ -113,6 +113,9 @@
                         @extend .tag;
                         // background-color: $light-brown;
                     }
+                    .pendingTag {
+                        background-color: $warning;
+                    }
                     .completedTag {
                         background-color: $success;
                     }
@@ -120,7 +123,7 @@
                         background-color: $danger;
                     }
                     .initiatedTag {
-                        background-color: $warning;
+                        background-color: $premium;
                     }
                 }
 
@@ -142,6 +145,7 @@
                         place-items: center;
                         cursor: pointer;
                         border-radius: 0.25rem;
+                        position: relative;
                         &:hover {
                             opacity: 0.65;
                         }
@@ -189,6 +193,21 @@
                     }
                 }
             }
+        }
+    }
+}
+
+.ticketUIModal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    > button {
+        margin-top: 1rem;
+        @include secondary-button;
+        font-weight: $fontWeight-500;
+        padding: 0.5rem 1rem;
+        &:hover {
+            opacity: 0.65;
         }
     }
 }
