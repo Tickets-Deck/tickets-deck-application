@@ -57,9 +57,10 @@
             display: flex;
             justify-content: center;
             gap: 1rem;
+            @include sectionPadding;
             a {
                 width: 100%;
-                max-width: 30%;
+                // max-width: 30%;
                 padding: 1rem 0;
                 background-color: rgba($color: $grey-3, $alpha: 0.2);
                 border-radius: 1rem;

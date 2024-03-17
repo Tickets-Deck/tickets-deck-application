@@ -6,6 +6,7 @@
     background-color: $white;
     border-radius: 1.5rem;
     padding-top: 1rem;
+    border: 1px solid rgba($color: $text-grey, $alpha: 0.2);
 
     .topSection {
         display: flex;
