@@ -58,7 +58,7 @@ export function useDeleteEvent() {
   return deleteEvent;
 }
 
-export function useFetchEventsByEventId() {
+export function useFetchEventByEventId() {
   async function fetchEventsByEventId(eventId: string) {
     return API.get(`${ApiRoutes.Events}?eventId=${eventId}`);
   }
