@@ -25,7 +25,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
     const toasthandler = useContext(ToastContext);
     // const [events, setEvents] = useState<EventResponse[]>([]);
     // const [isFetchingEvents, setIsFetchingEvents] = useState(true);
-    
+
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
@@ -116,6 +116,12 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
                     </div>
                 }
             </div>
+
+            {!isNotHomepage &&
+                <Link href="/events">
+                    See all events
+                </Link>
+            }
             {/* {
                 events.length > 3 &&
                 <>
