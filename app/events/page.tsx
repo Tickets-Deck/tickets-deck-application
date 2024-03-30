@@ -68,11 +68,11 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
                 </div>
             </section>
 
-            <FeaturedEvents
+            {/* <FeaturedEvents
                 isNotHomepage
                 isFetchingEvents={isFetchingEvents}
                 events={events}
-            />
+            /> */}
 
             <EventsGroup
                 eventsData={events}
