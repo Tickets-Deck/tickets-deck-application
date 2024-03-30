@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux';
 import { updateUserCredentials } from '../redux/features/user/userSlice';
 import { catchError } from '../constants/catchError';
 import { Toaster } from "sonner";
+import useResponsiveness from '../hooks/useResponsiveness';
 
 export const metadata: Metadata = {
     title: 'Ticketsdeck Events',
@@ -37,6 +38,11 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     const fetchUserInformation = useFetchUserInformation();
 
     const dispatch = useDispatch();
+
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     async function handleFetchUserInformation() {
         // console.log("Session on layout: ", session);
@@ -191,7 +197,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                                 <div className="appLayout">
                                     <Topbar />
                                     <div className="appLayout__body">
-                                        <Sidebar />
+                                        {onDesktop && <Sidebar />}
                                         <div className="innerBody" style={(isEventsPage || isViewEventPage) ? { padding: 0 } : {}}>
                                             {children}
                                         </div>
