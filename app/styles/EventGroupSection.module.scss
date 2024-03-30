@@ -47,6 +47,9 @@
 
         &__lhs {
             width: 50%;
+            @include bigMobilePhone {
+                width: 100%;
+            }
             .main {
                 display: flex;
                 align-items: center;
@@ -75,6 +78,9 @@
             }
         }
         &__rhs {
+            @include bigMobilePhone {
+                display: none;
+            }
             button {
                 padding: 0.4rem 0.8rem;
                 background: transparent;

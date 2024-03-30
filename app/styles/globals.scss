@@ -219,6 +219,11 @@ button {
             color: $white;
             overflow-y: auto;
             max-height: calc(100vh - 3.125rem);
+            @include tablet {
+                width: 100%;
+                padding: 0;
+                // max-height: fit-content;
+            }
         }
     }
 }

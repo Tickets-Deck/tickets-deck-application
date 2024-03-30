@@ -23,6 +23,11 @@
     position: relative;
     // border: 1px solid #fff;
 
+    > a {
+        @include tertiary-button;
+        margin: 0 auto;
+    }
+
     .topArea {
         display: flex;
         align-items: flex-start;
@@ -55,6 +60,9 @@
             }
         }
         &__rhs {
+            @include bigMobilePhone {
+                display: none;
+            }
             button {
                 padding: 0.4rem 0.8rem;
                 background: transparent;
@@ -98,7 +106,6 @@
                 overflow-x: auto;
                 scroll-snap-type: x mandatory;
             }
-
         }
         .noEvents {
             text-align: center;
