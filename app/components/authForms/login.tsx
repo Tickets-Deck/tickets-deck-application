@@ -156,7 +156,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                             {isLoading && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
                         </button>
                         <div className={styles.extraOptions}>
-                            <span>Forgot password?</span>
+                            {/* <span>Forgot password?</span> */}
                             <span>Don't have an account? <Link href="/auth/signup">Sign up</Link></span>
                         </div>
                     </form>
