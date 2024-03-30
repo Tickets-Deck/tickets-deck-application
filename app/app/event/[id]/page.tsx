@@ -268,14 +268,15 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                             <button>Purchase your ticket(s)</button>
                                         </>
                                         :
-                                        <ScrollLink
-                                            to="optionalSection"
-                                            smooth={true}
-                                            duration={200}
-                                            offset={-100}
-                                            onClick={() => { }}>
-                                            <button>Edit event information</button>
-                                        </ScrollLink>
+                                        <></>
+                                        // <ScrollLink
+                                        //     to="optionalSection"
+                                        //     smooth={true}
+                                        //     duration={200}
+                                        //     offset={-100}
+                                        //     onClick={() => { }}>
+                                        //     <button>Edit event information</button>
+                                        // </ScrollLink>
                                     }
                                 </div>
                             </div>
