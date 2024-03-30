@@ -5,7 +5,8 @@ export class ApiRoutes {
   /**
    * The dev base url for the application
    */
-  static BASE_URL_DEV: string = "http://localhost:9000/";
+//   static BASE_URL_DEV: string = "http://localhost:9000/";
+  static BASE_URL_DEV: string = "http://192.168.1.226:9000/";
 
   /**
    * The test base url for the application
