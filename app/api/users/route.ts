@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
     if (userName) {
       const user = await prisma.users.findUnique({
         where: {
-            username: userName,
+          username: userName,
         },
         include: {
           events: true,
@@ -116,9 +116,7 @@ export async function POST(req: NextRequest) {
       to: request.email,
       name: "Account Created",
       subject: "Welcome to Ticketsdeck",
-      body: compileAccountCreationTemplate(
-        `${request.firstName}`
-      ),
+      body: compileAccountCreationTemplate(`${request.firstName}`),
     });
 
     // Return the new user, and a message that the user was created
@@ -165,7 +163,10 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    if (request.email && request.email.toLowerCase() !== user.email.toLowerCase()) {
+    if (
+      request.email &&
+      request.email.toLowerCase() !== user.email.toLowerCase()
+    ) {
       // Check if the email is already taken
       const emailExists = await prisma.users.findUnique({
         where: {
@@ -189,7 +190,7 @@ export async function PUT(req: NextRequest) {
       },
       data: {
         email: request.email?.toLowerCase() ?? user.email.toLowerCase(),
-        firstName: request.firstName ?? user.firstName, 
+        firstName: request.firstName ?? user.firstName,
         lastName: request.lastName ?? user.lastName,
         phone: request.phone ?? user.phone,
         facebookUrl: request.facebookUrl ?? null,
@@ -204,3 +205,19 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
   }
 }
+
+// router.get("/posts/:id", async (req, res) => {
+//   const { id } = req.params;
+
+//   try {
+//     if (!id) throw Error();
+//     console.log("Here: ", id);
+//     const post = await prisma.events.findFirstOrThrow({
+//       where: { id: parseInt(id) },
+//     });
+
+//     res.status(200).json({post});
+//   } catch (error) {
+//     res.status(404).json({message: "No events found with provided ID"});
+//   }
+// });
