@@ -87,8 +87,8 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                                             <span className={pathname == '/support' ? styles.active : ''}>Support</span>
                                         </Link> */}
                                     {user ? <>
-                                        <Link href='/app/app' onClick={() => setNavbarIsVisible(false)}>
-                                            <span className={pathname == '/app/app' ? styles.active : ''}>Dashboard</span>
+                                        <Link href='/app' onClick={() => setNavbarIsVisible(false)}>
+                                            <span className={pathname == '/app' ? styles.active : ''}>Dashboard</span>
                                         </Link>
                                         <Link href='/api/auth/logout' onClick={() => setNavbarIsVisible(false)}>
                                             <span>Log out</span>
