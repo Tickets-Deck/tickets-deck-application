@@ -1,6 +1,6 @@
 "use client"
 import type { Metadata } from 'next'
-import { FunctionComponent, ReactElement, ReactNode, useContext, useEffect, useState } from 'react';
+import { FunctionComponent, ReactElement, ReactNode, useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { ToastContext } from '../extensions/toast';
