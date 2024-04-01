@@ -6,17 +6,16 @@ import Image from 'next/image';
 import images from '../../../../public/images';
 import { CalenderIcon, HeartIcon, ShareIcon } from '../../../components/SVGs/SVGicons';
 import Tooltip from '../../../components/custom/Tooltip';
-import { events } from '../../../components/demoData/Events';
 import { ToastContext } from '../../../extensions/toast';
 import moment from 'moment';
-import useResponsive from '../../../hooks/useResponsiveness';
 import Link from 'next/link';
 import { Link as ScrollLink } from 'react-scroll';
 import SkeletonEventInfo from '../../../components/Skeletons/SkeletonEventInfo';
-import { RetrievedTicketResponse, TicketResponse } from '@/app/models/ITicket';
+import { RetrievedTicketResponse } from '@/app/models/ITicket';
 import { EventResponse } from '@/app/models/IEvents';
 import { useFetchEventById } from '@/app/api/apiClient';
 import { catchError } from '@/app/constants/catchError';
+import useResponsiveness from '@/app/hooks/useResponsiveness';
 
 interface EventDetailsProps {
     params: { id: string }
@@ -27,8 +26,11 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
 
     const router = useRouter();
 
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < 768;
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
     const id = params.id;
 
     const fetchEventInfo = useFetchEventById();
@@ -149,7 +151,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
         setLoader(true);
 
         await fetchEventInfo(id)
-            .then((response) => { 
+            .then((response) => {
 
                 // Log the result
                 console.log('Result:', response.data);
@@ -193,7 +195,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
             // Route to flight not-found page
             router.push(`/event/not-found`);
         }
-    }, [params]); 
+    }, [params]);
 
     useEffect(() => {
         if (eventInfo && (eventInfo.tickets !== null)) {
@@ -216,7 +218,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                         autoPlay
                         loop
                         muted
-                        src="https://res.cloudinary.com/dxwpajciu/video/upload/v1691936875/ticketwave/videos/people_waving_p9tni6.mp4" />
+                        src="https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4" />
                 </div>
                 <div className={styles.textContents}>
                     <span>Time to party! <span className={styles.img}><Image src={images.woman_dancing} alt='Woman dancing' /></span></span>
@@ -236,7 +238,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                 <p className={styles.datePosted}>Posted on: {moment(eventInfo?.createdAt).format('Do MMMM YYYY')}</p>
                                 <div className={styles.publisherInfo}>
                                     <div className={styles.publisherInfo__image}>
-                                        <Image src={eventInfo.user.image ?? images.user_avatar} alt='Avatar' fill />
+                                        <Image src={eventInfo.user.profilePhoto ?? images.user_avatar} alt='Avatar' fill />
                                     </div>
                                     <div className={styles.publisherInfo__name}>{`${eventInfo.user.firstName} ${eventInfo.user.lastName}`}</div>
                                 </div>
@@ -266,14 +268,15 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                             <button>Purchase your ticket(s)</button>
                                         </>
                                         :
-                                        <ScrollLink
-                                            to="optionalSection"
-                                            smooth={true}
-                                            duration={200}
-                                            offset={-100}
-                                            onClick={() => setTicketsSelectionContainerIsVisible(true)}>
-                                            <button>Get available tickets</button>
-                                        </ScrollLink>
+                                        <></>
+                                        // <ScrollLink
+                                        //     to="optionalSection"
+                                        //     smooth={true}
+                                        //     duration={200}
+                                        //     offset={-100}
+                                        //     onClick={() => { }}>
+                                        //     <button>Edit event information</button>
+                                        // </ScrollLink>
                                     }
                                 </div>
                             </div>
@@ -288,8 +291,19 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                         <HeartIcon />
                                     </div>
                                 </Tooltip>
+                                {/* {
+                                    onDesktop &&
+                                    <Tooltip tooltipText='Share event'>
+                                        <div className={styles.actionButton} style={{ backgroundColor: '#D5542A' }} onClick={() => shareEvent()}>
+                                            <ShareIcon />
+                                        </div>
+                                    </Tooltip>
+                                }
+                                {
+                                    onMobile &&
+                                } */}
                                 <Tooltip tooltipText='Share event'>
-                                    <div className={styles.actionButton} style={{ backgroundColor: '#D5542A' }} onClick={() => typeof (onMobile) == "boolean" && onMobile ? shareEventMobile() : shareEvent()}>
+                                    <div className={styles.actionButton} style={{ backgroundColor: '#D5542A' }} onClick={() => shareEventMobile()}>
                                         <ShareIcon />
                                     </div>
                                 </Tooltip>
@@ -308,7 +322,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                         return (
                                             <div className={`${styles.ticket} ${ticketType.selectedTickets > 0 ? styles.active : ''}`} key={index}>
                                                 <div className={styles.ticket__topArea}>
-                                                    <p>{ticketType.role}</p>
+                                                    <p>{ticketType.name}</p>
                                                     <h4>&#8358;{ticketType.price.toLocaleString()}</h4>
                                                 </div>
                                                 <div className={styles.ticket__bottomArea}>
@@ -348,7 +362,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                             </div>}
                     </div>
                 </section> :
-                <SkeletonEventInfo />
+                <SkeletonEventInfo forConsole />
             }
             {/* <EventsGroup title='Similar Events' subText='Dear superstar, below is a list of all events available at the moment.' eventsData={events} /> */}
         </div>

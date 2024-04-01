@@ -3,12 +3,15 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./lib/prisma";
 import GoogleProvider from "next-auth/providers/google";
+import { compileAccountCreationTemplate, sendMail } from "./lib/mail";
 
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 30 * 60, // Would be stored for 30 seconds
-    updateAge: 15 * 60, // How frequently the tokem would be updated -  every day
+    // Set max age to 24 hours
+    maxAge: 24 * 60 * 60,
+    // Update jwt every 23 hours
+    updateAge: 20 * 60 * 60,
   },
   providers: [
     CredentialsProvider({
@@ -99,8 +102,18 @@ export const authOptions: NextAuthOptions = {
             firstName: profile?.name?.split(" ")[0] as string,
             lastName: profile?.name?.split(" ")[1] as string,
             password: "google-signup-no-password",
-            image: profile?.picture as string,
+            profilePhoto: profile?.picture as string,
           },
+        });
+
+        // Send email to the subscriber
+        await sendMail({
+          to: profile?.email as string,
+          name: "Account Created",
+          subject: "Welcome to Ticketsdeck",
+          body: compileAccountCreationTemplate(
+            `${profile?.name?.split(" ")[0]} ${profile?.name?.split(" ")[1]}`
+          ),
         });
 
         return true; // Return true to allow sign in
@@ -112,7 +125,7 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage JWTs here
     jwt: async ({ token, user, trigger, session }) => {
-      console.log("JWT Callback", { token, user });
+      console.log("JWT Callback", { token, user, trigger, session });
 
       // Check prisma for user with email gotten in token
       const exisitingUser = await prisma.users.findUnique({
@@ -130,23 +143,36 @@ export const authOptions: NextAuthOptions = {
       } else if (user) {
         const u = user as unknown as any;
 
-        // Return user id and randomKey in JWT so it will be accessible in the session
+        // Return user info so it will be accessible in the session
         return {
           ...token,
-          //   accessToken: token.accessToken,
           id: u.id,
         };
       }
 
       if (trigger === "update") {
-        return { ...token, ...session.user };
+        return {
+          ...token,
+          ...session.user,
+          name: session.user.name,
+          email: session.user.email,
+        };
       }
 
       return token;
     },
     // Create and manage sessions here
-    session: ({ session, token }) => {
+    session: async ({ session, token }) => {
       console.log("Session Callback", { session, token });
+
+      // Fetch user details from database
+      const user = await prisma.users.findUnique({
+        where: {
+          id: token.id as string,
+        },
+      });
+      console.log("🚀 ~ session: ~ user:", user);
+
       return {
         ...session,
         user: {
@@ -154,8 +180,42 @@ export const authOptions: NextAuthOptions = {
           id: token.id,
           accessToken: token.accessToken,
           idToken: token.idToken,
+          image: user?.profilePhoto,
+          name: user?.firstName + " " + user?.lastName,
+          email: user?.email,
+          //   image: token.image as string ?? user?.profilePhoto,
+          //   name: token.name,
+          //   email: token.email,
         },
       };
     },
+  },
+  events: {
+    async signIn(message) {
+      console.log("Sign In Event", { message });
+    },
+    async signOut(message) {
+      // Delete the session cookie
+      await fetch(`${process.env.NEXTAUTH_URL}/api/auth/session`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Sign Out Event", { message });
+    },
+    // async createUser(message) {
+    //   console.log("Create User Event", { message });
+    // },
+    // async linkAccount(message) {
+    //   console.log("Link Account Event", { message });
+    // },
+    // async session(message) {
+    //   console.log("Session Event", { message });
+    // },
+  },
+  pages: {
+    signIn: "/auth/signin",
   },
 };

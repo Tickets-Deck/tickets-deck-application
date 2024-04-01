@@ -1,4 +1,5 @@
 import { ReactElement, FunctionComponent } from "react";
+import ProfilePage from "./ProfilePage";
 
 interface ProfileProps {
     
@@ -6,7 +7,7 @@ interface ProfileProps {
  
 const Profile: FunctionComponent<ProfileProps> = ():ReactElement => {
     return ( 
-        <div>Profile</div>
+        <ProfilePage />
      );
 }
  

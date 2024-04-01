@@ -22,7 +22,7 @@ const Topbar: FunctionComponent<TopbarProps> = (): ReactElement => {
                     <span className={styles.logo__image}>
                         <Image src={images.logoPurple} alt="Logo" />
                     </span>
-                    <p>Ticketwave</p>
+                    <p>Ticketsdeck</p>
                 </div>
             </Link>
             <div className={styles.topbar__rhs}>

@@ -6,27 +6,30 @@ import Image from 'next/image';
 import images from '../../../public/images';
 import { CaretLeftIcon, CaretRightIcon } from '../SVGs/SVGicons';
 import Link from 'next/link';
-import { events } from '../demoData/Events';
 import Tooltip from '../custom/Tooltip';
 import { ToastContext } from '../../extensions/toast';
-import useResponsive from '../../hooks/useResponsiveness';
 import EventCard from '../Event/EventCard';
 import { useFetchEvents } from '@/app/api/apiClient';
 import { EventResponse } from '@/app/models/IEvents';
+import ComponentLoader from '../Loader/ComponentLoader';
+import useResponsiveness from '../../hooks/useResponsiveness';
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean
+    events: EventResponse[]
+    isFetchingEvents: boolean
 }
 
-const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage }): ReactElement => {
+const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage, events, isFetchingEvents }): ReactElement => {
 
-    const fetchEvents = useFetchEvents();
     const toasthandler = useContext(ToastContext);
-    const [events, setEvents] = useState<EventResponse[]>([]);
-    const [isFetchingEvents, setIsFetchingEvents] = useState(false);
+    // const [events, setEvents] = useState<EventResponse[]>([]);
+    // const [isFetchingEvents, setIsFetchingEvents] = useState(true);
 
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < 768;
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     function shareEvent(eventInfo: EventResponse) {
         const eventURL = window.location.href;
@@ -59,30 +62,6 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
         }
     };
 
-    async function handleFetchEvents() {
-        // Start loader
-        setIsFetchingEvents(true);
-
-        await fetchEvents()
-            .then((response) => {
-                if (response) {
-                    setEvents(response.data);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                toasthandler?.logError('Error', 'An error occurred while fetching events.');
-            })
-            .finally(() => {
-                // Stop loader
-                setIsFetchingEvents(false);
-            });
-    };
-
-    useEffect(() => {
-        handleFetchEvents();
-    }, []);
-
     return (
         <section className={styles.featuredEvents}>
             <div className={styles.topArea}>
@@ -110,19 +89,46 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage 
                 </div>
             </div>
             <div className={styles.eventsContainer}>
-                <div className={styles.eventsContainerCarousel}>
-                    {events.map((event, index) =>
-                        <EventCard event={event} key={index} />
-                    )}
-                </div>
+                {
+                    !isFetchingEvents && events.length > 0 &&
+                    <div className={styles.eventsContainerCarousel}>
+                        {
+                            events.slice(0, 3).map((event, index) =>
+                                <EventCard event={event} key={index} />
+                            )
+                        }
+                    </div>
+                }
+                {
+                    isFetchingEvents &&
+                    <>
+                        <br />
+                        <br />
+                        <ComponentLoader customLoaderColor="#fff" />
+                    </>
+                }
+                {
+                    !isFetchingEvents && events.length == 0 &&
+                    <div className={styles.noEvents}>
+                        <br />
+                        <br />
+                        <p>No events found.</p>
+                    </div>
+                }
             </div>
-            {
+
+            {!isNotHomepage &&
+                <Link href="/events">
+                    See all events
+                </Link>
+            }
+            {/* {
                 events.length > 3 &&
                 <>
                     <span className={styles.controller}><CaretLeftIcon /></span>
                     <span className={styles.controller}><CaretRightIcon /></span>
                 </>
-            }
+            } */}
         </section>
     );
 }

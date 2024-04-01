@@ -26,19 +26,19 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  transition: all 300ms ease !important;
   scroll-behavior: smooth;
   font-family: $normal-font, sans-serif;
 
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -ms-user-select: none;
+//   user-select: none;
+//   -ms-user-select: none;
 }
 
 html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  scrollbar-width: thin;
 }
 
 // body {
@@ -69,6 +69,15 @@ a {
   user-select: none;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+    background-color: transparent !important;
+}
+input[data-autocompleted] {
+    background-color: transparent !important;
+}
+
 .loader {
     animation: loaderAnim 800ms linear infinite;
     display: inline-flex;
@@ -92,9 +101,11 @@ img {
 button {
     overflow: hidden;
     position: relative;
+    border: none;
+    outline: none;
     &:disabled {
         pointer-events: none;
-        opacity: 0.8;
+        opacity: 0.6;
     }
 }
 
@@ -208,6 +219,11 @@ button {
             color: $white;
             overflow-y: auto;
             max-height: calc(100vh - 3.125rem);
+            @include tablet {
+                width: 100%;
+                padding: 0;
+                // max-height: fit-content;
+            }
         }
     }
 }

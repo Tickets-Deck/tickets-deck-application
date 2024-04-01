@@ -84,7 +84,7 @@
 
 // SKELETON STYLES STARTS HERE =============
 
-.eventInfoContainer {
+.eventInfoContainer, .consoleEventInfoContainer {
     @include sectionPadding;
     z-index: 2;
     position: relative;
@@ -102,7 +102,7 @@
         gap: 1rem;
         position: relative;
         overflow: hidden;
-        height: 320px;
+        // height: 320px;
 
         @include bigMobilePhone {
             flex-direction: column;
@@ -290,4 +290,9 @@
             }
         }
     }
+}
+
+.consoleEventInfoContainer {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }

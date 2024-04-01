@@ -5,26 +5,31 @@ import Image from 'next/image';
 import images from '../../public/images';
 import { CaretDownIcon, CloseMenuIcon, HamburgerMenuIcon, MoonIcon, SunIcon, UserIcon } from './SVGs/SVGicons';
 import useOuterClick from '../hooks/useOuterClick';
-import useResponsive from '../hooks/useResponsiveness';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { WindowSizes } from '../constants/windowSizes';
 import { signOut, useSession } from 'next-auth/react';
+import useResponsiveness from '../hooks/useResponsiveness';
+import { useDispatch } from 'react-redux';
+import { clearUserCredentials } from '../redux/features/user/userSlice';
+import { Session } from 'next-auth';
 
 interface NavbarProps {
-
+    session: Session | null
 }
 
 const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
 
     const { data: session } = useSession();
     const user = session?.user;
-    const router = useRouter();
     const pathname = usePathname();
 
-    // const onMobile = useResponsive();    
-    const windowRes = useResponsive();
-    const onMobile = windowRes.width && windowRes.width < WindowSizes.Tablet_Size;
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
+    const dispatch = useDispatch();
 
     const [navbarDropdownIsVisible, setNavbarDropdownIsVisible] = useState(false);
     // const [mobileNavbarIsVisible, setMobileNavbarIsVisible] = useState(false);
@@ -51,12 +56,13 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
     return (
         <>
             {
-                typeof (onMobile) == "boolean" && onMobile &&
+                onMobile &&
                 <section className={styles.mobileNavbarContainer}>
                     <Link href='/'>
                         <div className={styles.logo}>
                             <Image src={images.logoWhite} alt='Logo' />
                         </div>
+                        <p>Ticketsdeck <br /> Events</p>
                     </Link>
                     <div className={styles.buttons}>
                         <span><SunIcon /></span>
@@ -81,8 +87,8 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                                             <span className={pathname == '/support' ? styles.active : ''}>Support</span>
                                         </Link> */}
                                     {user ? <>
-                                        <Link href='/account' onClick={() => setNavbarIsVisible(false)}>
-                                            <span className={pathname == '/account' ? styles.active : ''}>Account</span>
+                                        <Link href='/app' onClick={() => setNavbarIsVisible(false)}>
+                                            <span className={pathname == '/app' ? styles.active : ''}>Dashboard</span>
                                         </Link>
                                         <Link href='/api/auth/logout' onClick={() => setNavbarIsVisible(false)}>
                                             <span>Log out</span>
@@ -97,14 +103,14 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                 </section>
             }
             {
-                typeof (onMobile) == "boolean" && !onMobile &&
+                onDesktop &&
                 <section className={styles.navbarContainer}>
                     <Link href='/'>
                         <div className={styles.navbarContainer__lhs}>
                             <div className={styles.logo}>
                                 <Image src={images.logoWhite} alt='Logo' />
                             </div>
-                            <p>Ticketwave</p>
+                            <p>Ticketsdeck Events</p>
                         </div>
                     </Link>
                     <div className={styles.navbarContainer__rhs}>
@@ -135,7 +141,11 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                                         <div className={styles.dropdownContainer}>
                                             <Link href='/app'>Dashboard</Link>
                                             <Link href='/app/profile'>Profile</Link>
-                                            <span onClick={() => signOut()}>Log out</span>
+                                            <span onClick={() => {
+                                                signOut();
+                                                // Clear user credentials from redux store
+                                                dispatch(clearUserCredentials());
+                                            }}>Log out</span>
                                         </div>
                                     }
                                 </>

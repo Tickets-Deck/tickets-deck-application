@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
     images: {
         remotePatterns: [
@@ -13,6 +14,10 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 's.gravatar.com'
+            },
+            {
+                protocol: 'https',
+                hostname: 'placehold.co'
             },
         ]
     }

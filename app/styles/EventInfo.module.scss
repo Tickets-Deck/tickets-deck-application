@@ -1,0 +1,229 @@
+@import "./variables";
+@import "./reusables";
+
+@mixin button {
+    @include primary-button;
+    border-radius: 2.5rem;
+    background-color: $white;
+    color: $black;
+    font-weight: $fontWeight-500;
+    font-size: $font-size-18;
+}
+
+
+.mainSection {
+    display: flex;
+    align-items: center;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    background-color: $container-grey;
+    gap: 1rem;
+    position: relative;
+    min-height: 320px;
+    height: fit-content;
+    @include bigMobilePhone {
+        flex-direction: column;
+    }
+    @include midSizeMobilePhone {
+        padding: 1rem;
+        border-radius: 1.5rem;
+    }
+    .eventImage {
+        min-width: 30%;
+        width: 30%;
+        min-height: 100%;
+        // height: 100%;
+        height: 300px;
+        border-radius: 1rem;
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        display: inline-flex;
+        @include bigMobilePhone {
+            width: 100%;
+            min-width: 100%;
+        }
+        @include midSizeMobilePhone {
+            min-height: 180px;
+            height: 180px;
+        }
+        img {
+            object-fit: cover;
+        }
+    }
+    .tag {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        color: $white;
+        background-color: $primary-color;
+    }
+    .eventDetails {
+        display: flex;
+        align-items: flex-end;
+        gap: 0.25rem;
+        width: 100%;
+        // height: 100%;
+        min-height: 100%;
+        height: fit-content;
+        @include midSizeMobilePhone {
+            flex-direction: column;
+            .leftInfo {
+                order: 2;
+            }
+        }
+        .leftInfo {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            .title {
+                font-size: $font-size-30;
+                font-weight: $fontWeight-600;
+                line-height: $font-size-30;
+                @include midSizeMobilePhone {
+                    font-size: $font-size-20;
+                    line-height: $font-size-20;
+                }
+                // font-family: Mona-Sans-Wide, 'sans-serif';
+            }
+            .datePosted {
+                color: $purple-grey;
+                font-size: $font-size-16 - 0.25rem;
+            }
+            .publisherInfo {
+                display: flex;
+                align-items: center;
+                gap: 0.35rem;
+                width: fit-content;
+                &:hover {
+                    opacity: 0.65;
+                }
+                &__image {
+                    width: 2.5rem;
+                    height: 2.5rem;
+                    position: relative;
+                    border-radius: 100%;
+                    overflow: hidden;
+
+                    @include midSizeMobilePhone {
+                        width: 2rem;
+                        height: 2rem;
+                    }
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+                &__name {
+                    font-size: $font-size-16;
+                    color: $white;
+                    font-weight: $fontWeight-500;
+                    @include midSizeMobilePhone {
+                        font-size: $font-size-16 - 0.125rem;
+                    }
+                }
+            }
+            .dateTime {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                h4 {
+                    font-size: $font-size-16;
+                    font-weight: $fontWeight-500;
+                    color: $white;
+                }
+            }
+            .location {
+                width: 100%;
+                p {
+                    font-size: $font-size-16 - 0.125rem;
+                    color: $white;
+                }
+                button {
+                    color: $purple-grey;
+                    text-decoration: underline;
+                    background-color: transparent;
+                    border: none;
+                    outline: none;
+                    cursor: pointer;
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                }
+            }
+            .bottomArea {
+                display: flex;
+                gap: 0.75rem;
+                margin-top: 0.8rem;
+                @include bigMobilePhone {
+                    flex-direction: column;
+                }
+                .priceArea {
+                    span {
+                        color: $purple-grey;
+                        font-size: $font-size-16 - 0.125rem;
+                    }
+                    h2 {
+                        font-weight: $fontWeight-600;
+                    }
+                }
+                button {
+                    @include button();
+                    @include midSizeMobilePhone {
+                        font-size: $font-size-16 - 0.125rem;
+                    }
+                }
+                .reportEvent {
+                    background-color: $failed-color;
+                    color: $white;
+                    &:hover {
+                        background-color: darken($failed-color, 10%);
+                        color: $white;
+                    }
+                }
+            }
+        }
+        .actionButtons {
+            width: 8%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            @include midSizeMobilePhone {
+                flex-direction: row;
+                width: 100%;
+                margin-bottom: .5rem; 
+                gap: 0.5rem;
+            }
+            .actionButton {
+                margin-left: auto;
+                width: 2.5rem;
+                height: 2.5rem;
+                border-radius: 100%;
+                background-color: $white;
+                display: grid;
+                place-items: center;
+                position: relative;
+                @include midSizeMobilePhone {
+                    width: 2rem;
+                    height: 2rem;
+                }
+                svg {
+                    width: 1rem;
+                    height: 1rem;
+                }
+            }
+        }
+    }
+}
+
+.opMainSection {
+    flex-direction: column;
+    width: 100%;
+    .eventImage {
+        width: 100%;
+    }
+}

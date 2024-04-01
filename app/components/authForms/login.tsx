@@ -1,5 +1,5 @@
 "use client"
-import { ReactElement, FunctionComponent, useState, useEffect } from "react";
+import { ReactElement, FunctionComponent, useState, useEffect, FormEvent } from "react";
 import styles from "../../styles/AuthStyles.module.scss";
 import Image from "next/image";
 import images from "../../../public/images";
@@ -31,7 +31,10 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
 
     const [message, setMessage] = useState('');
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+
+        // Prevent default form submission
+        e.preventDefault();
 
         // Unset message
         setMessage('');
@@ -67,6 +70,8 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
             .then((response) => {
                 console.log("response: ", response);
                 if (response && response.status == StatusCodes.Unauthorized) {
+                    // Close loader
+                    setIsLoading(false);
                     setMessage("An error occurred while logging in. Please check your credentials and try again.");
                     return;
                 }
@@ -76,8 +81,6 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                 setMessage("An error occurred while logging in. Please try again.");
                 console.log("Error logging in: ", error);
                 catchError(error);
-            })
-            .finally(() => {
                 // Close loader
                 setIsLoading(false);
             })
@@ -115,7 +118,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                         </div>
                     </div>
                     <span>OR</span>
-                    <div className={styles.content__form}>
+                    <form className={styles.content__form} onSubmit={(e) => handleSubmit(e)}>
                         <div className={styles.formFieldContainer}>
                             <label htmlFor="email">Email address</label>
                             <div className={styles.formField}>
@@ -148,15 +151,15 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                             {passwordErrorMsg && <span className={styles.errorMsg}>Please enter your password</span>}
                         </div>
                         {message && <span className={styles.errorMsg}>{message}</span>}
-                        <button onClick={handleSubmit} disabled={isLoading}>
+                        <button type="submit" disabled={isLoading}>
                             Log in
                             {isLoading && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
                         </button>
                         <div className={styles.extraOptions}>
-                            <span>Forgot password?</span>
+                            {/* <span>Forgot password?</span> */}
                             <span>Don't have an account? <Link href="/auth/signup">Sign up</Link></span>
                         </div>
-                    </div>
+                    </form>
                 </div>
                 <div className={styles.imagesDisplay}>
                     <span>

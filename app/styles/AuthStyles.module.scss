@@ -8,6 +8,11 @@
     display: grid;
     place-items: center;
     background-color: $dark-grey;
+    @include tablet {
+        @include sectionPadding;
+        display: flex;
+    }
+
     .container {
         background-color: $dark-grey-2;
         color: $white;
@@ -16,6 +21,16 @@
         width: 50vw;
         height: fit-content;
         overflow: hidden;
+            
+        @include smallLaptop {
+            width: 70vw;
+            max-width: 500px;
+        }
+            
+        @include tablet {
+            width: 100vw;
+            max-width: 500px;
+        }
 
         .content {
             padding: 1.5rem 1.25rem;
@@ -23,6 +38,11 @@
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            
+            @include smallLaptop {
+                flex-direction: 100%;
+                width: 100%;
+            }
             &__top {
                 display: flex;
                 flex-direction: column;
@@ -94,6 +114,11 @@
                 flex-direction: column;
                 gap: 1rem;
                 min-width: 25rem;
+                @include tablet {
+                    width: 100%;
+                    min-width: auto;
+                }
+                
                 .rowFormFieldContainer {
                     display: flex;
                     gap: .5rem;
@@ -159,7 +184,7 @@
                         //         color: $primary-color-sub;
                         //     }
                         // }
-                        a:hover {
+                        a {
                             color: $primary-color-sub;
                         }
                     }
@@ -173,6 +198,11 @@
             height: 32.5rem;
             overflow: hidden;
             position: relative;
+            
+            @include smallLaptop {
+                display: none;
+            }
+
             > span {
                 background-color: $white;
                 width: 5rem;

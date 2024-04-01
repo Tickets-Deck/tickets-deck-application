@@ -1,5 +1,5 @@
 "use client"
-import { ReactElement, FunctionComponent, useState, FormEvent, useContext } from "react";
+import { ReactElement, FunctionComponent, useState, FormEvent, useContext, useEffect } from "react";
 import styles from "../../styles/AuthStyles.module.scss";
 import Image from "next/image";
 import images from "../../../public/images";
@@ -9,8 +9,10 @@ import { UserCredentialsRequest } from "../../models/IUser";
 import { emailRegex } from "../../constants/emailRegex";
 import { ToastContext } from "../../extensions/toast";
 import ComponentLoader from "../Loader/ComponentLoader";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { signUp } from "../../actions/users/signUp";
+import { signIn } from "next-auth/react";
+import { useCreateUser } from "@/app/api/apiClient";
 
 interface SignupPageProps {
 
@@ -31,6 +33,8 @@ enum EmailConfirmationStatus {
 const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
 
     const router = useRouter();
+    const createUser = useCreateUser();
+
     const toastHandler = useContext(ToastContext);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState<string>();
@@ -43,6 +47,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
     const [confirmPasswordErrorMsg, setConfirmPasswordErrorMsg] = useState<{ value: string, status: PasswordConfirmationStatus }>();
 
     const [formValues, setFormValues] = useState<UserCredentialsRequest>();
+    const [registrationError, setRegistrationError] = useState<string>();
 
     function onFormValueChange(e: React.ChangeEvent<HTMLInputElement>) {
         // Desctructure the name and value from the event target
@@ -121,30 +126,46 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
         // Start loading
         setIsCreatingUser(true);
 
-        console.log("Form values", formValues); 
+        console.log("Form values", formValues);
 
-        await signUp(formValues?.email, formValues?.password, formValues?.firstName, formValues?.lastName)
-            .then((response) => { 
-                console.log(response);
-                // Display success message
-                toastHandler?.logSuccess('Success', 'You have successfully subscribed to our newsletter');
-                // Clear input fields
-                setFormValues({} as UserCredentialsRequest);
-                setConfirmPassword('');
+        await createUser(formValues)
+        .then((response) => {
 
-                // Redirect to login page
-                router.push('/auth/signin');
-            })
-            .catch((error) => {
-                console.log(error);
-                // Display error message
-                toastHandler?.logError('Error', 'An error occurred while creating your account');
-            })
-            .finally(() => {
-                // Stop loading
-                setIsCreatingUser(false);
-            })
-    }
+            console.log("Create user response: ", response);
+
+            // Display success message
+            toastHandler?.logSuccess('Success', 'You have successfully subscribed to our newsletter');
+
+            // Clear input fields
+            setFormValues({} as UserCredentialsRequest);
+            setConfirmPassword('');
+
+            // Redirect to login page
+            router.push('/auth/signin');
+        })
+        .catch((error) => {
+            console.log(error);
+            // console.log(error.response.data);
+            if(error.response.data.detail == "User with this email already exist.") {
+                console.log(error.response.data.detail);
+                setRegistrationError('User with this email already exists!');
+            }
+            // Display error message
+            toastHandler?.logError('Error', 'An error occurred while creating your account');
+        })
+        .finally(() => {
+            // Stop loading
+            setIsCreatingUser(false);
+        });
+    };
+
+    useEffect(() => {
+        if(registrationError) {
+            setTimeout(() => {
+                setRegistrationError(undefined);
+            }, 3000);
+        }
+    }, [registrationError])
 
     return (
         <div className={styles.main}>
@@ -155,7 +176,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                         {/* <p>Create your account</p> */}
                     </div>
                     <div className={styles.content__loginOptions}>
-                        <div className={styles.option}>
+                        <div className={styles.option} onClick={async () => await signIn('google')}>
                             <span>
                                 <GoogleIcon />
                             </span>
@@ -253,6 +274,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                                 {confirmPasswordErrorMsg?.value && <span className={styles.errorMsg}>{confirmPasswordErrorMsg.value}</span>}
                             </div>
                         </div>
+                        {registrationError && <span className={styles.errorMsg}>{registrationError}</span>}
                         <button type="submit" disabled={isCreatingUser}>
                             Sign up
                             {isCreatingUser && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}

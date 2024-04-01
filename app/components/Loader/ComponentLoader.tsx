@@ -26,11 +26,13 @@ interface ComponentLoaderProps {
      * Ideal for buttons
      */
     customBackground?: string
+
+    scale?: number
 }
 
 const ComponentLoader: FunctionComponent<ComponentLoaderProps> = (
-    { style, lightTheme, customBackground, customLoaderColor, isSmallLoader }): ReactElement => {
-    const loaderStyle = isSmallLoader ? { width: '24px', height: '24px', borderWidth: '3px' } : {};
+    { style, lightTheme, customBackground, customLoaderColor, isSmallLoader, scale }): ReactElement => {
+    const loaderStyle = isSmallLoader ? { width: '24px', height: '24px', borderWidth: '3px', scale: scale ?? 1 } : {};
 
     return (
         <>

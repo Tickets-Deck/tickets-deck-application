@@ -1,22 +1,30 @@
 @import "./variables";
 @import "./reusables";
 
-.event {
+.event, .gridDisplay {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     position: relative;
-    min-width: 18.75rem;
-    max-width: 18.75rem;
+    width: 100%; 
+    max-width: 35%;
     padding: 30px 10px 10px;
     border-radius: 0.75rem;
     overflow: hidden;
     height: 300px;
     max-height: 100%;
+    background-color: #3E3D44;
+    @include tablet {
+        min-width: 18.75rem;
+        max-width: 18.75rem;
+    }
     @include bigMobilePhone {
+        min-width: 18.75rem;
+        max-width: 18.75rem;
         overflow-x: auto;
         scroll-snap-align: center;
     }
+
     .backgroundImage {
         position: absolute;
         width: 100%;
@@ -27,6 +35,7 @@
             object-fit: fill;
         }
     }
+
     &__tag {
         z-index: 2;
         border-end-start-radius: 8px;
@@ -39,16 +48,18 @@
         font-size: $font-size-16 - 0.25rem;
         padding: 0.25rem 1rem;
     }
+
     &__image {
         z-index: 2;
-        height: 8.5rem;
+        min-height: 7.5rem;
+        max-height: 7.5rem;
         border-radius: 0.75rem;
         overflow: hidden;
         position: relative;
         // margin-bottom: 1.5rem;
         &::after {
-            content: '';
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 4.17%, rgba(#000, 0.2) 100%);
+            content: "";
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 4.17%, rgba(#000, 0.2) 100%);
             width: 100%;
             height: 100%;
             top: 0;
@@ -70,6 +81,7 @@
             object-fit: cover;
         }
     }
+
     .hLine {
         z-index: 2;
         width: 90%;
@@ -80,6 +92,7 @@
         align-items: center;
         justify-content: center;
     }
+
     .eventInfo {
         display: flex;
         align-items: flex-start;
@@ -91,8 +104,15 @@
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
+            h3 {
+                text-align: left;
+                max-width: 100%;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
             .title {
-                font-size: $font-size-16;
+                font-size: $font-size-16 + 0.125rem;
                 font-family: Mona-Sans-Wide, "sans-serif";
                 font-weight: $fontWeight-500;
             }
@@ -183,23 +203,48 @@
             }
         }
     }
-    & > a {
-        z-index: 2;
-        @include primary-button;
-        width: 100%;
-        justify-content: center;
-        &:hover {
-            background-color: $white;
-            button {
-                color: $primary-color;
+
+    .actionBtnContainer {
+        display: flex;
+        gap: .25rem;
+        .deleteBtn {
+            width: 3rem;
+            min-width: 3rem;
+            background-color: $failed-color;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            scale: 0.9;
+            &:hover {
+                background-color: darken($color: $failed-color, $amount: 10%);
+            }
+            svg {
+                path {
+                    fill: $white;
+                }
             }
         }
-        & > button {
-            cursor: pointer;
-            background-color: transparent;
-            color: $white;
-            border: none;
-            outline: none;
+        & > a {
+            z-index: 2;
+            @include primary-button;
+            width: 100%;
+            justify-content: center;
+            &:hover {
+                background-color: $white;
+                button {
+                    color: $primary-color;
+                }
+            }
+            & > button {
+                cursor: pointer;
+                background-color: transparent;
+                color: $white;
+                border: none;
+                outline: none;
+            }
         }
     }
+}
+
+.gridDisplay {
+    max-width: none;
 }

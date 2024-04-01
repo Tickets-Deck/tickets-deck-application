@@ -1,0 +1,53 @@
+@import "./variables";
+@import "./reusables";
+
+.deletionConfirmationModal {
+    width: 21.875rem;
+    max-width: 21.875rem;
+    padding: 1.5rem;
+    border-radius: 20px;
+    background-color: $container-grey;
+
+    .topAreaSection {
+        display: flex;
+        justify-self: space-between;
+        align-items: flex-start;
+
+        .topArea {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            border-bottom: .0625rem solid rgba($color: $white, $alpha: 0.4);
+
+            h3 {
+                font-size: 1rem;
+                font-weight: $fontWeight-400;
+            }
+            p {
+                font-size: 0.8rem;
+                font-weight: $fontWeight-300;
+                color: $grey;
+                opacity: 0.8;
+            }
+        }
+        .closeIcon {
+            @include closeIcon($white);
+        }
+    }
+    .actionButton {
+        display: flex;
+        margin-top: 24px;
+        gap: 0.5rem;
+        button {
+            @include tertiary-button;
+            padding: 8px 16px;
+            &:nth-child(2) {
+                background-color: $failed-color;
+                color: $white;
+                &:hover {
+                    background-color: darken($color: $failed-color, $amount: 10%)
+                }
+            }
+        }
+    }
+}

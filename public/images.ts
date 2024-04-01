@@ -1,5 +1,8 @@
-import logoWhite from "./images/logo_white.png";
-import logoPurple from "./images/logo_purple.png";
+// import logoWhite from "./images/logo_white.png";
+// import logoPurple from "./images/logo_purple.png";
+import logoWhite from "./images/etd-logo-white.png";
+import logoPurple from "./images/etd-logo.png";
+
 // import ImageBg7 from "./images/ImageBg7.jpg";
 // import ImageBg8 from "./images/ImageBg8.jpg";
 import rocket from "./images/rocket.png";

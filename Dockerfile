@@ -11,6 +11,9 @@ RUN npm install
 COPY . /usr/src/app
 # Building app
 RUN npm run build
+# 👇 copy prisma directory
+COPY --from=builder /app/prisma ./prisma
 EXPOSE 3000
 # Running the app
-CMD "npm" "run" "start"
+# CMD "npm" "run" "start" - default
+CMD [  "npm", "run", "start:migrate:prod" ]

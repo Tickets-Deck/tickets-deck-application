@@ -3,6 +3,7 @@ import styles from '../../../styles/CreateEvent.module.scss';
 import { PhotoIcon } from "../../SVGs/SVGicons";
 import Image from "next/image";
 import { EventRequest } from "@/app/models/IEvents";
+import { FormFieldResponse } from "@/app/models/IFormField";
 
 
 interface ImageUploadSectionProps {
@@ -10,11 +11,16 @@ interface ImageUploadSectionProps {
     setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
     mainImageFile: File | undefined
     setMainImageFile: Dispatch<SetStateAction<File | undefined>>
+    imageValidationMessage: FormFieldResponse | undefined
+    setImageValidationMessage: React.Dispatch<React.SetStateAction<FormFieldResponse | undefined>>
 }
 
-const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({ eventRequest, setEventRequest, mainImageFile, setMainImageFile }): ReactElement => {
+const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = (
+    { eventRequest, setEventRequest, mainImageFile,
+        setMainImageFile, imageValidationMessage, setImageValidationMessage }): ReactElement => {
 
     const [mainImageUrl, setMainImageUrl] = useState<string>();
+    const [mainImageBase64Url, setMainImageBase64Url] = useState<string>();
     const [subImageFiles, setSubImageFiles] = useState<File[]>();
     const [subImageUrls, setSubImageUrls] = useState<string[]>();
 
@@ -50,6 +56,7 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({ eventR
                         const base64String = base64URL.split(',')[1];
 
                         // console.log('base64URL: ', base64String);
+                        setMainImageBase64Url(base64String);
                     }
                 };
 
@@ -71,6 +78,9 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({ eventR
 
         // Update the image url state
         setMainImageUrl(imgURL);
+
+        // Clear the error message
+        setImageValidationMessage(undefined);
     };
 
     /**
@@ -153,16 +163,16 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({ eventR
     };
 
     useEffect(() => {
-        if (mainImageUrl) {
-            setEventRequest({ ...eventRequest as EventRequest, mainImageUrl: mainImageUrl });
+        if (mainImageBase64Url) {
+            setEventRequest({ ...eventRequest as EventRequest, mainImageUrl: mainImageBase64Url });
         }
-    }, [mainImageUrl])
+    }, [mainImageBase64Url])
 
-    useEffect(() => {
-        if (eventRequest) {
-            setMainImageUrl(eventRequest.mainImageUrl);
-        }
-    }, [eventRequest])
+    // useEffect(() => {
+    //     if (eventRequest) {
+    //         setMainImageUrl(eventRequest.mainImageUrl);
+    //     }
+    // }, [eventRequest])
 
     return (
         <div className={styles.imageUploadSection}>
@@ -179,6 +189,7 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({ eventR
                         <span>{mainImageUrl ? "Change image" : "Choose image"}</span>
                     </button>
                 </div>
+                {imageValidationMessage && <span className={styles.errorMsg}>{imageValidationMessage.message}</span>}
             </div>
 
             {/* <div className={styles.subImagesContainer}>

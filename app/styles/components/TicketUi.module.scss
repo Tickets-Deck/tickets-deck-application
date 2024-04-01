@@ -1,0 +1,105 @@
+@import "../variables";
+@import "../reusables";
+
+.ticketContainer {
+    width: 450px;
+    background-color: $white;
+    border-radius: 1.5rem;
+    padding-top: 1rem;
+    border: 1px solid rgba($color: $text-grey, $alpha: 0.2);
+
+    .topSection {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        h3 {
+            color: $dark-grey;
+            text-align: center;
+            padding: 0.65rem 0rem;
+            // margin-bottom: 0.5rem;
+            font-weight: $fontWeight-500;
+            font-family: 'Mona-Sans';
+        }
+        .image {
+            width: 100%;
+            height: 140px;
+            position: relative;
+            border-radius: 0.85rem;
+            overflow: hidden;
+            img {
+                object-fit: cover;
+            }
+        }
+    }
+
+    .passSegment {
+        background-color: $primary-color;
+        color: $white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0.5rem 0;
+        padding-top: .65rem;
+        h1 {
+            font-size: $font-size-35;
+            font-weight: $fontWeight-500;
+            line-height: $font-size-30
+            // color: $white;
+        }
+        p {
+            opacity: 0.65;
+        }
+    }
+
+    .eventInfo {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+
+        .main {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            color: $black;
+            margin-bottom: 1rem;
+
+            .lhs {
+                margin-right: 0.5rem;
+                h5 {
+                    font-weight: $fontWeight-500;
+                    color: $text-grey;
+                    margin-bottom: 0.15rem;
+                }
+                p {
+                    font-size: $font-size-16 - .125rem;
+                    color: $dark-grey;
+                    margin-bottom: 0.5rem;
+                }
+            }
+            .rhs {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                .qr {
+                    width: 120px;
+                    height: 120px;
+                    position: relative;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    margin-bottom: 0.25rem;
+                    img {
+                        object-fit: cover;
+                    }
+                }
+                p {
+                    font-size: $font-size-16 - .125rem;
+                }
+            }
+        }
+        .order {
+            font-size: $font-size-16 - .125rem;
+            color: $container-grey;
+            text-align: center;
+        }
+    }
+}

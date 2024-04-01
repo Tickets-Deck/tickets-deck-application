@@ -1,0 +1,102 @@
+@import "./variables";
+@import "./reusables";
+
+.orderspage {
+    color: $white;
+    background-color: $dark-grey;
+    @include sectionPadding;
+    padding-top: 24px;
+    padding-bottom: 80px;
+
+    .topArea {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        .closeIcon {
+            @include closeIcon($white);
+            margin: 0;
+            svg {
+                width: 1rem;
+                height: 1rem;
+            }
+        }
+
+        h2 {
+            font-size: $font-size-24;
+            font-weight: $fontWeight-500;
+            margin-left: .5rem;
+            span {
+                opacity: 0.5;
+            }
+        }
+    }
+
+    .orderInformationContainer {
+        display: flex;
+        .eventContainer {
+            width: 35%;
+            margin-right: 3rem;
+        }
+        .ticketsContainer {
+            width: calc(65% - 3rem);
+            display: flex;
+            flex-direction: column;
+            .tickets {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 2rem;
+                .ticket {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 1rem 0;
+                    border-bottom: 1px solid $container-grey;
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                    h3 {
+                        font-size: $font-size-16 + .125rem;
+                        font-weight: $fontWeight-500;
+                    }
+                    p {
+                        margin-left: auto;
+                        margin-right: 1rem;
+                    }
+                    button {
+                        background-color: transparent;
+                        border: none;
+                        width: 2rem;
+                        height: 2rem;
+                        border-radius: .5rem;
+                        cursor: pointer;
+                        &:hover {
+                            background-color: $container-grey;
+                        }
+                        svg {
+                            width: 1rem;
+                            height: 1rem;
+                            path {
+                                stroke: $white;
+                            }
+                        }
+                    }
+                }
+            }
+            .actions {
+                display: flex;
+                margin-left: auto;
+                button {
+                    @include tertiary-button;
+                    &:first-child {
+                        @include tertiary-button;
+                        background-color: transparent;
+                        color: $white;
+                        border: 2px solid $white;
+                        margin-right: 1rem;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -6,9 +6,11 @@ import { EventRequest } from "../../../models/IEvents";
 interface ConfirmationSectionProps {
     eventRequest: EventRequest | undefined
     setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
+    isEventCreated: boolean
 }
 
-const ConfirmationSection: FunctionComponent<ConfirmationSectionProps> = ({ eventRequest, setEventRequest }): ReactElement => {
+const ConfirmationSection: FunctionComponent<ConfirmationSectionProps> = (
+    { eventRequest, setEventRequest, isEventCreated }): ReactElement => {
 
     /**
      * Function to generate a random string
@@ -42,18 +44,23 @@ const ConfirmationSection: FunctionComponent<ConfirmationSectionProps> = ({ even
     }, [uniqueEventCode]);
 
     useEffect(() => {
-        if (eventRequest?.eventId) {
+        if (eventRequest?.eventId || isEventCreated ) {
             return;
         }
         setUniqueEventCode(generateEventCode());
-    }, [eventRequest?.eventId])
+    }, [eventRequest?.eventId, isEventCreated])
 
     return (
         <div className={styles.confirmationSection}>
-            <h3>Please review your event's information below.</h3>
-            <div className={styles.eventInformation}>
-                <span>Event ID: {eventRequest?.eventId}</span>
-            </div>
+            {
+                isEventCreated ? <h3>Event created. Redirecting you in seconds...</h3> :
+                    <h3>Please review your event's information below.</h3>
+            }
+            {
+                !isEventCreated && <div className={styles.eventInformation}>
+                    <span>Event ID: {eventRequest?.eventId}</span>
+                </div>
+            }
         </div>
     );
 }
