@@ -2,7 +2,7 @@ import ModalWrapper from "@/app/components/Modal/ModalWrapper";
 import { CloseIcon } from "@/app/components/SVGs/SVGicons";
 import { EventRequest } from "@/app/models/IEvents";
 import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
-import { TicketRequest, TicketResponse } from "@/app/models/ITicket";
+import { TicketRequest } from "@/app/models/ITicket";
 import styles from '@/app/styles/CreateEvent.module.scss';
 import { ReactElement, FunctionComponent, Dispatch, SetStateAction, ChangeEvent, useState, useEffect, useRef } from "react";
 
