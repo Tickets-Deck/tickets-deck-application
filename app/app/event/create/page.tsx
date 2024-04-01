@@ -13,7 +13,6 @@ import TicketDetailsSection from "@/app/components/Event/Create/TicketDetailsSec
 import ConfirmationSection from "../../../components/Event/Create/ConfirmationSection";
 import { useCreateEvent } from "@/app/api/apiClient";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
-import { uploadImageToCloudinary } from "@/app/services/CloudinaryUpload";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
