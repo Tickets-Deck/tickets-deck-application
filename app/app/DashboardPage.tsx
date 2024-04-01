@@ -41,7 +41,7 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
     const fetchDashboardInfo = useFetchDashboardInfo();
     const { data: session, status } = useSession();
     const user = session?.user;
-    const { push, prefetch } = useRouter();
+    const { push } = useRouter();
 
     const [dashboardInfo, setDashboardInfo] = useState<DashboardInfoResponse>();
     const [isLoading, setIsLoading] = useState(true);
