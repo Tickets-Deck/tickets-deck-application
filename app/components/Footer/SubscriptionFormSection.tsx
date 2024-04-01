@@ -47,6 +47,7 @@ const SubscriptionFormSection: FunctionComponent<SubscriptionFormSectionProps> =
                 console.log(response);
                 // Display success message
                 toastHandler?.logSuccess('Success', 'You have successfully subscribed to our newsletter');
+                // Set email message
                 setEmailMsg({ value: 'You have successfully subscribed to our newsletter', status: SubscriptionMsgStatus.Success });
                 // Clear input field
                 setEmail('');
