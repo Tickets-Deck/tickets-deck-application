@@ -53,7 +53,7 @@ const SubscriptionFormSection: FunctionComponent<SubscriptionFormSectionProps> =
             })
             .catch((error) => {
                 console.log(error);
-                switch (error.response?.data.error) {
+                switch (error.response?.data.error) { 
                     case "Email is not valid":
                         setEmailMsg({ value: 'Please input a valid email', status: SubscriptionMsgStatus.Error });
                         break;

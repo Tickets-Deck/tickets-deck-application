@@ -74,7 +74,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     const pathname = usePathname();
 
-    const toastContext = useContext(ToastContext);
+    // const toastContext = useContext(ToastContext);
 
     const isAppPage = pathname.includes('/app');
     const isEventsPage = pathname == '/app/events';
