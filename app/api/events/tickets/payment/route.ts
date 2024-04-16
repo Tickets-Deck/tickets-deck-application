@@ -210,6 +210,8 @@ export async function GET(req: NextRequest) {
       // Process the email notification to the user
       await processEmailNotification(paymentResult);
 
+    //   console.log("Payment result data: ", paymentResult.data);
+
       return NextResponse.json({ data: paymentResult.data }, { status: 200 });
     } else {
       return NextResponse.json(
