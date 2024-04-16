@@ -14,6 +14,11 @@ export class ApiRoutes {
   static BASE_URL_TEST: string = "https://ticketsdeck.netlify.app";
 
   /**
+   * The live base url for the application
+   */
+  static BASE_URL_LIVE: string = "https://events.ticketsdeck.com";
+
+  /**
    * The route to CreateNewsletterSubscriber endpoint
    */
   static CreateNewsletterSubscriber: string = "api/newsletter-subscriber";
