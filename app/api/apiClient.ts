@@ -7,7 +7,7 @@ import { InitializePayStack } from "../models/IInitializePayStack";
 import { TicketCategory } from "../enums/ITicket";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_TEST,
+  baseURL: ApiRoutes.BASE_URL_LIVE,
 });
 
 export function useCreateNewsletterSubscriber() {
