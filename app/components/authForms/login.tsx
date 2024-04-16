@@ -3,7 +3,7 @@ import { ReactElement, FunctionComponent, useState, useEffect, FormEvent } from 
 import styles from "../../styles/AuthStyles.module.scss";
 import Image from "next/image";
 import images from "../../../public/images";
-import { EyeIcon, FacebookIcon, GoogleIcon, UserIcon } from "../SVGs/SVGicons";
+import { EyeIcon, FacebookIcon, GoogleIcon, PasswordIcon, UserIcon } from "../SVGs/SVGicons";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
@@ -110,12 +110,12 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                             </span>
                             <p>Google</p>
                         </div>
-                        <div className={styles.option}>
+                        {/* <div className={styles.option}>
                             <span>
                                 <FacebookIcon />
                             </span>
                             <p>Facebook</p>
-                        </div>
+                        </div> */}
                     </div>
                     <span>OR</span>
                     <form className={styles.content__form} onSubmit={(e) => handleSubmit(e)}>
@@ -135,7 +135,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                         <div className={styles.formFieldContainer}>
                             <label htmlFor="password">Password</label>
                             <div className={styles.formField}>
-                                <span><UserIcon /></span>
+                                <span><PasswordIcon /></span>
                                 <input
                                     type={isPasswordVisible ? "text" : "password"}
                                     name="password"
