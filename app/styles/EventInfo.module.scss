@@ -28,7 +28,7 @@
         padding: 1rem;
         border-radius: 1.5rem;
     }
-    .eventImage {
+    .eventImage, .eventImageForOrderPage {
         min-width: 30%;
         width: 30%;
         min-height: 100%;
@@ -50,6 +50,19 @@
         img {
             object-fit: cover;
         }
+    }
+    .eventImageForOrderPage {
+        height: 200px;
+        width: 100%;
+
+        // @include bigMobilePhone {
+        //     width: 100%;
+        //     min-width: 100%;
+        // }
+        // @include midSizeMobilePhone {
+        //     min-height: 180px;
+        //     height: 180px;
+        // }
     }
     .tag {
         position: absolute;
@@ -187,7 +200,7 @@
                 }
             }
         }
-        .actionButtons {
+        .actionButtons, .actionButtonsForOrderPage {
             width: 8%;
             display: flex;
             flex-direction: column;
@@ -216,6 +229,9 @@
                     height: 1rem;
                 }
             }
+        }
+        .actionButtonsForOrderPage {
+            width: fit-content;
         }
     }
 }
