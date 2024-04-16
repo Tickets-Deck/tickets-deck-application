@@ -442,7 +442,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                 </div>
                             </div>
                             <div className={styles.bottomArea}>
-                                <p>{ticketPricings.length} tickets selected</p>
+                                <p>{ticketPricings.length} {ticketPricings.length > 1 ? 'tickets' : 'ticket'} selected</p>
                                 <span>
                                     <span>Total Price</span>
                                     <span className={styles.amount}>&#8358;<span>{totalPrice?.toLocaleString()}</span></span>
