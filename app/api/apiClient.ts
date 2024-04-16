@@ -7,7 +7,7 @@ import { InitializePayStack } from "../models/IInitializePayStack";
 import { TicketCategory } from "../enums/ITicket";
 
 export const API = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: ApiRoutes.BASE_URL_LIVE,
 });
 
 export function useCreateNewsletterSubscriber() {
@@ -179,4 +179,12 @@ export function useFetchUserTicketOrders() {
     }
 
     return fetchUserTicketOrders;
+}
+
+export function useFetchOrderInformationById() {
+  async function fetchOrderInformationById(id: string) {
+    return API.get(`${ApiRoutes.Orders}?ticketOrderId=${id}`);
+  }
+
+  return fetchOrderInformationById;
 }

@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     // Get the category from the search params
     const category = searchParams.get("category");
 
-    // If a specifiedUserId is provided, fetch all tickets the user with that userId has bought
+    // If a specified user's Id is provided, fetch all tickets the user with that user's Id has bought
     if (specifiedUserId) {
       // Fetch the user with the specified user ID
       const user = await prisma.users.findFirst({
@@ -44,6 +44,9 @@ export async function GET(req: NextRequest) {
           },
           include: {
             ticket: true,
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         });
 
@@ -80,6 +83,9 @@ export async function GET(req: NextRequest) {
           },
           include: {
             tickets: true,
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         });
 

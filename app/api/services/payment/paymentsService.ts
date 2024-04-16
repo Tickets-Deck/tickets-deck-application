@@ -52,6 +52,8 @@ export async function handleSuccessfulPayment(
       },
     });
 
+    // console.log("orderedTickets", orderedTickets);
+
     const existingPayment = await prisma.payments.findFirst({
       where: {
         ticketOrderId: existingTicketOrder.id,

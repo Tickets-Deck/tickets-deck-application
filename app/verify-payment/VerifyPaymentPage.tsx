@@ -60,24 +60,39 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
         await verifyPaystackPayment(trxref as string)
             .then((response) => {
                 // console.log(response);
+                // console.log(response.data.data.metadata.ticketOrderId);
+                const ticketOrderId = response.data.data.metadata.ticketOrderId;
+
                 // Set payment status state
                 setPaymentStatus(PaymentStatus.Success);
 
                 /// TODO: Show a success message to the user and action button to redirect to user dashboard or home page
-                
+
+                // Route to order page
+                router.push(`/order/${ticketOrderId}`);
+
                 // Route to user dashboard
-                if (userInfo) {
-                    router.push('/app/tickets?t=1');
-                    return;
-                } else {
-                    router.push('/');
-                }
+                // if (userInfo) {
+                //     router.push('/app/tickets?t=1');
+                //     return;
+                // } else {
+                //     router.push('/');
+                // }
             })
             .catch((error) => {
-                if(error.response) {
-                    if(error.response.data.error == "Payment has already been verified") {
+                if (error.response) {
+                    if (error.response.data.error == "Payment has already been verified") {
                         // Set payment status state
                         setPaymentStatus(PaymentStatus.Success);
+ 
+                        setTimeout(() => {
+                            if (userInfo) {
+                                router.push('/app');
+                                return;
+                            }
+                            router.push('/events');
+                        }, 5000);
+
                         return;
                     }
                 }
@@ -96,17 +111,17 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
         }
     }, [trxref]);
 
-    useEffect(() => {
-        if(paymentStatus === PaymentStatus.Success) {
-            setTimeout(() => {
-                if (userInfo) {
-                    router.push('/app');
-                    return;
-                }
-                router.push('/events');
-            }, 5000);
-        }
-    }, [paymentStatus]);
+    // useEffect(() => {
+    //     if(paymentStatus === PaymentStatus.Success) {
+    //         setTimeout(() => {
+    //             if (userInfo) {
+    //                 router.push('/app');
+    //                 return;
+    //             }
+    //             router.push('/events');
+    //         }, 5000);
+    //     }
+    // }, [paymentStatus]);
 
     return (
         <main className={styles.verifyPaymentPage}>
@@ -132,9 +147,9 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
                 <div className={styles.loaderAreaContainer}>
                     <h3>This payment has already been verified</h3>
                     {
-                        userInfo ? 
-                        <p>You will be redirected to your dashboard in seconds.</p> :
-                        <p>You will be redirected to see all events in seconds.</p>
+                        userInfo ?
+                            <p>You will be redirected to your dashboard in seconds.</p> :
+                            <p>You will be redirected to see all events in seconds.</p>
                     }
                 </div>
             }

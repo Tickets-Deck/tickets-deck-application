@@ -48,7 +48,8 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                             <Link href="/app/event/create"> 
                                 <button onClick={() => { push('/app/event/create') }}>Create event</button>
                             </Link> :
-                            <button>Filter</button>
+                            <></>
+                            // <button>Filter</button>
                     }
                 </div>
             </div>
@@ -84,7 +85,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                     </>
                 }
                 {
-                    !isFetchingEvents && !eventsData || (eventsData && eventsData?.length == 0) &&
+                    !isFetchingEvents && (eventsData && eventsData?.length == 0) &&
                     <div className={styles.noEvents}>
                         <br />
                         <br />

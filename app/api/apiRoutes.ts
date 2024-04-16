@@ -5,13 +5,18 @@ export class ApiRoutes {
   /**
    * The dev base url for the application
    */
-//   static BASE_URL_DEV: string = "http://localhost:9000/";
-  static BASE_URL_DEV: string = "http://192.168.1.226:9000/";
+  static BASE_URL_DEV: string = "http://localhost:9000/";
+//   static BASE_URL_DEV: string = "http://192.168.1.226:9000/";
 
   /**
    * The test base url for the application
    */
   static BASE_URL_TEST: string = "https://ticketsdeck.netlify.app";
+
+  /**
+   * The live base url for the application
+   */
+  static BASE_URL_LIVE: string = "https://events.ticketsdeck.com";
 
   /**
    * The route to CreateNewsletterSubscriber endpoint
@@ -22,6 +27,11 @@ export class ApiRoutes {
    * The route to Events endpoint
    */
   static Events: string = "api/events";
+
+  /**
+   * The route to Orders endpoint
+   */
+  static Orders: string = "api/events/orders";
 
   /**
    * The route to Users endpoint

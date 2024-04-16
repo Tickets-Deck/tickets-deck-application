@@ -14,10 +14,11 @@ interface EventMainInfoProps {
     setTicketsSelectionContainerIsVisible?: Dispatch<SetStateAction<boolean>>
     addEventToGoogleCalender?: () => void
     forOrdersPage?: boolean
+    hideStatusTag?: boolean
 }
 
 const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
-    { eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender, forOrdersPage }): ReactElement => {
+    { eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender, forOrdersPage, hideStatusTag }): ReactElement => {
 
     function shareEvent() {
         const eventURL = window.location.href;
@@ -53,10 +54,10 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
 
     return (
         <div className={`${styles.mainSection} ${forOrdersPage ? styles.opMainSection : ''}`}>
-            <div className={styles.eventImage}>
+            <div className={forOrdersPage ? styles.eventImageForOrderPage : styles.eventImage}>
                 <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill />
             </div>
-            <span className={styles.tag}>Latest</span>
+            {!hideStatusTag && <span className={styles.tag}>Latest</span>}
             <div className={styles.eventDetails}>
                 <div className={styles.leftInfo}>
                     <h2 className={styles.title}>{eventInfo?.title}</h2>
@@ -87,7 +88,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     {
                         forOrdersPage ?
                             <div className={styles.bottomArea}>
-                                <button className={styles.reportEvent}>Report event</button>
+                                <button className={styles.reportEvent} disabled>Report event</button>
                             </div>
                             :
                             <div className={styles.bottomArea}>
@@ -112,7 +113,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                             </div>
                     }
                 </div>
-                <div className={styles.actionButtons}>
+                <div className={forOrdersPage ? styles.actionButtonsForOrderPage : styles.actionButtons}>
                     <Tooltip tooltipText='Add to calender'>
                         <div className={styles.actionButton} onClick={() => addEventToGoogleCalender && addEventToGoogleCalender()}>
                             <CalenderIcon />

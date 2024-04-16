@@ -1,7 +1,7 @@
 "use client"
 import { CSSProperties, FunctionComponent, ReactElement, useState } from "react";
 import styles from "../../styles/ConsoleSidebar.module.scss";
-import { AddEventIcon, CaretRightIcon, DashboardIcon, EventIcon, LogoutIcon, OrderIcon, ProfileIcon } from "../SVGs/SVGicons";
+import { AddEventIcon, CaretRightIcon, DashboardIcon, EventIcon, LogoutIcon, OrderIcon, ProfileIcon, WalletIcon } from "../SVGs/SVGicons";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
@@ -19,6 +19,7 @@ const Sidebar: FunctionComponent<SidebarProps> = (): ReactElement => {
     const currentPageIsEvents = pathname == "/app/events";
     const currentPageIsCreateEvent = pathname == "/app/event/create";
     const currentPageIsProfile = pathname.includes('/app/profile');
+    const currentPageIsWallet = pathname.includes('/app/wallet');
 
     return (
         <div className={styles.sidebar}>
@@ -44,7 +45,7 @@ const Sidebar: FunctionComponent<SidebarProps> = (): ReactElement => {
                         <li className={currentPageIsOrder ? styles.active : ''}><OrderIcon /> Orders</li>
                     </Link> */}
                     <Link href="/app/wallet">
-                        <li className={currentPageIsProfile ? styles.active : ''}><ProfileIcon /> Wallet</li>
+                        <li className={currentPageIsWallet ? styles.active : ''}><WalletIcon /> Wallet</li>
                     </Link>
                     <Link href="/app/profile">
                         <li className={currentPageIsProfile ? styles.active : ''}><ProfileIcon /> Profile</li>

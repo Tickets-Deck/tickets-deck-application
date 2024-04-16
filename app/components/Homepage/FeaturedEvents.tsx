@@ -117,7 +117,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
                 }
             </div>
 
-            {!isNotHomepage &&
+            {!isNotHomepage && !isFetchingEvents && events.length > 0 &&
                 <Link href="/events">
                     See all events
                 </Link>

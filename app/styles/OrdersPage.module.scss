@@ -8,6 +8,31 @@
     padding-top: 24px;
     padding-bottom: 80px;
 
+    .loaderAreaContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        .loaderArea {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: $white;
+            margin-bottom: 0.25rem;
+        }
+        p {
+            font-size: 0.85rem;
+            color: $white;
+            text-align: center;
+        }
+    }
+
     .topArea {
         display: flex;
         align-items: center;
@@ -34,7 +59,14 @@
 
     .orderInformationContainer {
         display: flex;
+        @include tablet {
+            flex-direction: column;
+        }
         .eventContainer {
+            @include tablet {
+                width: 100%;
+                order: 2;
+            }
             width: 35%;
             margin-right: 3rem;
         }
@@ -42,6 +74,11 @@
             width: calc(65% - 3rem);
             display: flex;
             flex-direction: column;
+            @include tablet {
+                order: 1;
+                width: 100%;
+                // border: 1px solid #fff;
+            }
             .tickets {
                 display: flex;
                 flex-direction: column;
