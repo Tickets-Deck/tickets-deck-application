@@ -180,3 +180,11 @@ export function useFetchUserTicketOrders() {
 
     return fetchUserTicketOrders;
 }
+
+export function useFetchOrderInformationById() {
+  async function fetchOrderInformationById(id: string) {
+    return API.get(`${ApiRoutes.Orders}?ticketOrderId=${id}`);
+  }
+
+  return fetchOrderInformationById;
+}
