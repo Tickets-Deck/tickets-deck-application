@@ -5,6 +5,7 @@ import { FunctionComponent, ReactElement, Dispatch, SetStateAction } from "react
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { EventResponse } from "@/app/models/IEvents";
+import moment from "moment";
 
 interface OrderSummarySectionProps {
     eventTickets: RetrievedTicketResponse[] | undefined
@@ -21,8 +22,16 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
 
     return (
         <div className={styles.rhs}>
-            <div className={styles.eventImage}>
-                <Image src={eventInfo?.mainImageUrl as string} fill alt="Flyer" />
+            <div className={styles.eventImageContainer}>
+                <div className={styles.eventImage}>
+                    <Image src={eventInfo?.mainImageUrl as string} fill alt="Flyer" />
+                </div>
+                <div className={styles.eventDetails}>
+                    <h3>{eventInfo?.title}</h3>
+                    {/* <p>{eventInfo?.description}</p> */}
+                    {/* <p>{eventInfo?.venue}</p> */}
+                    <p>{moment(eventInfo?.date).format("Do of MMMM YYYY")}</p>
+                </div>
             </div>
             <h3>Order summary</h3>
             <div className={styles.summaryInfo}>
