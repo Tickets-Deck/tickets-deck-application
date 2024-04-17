@@ -3,7 +3,7 @@ import { ReactElement, FunctionComponent, useState, FormEvent, useContext, useEf
 import styles from "../../styles/AuthStyles.module.scss";
 import Image from "next/image";
 import images from "../../../public/images";
-import { EyeIcon, FacebookIcon, GoogleIcon, UserIcon } from "../SVGs/SVGicons";
+import { EmailIcon, EyeIcon, FacebookIcon, GoogleIcon, PasswordIcon, UserIcon } from "../SVGs/SVGicons";
 import Link from "next/link";
 import { UserCredentialsRequest } from "../../models/IUser";
 import { emailRegex } from "../../constants/emailRegex";
@@ -224,7 +224,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                         <div className={styles.formFieldContainer}>
                             <label htmlFor="email">Email address</label>
                             <div className={styles.formField}>
-                                <span><UserIcon /></span>
+                                <span><EmailIcon /></span>
                                 <input
                                     type="text"
                                     name="email"
@@ -239,7 +239,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                             <div className={styles.formFieldContainer}>
                                 <label htmlFor="password">Password</label>
                                 <div className={styles.formField}>
-                                    <span><UserIcon /></span>
+                                    <span><PasswordIcon /></span>
                                     <input
                                         type={isPasswordVisible ? "text" : "password"}
                                         name="password"
@@ -258,7 +258,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                             <div className={styles.formFieldContainer}>
                                 <label htmlFor="password">Confirm Password</label>
                                 <div className={styles.formField}>
-                                    <span><UserIcon /></span>
+                                    <span><PasswordIcon /></span>
                                     <input
                                         type={isPasswordVisible ? "text" : "password"}
                                         name="password"

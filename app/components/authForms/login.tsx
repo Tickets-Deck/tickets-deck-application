@@ -3,7 +3,7 @@ import { ReactElement, FunctionComponent, useState, useEffect, FormEvent } from 
 import styles from "../../styles/AuthStyles.module.scss";
 import Image from "next/image";
 import images from "../../../public/images";
-import { EyeIcon, FacebookIcon, GoogleIcon, PasswordIcon, UserIcon } from "../SVGs/SVGicons";
+import { EmailIcon, EyeIcon, FacebookIcon, GoogleIcon, PasswordIcon, UserIcon } from "../SVGs/SVGicons";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
@@ -122,7 +122,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                         <div className={styles.formFieldContainer}>
                             <label htmlFor="email">Email address</label>
                             <div className={styles.formField}>
-                                <span><UserIcon /></span>
+                                <span><EmailIcon /></span>
                                 <input
                                     type="email"
                                     name="email"
