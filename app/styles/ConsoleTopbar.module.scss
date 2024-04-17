@@ -37,13 +37,25 @@
             }
         }
     }
+
     &__rhs {
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 81.2%;
         @include tablet {
-            display: none;
+            // display: none;
+            width: fit-content;
+        }
+
+        .menu {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            background-color: $container-grey;
+            border-radius: 0.35rem;
+            cursor: pointer;
         }
 
         .searchContainer {
@@ -55,6 +67,9 @@
             gap: 0.5rem;
             padding: 0 1.2rem;
             padding-right: 0;
+            @include tablet {
+                display: none;
+            }
             &:hover {
                 background-color: rgba($color: $white, $alpha: 0.05);
             }
@@ -86,6 +101,9 @@
             gap: 0.5rem;
             cursor: pointer;
             position: relative;
+            @include tablet {
+                display: none;
+            }
             &:hover {
                 opacity: 0.65;
             }

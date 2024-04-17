@@ -182,12 +182,12 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                             </span>
                             <p>Google</p>
                         </div>
-                        <div className={styles.option}>
+                        {/* <div className={styles.option}>
                             <span>
                                 <FacebookIcon />
                             </span>
                             <p>Facebook</p>
-                        </div>
+                        </div> */}
                     </div>
                     <span>OR</span>
                     <div className={styles.content__form}>
