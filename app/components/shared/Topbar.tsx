@@ -1,19 +1,26 @@
-import { FunctionComponent, ReactElement } from "react";
+import { Dispatch, FunctionComponent, ReactElement, SetStateAction } from "react";
 import styles from "../../styles/ConsoleTopbar.module.scss";
 import Image from "next/image";
 import images from "../../../public/images";
-import { SearchIcon } from "../SVGs/SVGicons";
+import { HamburgerMenuIcon, SearchIcon } from "../SVGs/SVGicons";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import useResponsiveness from "@/app/hooks/useResponsiveness";
 
 interface TopbarProps {
-
+    isMobileSidebarOpen: boolean
+    setIsMobileSidebarOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const Topbar: FunctionComponent<TopbarProps> = (): ReactElement => {
+const Topbar: FunctionComponent<TopbarProps> = ({ isMobileSidebarOpen, setIsMobileSidebarOpen }): ReactElement => {
 
     const { data: session } = useSession();
     const user = session?.user;
+
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     return (
         <div className={styles.topbar}>
@@ -38,6 +45,12 @@ const Topbar: FunctionComponent<TopbarProps> = (): ReactElement => {
                         <h3>{user?.name ?? user?.username}</h3>
                     </div>
                 </Link>
+                {
+                    onMobile &&
+                    <span className={styles.menu} onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}>
+                        <HamburgerMenuIcon />
+                    </span>
+                }
             </div>
         </div>
     );

@@ -75,6 +75,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     const pathname = usePathname();
 
     // const toastContext = useContext(ToastContext);
+    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
     const isAppPage = pathname.includes('/app');
     const isEventsPage = pathname == '/app/events';
@@ -195,9 +196,13 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                         {
                             isAppPage && <>
                                 <div className="appLayout">
-                                    <Topbar />
+                                    <Topbar
+                                        isMobileSidebarOpen={isMobileSidebarOpen}
+                                        setIsMobileSidebarOpen={setIsMobileSidebarOpen}
+                                    />
                                     <div className="appLayout__body">
-                                        {onDesktop && <Sidebar />}
+                                        {/* {onDesktop && <Sidebar />} */}
+                                        <Sidebar isMobileSidebarOpen={isMobileSidebarOpen} />
                                         <div className="innerBody" style={(isEventsPage || isViewEventPage) ? { padding: 0 } : {}}>
                                             {children}
                                         </div>

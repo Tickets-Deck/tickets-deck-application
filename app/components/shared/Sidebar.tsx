@@ -5,12 +5,13 @@ import { AddEventIcon, CaretRightIcon, DashboardIcon, EventIcon, LogoutIcon, Ord
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import useResponsiveness from "@/app/hooks/useResponsiveness";
 
 interface SidebarProps {
-
+    isMobileSidebarOpen: boolean;
 }
 
-const Sidebar: FunctionComponent<SidebarProps> = (): ReactElement => {
+const Sidebar: FunctionComponent<SidebarProps> = ({ isMobileSidebarOpen }): ReactElement => {
 
     const pathname = usePathname();
     const [eventsSubLinksIsOpen, setEventsSubLinksIsOpen] = useState(false);
@@ -22,8 +23,14 @@ const Sidebar: FunctionComponent<SidebarProps> = (): ReactElement => {
     const currentPageIsProfile = pathname.includes('/app/profile');
     const currentPageIsWallet = pathname.includes('/app/wallet');
 
+    
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
     return (
-        <div className={styles.sidebar}>
+        <div className={onMobile ? isMobileSidebarOpen ? styles.sidebarOpen : styles.sidebarClose : styles.sidebar}>
             <div className={styles.sidebar__menu}>
                 <ul>
                     <Link href="/app">
