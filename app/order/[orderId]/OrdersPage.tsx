@@ -198,6 +198,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId }): ReactEleme
                             />
                         </div>
                         <div className={styles.ticketsContainer}>
+                            <h2>Tickets</h2>
                             <div className={styles.tickets}>
                                 {
                                     orderInformation?.orderedTickets.map((orderedTickets, index) => (
