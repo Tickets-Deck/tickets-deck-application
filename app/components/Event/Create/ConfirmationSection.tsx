@@ -44,7 +44,7 @@ const ConfirmationSection: FunctionComponent<ConfirmationSectionProps> = (
     }, [uniqueEventCode]);
 
     useEffect(() => {
-        if (eventRequest?.eventId || isEventCreated ) {
+        if (eventRequest?.eventId || isEventCreated) {
             return;
         }
         setUniqueEventCode(generateEventCode());
@@ -57,10 +57,19 @@ const ConfirmationSection: FunctionComponent<ConfirmationSectionProps> = (
                     <h3>Please review your event's information below.</h3>
             }
             {
-                !isEventCreated && <div className={styles.eventInformation}>
+                !isEventCreated &&
+                <div className={styles.eventInformation}>
                     <span>Event ID: {eventRequest?.eventId}</span>
                 </div>
             }
+
+            {/* <div className={styles.confirmationSection__eventInfo}>
+                <div className={styles.eventImage}>
+
+                </div>
+                <h3>Party dawn</h3>
+            </div>
+            <div className={styles.confirmationSection__uploadStatus}></div> */}
         </div>
     );
 }
