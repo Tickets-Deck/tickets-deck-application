@@ -125,6 +125,54 @@
     }
 }
 
+.ticketCreationModal {
+    width: 28.125rem;
+    max-width: 28.125rem;
+    max-height: 86vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 1.5rem;
+    border-radius: 20px;
+    background-color: $container-grey;
+    @include tablet {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .topArea {
+        display: flex;
+        justify-self: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        h4 {
+            font-size: 1rem;
+            font-weight: $fontWeight-400;
+        }
+
+        .closeIcon {
+            @include closeIcon($white);
+        }
+    }
+
+    .mainFormSection {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+
+        .formField {
+            @include formField();
+        }
+    }
+
+    button {
+        @include tertiary-button;
+        // padding: 0.8rem 1.6rem;
+        padding: 0.375rem 0.75rem;
+        margin: 0 auto;
+    }
+}
+
 .main {
     @include tablet {
         height: 100vh;
@@ -382,54 +430,6 @@
             > button {
                 @include tertiary-button;
                 margin: 0 auto;
-            }
-
-            .ticketCreationModal {
-                width: 28.125rem;
-                max-width: 28.125rem;
-                max-height: 86vh;
-                overflow-y: auto;
-                scrollbar-width: none;
-                padding: 1.5rem;
-                border-radius: 20px;
-                background-color: $container-grey;
-                @include tablet {
-                    width: 100%;
-                    max-width: 100%;
-                }
-
-                .topArea {
-                    display: flex;
-                    justify-self: space-between;
-                    align-items: center;
-                    margin-bottom: 1.5rem;
-                    h4 {
-                        font-size: 1rem;
-                        font-weight: $fontWeight-400;
-                    }
-
-                    .closeIcon {
-                        @include closeIcon($white);
-                    }
-                }
-
-                .mainFormSection {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.8rem;
-                    margin-bottom: 1.5rem;
-
-                    .formField {
-                        @include formField();
-                    }
-                }
-
-                button {
-                    @include tertiary-button;
-                    // padding: 0.8rem 1.6rem;
-                    padding: 0.375rem 0.75rem;
-                    margin: 0 auto;
-                }
             }
 
             .ticketCards {

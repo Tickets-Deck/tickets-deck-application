@@ -10,7 +10,8 @@
     font-size: $font-size-18;
 }
 
-.eventDetailsPage, .userEventDetailsPage {
+.eventDetailsPage,
+.userEventDetailsPage {
     color: $white;
     background-color: $dark-grey;
 
@@ -20,6 +21,7 @@
         flex-direction: column;
         gap: 0.75rem;
         padding-bottom: 3rem;
+        width: 100%;
         // overflow: hidden;
 
         .textContents {
@@ -279,7 +281,7 @@
                     @include midSizeMobilePhone {
                         flex-direction: row;
                         width: 100%;
-                        margin-bottom: .5rem; 
+                        margin-bottom: 0.5rem;
                         gap: 0.5rem;
                     }
                     .actionButton {
@@ -304,7 +306,8 @@
             }
         }
         .optionalSection {
-            .ticketsSelectionContainer, .ticketsFetchErrorMsgContainer {
+            .ticketsSelectionContainer,
+            .ticketsFetchErrorMsgContainer {
                 border-radius: 1rem;
                 background: linear-gradient(180deg, rgba(49, 49, 49, 0) 4.17%, #313131 100%);
                 width: 80%;
@@ -445,11 +448,11 @@
                         font-size: $font-size-20;
                         font-weight: $fontWeight-400;
                         color: $purple-grey;
-                        margin-bottom: .5rem;
+                        margin-bottom: 0.5rem;
                     }
                     p {
                         font-size: $font-size-16;
-                        
+
                         span {
                             text-decoration: underline;
                             cursor: pointer;

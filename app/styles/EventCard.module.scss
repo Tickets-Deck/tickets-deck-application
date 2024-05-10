@@ -207,7 +207,7 @@
     .actionBtnContainer {
         display: flex;
         gap: .25rem;
-        .deleteBtn {
+        .deleteBtn, .editBtn {
             width: 3rem;
             min-width: 3rem;
             background-color: $failed-color;
@@ -223,7 +223,19 @@
                 }
             }
         }
-        & > a {
+        .editBtn {
+            background-color: $white;
+            height: 100%;
+            &:hover {
+                background-color: darken($color: $white, $amount: 10%);
+            }
+            svg {
+                path {
+                    fill: $primary-color;
+                }
+            }
+        }
+        & > a:not(.noStyle) {
             z-index: 2;
             @include primary-button;
             width: 100%;
