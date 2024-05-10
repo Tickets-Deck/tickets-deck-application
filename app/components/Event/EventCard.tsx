@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FunctionComponent, ReactElement, useContext, Dispatch, SetStateAction } from "react";
-import { DeleteIcon, HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
+import { DeleteIcon, EditIcon, HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
 import Image from "next/image";
 import images from "../../../public/images";
 import styles from "../../styles/EventCard.module.scss";
@@ -8,6 +8,7 @@ import moment from "moment";
 import { ToastContext } from "../../extensions/toast";
 import { EventResponse } from "@/app/models/IEvents";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
+import { useRouter } from "next/navigation";
 
 interface EventCardProps {
     event: EventResponse
@@ -22,6 +23,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
     { event, mobileAndActionButtonDismiss, consoleDisplay, gridDisplay,
         setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
 
+    const { push } = useRouter();
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
@@ -117,6 +119,17 @@ const EventCard: FunctionComponent<EventCardProps> = (
             <div className={styles.actionBtnContainer}>
                 {
                     consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
+                    <Link href={`/app/event/edit/${event.id}`} className={styles.noStyle}>
+                        <button className={styles.editBtn}>
+                            <EditIcon />
+                        </button>
+                    </Link>
+                }
+                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
+                    <button>View details</button>
+                </Link>
+                {
+                    consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
                     <button
                         className={styles.deleteBtn}
                         onClick={() => {
@@ -126,9 +139,6 @@ const EventCard: FunctionComponent<EventCardProps> = (
                         <DeleteIcon />
                     </button>
                 }
-                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
-                    <button>View details</button>
-                </Link>
             </div>
         </div>
     );
