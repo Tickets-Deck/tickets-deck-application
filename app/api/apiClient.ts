@@ -5,9 +5,10 @@ import { EventRequest } from "../models/IEvents";
 import { TicketOrderRequest } from "../models/ITicketOrder";
 import { InitializePayStack } from "../models/IInitializePayStack";
 import { TicketCategory } from "../enums/ITicket";
+import { TicketRequest, TicketResponse } from "../models/ITicket";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_LIVE,
+  baseURL: ApiRoutes.BASE_URL_DEV,
 });
 
 export function useCreateNewsletterSubscriber() {
@@ -187,4 +188,12 @@ export function useFetchOrderInformationById() {
   }
 
   return fetchOrderInformationById;
+}
+
+export function useUpdateTicketInformationById() {
+  async function updateTicketInformationById(ticketId: string, data: TicketResponse) {
+    return API.put(`${ApiRoutes.Tickets}?ticketId=${ticketId}`, data);
+  }
+
+  return updateTicketInformationById;
 }
