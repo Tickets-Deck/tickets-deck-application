@@ -18,6 +18,7 @@ const Sidebar: FunctionComponent<SidebarProps> = (): ReactElement => {
     const currentPageIsDashboard = pathname == '/app';
     const currentPageIsEvents = pathname == "/app/events";
     const currentPageIsCreateEvent = pathname == "/app/event/create";
+    const currentPageIsEditEvent = pathname.startsWith("/app/event/edit");
     const currentPageIsProfile = pathname.includes('/app/profile');
     const currentPageIsWallet = pathname.includes('/app/wallet');
 
@@ -28,7 +29,7 @@ const Sidebar: FunctionComponent<SidebarProps> = (): ReactElement => {
                     <Link href="/app">
                         <li className={currentPageIsDashboard ? styles.active : ''}><DashboardIcon /> Dashboard</li>
                     </Link>
-                    <li className={(currentPageIsEvents || currentPageIsCreateEvent) ? styles.active : ''} onClick={() => setEventsSubLinksIsOpen(!eventsSubLinksIsOpen)}>
+                    <li className={(currentPageIsEvents || currentPageIsCreateEvent || currentPageIsEditEvent) ? styles.active : ''} onClick={() => setEventsSubLinksIsOpen(!eventsSubLinksIsOpen)}>
                         <EventIcon /> Events <span className={eventsSubLinksIsOpen ? styles.active : ''}><CaretRightIcon /></span>
                     </li>
                     <div
