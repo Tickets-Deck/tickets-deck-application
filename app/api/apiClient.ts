@@ -1,7 +1,13 @@
 import axios from "axios";
 import { ApiRoutes } from "./apiRoutes";
-import { CoverPhotoRequest, ProfilePhotoRequest, UserCredentialsRequest, UserCredentialsUpdateRequest, UsernameRequest } from "../models/IUser";
-import { EventRequest } from "../models/IEvents";
+import {
+  CoverPhotoRequest,
+  ProfilePhotoRequest,
+  UserCredentialsRequest,
+  UserCredentialsUpdateRequest,
+  UsernameRequest,
+} from "../models/IUser";
+import { EventRequest, EventResponse } from "../models/IEvents";
 import { TicketOrderRequest } from "../models/ITicketOrder";
 import { InitializePayStack } from "../models/IInitializePayStack";
 import { TicketCategory } from "../enums/ITicket";
@@ -44,11 +50,19 @@ export function useFetchEventById() {
 }
 
 export function useFetchUserEventsByUserId() {
-    async function fetchUserEventsByUserId(userId: string) {
-        return API.get(`${ApiRoutes.Events}?publisherId=${userId}`);
+  async function fetchUserEventsByUserId(userId: string) {
+    return API.get(`${ApiRoutes.Events}?publisherId=${userId}`);
+  }
+
+  return fetchUserEventsByUserId;
+}
+
+export function useUpdateEventById() {
+    async function updateEventById(id: string, data: EventRequest) {
+        return API.put(`${ApiRoutes.Events}?id=${id}`, data);
     }
-    
-    return fetchUserEventsByUserId;
+
+    return updateEventById;
 }
 
 export function useDeleteEvent() {
@@ -77,7 +91,9 @@ export function useFetchEventsByPublisherId() {
 
 export function useFetchEventsByTags() {
   async function fetchEventsByPublisherId(tags: string[], eventId: string) {
-    return API.get(`${ApiRoutes.Events}?tags=${tags.join(',')}&eventId=${eventId}`);
+    return API.get(
+      `${ApiRoutes.Events}?tags=${tags.join(",")}&eventId=${eventId}`
+    );
   }
 
   return fetchEventsByPublisherId;
@@ -100,8 +116,15 @@ export function useFetchUserInformation() {
 }
 
 export function useFetchUserInformationByUserName() {
-  async function fetchUserInformationByUserName(data: { username?: string, userId?: string}) {
-    return API.get(`${ApiRoutes.Users}${data.username ? `?userName=${data.username}` : ''}${data.userId ? `?userId=${data.userId}` : ''}`);
+  async function fetchUserInformationByUserName(data: {
+    username?: string;
+    userId?: string;
+  }) {
+    return API.get(
+      `${ApiRoutes.Users}${data.username ? `?userName=${data.username}` : ""}${
+        data.userId ? `?userId=${data.userId}` : ""
+      }`
+    );
   }
 
   return fetchUserInformationByUserName;
@@ -112,74 +135,85 @@ export function useUploadUserProfilePhoto() {
     userId: string,
     data: ProfilePhotoRequest
   ) {
-    return API.post(`${ApiRoutes.UploadUserProfilePhoto}?userId=${userId}`, data);
+    return API.post(
+      `${ApiRoutes.UploadUserProfilePhoto}?userId=${userId}`,
+      data
+    );
   }
 
   return uploadUserProfilePhoto;
 }
 
 export const useUpdateUserCoverPhoto = () => {
-    async function updateUserCoverPhoto(userId: string, data: CoverPhotoRequest) {
-        return API.post(`${ApiRoutes.UpdateUserCoverPhoto}?userId=${userId}`, data);
-    }
-    
-    return updateUserCoverPhoto;
-}
+  async function updateUserCoverPhoto(userId: string, data: CoverPhotoRequest) {
+    return API.post(`${ApiRoutes.UpdateUserCoverPhoto}?userId=${userId}`, data);
+  }
+
+  return updateUserCoverPhoto;
+};
 
 export function useUpdateUserName() {
-    async function updateUserName(userId: string, data: UsernameRequest) {
-        return API.put(`${ApiRoutes.UpdateUserName}?userId=${userId}`, data);
-    }
-    
-    return updateUserName;
+  async function updateUserName(userId: string, data: UsernameRequest) {
+    return API.put(`${ApiRoutes.UpdateUserName}?userId=${userId}`, data);
+  }
+
+  return updateUserName;
 }
 
 export function useUpdateUserInformation() {
-    async function updateUserInformation(userId: string, data: UserCredentialsUpdateRequest) {
-        return API.put(`${ApiRoutes.Users}?userId=${userId}`, data);
-    }
-    
-    return updateUserInformation;
+  async function updateUserInformation(
+    userId: string,
+    data: UserCredentialsUpdateRequest
+  ) {
+    return API.put(`${ApiRoutes.Users}?userId=${userId}`, data);
+  }
+
+  return updateUserInformation;
 }
 
 export function useCreateTicketOrder() {
-    async function createTicketOrder(data: TicketOrderRequest) {
-        return API.post(ApiRoutes.TicketOrder, data);
-    }
-    
-    return createTicketOrder;
+  async function createTicketOrder(data: TicketOrderRequest) {
+    return API.post(ApiRoutes.TicketOrder, data);
+  }
+
+  return createTicketOrder;
 }
 
 export function useInitializePaystackPayment() {
-    async function initializePaystackPayment(data: InitializePayStack) {
-        return API.post(ApiRoutes.Payment, data);
-    }
+  async function initializePaystackPayment(data: InitializePayStack) {
+    return API.post(ApiRoutes.Payment, data);
+  }
 
-    return initializePaystackPayment;
+  return initializePaystackPayment;
 }
 
 export function useVerifyPaystackPayment() {
-    async function verifyPaystackPayment(reference: string) {
-        return API.get(`${ApiRoutes.Payment}?trxref=${reference}`);
-    }
+  async function verifyPaystackPayment(reference: string) {
+    return API.get(`${ApiRoutes.Payment}?trxref=${reference}`);
+  }
 
-    return verifyPaystackPayment;
+  return verifyPaystackPayment;
 }
 
 export function useFetchDashboardInfo() {
-    async function fetchDashboardInfo(userId: string) {
-        return API.get(`${ApiRoutes.Dashboard}?userId=${userId}`);
-    }
+  async function fetchDashboardInfo(userId: string) {
+    return API.get(`${ApiRoutes.Dashboard}?userId=${userId}`);
+  }
 
-    return fetchDashboardInfo;
+  return fetchDashboardInfo;
 }
 
 export function useFetchUserTicketOrders() {
-    async function fetchUserTicketOrders(userId: string, category?: TicketCategory) {
-        return API.get(`${ApiRoutes.UserTicketOrder}?userId=${userId}&category=${category}`);
-    }
+  async function fetchUserTicketOrders(
+    userId: string,
+    category?: TicketCategory
+  ) {
+    return API.get(
+      `${ApiRoutes.UserTicketOrder}?userId=${userId}&category=${category}`
+    );
+  }
 
-    return fetchUserTicketOrders;
+  return fetchUserTicketOrders;
 }
 
 export function useFetchOrderInformationById() {
@@ -190,10 +224,32 @@ export function useFetchOrderInformationById() {
   return fetchOrderInformationById;
 }
 
+export function useCreateTicketForSpecifiedEvent() {
+  async function createTicketForSpecifiedEvent(
+    id: string,
+    data: TicketRequest
+  ) {
+    return API.post(`${ApiRoutes.Tickets}?id=${id}`, data);
+  }
+
+  return createTicketForSpecifiedEvent;
+}
+
 export function useUpdateTicketInformationById() {
-  async function updateTicketInformationById(ticketId: string, data: TicketResponse) {
+  async function updateTicketInformationById(
+    ticketId: string,
+    data: TicketResponse
+  ) {
     return API.put(`${ApiRoutes.Tickets}?ticketId=${ticketId}`, data);
   }
 
   return updateTicketInformationById;
+}
+
+export function useDeleteTicketById() {
+  async function deleteTicketById(ticketId: string) {
+    return API.delete(`${ApiRoutes.Tickets}?ticketId=${ticketId}`);
+  }
+
+  return deleteTicketById;
 }
