@@ -152,7 +152,7 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = (
             })
             .catch((error) => {
                 // Display error
-                toast.error("An error occurred while fetching your ticket orders");
+                toast.error("An error occurred while updating your ticket information");
 
                 // Catch error
                 catchError(error);
@@ -163,7 +163,7 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = (
     };
 
     return (
-        <ModalWrapper visibility={modalVisibility} setVisibility={setModalVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
+        <ModalWrapper visibility={modalVisibility} setVisibility={setModalVisibility} disallowOverlayFunction styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
             <div className={styles.ticketCreationModal}>
                 <div className={styles.topArea}>
                     <h4>Update Ticket</h4>
