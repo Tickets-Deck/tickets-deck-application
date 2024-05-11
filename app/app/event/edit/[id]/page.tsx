@@ -3,20 +3,13 @@ import { FunctionComponent, ReactElement, useEffect, useState, useContext, Chang
 import styles from "@/app/styles/EditEvent.module.scss";
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import images from '../../../../../public/images';
-import { AddIcon, CalenderIcon, CloseIcon, HeartIcon, PhotoIcon, ShareIcon } from '@/app/components/SVGs/SVGicons';
-import Tooltip from '@/app/components/custom/Tooltip';
+import { AddIcon, CalenderIcon, CheckIcon, CloseIcon, PhotoIcon } from '@/app/components/SVGs/SVGicons';
 import { ToastContext } from '@/app/extensions/toast';
-import moment from 'moment';
-import Link from 'next/link';
-import { Link as ScrollLink } from 'react-scroll';
-import SkeletonEventInfo from '@/app/components/Skeletons/SkeletonEventInfo';
-import { RetrievedTicketResponse, TicketRequest, TicketResponse } from '@/app/models/ITicket';
+import { RetrievedTicketResponse, TicketResponse } from '@/app/models/ITicket';
 import { EventRequest, EventResponse } from '@/app/models/IEvents';
-import { useFetchEventById } from '@/app/api/apiClient';
+import { useDeleteTicketById, useFetchEventById, useUpdateEventById } from '@/app/api/apiClient';
 import { catchError } from '@/app/constants/catchError';
 import useResponsiveness from '@/app/hooks/useResponsiveness';
-import BasicInformationForm from '@/app/components/Event/Create/BasicInformationForm';
 import { DatePicker } from '@fluentui/react';
 import useOuterClick from '@/app/hooks/useOuterClick';
 import { categories } from '@/app/constants/eventCategories';
@@ -24,6 +17,9 @@ import { EventVisibility } from '@/app/enums/IEventVisibility';
 import { FormFieldResponse } from '@/app/models/IFormField';
 import TicketUpdateModal from '@/app/components/Event/Edit/TicketsUpdate/TicketUpdateModal';
 import ComponentLoader from '@/app/components/Loader/ComponentLoader';
+import TicketCreationModal from '@/app/components/Event/Create/TicketsCreation/TicketCreationModal';
+import DeletionConfirmationModal from '@/app/components/Modal/DeletionConfirmation';
+import { toast } from "sonner";
 
 interface EventDetailsProps {
     params: { id: string }
@@ -33,6 +29,10 @@ interface EventDetailsProps {
 const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactElement => {
 
     const router = useRouter();
+    const toasthandler = useContext(ToastContext);
+    const fetchEventInfo = useFetchEventById();
+    const deleteTicketById = useDeleteTicketById();
+    const updateEventById = useUpdateEventById();
 
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
@@ -40,9 +40,6 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     const id = params.id;
-
-    const fetchEventInfo = useFetchEventById();
-    const toasthandler = useContext(ToastContext);
 
     const [eventRequest, setEventRequest] = useState<EventRequest>();
     const [eventInfo, setEventInfo] = useState<EventResponse>();
@@ -64,32 +61,13 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     const [tagErrorMsg, setTagErrorMsg] = useState<boolean>();
 
     const [loader, setLoader] = useState(false);
-    const [totalSelectedTicketsCount, setTotalSelectedTicketsCount] = useState(0);
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [ticketsSelectionContainerIsVisible, setTicketsSelectionContainerIsVisible] = useState(false);
+    const [isUpdatingEvent, setIsUpdatingEvent] = useState(false);
 
-    const [ticketDeliveryModalIsVisible, setTicketDeliveryModalIsVisible] = useState(false);
+    const [isTicketCreationModalVisible, setIsTicketCreationModalVisible] = useState(false);
     const [isTicketUpdateModalVisible, setIsTicketUpdateModalVisible] = useState(false);
     const [selectedTicket, setSelectedTicket] = useState<TicketResponse>();
-
-    const eventLocation = eventInfo?.location?.address + ' ' + eventInfo?.location?.city + ', ' + eventInfo?.location?.state + ', ' + eventInfo?.location?.country;
-
-    // useEffect hook to set total selected tickets count
-    useEffect(() => {
-        /**
-         * the reduce function iterates through each ticket in the eventTicketTypes array and adds up the selectedTickets count for each ticket. 
-         * The 0 passed as the second argument to reduce initializes the total variable to 0.
-         */
-        setTotalSelectedTicketsCount(eventTicketTypes?.reduce((total, ticket) => total + ticket.selectedTickets, 0) as number);
-    }, [eventTicketTypes]);
-
-    // useEffect hook to set total price 
-    useEffect(() => {
-        // Filter through event ticket types availableParallelism, then check for only the selected tickets 
-        const selectedTickets = eventTicketTypes?.filter((ticket) => ticket.isSelected);
-        // iterates through each ticket in the selected tickets array and adds up the multiplication of the ticket price and the selected tickets count for each ticket. 
-        setTotalPrice(selectedTickets?.reduce((total, ticket) => total + ticket.price * ticket.selectedTickets, 0) as number);
-    }, [eventTicketTypes]);
+    const [isDeleteTicketConfirmationModalVisible, setIsDeleteTicketConfirmationModalVisible] = useState(false);
+    const [isDeletingTicket, setIsDeletingTicket] = useState(false);
 
     function onFormValueChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>, setState?: Dispatch<SetStateAction<boolean | undefined>>) {
 
@@ -180,6 +158,9 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
 
                         // console.log('base64URL: ', base64String);
                         setMainImageBase64Url(base64String);
+
+                        // Update the request
+                        setEventRequest({ ...eventRequest as EventRequest, mainImageUrl: base64String });
                     }
                 };
 
@@ -206,96 +187,28 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
         setImageValidationMessage(undefined);
     };
 
-    function deleteTicket(ticket: TicketResponse) {
+    async function handleDeleteTicket() {
+        // Show loader
+        setIsDeletingTicket(true);
 
-        // API integration to delete ticket
-
-        // Create a representation of the event request
-        // const _eventRequest = eventRequest;
-
-        // const filteredTickets = _eventRequest?.tickets.filter((anyTicket) => anyTicket.name != ticket.name);
-
-        // setEventRequest({ ...eventRequest as EventRequest, tickets: filteredTickets ?? [] as TicketRequest[] });
-    };
-
-    function shareEvent() {
-        const eventURL = window.location.href;
-        // const tempInput = document.createElement("input");
-        // document.body.appendChild(tempInput);
-        // tempInput.value = eventURL;
-        // tempInput.select();
-        // document.execCommand("copy");
-        // document.body.removeChild(tempInput);
-        try {
-            navigator.clipboard.writeText(eventURL);
-            // alert("Event link copied to clipboard!");
-            toasthandler?.logSuccess('Event link copied.', `The link to ${eventInfo?.title} has been copied.`)
-        } catch (error) {
-            console.error("Copying to clipboard failed:", error);
-        }
-    }
-    function shareEventMobile() {
-        const eventURL = window.location.href;
-        if (navigator.share) {
-            navigator.share({
-                title: "Check out this event!",
-                text: "I found this amazing event. You should check it out!",
-                url: eventURL
+        await deleteTicketById(selectedTicket?.id as string)
+            .then(async (response) => {
+                // Close the modal
+                setIsDeleteTicketConfirmationModalVisible(false);
+                // Fetch event info
+                await handleFetchEventInfo();
             })
-                .then(() => console.log("Shared successfully"))
-                .catch(error => console.log("Sharing failed:", error));
-        } else {
-            console.log("Web Share API not supported");
-        }
-    }
-    function addEventToGoogleCalender() {
-        if (!eventInfo) {
-            return;
-        }
-        const eventTitle = eventInfo?.title;
-        const eventDate = moment(eventInfo.date).format('YYYY-MM-DD'); // Use the actual event date
-        // const eventTime = moment(eventInfo?.eventDateTime).format('HH:MM');      // Use the actual event time
-        const eventTime = moment(eventInfo.time);      // Use the actual event time
-        const location = eventLocation;
+            .catch((error) => {
+                // Display error
+                toast.error("An error occurred while deleting this ticket.");
 
-        const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${eventTime}%2F${eventDate}T${eventTime}&location=${encodeURIComponent(location)}`;
-
-        window.open(googleCalendarUrl, "_blank");
-    }
-
-    function incrementTicket(selectedTicketType: RetrievedTicketResponse) {
-        const updatedTicketsCount = eventTicketTypes?.map(ticketType => {
-            if (ticketType === selectedTicketType) {
-                return {
-                    ...ticketType,
-                    selectedTickets: ticketType.selectedTickets + 1,
-                    isSelected: true
-                };
-            }
-            return ticketType;
-        })
-        setEventTicketTypes(updatedTicketsCount);
-    }
-    function decrementTicket(selectedTicketType: RetrievedTicketResponse) {
-        const updatedTicketsCount = eventTicketTypes?.map(ticketType => {
-            if (ticketType === selectedTicketType) {
-                if (selectedTicketType.selectedTickets == 1) {
-                    return {
-                        ...ticketType,
-                        selectedTickets: ticketType.selectedTickets - 1,
-                        isSelected: false
-                    };
-                }
-                return {
-                    ...ticketType,
-                    selectedTickets: ticketType.selectedTickets - 1,
-                    isSelected: true
-                };
-            }
-            return ticketType;
-        })
-        setEventTicketTypes(updatedTicketsCount);
-    }
+                // Catch error
+                catchError(error);
+            })
+            .finally(() => {
+                setIsDeletingTicket(false);
+            })
+    };
 
     async function handleFetchEventInfo() {
 
@@ -323,17 +236,49 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
 
                 // Display the error
                 toasthandler?.logError(
-                    'Error fetching results',
-                    'We encountered an error while fetchng event offers. Please try again.'
+                    'Error fetching event',
+                    'We encountered an error while fetchng event information. Please try again.'
                 );
 
                 catchError(error);
             })
             .finally(() => {
                 // Unset running flag
-                setLoader(false); 
+                setLoader(false);
             })
-    }
+    };
+
+    async function handleUpdateEventById() {
+        // console.log({ eventRequest });
+
+        // Set running flag
+        setIsUpdatingEvent(true);
+
+        await updateEventById(eventInfo?.id as string, { ...eventRequest as EventRequest, eventId: eventInfo?.eventId as string, publisherId: eventInfo?.publisherId as string })
+            .then(async (response) => {
+
+                // Log the result
+                // console.log('Result:', response.data);
+
+                // Fetch updated event info
+                // await handleFetchEventInfo();
+
+                // Route to user events page
+                router.push(`/app/events`);
+            })
+            .catch((error) => {
+                // Unset running flag
+                setIsUpdatingEvent(false);
+
+                // Display the error
+                toasthandler?.logError(
+                    'Error updating event',
+                    'We encountered an error while updating event information. Please try again.'
+                );
+
+                catchError(error);
+            })
+    };
 
     const eventDateRef = useRef(null);
     const categoryDropdownRef = useRef(null);
@@ -342,7 +287,6 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
         // Clear previous info
         setEventInfo(undefined);
         setEventTicketTypes(undefined);
-        setTicketsSelectionContainerIsVisible(false);
 
         if (params && params.id) {
             // console.log('Fetching info based on Event ID:', id);
@@ -376,17 +320,44 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     return (
         <div className={styles.editEventDetailsPage}>
 
+            <DeletionConfirmationModal
+                visibility={isDeleteTicketConfirmationModalVisible}
+                setVisibility={setIsDeleteTicketConfirmationModalVisible}
+                deleteFunction={handleDeleteTicket}
+                isLoading={isDeletingTicket}
+                actionText='Delete Ticket'
+            />
+
             <TicketUpdateModal
                 modalVisibility={isTicketUpdateModalVisible}
                 setModalVisibility={setIsTicketUpdateModalVisible}
-                selectedTicket={selectedTicket} 
+                selectedTicket={selectedTicket}
+                handleFetchEventInfo={handleFetchEventInfo}
+            />
+
+            <TicketCreationModal
+                modalVisibility={isTicketCreationModalVisible}
+                setModalVisibility={setIsTicketCreationModalVisible}
+                eventRequest={eventRequest}
+                setEventRequest={setEventRequest}
+                forExistingEvent
+                eventId={eventInfo?.id}
                 handleFetchEventInfo={handleFetchEventInfo}
             />
 
             <section className={styles.heroSection}>
                 <div className={styles.textContents}>
                     <h2>Edit Event Information</h2>
-                    {eventInfo && <button>Save</button>}
+                    {
+                        eventInfo &&
+                        <button
+                            type="button"
+                            disabled={isUpdatingEvent}
+                            onClick={() => handleUpdateEventById()}>
+                            <CheckIcon />
+                            {isUpdatingEvent ? "Updating event" : "Save"}
+                        </button>
+                    }
                 </div>
             </section>
 
@@ -508,7 +479,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                         onChange={(e) => onFormValueChange(e)}
                                     />
                                     {categoryDropdownIsVisible &&
-                                        <div className={styles.categoryDropdownContainer} ref={categoryDropdownRef}>
+                                        <div className={styles.categoryDropdownContainer} style={{ width: "100%" }} ref={categoryDropdownRef}>
                                             {categories.map((category, index) => (
                                                 <span
                                                     key={index}
@@ -523,7 +494,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                             ))}
                                         </div>}
                                 </div>
-                                <div className={styles.formField}>
+                                {/* <div className={styles.formField}>
                                     <label htmlFor="tags">Tags</label>
                                     <div className={styles.inputFieldContainer} style={{ paddingRight: '0px' }}>
                                         <input
@@ -547,7 +518,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                         </span>
                                     </div>
                                     {tagErrorMsg && <span className={styles.errorMsg}>Please add at least one tag</span>}
-                                </div>
+                                </div> */}
                             </div>
                             <div className={styles.formField}>
                                 <label htmlFor="time">Visibility</label>
@@ -557,7 +528,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                 </select>
                             </div>
 
-                            <div className={styles.tagsSection}>
+                            {/* <div className={styles.tagsSection}>
                                 <h4>Tags</h4>
 
                                 <div className={styles.tags}>
@@ -575,7 +546,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                         ))
                                     }
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
                         <span></span>
@@ -595,7 +566,10 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                             {imageValidationMessage && <span className={styles.errorMsg}>{imageValidationMessage.message}</span>}
 
                             <div className={styles.ticketsSection}>
-                                <h4>Tickets</h4>
+                                <div className={styles.topArea}>
+                                    <h4>Tickets</h4>
+                                    <button type='button' onClick={() => setIsTicketCreationModalVisible(true)}>Add new</button>
+                                </div>
                                 <div className={styles.ticketCards}>
                                     {
                                         eventInfo?.tickets.map((ticket, index) => (
@@ -617,11 +591,12 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                                 </div>
                                                 <div className={styles.actions}>
                                                     <button type="button" onClick={() => {
-                                                        setIsTicketUpdateModalVisible(true);
                                                         setSelectedTicket(ticket);
+                                                        setIsTicketUpdateModalVisible(true);
                                                     }}>Edit</button>
                                                     <button type="button" onClick={() => {
-                                                        deleteTicket(ticket);
+                                                        setSelectedTicket(ticket);
+                                                        setIsDeleteTicketConfirmationModalVisible(true);
                                                     }}>Delete</button>
                                                 </div>
                                             </div>
