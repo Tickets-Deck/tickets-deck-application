@@ -1,22 +1,32 @@
+import { useCreateTicketForSpecifiedEvent } from "@/app/api/apiClient";
 import ModalWrapper from "@/app/components/Modal/ModalWrapper";
 import { CloseIcon } from "@/app/components/SVGs/SVGicons";
+import { catchError } from "@/app/constants/catchError";
 import { EventRequest } from "@/app/models/IEvents";
 import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
 import { TicketRequest } from "@/app/models/ITicket";
 import styles from '@/app/styles/CreateEvent.module.scss';
 import { ReactElement, FunctionComponent, Dispatch, SetStateAction, ChangeEvent, useState, useEffect, useRef } from "react";
+import { toast } from "sonner";
 
 interface TicketCreationModalProps {
     modalVisibility: boolean;
     setModalVisibility: Dispatch<SetStateAction<boolean>>
     eventRequest: EventRequest | undefined
     setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
+    forExistingEvent?: boolean
+    eventId?: string
+    handleFetchEventInfo?: () => Promise<void>
 }
 
 const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
-    { modalVisibility, setModalVisibility, eventRequest, setEventRequest }): ReactElement => {
+    { modalVisibility, setModalVisibility, eventRequest,
+        setEventRequest, forExistingEvent, eventId, handleFetchEventInfo }): ReactElement => {
+
+    const createTicketForSpecifiedEvent = useCreateTicketForSpecifiedEvent();
 
     const [ticketFormRequest, setTicketFormRequest] = useState<TicketRequest>();
+    const [isCreatingNewTicket, setIsCreatingNewTicket] = useState(false);
 
     const [ticketNameErrorMsg, setTicketNameErrorMsg] = useState<FormFieldResponse>();
     const [ticketPriceErrorMsg, setTicketPriceErrorMsg] = useState<FormFieldResponse>();
@@ -112,7 +122,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
 
             return false;
         }
-    }
+    };
 
     function addNewTicket() {
         if (!validateForm()) {
@@ -141,6 +151,41 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
         // Close modal
         setModalVisibility(false);
     };
+
+    async function handleAddNewTicketToEvent() {
+        // console.log("New ticket: ", ticketFormRequest);
+        // console.log("Event: ", eventId);
+
+        if (!validateForm()) {
+            return;
+        }
+
+        // Show loader
+        setIsCreatingNewTicket(true);
+
+        await createTicketForSpecifiedEvent(eventId as string, ticketFormRequest as TicketRequest)
+            .then(async (response) => {
+
+                handleFetchEventInfo && await handleFetchEventInfo();
+
+                // Clear all fields
+                setTicketFormRequest({} as TicketRequest);
+
+                // Close modal
+                setModalVisibility(false);
+            })
+            .catch((error) => {
+                // Display error
+                toast.error("An error occurred while creating your ticket");
+
+                // Catch error
+                catchError(error);
+            })
+            .finally(() => {
+                // Show loader
+                setIsCreatingNewTicket(false);
+            })
+    }
 
     return (
         <ModalWrapper visibility={modalVisibility} setVisibility={setModalVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
@@ -285,7 +330,13 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
                             <span className={styles.errorMsg}>{ticketDescriptionErrorMsg.message}</span>
                         }
                     </div>
-                    <button type="button" onClick={() => addNewTicket()}>Add Ticket</button>
+                    <button
+                        type="button"
+                        disabled={forExistingEvent && isCreatingNewTicket}
+                        onClick={() => forExistingEvent ? handleAddNewTicketToEvent() : addNewTicket()}>
+                        {forExistingEvent && isCreatingNewTicket ? "Adding ticket..." : "Add Ticket"}
+                        {/* {forExistingEvent ? isCreatingNewTicket ? "Creating ticket..." : "Create Ticket" : "Add Ticket"} */}
+                    </button>
                 </div>
             </div>
         </ModalWrapper>
