@@ -1,7 +1,8 @@
-import { EventRequest } from "@/app/models/IEvents";
+import { EventRequest, EventResponse } from "@/app/models/IEvents";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import cloudinary from "cloudinary";
+import { deserializeEventVisibility } from "@/app/constants/serializer";
 
 export async function POST(req: NextRequest) {
   if (req.method === "POST") {
@@ -289,28 +290,27 @@ export async function GET(req: NextRequest) {
       });
 
       // If event is not found, return 404
-    //   if (!events || events.length === 0) {
-    //     return NextResponse.json(
-    //       { error: "This user does not have any events created yet." },
-    //       { status: 404 }
-    //     );
-    //   }
+      //   if (!events || events.length === 0) {
+      //     return NextResponse.json(
+      //       { error: "This user does not have any events created yet." },
+      //       { status: 404 }
+      //     );
+      //   }
 
       return NextResponse.json(events, { status: 200 });
       // If event is found, return it
-    //   if (events) {
-    //   }
+      //   if (events) {
+      //   }
 
-    //   // If event is not found, return 404
-    //   return NextResponse.json(
-    //     { error: "This user does not have any events created yet." },
-    //     { status: 404 }
-    //   );
+      //   // If event is not found, return 404
+      //   return NextResponse.json(
+      //     { error: "This user does not have any events created yet." },
+      //     { status: 404 }
+      //   );
     }
 
     // If specifiedTags and eventId are provided, fetch the events with those tags, excluding the private ones, those that are over, and the specified event
     if (specifiedTags) {
-        
       if (!specifiedEventId) {
         return NextResponse.json(
           { error: "Event ID is required" },
@@ -345,7 +345,6 @@ export async function GET(req: NextRequest) {
           },
         },
       });
-      
 
       // If event is not found, return 404
       if (!events || events.length === 0) {
@@ -361,9 +360,9 @@ export async function GET(req: NextRequest) {
       }
 
       // If we have mulitple similar events, return them
-        if (events) {
-            return NextResponse.json(events, { status: 200 });
-        }
+      if (events) {
+        return NextResponse.json(events, { status: 200 });
+      }
     }
 
     // Else, Fetch all events
@@ -391,6 +390,173 @@ export async function GET(req: NextRequest) {
 
     // Return all events
     return NextResponse.json(events);
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  if (req.method === "PUT") {
+    const request = (await req.json()) as EventRequest;
+
+    console.log("🚀 ~ Request gotten: ", request);
+
+    // Get the search params from the request url
+    const searchParams = new URLSearchParams(req.url.split("?")[1]);
+
+    // Get the eventId from the search params
+    const specifiedEventId = searchParams.get("id");
+
+    // Initialize the uploaded image id
+    let uploadedImageId: string = "";
+
+    // Initialize the cloudinary response
+    let cloudinaryRes: cloudinary.UploadApiResponse | null = null; 
+
+    if (!specifiedEventId) {
+      return NextResponse.json(
+        { error: "Event's Id is required" },
+        { status: 400 }
+      );
+    }
+
+    try {
+      const { eventId } = request;
+
+      // If eventId is not provided, return 400
+      if (!eventId) {
+        return NextResponse.json(
+          { error: "Event's eventId is required" },
+          { status: 400 }
+        );
+      }
+
+      // Check if publisherId is provided
+      if (!request.publisherId) {
+        return NextResponse.json(
+          { error: "Publisher Id is required" },
+          { status: 400 }
+        );
+      }
+
+      // Check if a user with the publisherId exists
+      const userExists = await prisma.users.findFirst({
+        where: {
+          id: request.publisherId,
+        },
+      });
+
+      // If user does not exist, return 400
+      if (!userExists) {
+        return NextResponse.json(
+          { error: "User with specified ID not found" },
+          { status: 400 }
+        );
+      }
+
+      // Get existing event
+      const existingEvent = await prisma.events.findUnique({
+        where: {
+          id: specifiedEventId,
+        },
+        // include: {
+        //   tags: {
+        //     select: { tag: { select: { name: true } } },
+        //   },
+        // },
+      });
+
+      // If event is not found, return 404
+      if (!existingEvent) {
+        return NextResponse.json(
+          { error: "Event with specified ID not found" },
+          { status: 404 }
+        );
+      }
+
+      // If we have a new image, upload it to cloudinary, and delete the existing image
+      if (request.mainImageUrl) {
+        // Get the image base64 url from the request
+        const _imagebase64Url = request.mainImageUrl;
+
+        // Compose the upload string
+        var uploadStr = "data:image/jpeg;base64," + _imagebase64Url;
+
+        // Upload the image to cloudinary
+        cloudinaryRes = await cloudinary.v2.uploader.upload(uploadStr, {
+          folder: "event_images",
+          filename_override: `${eventId}_modified`,
+          // use_filename: true,
+        });
+
+        // console.log("We got to uploaded image: ", cloudinaryRes)
+
+        // Update the uploaded image id with the cloudinary response
+        uploadedImageId = cloudinaryRes.public_id;
+
+        // Delete the old event's main image from cloudinary
+        await cloudinary.v2.uploader.destroy(existingEvent.mainImageId);
+      }
+
+      // Delete the existing tags
+      //   await prisma.tags.deleteMany({
+      //     where: {
+      //       id: specifiedEventId,
+      //     },
+      //   });
+
+      // Update the event
+      const updatedEvent = await prisma.events.update({
+        where: {
+          id: existingEvent.id,
+        },
+        data: {
+          title: request.title ?? existingEvent.title,
+          description: request.description ?? existingEvent.description,
+          venue: request.venue ?? existingEvent.venue,
+          date: request.date ?? existingEvent.date,
+          time: request.time ?? existingEvent.time,
+          mainImageUrl: cloudinaryRes?.secure_url ?? existingEvent.mainImageUrl,
+          mainImageId: cloudinaryRes?.public_id ?? existingEvent.mainImageId, 
+          category: request.category ?? existingEvent.category,
+          //   tags:
+          //     request.tags && request.tags.length > 0
+          //       ? {
+          //           create: request.tags.map((tagName) => ({
+          //             tag: {
+          //               create: { name: tagName },
+          //             },
+          //           })),
+          //         }
+          //       : {
+          //           create: existingEvent.tags.map((tagName) => ({
+          //             tag: {
+          //               create: { name: tagName.tag.name },
+          //             },
+          //           })),
+          //         },
+          visibility:
+            deserializeEventVisibility(request.visibility) ??
+            existingEvent.visibility,
+          //   purchaseStartDate: request.purchaseStartDate,
+          //   purchaseEndDate: request.purchaseEndDate,
+        },
+      });
+
+      // Return the event
+      return NextResponse.json(updatedEvent, { status: 200 });
+    } catch (error) {
+      // If the image was uploaded to cloudinary...
+      if (uploadedImageId) {
+        // Delete the event's main image from cloudinary
+        await cloudinary.v2.uploader.destroy(uploadedImageId);
+      }
+
+      // console.error(error);
+
+      return NextResponse.json(
+        { error: "Something went wrong" },
+        { status: 500 }
+      );
+    }
   }
 }
 
