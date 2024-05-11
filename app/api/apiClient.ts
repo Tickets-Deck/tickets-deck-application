@@ -14,7 +14,7 @@ import { TicketCategory } from "../enums/ITicket";
 import { TicketRequest, TicketResponse } from "../models/ITicket";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_DEV,
+  baseURL: ApiRoutes.BASE_URL_TEST,
 });
 
 export function useCreateNewsletterSubscriber() {
