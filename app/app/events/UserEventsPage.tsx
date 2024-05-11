@@ -99,6 +99,7 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({ session }): Re
                 setVisibility={setIsDeleteConfirmationModalVisible}
                 deleteFunction={handleDeleteEvent}
                 isLoading={isDeletingEvent}
+                actionText="Delete Event"
             />
 
             {/* <section className={styles.heroSection}>
