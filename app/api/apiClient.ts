@@ -12,6 +12,7 @@ import { TicketOrderRequest } from "../models/ITicketOrder";
 import { InitializePayStack } from "../models/IInitializePayStack";
 import { TicketCategory } from "../enums/ITicket";
 import { TicketRequest, TicketResponse } from "../models/ITicket";
+import { FollowsActionType } from "../models/IFollows";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_TEST,
@@ -57,22 +58,6 @@ export function useFetchUserEventsByUserId() {
   return fetchUserEventsByUserId;
 }
 
-export function useUpdateEventById() {
-    async function updateEventById(id: string, data: EventRequest) {
-        return API.put(`${ApiRoutes.Events}?id=${id}`, data);
-    }
-
-    return updateEventById;
-}
-
-export function useDeleteEvent() {
-  async function deleteEvent(id: string) {
-    return API.delete(`${ApiRoutes.Events}?id=${id}`);
-  }
-
-  return deleteEvent;
-}
-
 export function useFetchEventByEventId() {
   async function fetchEventsByEventId(eventId: string) {
     return API.get(`${ApiRoutes.Events}?eventId=${eventId}`);
@@ -98,6 +83,24 @@ export function useFetchEventsByTags() {
 
   return fetchEventsByPublisherId;
 }
+
+export function useUpdateEventById() {
+  async function updateEventById(id: string, data: EventRequest) {
+    return API.put(`${ApiRoutes.Events}?id=${id}`, data);
+  }
+
+  return updateEventById;
+}
+
+export function useDeleteEvent() {
+  async function deleteEvent(id: string) {
+    return API.delete(`${ApiRoutes.Events}?id=${id}`);
+  }
+
+  return deleteEvent;
+}
+
+//#region user
 
 export function useCreateUser() {
   async function createUser(user: UserCredentialsRequest) {
@@ -170,6 +173,8 @@ export function useUpdateUserInformation() {
 
   return updateUserInformation;
 }
+
+//#endregion
 
 export function useCreateTicketOrder() {
   async function createTicketOrder(data: TicketOrderRequest) {
@@ -252,4 +257,28 @@ export function useDeleteTicketById() {
   }
 
   return deleteTicketById;
+}
+
+export function useFollowUser() {
+  async function followUser(subjectUserId: string, objectUserId: string, actionType: FollowsActionType) {
+    return API.post(
+      `${ApiRoutes.Follows}?subjectiveUserId=${subjectUserId}&objectiveUserId=${objectUserId}&actionType=${actionType}`
+    );
+  }
+
+  return followUser;
+}
+
+export function useFetchUserFollowMetrics() {
+    /**
+     * Fetches the number of followers and following of a user, and whether the logged in user is following the user
+     * @param objectiveUserId is the user whose followers and following you want to fetch
+     * @param subjectUserId is the logged in user who is the subject of the follow action
+     * @returns the API response
+     */
+    async function fetchUserFollowMetrics(objectiveUserId: string, subjectUserId?: string) {
+        return API.get(`${ApiRoutes.Follows}?objectiveUserId=${objectiveUserId}&subjectUserId=${subjectUserId}`);
+    }
+    
+    return fetchUserFollowMetrics;
 }
