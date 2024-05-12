@@ -33,6 +33,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
     const [validationStage, setValidationStage] = useState<{ status: ValidationStatus }>();
 
     const [mainImageFile, setMainImageFile] = useState<File>();
+    const [mainImageUrl, setMainImageUrl] = useState<string>();
     const [isUploadingMainImage, setIsUploadingMainImage] = useState(false);
     const [imageValidationMessage, setImageValidationMessage] = useState<FormFieldResponse>();
     const [ticketValidationMessage, setTicketValidationMessage] = useState<FormFieldResponse>();
@@ -119,15 +120,15 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                 // Update created event state
                 setIsEventCreated(true);
                 // log response
-                console.log(response);
+                // console.log(response);
                 // Clear the event request
-                setEventRequest(undefined);
+                // setEventRequest(undefined);
                 // Redirect to the event page
                 push(`/app/event/${response.data.id}`);
             })
             .catch((error) => {
                 // log error
-                console.log(error);
+                // console.log(error);
                 // Stop loader
                 setIsCreatingEvent(false);
             })
@@ -172,6 +173,8 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                         setEventRequest={setEventRequest}
                         mainImageFile={mainImageFile}
                         setMainImageFile={setMainImageFile}
+                        mainImageUrl={mainImageUrl}
+                        setMainImageUrl={setMainImageUrl}
                         imageValidationMessage={imageValidationMessage}
                         setImageValidationMessage={setImageValidationMessage}
                     />}
@@ -188,8 +191,10 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                 {eventCreationStage === EventCreationStage.Confirmation &&
                     <ConfirmationSection
                         eventRequest={eventRequest}
-                        setEventRequest={setEventRequest}
+                        setEventRequest={setEventRequest} 
                         isEventCreated={isEventCreated}
+                        mainImageUrl={mainImageUrl}
+                        setEventCreationStage={setEventCreationStage}
                     />
                 }
 
