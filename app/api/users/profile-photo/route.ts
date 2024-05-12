@@ -1,4 +1,7 @@
-import { ProfilePhotoRequest } from "@/app/models/IUser";
+import {
+  ProfilePhotoRequest,
+  UserCredentialsResponse,
+} from "@/app/models/IUser";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import cloudinary from "cloudinary";
@@ -54,6 +57,9 @@ export async function POST(req: NextRequest) {
       // If user is found, get the current profile photo and profile photo public id
       const currentProfilePhotoPublicId = user.profilePhotoId;
 
+      // Initialize updated user
+      let updatedUser: any;
+
       if (!currentProfilePhotoPublicId) {
         const _imagebase64Url = request.profilePhoto;
 
@@ -70,7 +76,7 @@ export async function POST(req: NextRequest) {
 
         // If uploaded profile photo is found, update the user's profile photo and profile photo id
         if (uploadedProfilePhoto) {
-          await prisma.users.update({
+          updatedUser = await prisma.users.update({
             where: {
               id: userId,
             },
@@ -106,7 +112,7 @@ export async function POST(req: NextRequest) {
 
         // If uploaded profile photo is found, update the user's profile photo and profile photo id
         if (uploadedProfilePhoto) {
-          await prisma.users.update({
+          updatedUser = await prisma.users.update({
             where: {
               id: userId,
             },
@@ -123,7 +129,7 @@ export async function POST(req: NextRequest) {
       }
 
       // Return the updated user response
-      return NextResponse.json(user, { status: 200 });
+      return NextResponse.json(updatedUser, { status: 200 });
     } catch (error) {
       console.error(error);
       return NextResponse.json(
