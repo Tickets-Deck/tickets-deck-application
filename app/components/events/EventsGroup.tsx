@@ -77,12 +77,9 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                 </div>
                 {
                     isFetchingEvents &&
-                    <>
-                        <br />
-                        <br />
-                        <br />
+                    <div className={styles.eventsLoader}>
                         <ComponentLoader customLoaderColor="#fff" />
-                    </>
+                    </div>
                 }
                 {
                     !isFetchingEvents && (eventsData && eventsData?.length == 0) &&
