@@ -1,66 +1,107 @@
+import { FollowsActionType } from "@/app/models/IFollows";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  if (req.method === "GET") {
-    // Get the search params from the request url
-    const searchParams = new URLSearchParams(req.url.split("?")[1]);
+  // If request method is not GET, return 405
+  if (req.method != "GET") {
+    return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  }
 
-    // Get the userId from the search params
-    const specifiedUserId = searchParams.get("userId");
+  // Get the search params from the request url
+  const searchParams = new URLSearchParams(req.url.split("?")[1]);
 
-    // If a specified user's Id is provided, fetch the number of the following users of the user with that user's Id
-    if (specifiedUserId) {
-      // Fetch the user with the specified user ID
-      const user = await prisma.users.findFirst({
+  // Get the userId from the search params
+  const specifiedUserId = searchParams.get("objectiveUserId");
+
+  // Get the subjectUserId from the search params ~ The logged in user
+  const subjectUserId = searchParams.get("subjectUserId");
+
+  // If a specified user's Id is provided, fetch the number of the following users of the user with that user's Id
+  if (specifiedUserId) {
+    // Fetch the user with the specified user ID
+    const user = await prisma.users.findFirst({
+      where: {
+        id: specifiedUserId,
+        // OR: [
+        //   { username: specifiedUserIdOrUsername },
+        //   { id: specifiedUserIdOrUsername },
+        // ],
+      },
+    });
+
+    // If user is not found, return 404
+    if (!user) {
+      return NextResponse.json(
+        { error: "User with specified User ID not found" },
+        { status: 404 }
+      );
+    }
+
+    // Fetch the number of the following users of the user
+    const following = await prisma.follows.findMany({
+      where: {
+        followerId: specifiedUserId,
+      },
+    });
+
+    // Fetch the number of the followers of the user
+    const followers = await prisma.follows.findMany({
+      where: {
+        followingId: specifiedUserId,
+      },
+    });
+
+    // If the subject user's Id is provided, check if the subject user is following the objective user
+    if (subjectUserId) {
+      // Fetch the user with the specified following ID
+      const existingSubjectUser = await prisma.users.findFirst({
         where: {
-          id: specifiedUserId,
-        },
-        include: {
-          ticketOrders: true,
+          id: subjectUserId,
         },
       });
 
-      // If user is not found, return 404
-      if (!user) {
+      // If following user is not found, return 404
+      if (!existingSubjectUser) {
         return NextResponse.json(
-          { error: "User with specified User ID not found" },
+          { error: "Subject user with specified following ID not found" },
           { status: 404 }
         );
       }
 
-      // Fetch the number of the following users of the user
-      const following = await prisma.follows.findMany({
+      // Check if the subjective user is following the objective user
+      const isFollowing = await prisma.follows.findFirst({
         where: {
-          followerId: specifiedUserId,
-        },
-      });
-
-      // Fetch the number of the followers of the user
-      const followers = await prisma.follows.findMany({
-        where: {
+          followerId: subjectUserId,
           followingId: specifiedUserId,
         },
       });
 
-      // Return the number of the following users and the followers of the user
+      // Return the number of the following users and the followers of the user and if the user is following the objective user
       return NextResponse.json({
         following: following.length,
         followers: followers.length,
+        isFollowing: isFollowing ? true : false,
       });
     }
-  } else {
-    return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+
+    // Return the number of the following users and the followers of the user
+    return NextResponse.json({
+      following: following.length,
+      followers: followers.length,
+    });
   }
 }
 
 export async function POST(req: NextRequest) {
+  // If method
+
   if (req.method === "POST") {
     // Get the search params from the request url
     const searchParams = new URLSearchParams(req.url.split("?")[1]);
 
     // Get the user Id from the search params
-    const specifiedUserId = searchParams.get("userId");
+    const specifiedUserId = searchParams.get("subjectiveUserId");
 
     // Get the following Id from the search params
     const objectiveUserId = searchParams.get("objectiveUserId");
@@ -100,7 +141,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      if (actionType === "unfollow") {
+      if (actionType === FollowsActionType.Unfollow) {
         // Check if the user is following the following user
         const isFollowing = await prisma.follows.findFirst({
           where: {
@@ -117,24 +158,51 @@ export async function POST(req: NextRequest) {
           );
         }
 
-        // Delete the follow record
-        await prisma.follows.delete({
-          where: {
-            followerId_followingId: {
-              followerId: specifiedUserId,
-              followingId: objectiveUserId,
+        // Begin transaction
+        await prisma.$transaction([
+          // Delete the follow record
+          prisma.follows.delete({
+            where: {
+              followerId_followingId: {
+                followerId: specifiedUserId,
+                followingId: objectiveUserId,
+              },
             },
-          },
-        });
+          }),
+
+          // Update the following count of the subject user
+          prisma.users.update({
+            where: {
+              id: specifiedUserId,
+            },
+            data: {
+              followingCount: {
+                decrement: 1,
+              },
+            },
+          }),
+
+          // Update the followers count of the objective user
+          prisma.users.update({
+            where: {
+              id: objectiveUserId,
+            },
+            data: {
+              followersCount: {
+                decrement: 1,
+              },
+            },
+          }),
+        ]);
 
         // Return a success message with status 200
         return NextResponse.json(
-          { message: "Follow deleted successfully" },
+          { message: "User unfollowed successfully" },
           { status: 200 }
         );
       }
 
-      if (actionType === "follow") {
+      if (actionType === FollowsActionType.Follow) {
         // Check if the user is already following the following user
         const isFollowing = await prisma.follows.findFirst({
           where: {
@@ -151,13 +219,40 @@ export async function POST(req: NextRequest) {
           );
         }
 
-        // Create a new follow record
-        const follow = await prisma.follows.create({
-          data: {
-            followerId: specifiedUserId,
-            followingId: objectiveUserId,
-          },
-        });
+        // Begin transaction
+        await prisma.$transaction([
+          // Create a new follow record
+          prisma.follows.create({
+            data: {
+              followerId: specifiedUserId,
+              followingId: objectiveUserId,
+            },
+          }),
+
+          // Update the following count of the subject user
+          prisma.users.update({
+            where: {
+              id: specifiedUserId,
+            },
+            data: {
+              followingCount: {
+                increment: 1,
+              },
+            },
+          }),
+
+          // Update the followers count of the objective user
+          prisma.users.update({
+            where: {
+              id: objectiveUserId,
+            },
+            data: {
+              followersCount: {
+                increment: 1,
+              },
+            },
+          }),
+        ]);
 
         // Return a success message with status 201
         return NextResponse.json({ message: "User followed" }, { status: 200 });
