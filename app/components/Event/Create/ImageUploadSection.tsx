@@ -11,15 +11,18 @@ interface ImageUploadSectionProps {
     setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
     mainImageFile: File | undefined
     setMainImageFile: Dispatch<SetStateAction<File | undefined>>
+    mainImageUrl: string | undefined
+    setMainImageUrl: React.Dispatch<React.SetStateAction<string | undefined>>
     imageValidationMessage: FormFieldResponse | undefined
     setImageValidationMessage: React.Dispatch<React.SetStateAction<FormFieldResponse | undefined>>
 }
 
 const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = (
     { eventRequest, setEventRequest, mainImageFile,
-        setMainImageFile, imageValidationMessage, setImageValidationMessage }): ReactElement => {
-
-    const [mainImageUrl, setMainImageUrl] = useState<string>();
+        setMainImageFile, imageValidationMessage, setImageValidationMessage,
+    mainImageUrl, setMainImageUrl }): ReactElement => {
+        
+        
     const [mainImageBase64Url, setMainImageBase64Url] = useState<string>();
     const [subImageFiles, setSubImageFiles] = useState<File[]>();
     const [subImageUrls, setSubImageUrls] = useState<string[]>();
