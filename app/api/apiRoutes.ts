@@ -77,4 +77,9 @@ export class ApiRoutes {
    * The route to Dashboard endpoint
    */
   static Dashboard: string = "api/users/dashboard";
+
+  /**
+   * The route to Follows endpoint
+   */
+  static Follows: string = "api/users/follows";
 }
