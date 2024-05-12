@@ -297,6 +297,12 @@
             //     }
             // }
         }
+
+        .eventsLoader {
+            min-height: 50vh;
+            display: grid;
+            place-items: center;
+        }
     }
 
     .noEvents {
@@ -308,14 +314,19 @@
     padding-left: 1.5rem;
     padding-right: 1.5rem;
     padding-top: 1.25rem;
-    padding-bottom: 4.5rem;
+    padding-bottom: 0.5rem;
     height: 100%;
+    // border: 1px solid #fff;
 
     .eventsContainer {
         min-height: 50vh;
         display: flex;
         flex-direction: column;
-        padding-top: 2.5rem;
+        // padding-top: 2.5rem;
+        padding-right: 0.5rem;
+        height: 100%;
+        overflow-y: auto;
+        scrollbar-width: thin;
 
         .noEvents {
             @include noEvents();
