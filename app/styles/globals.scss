@@ -98,7 +98,9 @@ img {
 }
 
 input {
-    font-size: $font-size-16;
+    @include tablet {
+        font-size: $font-size-16;
+    }
 }
 
 button {
