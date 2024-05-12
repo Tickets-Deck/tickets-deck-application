@@ -36,7 +36,7 @@ const UserHighlights: FunctionComponent<UserHighlightsProps> = ({ userInformatio
                 // Close the loader indicator
                 setIsFetchingUserEvents(false);
             })
-};
+    };
 
     useEffect(() => {
         if (userInformation) {
@@ -64,13 +64,13 @@ const UserHighlights: FunctionComponent<UserHighlightsProps> = ({ userInformatio
                         <ComponentLoader customLoaderColor="#111111" />
                     </div>
                 }
-                {
-                    !isFetchingUserEvents && userEvents.length === 0 &&
-                    <div className={styles.noHighlightsContainer}>
-                        <p>No events yet</p>
-                    </div>
-                }
             </div>
+            {
+                !isFetchingUserEvents && userEvents.length === 0 &&
+                <div className={styles.noHighlightsContainer}>
+                    <p>No events yet</p>
+                </div>
+            }
         </div>
     );
 }
