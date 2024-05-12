@@ -77,7 +77,7 @@ export async function PUT(req: NextRequest) {
           numberOfUsers: request.numberOfUsers || existingTicket.numberOfUsers,
           quantity: request.quantity || existingTicket.quantity,
           remainingTickets:
-            request.remainingTickets || existingTicket.remainingTickets,
+            request.quantity || existingTicket.remainingTickets,
           description: request.description || existingTicket.description,
         },
       });
