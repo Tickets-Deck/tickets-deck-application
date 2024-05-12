@@ -30,7 +30,7 @@ const UserStats: FunctionComponent<UserStatsProps> = ({ userInformation }): Reac
                     {userInformation.followersCount}
                 </p>
                 <p className={styles.stat__label}>
-                    Followers
+                    {userInformation.followersCount > 1 ? "Followers" : "Follower"}
                 </p>
             </div>
             <div className={styles.stat}>
