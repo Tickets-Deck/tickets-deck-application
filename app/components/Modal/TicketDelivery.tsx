@@ -68,7 +68,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     const [showErrorMessages, setShowErrorMessages] = useState(false);
 
     const [primaryEmail, setPrimaryEmail] = useState<string>();
-    const [userEmailIsPrimaryEmail, setUserEmailIsPrimaryEmail] = useState(false);
+    const [userEmailIsPrimaryEmail, setUserEmailIsPrimaryEmail] = useState(true);
 
     const [isProcessingOrder, setIsProcessingOrder] = useState(false);
 
