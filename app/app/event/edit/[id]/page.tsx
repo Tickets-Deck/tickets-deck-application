@@ -354,7 +354,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                             type="button"
                             disabled={isUpdatingEvent}
                             onClick={() => handleUpdateEventById()}>
-                            <CheckIcon />
+                            {!isUpdatingEvent && <CheckIcon />}
                             {isUpdatingEvent ? "Updating event" : "Save"}
                         </button>
                     }
