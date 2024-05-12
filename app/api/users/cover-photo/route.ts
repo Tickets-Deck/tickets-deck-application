@@ -54,6 +54,9 @@ export async function POST(req: NextRequest) {
       // If user is found, get the current cover photo and cover photo public id
       const currentCoverPhotoPublicId = user.coverPhotoId;
 
+      // Initialize updated user
+      let updatedUser: any;
+
       if (!currentCoverPhotoPublicId) {
         const _imagebase64Url = request.coverPhoto;
 
@@ -70,7 +73,7 @@ export async function POST(req: NextRequest) {
 
         // If uploaded cover photo is found, update the user's cover photo and cover photo id
         if (uploadedCoverPhoto) {
-          await prisma.users.update({
+          updatedUser = await prisma.users.update({
             where: {
               id: userId,
             },
@@ -102,7 +105,7 @@ export async function POST(req: NextRequest) {
 
         // If uploaded cover photo is found, update the user's cover photo and cover photo id
         if (uploadedCoverPhoto) {
-          await prisma.users.update({
+          updatedUser = await prisma.users.update({
             where: {
               id: userId,
             },
@@ -115,7 +118,7 @@ export async function POST(req: NextRequest) {
       }
 
       // Return the updated user response
-      return NextResponse.json(user, { status: 200 });
+      return NextResponse.json(updatedUser, { status: 200 });
     } catch (error) {
       console.error(error);
       return NextResponse.json(
