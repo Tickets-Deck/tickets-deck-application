@@ -84,7 +84,7 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
                     if (error.response.data.error == "Payment has already been verified") {
                         // Set payment status state
                         setPaymentStatus(PaymentStatus.Success);
- 
+
                         setTimeout(() => {
                             if (userInfo) {
                                 router.push('/app');
@@ -146,11 +146,12 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
                 paymentStatus == PaymentStatus.Success &&
                 <div className={styles.loaderAreaContainer}>
                     <h3>This payment has already been verified</h3>
-                    {
+                    <p>Redirecting you to the order page in seconds.</p>
+                    {/* {
                         userInfo ?
                             <p>You will be redirected to your dashboard in seconds.</p> :
                             <p>You will be redirected to see all events in seconds.</p>
-                    }
+                    } */}
                 </div>
             }
         </main>
