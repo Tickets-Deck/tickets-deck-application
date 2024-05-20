@@ -26,6 +26,8 @@ export function useCreateNewsletterSubscriber() {
   return createNewsletterSubscriber;
 }
 
+//#region event
+
 export function useCreateEvent() {
   async function createEvent(event: EventRequest) {
     return API.post(ApiRoutes.Events, event);
@@ -99,6 +101,8 @@ export function useDeleteEvent() {
 
   return deleteEvent;
 }
+
+//#endregion
 
 //#region user
 
@@ -175,6 +179,22 @@ export function useUpdateUserInformation() {
 }
 
 //#endregion
+
+export function useVerifyUserEmail() {
+  async function verifyUserEmail(token: string) {
+    return API.get(`${ApiRoutes.VerifyUserEmail}?token=${token}`);
+  }
+
+  return verifyUserEmail;
+}
+
+export function useResendVerificationLink() {
+  async function resendVerificationLink(email: string) {
+    return API.post(`${ApiRoutes.VerifyUserEmail}?email=${email}`);
+  }
+
+  return resendVerificationLink;
+}
 
 export function useCreateTicketOrder() {
   async function createTicketOrder(data: TicketOrderRequest) {
@@ -260,7 +280,11 @@ export function useDeleteTicketById() {
 }
 
 export function useFollowUser() {
-  async function followUser(subjectUserId: string, objectUserId: string, actionType: FollowsActionType) {
+  async function followUser(
+    subjectUserId: string,
+    objectUserId: string,
+    actionType: FollowsActionType
+  ) {
     return API.post(
       `${ApiRoutes.Follows}?subjectiveUserId=${subjectUserId}&objectiveUserId=${objectUserId}&actionType=${actionType}`
     );
@@ -270,15 +294,20 @@ export function useFollowUser() {
 }
 
 export function useFetchUserFollowMetrics() {
-    /**
-     * Fetches the number of followers and following of a user, and whether the logged in user is following the user
-     * @param objectiveUserId is the user whose followers and following you want to fetch
-     * @param subjectUserId is the logged in user who is the subject of the follow action
-     * @returns the API response
-     */
-    async function fetchUserFollowMetrics(objectiveUserId: string, subjectUserId?: string) {
-        return API.get(`${ApiRoutes.Follows}?objectiveUserId=${objectiveUserId}&subjectUserId=${subjectUserId}`);
-    }
-    
-    return fetchUserFollowMetrics;
+  /**
+   * Fetches the number of followers and following of a user, and whether the logged in user is following the user
+   * @param objectiveUserId is the user whose followers and following you want to fetch
+   * @param subjectUserId is the logged in user who is the subject of the follow action
+   * @returns the API response
+   */
+  async function fetchUserFollowMetrics(
+    objectiveUserId: string,
+    subjectUserId?: string
+  ) {
+    return API.get(
+      `${ApiRoutes.Follows}?objectiveUserId=${objectiveUserId}&subjectUserId=${subjectUserId}`
+    );
+  }
+
+  return fetchUserFollowMetrics;
 }
