@@ -150,6 +150,7 @@
                 }
                 button {
                     @include primary-button;
+                    font-size: 1rem;
                     border-radius: 1.5rem;
                     white-space: nowrap;
                     height: 100%;
