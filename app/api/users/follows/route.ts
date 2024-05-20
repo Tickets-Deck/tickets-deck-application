@@ -90,6 +90,11 @@ export async function GET(req: NextRequest) {
       following: following.length,
       followers: followers.length,
     });
+  } else {
+    return NextResponse.json(
+      { error: "User ID not provided" },
+      { status: 400 }
+    );
   }
 }
 
