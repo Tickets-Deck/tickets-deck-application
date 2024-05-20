@@ -41,12 +41,24 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // Save it to the database
-      const subscriber = await prisma.newsLetterSubscribers.create({
-        data: {
-          email, 
-        },
-      });
+      // Begin transaction
+      await prisma.$transaction([
+        // Save it to the database
+        prisma.newsLetterSubscribers.create({
+          data: {
+            email,
+          },
+        }),
+        // Update the count in user table
+        prisma.users.update({
+          where: {
+            email,
+          },
+          data: {
+            isNewsletterSubscribed: true,
+          },
+        }),
+      ]);
 
       // Send email to the subscriber
       await sendMail({
@@ -57,7 +69,7 @@ export async function POST(req: NextRequest) {
         // body: `<p>Thank you for subscribing to the newsletter</p>`,
       });
 
-      return NextResponse.json(subscriber, { status: StatusCodes.Created });
+      return NextResponse.json({ status: StatusCodes.Created });
     } catch (error) {
       console.error(error);
       return NextResponse.json(
