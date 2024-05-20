@@ -39,10 +39,10 @@ const TicketUi: FunctionComponent<TicketUiProps> = ({ ticketInfo }): ReactElemen
                             {/* <QRCode value={ticketInfo.qr} /> */}
                             {/* <Image src={ticketInfo.qr} alt="QR code" /> */}
                         </div>
-                        {/* <p>Info on qr</p> */}
+                        {/* <p>Order code: BY45CZ</p> */}
                     </div>
                 </div>
-                <p className={styles.order}>Order #Y45SHF-3328JDC</p>
+                <p className={styles.order}>Order #BY45CZ</p>
             </div>
         </div>
     );
