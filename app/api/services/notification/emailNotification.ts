@@ -1,9 +1,12 @@
-import { sendMail } from "@/lib/mail";
+import { generateQRCode } from "@/app/services/GenerateQrImage";
+import { compileTicketOrderTemplate, sendMail } from "@/lib/mail";
 import { prisma } from "@/lib/prisma";
+import moment from "moment";
 import Paystack from "paystack";
 
 export async function processEmailNotification(
-  paymentResult: Paystack.Response
+  paymentResult: Paystack.Response,
+  baseUrl: string
 ) {
   //   console.log("Processing email notification...");
 
@@ -17,6 +20,9 @@ export async function processEmailNotification(
     where: {
       id: ticketOrderId,
     },
+    include: {
+      event: true,
+    },
   });
 
   if (!ticketOrder) {
@@ -25,13 +31,26 @@ export async function processEmailNotification(
     );
   }
 
+  const qrImageUrl = await generateQRCode(ticketOrder.contactEmail);
+
+  // console.log("QR image gotten: ", qrImageUrl);
+
   // Send email to the contact email of the ticket order
   await sendMail({
     to: ticketOrder.contactEmail,
     name: "Ticket Order",
-    subject: "You've got a new ticket order",
-    // body: compileNewsletterSubscriptionTemplate(email),
-    body: `<p>Thank you for your purchase.</p>`,
+    subject: ticketOrder.event.title,
+    body: compileTicketOrderTemplate({
+      title: ticketOrder.event.title,
+      image: ticketOrder.event.mainImageUrl,
+      description: ticketOrder.event.description,
+      venue: ticketOrder.event.venue as string,
+      date: moment(ticketOrder.event.date).format("Do of MMM, YYYY"),
+      time: ticketOrder.event.time as string,
+      qrImage: ticketOrder.orderId,
+      ticketOrderId: ticketOrder.orderId,
+      orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`
+    }),
   });
 
   // Get each ordered ticket from the ticket order ID
@@ -46,7 +65,28 @@ export async function processEmailNotification(
     orderedTickets.length === 1 &&
     orderedTickets[0].associatedEmail === ticketOrder.contactEmail
   ) {
-    return;
+    const orderedTicket = orderedTickets[0];
+    
+    // const qrImageUrl = await generateQRCode(ticketOrder.contactEmail);
+
+    // console.log("QR image gotten: ", qrImageUrl);
+
+    await sendMail({
+      to: orderedTicket.associatedEmail as string,
+      name: "Ticket Order",
+      subject: ticketOrder.event.title,
+      body: compileTicketOrderTemplate({
+        title: ticketOrder.event.title,
+        image: ticketOrder.event.mainImageUrl,
+        description: ticketOrder.event.description,
+        venue: ticketOrder.event.venue as string,
+        date: moment(ticketOrder.event.date).format("Do of MMM, YYYY"),
+        time: ticketOrder.event.time as string,
+        qrImage: ticketOrder.orderId,
+        ticketOrderId: ticketOrder.orderId,
+        orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`
+      }),
+    });
   } else {
     // If we have more than one ticket, we can send an email to each associated email
     for (const ticket of orderedTickets) {
@@ -58,9 +98,18 @@ export async function processEmailNotification(
       await sendMail({
         to: ticket.associatedEmail,
         name: "Ticket Order",
-        subject: "You've got a new ticket!",
-        // body: compileNewsletterSubscriptionTemplate(email),
-        body: `<p>Thank you for your purchase.</p>`,
+        subject: ticketOrder.event.title,
+        body: compileTicketOrderTemplate({
+          title: ticketOrder.event.title,
+          image: ticketOrder.event.mainImageUrl,
+          description: ticketOrder.event.description,
+          venue: ticketOrder.event.venue as string,
+          date: moment(ticketOrder.event.date).format("Do of MMM, YYYY"),
+          time: ticketOrder.event.time,
+          qrImage: ticketOrder.orderId,
+          ticketOrderId: ticketOrder.orderId,
+          orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`
+        }),
       });
     }
   }
