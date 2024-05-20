@@ -13,16 +13,17 @@ import moment from "moment";
 
 interface OrdersPageProps {
     orderId: string
+    hostUrl: string | undefined
 }
 
-const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId }): ReactElement => {
+const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): ReactElement => {
 
     const fetchOrderInformationById = useFetchOrderInformationById();
     const { data: session, status } = useSession();
     const router = useRouter();
 
     const [isFetchingOrderInformation, setIsFetchingOrderInformation] = useState(true);
-    const [orderInformation, setOrderInformation] = useState<UserTicketOrder | null>(null); 
+    const [orderInformation, setOrderInformation] = useState<UserTicketOrder | null>(null);
 
     /**
      * Function to fetch order information
@@ -169,7 +170,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId }): ReactEleme
                     <p>Please wait while we fetch your ticket order information.</p>
                 </div>
             }
-            
+
             {
                 !isFetchingOrderInformation && !orderInformation &&
                 <div className={styles.loaderAreaContainer}>
@@ -195,6 +196,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId }): ReactEleme
                                 eventInfo={orderInformation?.event as EventResponse}
                                 forOrdersPage
                                 hideStatusTag
+                                hostUrl={hostUrl}
                             />
                         </div>
                         <div className={styles.ticketsContainer}>
