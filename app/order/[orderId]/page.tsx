@@ -6,7 +6,15 @@ interface OrdersProps {
 }
 
 const Orders: FunctionComponent<OrdersProps> = ({ params }): ReactElement => {
-    return (<OrdersPage orderId={params.orderId} />);
+
+    const hostUrl = process.env.NEXTAUTH_URL;
+
+    return (
+        <OrdersPage
+            orderId={params.orderId}
+            hostUrl={hostUrl}
+        />
+    );
 }
 
 export default Orders;
