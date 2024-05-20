@@ -1,11 +1,7 @@
-import {
-  UserCredentialsRequest,
-  UserCredentialsUpdateRequest,
-} from "@/app/models/IUser";
+import { UserCredentialsUpdateRequest } from "@/app/models/IUser";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { compileAccountCreationTemplate, sendMail } from "@/lib/mail";
+import { createUser } from "../services/user/usersService";
 
 export async function GET(req: NextRequest) {
   if (req.method === "GET") {
@@ -78,50 +74,23 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   if (req.method === "POST") {
-    // Get the body of the request
-    const request = (await req.json()) as UserCredentialsRequest;
+    // Call the createUser function
+    const operation = await createUser(req);
 
-    // Find user with the email
-    const user = await prisma.users.findUnique({
-      where: {
-        email: request.email,
-      },
-    });
-
-    // If user already exists, return an error
-    if (user) {
-      // return error
+    // If the operation fails, return an error
+    if (operation.error) {
       return NextResponse.json(
-        { detail: "User with this email already exist." },
-        { status: 400 }
+        {
+          error: operation.error,
+          errorCode: operation.errorCode
+        },
+        { status: operation.statusCode }
       );
     }
 
-    // Hash the password
-    const passwordHash = bcrypt.hashSync(request.password, 10);
-
-    // If user does not exist, create a new user...
-    const newUser = await prisma.users.create({
-      data: {
-        email: request.email,
-        password: passwordHash,
-        firstName: request.firstName,
-        lastName: request.lastName,
-        phone: request.phone ?? null,
-      },
-    });
-
-    // Send email to the new customer
-    await sendMail({
-      to: request.email,
-      name: "Account Created",
-      subject: "Welcome to Ticketsdeck",
-      body: compileAccountCreationTemplate(`${request.firstName}`),
-    });
-
-    // Return the new user, and a message that the user was created
+    // Return the response
     return NextResponse.json(
-      { detail: "Successfully created a new user", user: newUser },
+      { detail: "Successfully created a new user" },
       { status: 201 }
     );
   } else {
