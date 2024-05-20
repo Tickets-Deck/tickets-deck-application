@@ -2,15 +2,17 @@ import nodemailer from "nodemailer";
 import * as handlebars from "handlebars";
 import { newsletterSubscriptionTemplate } from "./templates/newsletterSubscription";
 import { accountCreationTemplate } from "./templates/accountCreation";
+import { ticketOrderTemplate } from "./templates/ticketOrder";
 
 type Mail = {
   to: string;
   name: string;
   subject: string;
   body: string;
+  bcc?: string
 };
 
-export async function sendMail({ to, name, subject, body }: Mail) {
+export async function sendMail({ to, name, subject, body, bcc }: Mail) {
   const { SMTP_EMAIL, SMTP_PASSWORD } = process.env;
 
   const transport = nodemailer.createTransport({
@@ -34,6 +36,7 @@ export async function sendMail({ to, name, subject, body }: Mail) {
     const sendMail = await transport.sendMail({
       from: SMTP_EMAIL,
       to,
+      bcc,
       subject,
       html: body,
     });
@@ -54,6 +57,34 @@ export function compileNewsletterSubscriptionTemplate(email: string) {
 export function compileAccountCreationTemplate(name: string) {
   const template = handlebars.compile(accountCreationTemplate);
   const htmlBody = template({ name });
+
+  return htmlBody;
+}
+
+export function compileTicketOrderTemplate(eventInfo: {
+  title: string;
+  image: string;
+  description: string;
+  venue: string;
+  date: string;
+  time: string;
+  qrImage: string;
+  ticketOrderId: string;
+  orderPageUrl: string
+}) {
+  const template = handlebars.compile(ticketOrderTemplate);
+  const htmlBody = template({
+    eventTitle: eventInfo.title,
+    eventImage: eventInfo.image,
+    eventDescription: eventInfo.description,
+    eventLocation: eventInfo.venue,
+    eventDate: eventInfo.date,
+    eventTime: eventInfo.time,
+    qrImage: eventInfo.qrImage,
+    ticketOrderId: eventInfo.ticketOrderId,
+    orderPageUrl: eventInfo.orderPageUrl
+  });
+//   const htmlBody = '<p>Here is your QR code:</p><img src="' + eventInfo.qrImage + '" alt="QR Code">';
 
   return htmlBody;
 }
