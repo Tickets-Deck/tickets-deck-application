@@ -1,4 +1,4 @@
-export const accountCreationTemplate = `
+export const ticketOrderTemplate = `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en" style="font-family:arial, 'helvetica neue', helvetica, sans-serif">
  <head>
@@ -7,7 +7,7 @@ export const accountCreationTemplate = `
   <meta name="x-apple-disable-message-reformatting">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta content="telephone=no" name="format-detection">
-  <title>Thank You for Choosing Us</title><!--[if (mso 16)]>
+  <title>New Ticket Order</title><!--[if (mso 16)]>
     <style type="text/css">
     a {text-decoration: none;}
     </style>
@@ -55,7 +55,7 @@ a[x-apple-data-detectors] {
 				<v:fill type="tile" color="#B78AF7" origin="0.5, 0" position="0.5, 0"></v:fill>
 			</v:background>
 		<![endif]-->
-   <table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;padding:0;Margin:0;width:100%;height:100%;background-repeat:repeat;background-position:center top;background-color:#B78AF7">
+   <table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0" role="none" style="max-width:600px;margin: 0 auto;mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;padding:0;width:100%;height:100%;background-repeat:repeat;background-position:center top;background-color:#B78AF7">
      <tr>
       <td valign="top" style="padding:0;Margin:0">
        <table cellpadding="0" cellspacing="0" class="es-header" align="center" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top">
@@ -73,13 +73,37 @@ a[x-apple-data-detectors] {
                         <a target="_blank" href="https://ticketsdeck.netlify.app" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#3B8026;font-size:14px">
                             <img src="https://ecqehch.stripocdn.email/content/guids/CABINET_6e6319abae3cda9440564f09b17d845e79f3612cdc02bd3c863444f15ee31c22/images/logo_white.png" alt="Logo" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" title="Logo" width="87" height="40">
                         </a>
-                    </td>
+                      </td>
                      </tr>
                    </table></td>
                  </tr>
-               </table></td>
+               </table>
+              </td>
              </tr>
-           </table></td>
+           </table>
+          </td>
+         </tr>
+         <tr>
+            <td>
+                <table bgcolor="#ffffff" class="es-header-body" align="center" cellpadding="0" cellspacing="0" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;width:600px">
+                    <tr>
+                        <td align="left" style="padding:0px 40px;Margin:0">
+                            <table cellpadding="0" cellspacing="0" width="100%" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
+                                <tr>
+                                    <td class="es-m-p0r" valign="top" align="center" style="padding:0;padding-bottom: 10px;Margin:0;width:560px;font-size: 12px;">
+                                        New Ticket Order
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="es-m-p0r" valign="top" align="center" style="padding:0;Margin:0;width:560px;font-size: 28px">
+                                        {{eventTitle}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
          </tr>
        </table>
        <table class="es-content" cellspacing="0" cellpadding="0" align="center" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%">
@@ -93,14 +117,18 @@ a[x-apple-data-detectors] {
                   <td align="center" valign="top" style="padding:0;Margin:0;width:520px">
                    <table cellpadding="0" cellspacing="0" width="100%" bgcolor="#1D0D35" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:separate;border-spacing:0px;background-color:#1d0d35;border-radius:20px" role="presentation">
                      <tr>
-                      <td align="center" style="Margin:0;padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:30px">
-                        <h1 style="Margin:0;line-height:48px;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-size:40px;font-style:normal;font-weight:normal;color:#ffffff">
-                        Thank You<br>for Choosing Us
-                    </h1>
-                    </td>
-                     </tr>
-                     <tr>
-                      <td align="center" style="padding:0;Margin:0;padding-bottom:30px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:24px;color:#efefef;font-size:16px">for your event tickets needs!</p></td>
+                      <td align="center" style="Margin:0;padding: 0; height: 240px;">
+                        <!-- <h1 style="Margin:0;line-height:48px;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-size:40px;font-style:normal;font-weight:normal;color:#ffffff">
+                            Welcome to the<br>TicketsDeck Community!
+                        </h1> -->
+                        <img 
+                            src={{eventImage}}
+                            alt="Logo" 
+                            style="display:block;object-fit: cover; width: 100%; height: 100%; border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" 
+                            title="Logo" 
+                            width="87" 
+                            height="40">
+                      </td>
                      </tr>
                    </table></td>
                  </tr>
@@ -114,32 +142,42 @@ a[x-apple-data-detectors] {
                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                      <tr>
                       <td align="left" style="padding:0;Margin:0;padding-top:5px;padding-bottom:5px">
-                        <h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#2D033A">
-                            Dear {{name}},
+                        <h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-size:18x;font-style:normal;font-weight:normal;color:#2D033A">
+                            Event Information
+                            <br><br>
+                        </h3>
+                        <p style="Margin:0px 0px 10px;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
+                            <span style="font-weight:600">Description:</span>&nbsp;{{eventDescription}}
+                        </p>
+                        <p style="Margin:0px 0px 10px;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
+                            <span style="font-weight:600">Location:</span>&nbsp;{{eventLocation}}
+                        </p>
+                        <p style="Margin:0px 0px 10px;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
+                            <span style="font-weight:600">Date:</span>&nbsp;{{eventDate}}
+                        </p>
+                        <p style="Margin:0px 0px 20px;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
+                            <span style="font-weight:600">Time:</span>&nbsp;{{eventTime}}
+                            <br>
+                            <br>
+                        </p>
+                        <h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-size:18x;font-style:normal;font-weight:normal;color:#2D033A">
+                            Other Information
                         </h3>
                         <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
                             <br>
                         </p>
+                            <img 
+                                src={{qrImage}} 
+                                alt="Logo" 
+                                style="display:block;object-fit: contain; width: 140px; height: 140px; border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" 
+                                title="Logo" 
+                                width="87" 
+                                height="40">
+                                <br>    
                         <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
-                            We just wanted to take a moment to thank you for choosing us for your event ticketing needs. Step into a realm of endless excitement and unforgettable experiences.
+                            Click the button below to view your ticket order
                             <br><br>
                         </p>
-                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
-                            🚀 We're thrilled to have you on board, ready to embark on a journey filled with laughter, joy, and incredible memories.
-                            <br><br>
-                        </p>
-                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
-                            Whether you're planning a rocking party, a cozy gathering, an online workshop or a community event, Ticketsdeck is your go-to platform for turning your ideas into reality.
-                            <br><br>
-                        </p>
-                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
-                            Cheers to creating unforgettable moments!
-                            <br><br>
-                        </p>
-                        <!-- <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
-                            Thank you again for your business. We look forward to serving you again soon!
-                            <br><br>
-                        </p> -->
                     </td>
                      </tr>
                      <tr>
@@ -152,8 +190,8 @@ a[x-apple-data-detectors] {
 	</v:roundrect></a>
 <![endif]--><!--[if !mso]><!-- -->
 <span class="msohide es-button-border" style="border-style:solid;border-color:#2CB543;background:#8133f1;border-width:0px;display:inline-block;border-radius:30px;width:auto;mso-hide:all">
-    <a href="https://ticketsdeck.netlify.app/events" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:18px;display:inline-block;background:#8133f1;border-radius:30px;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;padding:10px 20px 10px 20px;mso-padding-alt:0;mso-border-alt:10px solid #8133F1">
-        Explore Events
+    <a href={{orderPageUrl}} class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:18px;display:inline-block;background:#8133f1;border-radius:30px;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;padding:10px 20px 10px 20px;mso-padding-alt:0;mso-border-alt:10px solid #8133F1">
+        View Order
     </a>
 </span>
 <!--<![endif]-->
@@ -198,50 +236,7 @@ a[x-apple-data-detectors] {
             </tr>
           </table></td>
         </tr>
-      </table>
-       <table cellpadding="0" cellspacing="0" class="es-footer" align="center" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top">
-         <tr>
-          <td align="center" style="padding:0;Margin:0">
-           <table class="es-footer-body" align="center" cellpadding="0" cellspacing="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px" role="none">
-             <tr>
-              <td align="left" style="Margin:0;padding-top:20px;padding-bottom:20px;padding-left:20px;padding-right:20px">
-               <table cellpadding="0" cellspacing="0" width="100%" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
-                 <tr>
-                  <td align="left" style="padding:0;Margin:0;width:560px">
-                   <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
-                     <tr>
-                      <td align="center" style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px;font-size:0">
-                       <table cellpadding="0" cellspacing="0" class="es-table-not-adapt es-social" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
-                         <tr>
-                          <td align="center" valign="top" style="padding:0;Margin:0;padding-right:20px"><a target="_blank" href="https://facebook.com" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#FFFFFF;font-size:12px"><img title="Facebook" src="https://ecqehch.stripocdn.email/content/assets/img/social-icons/circle-white/facebook-circle-white.png" alt="Fb" width="24" height="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic"></a></td>
-                          <td align="center" valign="top" style="padding:0;Margin:0;padding-right:20px"><a target="_blank" href="https://twitter.com" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#FFFFFF;font-size:12px"><img title="Twitter" src="https://ecqehch.stripocdn.email/content/assets/img/social-icons/circle-white/twitter-circle-white.png" alt="Tw" width="24" height="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic"></a></td>
-                          <td align="center" valign="top" style="padding:0;Margin:0;padding-right:20px"><a target="_blank" href="https://instagram.com" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#FFFFFF;font-size:12px"><img title="Instagram" src="https://ecqehch.stripocdn.email/content/assets/img/social-icons/circle-white/instagram-circle-white.png" alt="Inst" width="24" height="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic"></a></td>
-                          <td align="center" valign="top" style="padding:0;Margin:0"><a target="_blank" href="https://youtube.com" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#FFFFFF;font-size:12px"><img title="Youtube" src="https://ecqehch.stripocdn.email/content/assets/img/social-icons/circle-white/youtube-circle-white.png" alt="Yt" width="24" height="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic"></a></td>
-                         </tr>
-                       </table></td>
-                     </tr>
-                     <tr>
-                      <td align="center" style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:18px;color:#FFFFFF;font-size:12px">
-                        You are receiving this email because you have visited our site or asked us about the regular newsletter. Make sure our messages get to your Inbox (and not your bulk or junk folders).
-                        <br>
-                        <!-- <strong>
-                            <a target="_blank" href="https://viewstripo.email" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#FFFFFF;font-size:12px">
-                                Privacy policy
-                            </a> | 
-                            <a target="_blank" href="" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#FFFFFF;font-size:12px">
-                                Unsubscribe
-                            </a>
-                        </strong> -->
-                    </p>
-                </td>
-                     </tr>
-                   </table></td>
-                 </tr>
-               </table></td>
-             </tr>
-           </table></td>
-         </tr>
-       </table></td>
+      </table></td>
      </tr>
    </table>
   </div>
