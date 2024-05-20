@@ -39,6 +39,11 @@ export class ApiRoutes {
   static Users: string = "api/users";
 
   /**
+   * The route to VerifyUserEmail endpoint
+   */
+  static VerifyUserEmail: string = "api/users/verify";
+
+  /**
    * The route to UploadUserProfilePhoto endpoint
    */
   static UploadUserProfilePhoto: string = "api/users/profile-photo";
