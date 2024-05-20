@@ -53,5 +53,21 @@ export default withAuth({
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: "/app/:path*",
+//   matcher: "/app/:path*",
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - auth (Auth routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    // "/((?!auth|_next/static|_next/image|favicon.ico|api/auth).*)",
+    // "/((?!auth|_next/static|_next/image|favicon.ico|api|$).*)", // Uncomment to use in postman
+    // Explicitly include every path under /app
+    "/app/:path*",
+    "/api/auth"
+    // Use regex to match patterns
+    // "/path-prefix/(.*)",
+  ],
 };
