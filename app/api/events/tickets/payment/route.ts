@@ -1,6 +1,5 @@
 import { generatePaymentReference } from "@/app/constants/idgenerator";
 import { InitializePayStack } from "@/app/models/IInitializePayStack";
-import { PaymentResultData } from "@/app/models/IPaymentResultData";
 import { prisma } from "@/lib/prisma";
 import {
   OrderStatus,
@@ -21,6 +20,7 @@ export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     // Get the body of the request
     const request = (await req.json()) as InitializePayStack;
+    // console.log("🚀 ~ POST ~ request:", request)
 
     const ticketOrderId = request.ticketOrderId;
     const callbackUrl = request.callbackUrl;
@@ -201,6 +201,10 @@ export async function GET(req: NextRequest) {
     ).transaction.verify(trxref);
 
     // console.log("payment result: ", paymentResult);
+    const { headers } = req;
+    const baseUrl = `${headers.get("x-forwarded-proto") || "http"}://${headers.get("host")}`;
+    // console.log("🚀 ~ GET ~ headers:", headers)
+    // console.log("🚀 ~ baseUrl ~ baseUrl:", baseUrl)
 
     // If the payment is successful...
     if (paymentResult.status === true) {
@@ -208,9 +212,9 @@ export async function GET(req: NextRequest) {
       await handleSuccessfulPayment(paymentResult);
 
       // Process the email notification to the user
-      await processEmailNotification(paymentResult);
+      await processEmailNotification(paymentResult, baseUrl);
 
-    //   console.log("Payment result data: ", paymentResult.data);
+      //   console.log("Payment result data: ", paymentResult.data);
 
       return NextResponse.json({ data: paymentResult.data }, { status: 200 });
     } else {
