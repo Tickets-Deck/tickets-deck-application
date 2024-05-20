@@ -11,7 +11,7 @@ import { ToastContext } from "../../extensions/toast";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { useRouter } from "next/navigation";
 import { signUp } from "../../actions/users/signUp";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useCreateUser } from "@/app/api/apiClient";
 
 interface SignupPageProps {
@@ -34,6 +34,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
 
     const router = useRouter();
     const createUser = useCreateUser();
+    const { status } = useSession();
 
     const toastHandler = useContext(ToastContext);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -126,22 +127,18 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
         // Start loading
         setIsCreatingUser(true);
 
-        console.log("Form values", formValues);
-
         await createUser(formValues)
-        .then((response) => {
-
-            console.log("Create user response: ", response);
-
+        .then(() => {
             // Display success message
-            toastHandler?.logSuccess('Success', 'You have successfully subscribed to our newsletter');
+            toastHandler?.logSuccess('Success', 'Account created successfully!');
 
             // Clear input fields
             setFormValues({} as UserCredentialsRequest);
             setConfirmPassword('');
 
-            // Redirect to login page
-            router.push('/auth/signin');
+            // Redirect to verification page
+            router.push('/auth/verify');
+            // router.push('/auth/signin');
         })
         .catch((error) => {
             console.log(error);
@@ -166,6 +163,15 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
             }, 3000);
         }
     }, [registrationError])
+
+    useEffect(() => {
+        if (status === "authenticated") {
+            // Refresh the page so we get the new session state to the server side
+            router.refresh();
+            // // Push to homepage 
+            router.push('/');
+        }
+    }, [status]);
 
     return (
         <div className={styles.main}>
