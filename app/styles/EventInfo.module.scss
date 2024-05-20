@@ -184,7 +184,7 @@
                         font-weight: $fontWeight-600;
                     }
                 }
-                button {
+                .rePurchaseBtn, button {
                     @include button();
                     @include midSizeMobilePhone {
                         font-size: $font-size-16 - 0.125rem;

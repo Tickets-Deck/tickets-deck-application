@@ -15,10 +15,12 @@ interface EventMainInfoProps {
     addEventToGoogleCalender?: () => void
     forOrdersPage?: boolean
     hideStatusTag?: boolean
+    hostUrl?: string
 }
 
 const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
-    { eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender, forOrdersPage, hideStatusTag }): ReactElement => {
+    { eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
+        forOrdersPage, hideStatusTag, hostUrl }): ReactElement => {
 
     function shareEvent() {
         const eventURL = window.location.href;
@@ -88,7 +90,10 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     {
                         forOrdersPage ?
                             <div className={styles.bottomArea}>
-                                <button className={styles.reportEvent} disabled>Report event</button>
+                                <Link href={`${hostUrl}/event/${eventInfo.id}`} className={styles.rePurchaseBtn}>
+                                    Buy again
+                                </Link>
+                                {/* <button className={styles.reportEvent} disabled>Report event</button> */}
                             </div>
                             :
                             <div className={styles.bottomArea}>
