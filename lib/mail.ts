@@ -3,13 +3,14 @@ import * as handlebars from "handlebars";
 import { newsletterSubscriptionTemplate } from "./templates/newsletterSubscription";
 import { accountCreationTemplate } from "./templates/accountCreation";
 import { ticketOrderTemplate } from "./templates/ticketOrder";
+import { verifyEmailTemplate } from "./templates/verifyAccount";
 
 type Mail = {
   to: string;
   name: string;
   subject: string;
   body: string;
-  bcc?: string
+  bcc?: string;
 };
 
 export async function sendMail({ to, name, subject, body, bcc }: Mail) {
@@ -70,7 +71,7 @@ export function compileTicketOrderTemplate(eventInfo: {
   time: string;
   qrImage: string;
   ticketOrderId: string;
-  orderPageUrl: string
+  orderPageUrl: string;
 }) {
   const template = handlebars.compile(ticketOrderTemplate);
   const htmlBody = template({
@@ -82,9 +83,22 @@ export function compileTicketOrderTemplate(eventInfo: {
     eventTime: eventInfo.time,
     qrImage: eventInfo.qrImage,
     ticketOrderId: eventInfo.ticketOrderId,
-    orderPageUrl: eventInfo.orderPageUrl
+    orderPageUrl: eventInfo.orderPageUrl,
   });
-//   const htmlBody = '<p>Here is your QR code:</p><img src="' + eventInfo.qrImage + '" alt="QR Code">';
+  //   const htmlBody = '<p>Here is your QR code:</p><img src="' + eventInfo.qrImage + '" alt="QR Code">';
+
+  return htmlBody;
+}
+
+export function compileVerifyEmailTemplate({
+  verificationUrl,
+  userEmail,
+}: {
+  verificationUrl: string;
+  userEmail: string;
+}) {
+  const template = handlebars.compile(verifyEmailTemplate);
+  const htmlBody = template({ verificationUrl, userEmail });
 
   return htmlBody;
 }
