@@ -18,6 +18,11 @@ export class ApplicationRoutes {
   static readonly SignIn = "/auth/signin";
 
   /**
+   * The route to the sign in page with a redirect
+   */
+  static readonly SignInRedirect = "api/auth/signin?redirect=true";
+
+  /**
    * The route to the sign up page
    */
   static readonly SignUp = "/auth/signup";
@@ -40,7 +45,7 @@ export class ApplicationRoutes {
   /**
    * The route to the general event page
    */
-  static readonly GeneralEvent = "/event";
+  static readonly GeneralEvent = "/event/"; // Intentionally left without a closing slash to allow for dynamic event IDs
 
   /**
    * The route to the verify payment page
@@ -73,12 +78,27 @@ export class ApplicationRoutes {
   static readonly Transactions = "/app/transactions";
 
   /**
-   * The route to the events page
+   * The route to the user events page
    */
   static readonly Events = "/app/events";
 
   /**
-   * The route to the event page
+   * The route to a user event page
    */
   static readonly Event = "/app/event";
+
+  /**
+   * The route to the user event tickets page
+   */
+  static readonly EventTickets = "/app/tickets";
+
+  /**
+   * The route to the create event page
+   */
+  static readonly CreateEvent = "/app/event/create";
+
+  /**
+   * The route to the edit event page
+   */
+  static readonly EditEvent = "/app/event/edit";
 }
