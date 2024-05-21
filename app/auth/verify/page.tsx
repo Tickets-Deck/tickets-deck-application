@@ -1,4 +1,4 @@
-import VerifyEmailPage from "@/app/components/authForms/verifyEmail";
+import VerifyEmailPage from "@/app/components/authPages/VerifyEmailPage";
 import { FunctionComponent, ReactElement } from "react";
 
 interface VerifyEmailProps {
