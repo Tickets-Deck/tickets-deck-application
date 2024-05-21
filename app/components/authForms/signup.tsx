@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { signUp } from "../../actions/users/signUp";
 import { signIn, useSession } from "next-auth/react";
 import { useCreateUser } from "@/app/api/apiClient";
+import { toast } from "sonner";
 
 interface SignupPageProps {
 
@@ -128,36 +129,36 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
         setIsCreatingUser(true);
 
         await createUser(formValues)
-        .then(() => {
-            // Display success message
-            toastHandler?.logSuccess('Success', 'Account created successfully!');
+            .then(() => {
+                // Display success message
+                toastHandler?.logSuccess('Success', 'Account created successfully!');
 
-            // Clear input fields
-            setFormValues({} as UserCredentialsRequest);
-            setConfirmPassword('');
+                // Clear input fields
+                setFormValues({} as UserCredentialsRequest);
+                setConfirmPassword('');
 
-            // Redirect to verification page
-            router.push('/auth/verify');
-            // router.push('/auth/signin');
-        })
-        .catch((error) => {
-            console.log(error);
-            // console.log(error.response.data);
-            if(error.response.data.detail == "User with this email already exist.") {
-                console.log(error.response.data.detail);
-                setRegistrationError('User with this email already exists!');
-            }
-            // Display error message
-            toastHandler?.logError('Error', 'An error occurred while creating your account');
-        })
-        .finally(() => {
-            // Stop loading
-            setIsCreatingUser(false);
-        });
+                // Redirect to verification page
+                router.push('/auth/verify');
+                // router.push('/auth/signin');
+            })
+            .catch((error) => {
+                console.log(error);
+                // console.log(error.response.data);
+                if (error.response && error.response.data.detail == "User with this email already exist.") {
+                    console.log(error.response.data.detail);
+                    setRegistrationError('User with this email already exists!');
+                }
+                // Display error message
+                // toastHandler?.logError('Error', 'An error occurred while creating your account');
+                toast.error("An error occurred while creating your account");
+
+                // Stop loading
+                setIsCreatingUser(false);
+            })
     };
 
     useEffect(() => {
-        if(registrationError) {
+        if (registrationError) {
             setTimeout(() => {
                 setRegistrationError(undefined);
             }, 3000);
