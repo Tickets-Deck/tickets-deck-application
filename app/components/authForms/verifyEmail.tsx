@@ -7,6 +7,7 @@ import { useResendVerificationLink, useVerifyUserEmail } from "@/app/api/apiClie
 import { catchError } from "@/app/constants/catchError";
 import Link from "next/link";
 import { CheckIcon, VerifiedIcon } from "../SVGs/SVGicons";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 interface VerifyEmailPageProps {
 
@@ -125,7 +126,7 @@ const VerifyEmailPage: FunctionComponent<VerifyEmailPageProps> = (): ReactElemen
                             Your email has been verified successfully.
                             You can now login to your account.
                         </p>
-                        <Link href="/auth/login">
+                        <Link href={ApplicationRoutes.SignIn}>
                             Login
                         </Link>
                     </div>
