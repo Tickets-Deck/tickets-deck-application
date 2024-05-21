@@ -20,7 +20,6 @@
         "@mui/lab": "^5.0.0-alpha.158",
         "@mui/material": "^5.15.2",
         "@plaiceholder/next": "^3.0.0",
-        "@prisma/client": "^5.9.1",
         "@reduxjs/toolkit": "^2.1.0",
         "@types/nodemailer": "^6.4.14",
         "axios": "^1.6.2",
@@ -49,6 +48,7 @@
         "uuid": "^9.0.1"
     },
     "devDependencies": {
+        "@prisma/client": "^5.14.0",
         "@types/bcryptjs": "^2.4.6",
         "@types/node": "^20",
         "@types/paystack": "^2.0.4",
@@ -57,7 +57,7 @@
         "@types/react-dom": "^18",
         "@types/react-scroll": "^1.8.10",
         "@types/uuid": "^9.0.8",
-        "prisma": "^5.9.1",
+        "prisma": "^5.14.0",
         "typescript": "^5"
     }
 }
