@@ -30,20 +30,34 @@ export async function createUser(req: NextRequest) {
   // Hash the password
   const passwordHash = bcrypt.hashSync(request.password, 10);
 
-  // Generate a verification token
-  const verificationToken = uuidv4();
-
   // If user does not exist, create a new user...
-  await prisma.users.create({
+  const newUser = await prisma.users.create({
     data: {
       email: request.email,
       password: passwordHash,
       firstName: request.firstName,
       lastName: request.lastName,
       phone: request.phone ?? null,
-      verificationToken: verificationToken,
     },
   });
+
+  // Set the verification token for the new user
+  const verificationToken = await setVerificationToken(newUser.email);
+
+  if (!verificationToken) {
+    // Undo the user creation
+    await prisma.users.delete({
+      where: {
+        id: newUser.id,
+      },
+    });
+
+    return {
+      error: ApplicationError.VerificationTokenNotSet.Text,
+      errorCode: ApplicationError.VerificationTokenNotSet.Code,
+      statusCode: 500,
+    };
+  }
 
   // Send email to the new customer & send verification email concurrently
   await Promise.all([
@@ -67,7 +81,7 @@ export async function verifyUserEmail(req: NextRequest) {
   // Get the token from the search params
   const token = searchParams.get("token");
 
-  // If token is not provided, return an error
+  // If token is not provided, or is not a string, return an error
   if (!token || typeof token !== "string") {
     return {
       error: ApplicationError.TokenIsRequired.Text,
@@ -92,7 +106,7 @@ export async function verifyUserEmail(req: NextRequest) {
     };
   }
 
-  // If the user email is already verified, return an error
+  // If the user email is already verified, return a message
   if (user.emailVerified) {
     return {
       message: ApplicationError.EmailAlreadyVerified.Text,
@@ -102,7 +116,7 @@ export async function verifyUserEmail(req: NextRequest) {
   }
 
   // Update the user email verification status to true
-  await prisma.users.update({
+  const updatedUser = await prisma.users.update({
     where: {
       id: user.id,
     },
@@ -112,7 +126,7 @@ export async function verifyUserEmail(req: NextRequest) {
   });
 
   // Return the response
-  return { message: "Email verified" };
+  return { message: "Email verified", user: updatedUser };
 }
 
 export async function resendVerificationLink(req: NextRequest) {
@@ -149,4 +163,32 @@ export async function resendVerificationLink(req: NextRequest) {
 
   // Return the response
   return { message: "Verification email sent" };
+}
+
+/**
+ * Function to set the verification token, and token expiry for a user
+ * @param email is the email of the newly created user
+ * @returns the verification token
+ */
+async function setVerificationToken(email: string) {
+  // Generate a verification token
+  const verificationToken = uuidv4();
+
+  // Set the token to expire in 10 minutes
+  const tokenExpiration = new Date();
+  tokenExpiration.setMinutes(tokenExpiration.getMinutes() + 10);
+
+  // Find user with the email, and update the verification token
+  await prisma.users.update({
+    where: {
+      email: email,
+    },
+    data: {
+      verificationToken: verificationToken,
+      verificationTokenExpiry: tokenExpiration,
+    },
+  });
+
+  // Return the verification token
+  return verificationToken;
 }
