@@ -9,6 +9,7 @@ import { ToastContext } from "../../extensions/toast";
 import { EventResponse } from "@/app/models/IEvents";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { useRouter } from "next/navigation";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 interface EventCardProps {
     event: EventResponse
@@ -109,7 +110,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
                             <button className={styles.actions__like}><LikeIcon /></button>
                             <button
                                 className={styles.actions__share}
-                                onClick={() => shareEvent(`${window.location.origin + "/event/" + event.id}`)}>
+                                onClick={() => shareEvent(`${window.location.origin + ApplicationRoutes.GeneralEvent + event.id}`)}>
                                 <ShareIcon />
                             </button>
                         </div>

@@ -9,6 +9,7 @@ import { EventResponse } from "@/app/models/IEvents";
 import ComponentLoader from "../Loader/ComponentLoader";
 import useResponsiveness from "../../hooks/useResponsiveness";
 import Link from "next/link";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 interface EventsGroupProps {
     title: string
@@ -45,11 +46,11 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                 <div className={styles.topArea__rhs}>
                     {
                         consoleDisplay ?
-                            <Link href="/app/event/create"> 
+                            <Link href={ApplicationRoutes.CreateEvent}>
                                 <button onClick={() => { push('/app/event/create') }}>Create event</button>
                             </Link> :
                             <></>
-                            // <button>Filter</button>
+                        // <button>Filter</button>
                     }
                 </div>
             </div>

@@ -13,6 +13,7 @@ import { useFetchEvents } from '@/app/api/apiClient';
 import { EventResponse } from '@/app/models/IEvents';
 import ComponentLoader from '../Loader/ComponentLoader';
 import useResponsiveness from '../../hooks/useResponsiveness';
+import { ApplicationRoutes } from '@/app/constants/applicationRoutes';
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean
@@ -118,7 +119,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
             </div>
 
             {!isNotHomepage && !isFetchingEvents && events.length > 0 &&
-                <Link href="/events">
+                <Link href={ApplicationRoutes.GeneralEvents}>
                     See all events
                 </Link>
             }

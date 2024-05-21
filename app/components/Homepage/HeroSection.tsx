@@ -10,6 +10,7 @@ import useResponsive from '../../hooks/useResponsiveness';
 import HeroSearchSection from './HeroSearchSection';
 import { useSession } from 'next-auth/react';
 import { EventResponse } from '@/app/models/IEvents';
+import { ApplicationRoutes } from '@/app/constants/applicationRoutes';
 
 interface HeroSectionProps {
     events: EventResponse[]
@@ -74,7 +75,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEv
                     <Link href={`/events`}>
                         <button className={styles.primaryButton}>Explore Events</button>
                     </Link>
-                    <Link href={user ? "/app/event/create" : "/api/auth/signin"}>
+                    <Link href={user ? ApplicationRoutes.CreateEvent : ApplicationRoutes.SignIn}>
                         <button className={styles.secondaryButton}>Create Event</button>
                     </Link>
                 </div>

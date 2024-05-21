@@ -19,6 +19,7 @@ import AccountSettingsFormContainer from "@/app/components/ProfilePage/AccountSe
 import Link from "next/link"
 import { useDispatch } from "react-redux";
 import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 interface ProfilePageProps {
 
@@ -128,7 +129,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
 
     useEffect(() => {
         if (status === "unauthenticated") {
-            push("/auth/signin");
+            push(ApplicationRoutes.SignIn);
         }
     }, [status]);
 

@@ -13,6 +13,7 @@ import useResponsiveness from '../hooks/useResponsiveness';
 import { useDispatch } from 'react-redux';
 import { clearUserCredentials } from '../redux/features/user/userSlice';
 import { Session } from 'next-auth';
+import { ApplicationRoutes } from '../constants/applicationRoutes';
 
 interface NavbarProps {
     session: Session | null
@@ -58,7 +59,7 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
             {
                 onMobile &&
                 <section className={styles.mobileNavbarContainer}>
-                    <Link href='/'>
+                    <Link href={ApplicationRoutes.Home}>
                         <div className={styles.logo}>
                             <Image src={images.logoWhite} alt='Logo' />
                         </div>
@@ -74,11 +75,11 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                             <div className={styles.navbarOverlay}>
                                 <span className={styles.closeIcon} onClick={() => setNavbarIsVisible(false)}><CloseMenuIcon /></span>
                                 <div className={styles.navLinks}>
-                                    <Link href='/' onClick={() => setNavbarIsVisible(false)}>
-                                        <span className={pathname == '/' ? styles.active : ''}>Home</span>
+                                    <Link href={ApplicationRoutes.Home} onClick={() => setNavbarIsVisible(false)}>
+                                        <span className={pathname == ApplicationRoutes.Home ? styles.active : ''}>Home</span>
                                     </Link>
-                                    <Link href='/events' onClick={() => setNavbarIsVisible(false)}>
-                                        <span className={pathname == '/events' ? styles.active : ''}>Events</span>
+                                    <Link href={ApplicationRoutes.GeneralEvents} onClick={() => setNavbarIsVisible(false)}>
+                                        <span className={pathname == ApplicationRoutes.GeneralEvents ? styles.active : ''}>Events</span>
                                     </Link>
                                     <Link href='/about' onClick={() => setNavbarIsVisible(false)}>
                                         <span className={pathname == '/about' ? styles.active : ''}>About</span>
@@ -87,8 +88,8 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                                             <span className={pathname == '/support' ? styles.active : ''}>Support</span>
                                         </Link> */}
                                     {user ? <>
-                                        <Link href='/app' onClick={() => setNavbarIsVisible(false)}>
-                                            <span className={pathname == '/app' ? styles.active : ''}>Dashboard</span>
+                                        <Link href={ApplicationRoutes.Dashboard} onClick={() => setNavbarIsVisible(false)}>
+                                            <span className={pathname == ApplicationRoutes.Dashboard ? styles.active : ''}>Dashboard</span>
                                         </Link>
                                         <Link href='/api/auth/logout' onClick={() => setNavbarIsVisible(false)}>
                                             <span>Log out</span>
@@ -105,7 +106,7 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
             {
                 onDesktop &&
                 <section className={styles.navbarContainer}>
-                    <Link href='/'>
+                    <Link href={ApplicationRoutes.Home}>
                         <div className={styles.navbarContainer__lhs}>
                             <div className={styles.logo}>
                                 <Image src={images.logoWhite} alt='Logo' />
@@ -115,7 +116,7 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                     </Link>
                     <div className={styles.navbarContainer__rhs}>
                         <ul className={styles.navLinks}>
-                            <Link href='/'>
+                            <Link href={ApplicationRoutes.Home}>
                                 <li>Home</li>
                             </Link>
                             <Link href='/events'>

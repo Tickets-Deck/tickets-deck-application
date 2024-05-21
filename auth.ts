@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./lib/prisma";
 import GoogleProvider from "next-auth/providers/google";
 import { compileAccountCreationTemplate, sendMail } from "./lib/mail";
+import { ApplicationRoutes } from "./app/constants/applicationRoutes";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -216,6 +217,6 @@ export const authOptions: NextAuthOptions = {
     // },
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: ApplicationRoutes.SignIn,
   },
 };

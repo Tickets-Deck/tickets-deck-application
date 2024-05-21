@@ -9,6 +9,7 @@ import { useFetchDashboardInfo } from "../api/apiClient";
 import { DashboardInfoResponse } from "../models/IDashboardInfoResponse";
 import { catchError } from "../constants/catchError";
 import ComponentLoader from "../components/Loader/ComponentLoader";
+import { ApplicationRoutes } from "../constants/applicationRoutes";
 
 interface DashboardPageProps {
 }
@@ -67,7 +68,7 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
 
     useEffect(() => {
         if (status === "unauthenticated") {
-            push("/auth/signin");
+            push(ApplicationRoutes.SignIn);
         }
     }, [status]);
 
@@ -75,7 +76,7 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
         <div className={styles.dashboard}>
             <div className={styles.topArea}>
                 <h3>Dashboard</h3>
-                <Link href="/app/event/create">
+                <Link href={ApplicationRoutes.CreateEvent}>
                     <button>New Event</button>
                 </Link>
             </div>
@@ -83,28 +84,28 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
             {
                 !isLoading && dashboardInfo && 
                 <div className={styles.kpiSection}>
-                    <Link href="/app/events" className={styles.kpi}>
+                    <Link href={ApplicationRoutes.Events} className={styles.kpi}>
                         <span><EventIcon /></span>
                         <div className={styles.content}>
                             <h4>{dashboardInfo.totalEvents}</h4>
                             <p>Total {dashboardInfo.totalEvents > 1 ? "Events" : "Event"}</p>
                         </div>
                     </Link>
-                    <Link href="/app/tickets?t=0" className={styles.kpi}>
+                    <Link href={`${ApplicationRoutes.EventTickets}?t=0`} className={styles.kpi}>
                         <span><EventIcon /></span>
                         <div className={styles.content}>
                             <h4>{dashboardInfo.ticketsBought}</h4>
                             <p>Tickets Bought</p>
                         </div>
                     </Link>
-                    <Link href="/app/tickets?t=1" className={styles.kpi}>
+                    <Link href={`${ApplicationRoutes.EventTickets}?t=1`} className={styles.kpi}>
                         <span><EventIcon /></span>
                         <div className={styles.content}>
                             <h4>{dashboardInfo.ticketsSold}</h4>
                             <p>Tickets Sold</p>
                         </div>
                     </Link>
-                    <Link href="/wallet" className={styles.kpi}>
+                    <Link href={ApplicationRoutes.Wallet} className={styles.kpi}>
                         <span><EventIcon /></span>
                         <div className={styles.content}>
                             <h4>&#8358;{dashboardInfo.totalRevenue.toLocaleString()}</h4>

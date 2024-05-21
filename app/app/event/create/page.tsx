@@ -145,7 +145,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
         <div className={styles.main}>
             <div className={styles.topArea}>
                 <h3>Create Event</h3>
-                {/* <Link href="/app/event/create">
+                {/* <Link href={ApplicationRoutes.CreateEvent}>
                     <button>New Event</button>
                 </Link> */}
             </div>

@@ -45,7 +45,7 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
     //                 router.push('/app');
     //                 return;
     //             }
-    //             router.push('/');
+    //             router.push(ApplicationRoutes.Home);
     //         }
     //     } catch (error) {
     //         console.log(error);
@@ -76,7 +76,7 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
                 //     router.push('/app/tickets?t=1');
                 //     return;
                 // } else {
-                //     router.push('/');
+                //     router.push(ApplicationRoutes.Home);
                 // }
             })
             .catch((error) => {

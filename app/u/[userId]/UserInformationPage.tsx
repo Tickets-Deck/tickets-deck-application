@@ -16,6 +16,7 @@ import UserStats from "@/app/components/UserInformationPage/UserStats";
 import UserHighlights from "@/app/components/UserInformationPage/UserHighlights";
 import { FollowsActionType, IUserFollowMetrics } from "@/app/models/IFollows";
 import { toast } from "sonner";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 interface UserInformationPageProps {
     identifier: string
@@ -138,7 +139,7 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ iden
                             userInformation={userInformation}
                         />
                         {isForUser && session ?
-                            <Link href="/app/profile" className={styles.updateProfileBtn}>
+                            <Link href={ApplicationRoutes.Profile} className={styles.updateProfileBtn}>
                                 Update Profile
                             </Link> :
                             <>

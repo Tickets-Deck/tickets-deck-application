@@ -6,6 +6,7 @@ import images from '../../../public/images';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import useResponsiveness from '@/app/hooks/useResponsiveness';
+import { ApplicationRoutes } from '@/app/constants/applicationRoutes';
 
 interface CreateEventProps {
 
@@ -32,7 +33,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                 <p>Time to enjoy seamless ticketing, and event creation process.</p>
             </div>
             <div className={styles.createEventSection__rhs}>
-                <Link href={user ? "/app/event/create" : "/api/auth/signin"}>
+                <Link href={user ? ApplicationRoutes.CreateEvent : ApplicationRoutes.SignIn}> 
                     <button>Create Events</button>
                 </Link>
             </div>

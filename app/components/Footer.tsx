@@ -11,6 +11,7 @@ import { emailRegex } from '../constants/emailRegex';
 import ComponentLoader from './Loader/ComponentLoader';
 import SubscriptionFormSection from './Footer/SubscriptionFormSection';
 import { useSession } from 'next-auth/react';
+import { ApplicationRoutes } from '../constants/applicationRoutes';
 
 interface FooterProps {
 
@@ -52,10 +53,10 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                 <div className={`${styles.content} ${styles.content1}`}>
                     <h4>Plan Events</h4>
                     <div className={styles.content__links}>
-                        <Link href={user ? "/app/event/create" : "/api/auth/signin"}>
+                        <Link href={user ? ApplicationRoutes.CreateEvent : ApplicationRoutes.SignIn}>
                             <li>Create Events</li>
                         </Link>
-                        <Link href="/events">
+                        <Link href={ApplicationRoutes.GeneralEvents}>
                             <li>Buy Tickets</li>
                         </Link>
                         {/* <li>Online Events</li> */}

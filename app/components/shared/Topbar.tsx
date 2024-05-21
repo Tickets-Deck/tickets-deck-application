@@ -6,6 +6,7 @@ import { HamburgerMenuIcon, SearchIcon } from "../SVGs/SVGicons";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 interface TopbarProps {
     isMobileSidebarOpen: boolean
@@ -24,7 +25,7 @@ const Topbar: FunctionComponent<TopbarProps> = ({ isMobileSidebarOpen, setIsMobi
 
     return (
         <div className={styles.topbar}>
-            <Link href="/">
+            <Link href={ApplicationRoutes.Home}>
                 <div className={styles.logo}>
                     <span className={styles.logo__image}>
                         <Image src={images.logoPurple} alt="Logo" />
@@ -37,7 +38,7 @@ const Topbar: FunctionComponent<TopbarProps> = ({ isMobileSidebarOpen, setIsMobi
                     <SearchIcon />
                     <input type="text" placeholder="Search for event" />
                 </div>
-                <Link href="/app/profile">
+                <Link href={ApplicationRoutes.Profile}>
                     <div className={styles.accountContainer}>
                         <div className={styles.accountContainer__image}>
                             <Image src={user?.image ?? images.user_avatar} fill alt="Profile" />
