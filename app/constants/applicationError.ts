@@ -44,10 +44,10 @@ export class ApplicationError {
   /**
    * The error message for ~ User with specified email already exists
    */
-    static UserAlreadyExists: IApplicationError = {
-        Text: "User already exists",
-        Code: "USER_1004",
-    };
+  static UserAlreadyExists: IApplicationError = {
+    Text: "User already exists",
+    Code: "USER_1004",
+  };
 
   //#endregion
 
@@ -77,5 +77,13 @@ export class ApplicationError {
   static TokenIsRequired: IApplicationError = {
     Text: "Token is required",
     Code: "TOKEN_1000",
+  };
+
+  /**
+   * The error message for ~ Verification token not set
+   */
+  static VerificationTokenNotSet: IApplicationError = {
+    Text: "Verification token not set",
+    Code: "TOKEN_1001",
   };
 }
