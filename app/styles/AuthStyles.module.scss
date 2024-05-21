@@ -73,6 +73,11 @@
                     font-size: $font-size-18;
                     text-align: center;
                 }
+                strong {
+                    color: $primary-color-sub-50;
+                    opacity: 0.6;
+                    font-weight: $fontWeight-500;
+                }
             }
             &__loginOptions {
                 display: flex;
