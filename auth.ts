@@ -5,6 +5,7 @@ import { prisma } from "./lib/prisma";
 import GoogleProvider from "next-auth/providers/google";
 import { compileAccountCreationTemplate, sendMail } from "./lib/mail";
 import { ApplicationRoutes } from "./app/constants/applicationRoutes";
+import { StorageKeys } from "./app/constants/storageKeys";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -203,6 +204,9 @@ export const authOptions: NextAuthOptions = {
           "Content-Type": "application/json",
         },
       });
+
+      // Delete the new user email from session storage
+      sessionStorage.removeItem(StorageKeys.NewlyCreatedUserEmail);
 
       console.log("Sign Out Event", { message });
     },

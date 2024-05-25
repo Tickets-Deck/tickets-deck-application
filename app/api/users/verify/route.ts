@@ -3,12 +3,14 @@ import {
   resendVerificationLink,
   verifyUserEmail,
 } from "../../services/user/usersService";
+import { customNextResponseError } from "../../utils/customNextResponseError";
+import { StatusCodes } from "@/app/models/IStatusCodes";
+import { validateRequestMethod } from "../../services/api-services/requestMethodValidator";
+import { ApplicationError } from "@/app/constants/applicationError";
 
 export async function GET(req: NextRequest) {
-  // If the request method is not GET, return an error
-  if (req.method !== "GET") {
-    return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
-  }
+  // Call the request validation method
+  await validateRequestMethod(req, "GET");
 
   try {
     // Verify the user email
@@ -16,43 +18,40 @@ export async function GET(req: NextRequest) {
 
     // If the operation fails, return an error
     if (operation.error) {
-      return NextResponse.json(
-        {
-          error: operation.error,
-          errorCode: operation.errorCode
-        },
-        { status: operation.statusCode }
-      );
+      return customNextResponseError(operation);
     }
 
     // Return the response
-    return NextResponse.json(operation, { status: 200 });
+    return NextResponse.json(operation.message, { status: StatusCodes.Success });
   } catch {
     // Return an error if the operation fails
     return NextResponse.json(
-      { error: "Failed to verify email" },
-      { status: 500 }
+      { error: ApplicationError.FailedToVerifyEmail.Text },
+      { status: StatusCodes.InternalServerError }
     );
   }
 }
 
 export async function POST(req: NextRequest) {
-  // If the request method is not POST, return an error
-  if (req.method !== "POST") {
-    return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
-  }
+  // Call the request validation method
+  await validateRequestMethod(req, "POST");
 
   try {
     // Resend the verification email
-    const response = await resendVerificationLink(req);
+    const operation = await resendVerificationLink(req);
+
+    // If the operation fails, return an error
+    if (operation.error) {
+      customNextResponseError(operation);
+    }
 
     // Return the response
-    return NextResponse.json(response, { status: 200 });
+    return NextResponse.json(operation.message, { status: StatusCodes.Success });
   } catch {
     // Return an error if the operation fails
     return NextResponse.json(
-      { error: "Failed to send verification email" },
-      { status: 500 }
+      { error: ApplicationError.FailedToResendVerificationEmail.Text },
+      { status: StatusCodes.InternalServerError }
     );
   }
 }

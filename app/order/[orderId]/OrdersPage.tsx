@@ -32,7 +32,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
 
         await fetchOrderInformationById(orderId)
             .then((response) => {
-                setOrderInformation(response.data.data);
+                setOrderInformation(response.data);
                 console.log("Response: ", response);
             })
             .catch((error) => {
