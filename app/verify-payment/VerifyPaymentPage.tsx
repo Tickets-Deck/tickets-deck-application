@@ -61,7 +61,7 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
             .then((response) => {
                 // console.log(response);
                 // console.log(response.data.data.metadata.ticketOrderId);
-                const ticketOrderId = response.data.data.metadata.ticketOrderId;
+                const ticketOrderId = response.data.metadata.ticketOrderId;
 
                 // Set payment status state
                 setPaymentStatus(PaymentStatus.Success);

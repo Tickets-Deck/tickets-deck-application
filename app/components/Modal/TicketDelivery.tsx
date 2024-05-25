@@ -210,7 +210,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                 console.log({ paymentInit });
 
                 if (paymentInit) {
-                    window.location.href = paymentInit.data.data.authorization_url;
+                    window.location.href = paymentInit.data.authorization_url;
                 }
             }
         } catch (error) {
