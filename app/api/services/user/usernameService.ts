@@ -73,6 +73,7 @@ export async function updateUsername(req: NextRequest) {
       username: request.username,
     },
   });
+  console.log("🚀 ~ updateUsername ~ updatedUser:", updatedUser)
 
   // Return the updated user
   return { data: updatedUser };

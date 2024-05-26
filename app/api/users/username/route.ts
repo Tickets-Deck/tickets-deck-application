@@ -19,8 +19,9 @@ export async function PUT(req: NextRequest) {
     }
 
     // Return the response
-    return NextResponse.json(operation.data, { status: StatusCodes.Updated });
-  } catch {
+    return NextResponse.json(operation.data, { status: StatusCodes.Success });
+  } catch(err) {
+    console.log("🚀 ~ PUT ~ err:", err)
     // Return an error if the operation fails
     return NextResponse.json(
       { error: ApplicationError.FailedToUpdateUsername.Text },

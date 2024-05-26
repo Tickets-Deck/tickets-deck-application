@@ -71,7 +71,7 @@ export async function PUT(req: NextRequest) {
     }
 
     // Return the response
-    return NextResponse.json(operation.data, { status: StatusCodes.Updated });
+    return NextResponse.json(operation.data, { status: StatusCodes.Success });
   } catch {
     // Return an error if the operation fails
     return NextResponse.json(

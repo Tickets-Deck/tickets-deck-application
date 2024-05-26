@@ -13,9 +13,9 @@ export enum StatusCodes {
   Created = 201,
 
   /**
-   * The request was successful and the resource was updated.
+   * The request was successful and there was no content to return.
    */
-  Updated = 204,
+  NoContent = 204,
 
   /**
    * The request was successful and the resource was deleted.
