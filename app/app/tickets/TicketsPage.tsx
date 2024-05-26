@@ -231,7 +231,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                                             <td>{userTicketOrder.ticket.name}</td>
                                             <td>&#8358;{Number(userTicketOrder.ticket.price).toLocaleString()}</td>
                                             <td>
-                                                <a href={`mailto:${userTicketOrder.associatedEmail}`}>{userTicketOrder.associatedEmail}</a>
+                                                <a href={`mailto:${userTicketOrder.associatedEmail ?? userTicketOrder.contactEmail}`}>{userTicketOrder.associatedEmail ?? userTicketOrder.contactEmail}</a>
                                             </td>
                                             <td>{moment(userTicketOrder.createdAt).format("ddd Do MMM, YYYY | hh:mma")}</td>
                                             <td>

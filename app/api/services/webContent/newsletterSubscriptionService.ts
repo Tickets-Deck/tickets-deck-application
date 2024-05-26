@@ -46,23 +46,33 @@ export async function subscribeToNewsletter(req: NextRequest) {
     }
 
     // Begin transaction
-    await prisma.$transaction([
-      // Save it to the database
-      prisma.newsLetterSubscribers.create({
-        data: {
-          email,
-        },
-      }),
+    // await prisma.$transaction([]);
+    // Save it to the database
+    await prisma.newsLetterSubscribers.create({
+      data: {
+        email,
+      },
+    });
+
+    // Fetch user with the email
+    const user = await prisma.users.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    // If user exist, update the count
+    if (user) {
       // Update the count in user table
-      prisma.users.update({
+      await prisma.users.update({
         where: {
           email,
         },
         data: {
           isNewsletterSubscribed: true,
         },
-      }),
-    ]);
+      });
+    }
 
     // Send email to the subscriber
     await sendMail({
