@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Return the response
-    return NextResponse.json(operation, { status: StatusCodes.Success });
+    return NextResponse.json(operation.data, { status: StatusCodes.Success });
   } catch {
     // Return an error if the operation fails
     return NextResponse.json(

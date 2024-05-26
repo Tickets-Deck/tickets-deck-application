@@ -3,6 +3,7 @@ import { validateRequestMethod } from "../../services/api-services/requestMethod
 import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { uploadCoverPhoto } from "../../services/user/photoService";
+import { customNextResponseError } from "../../utils/customNextResponseError";
 
 export async function POST(req: NextRequest) {
   // validate request method
@@ -14,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     // If operation fails, return an error
     if (operation.error) {
-      return NextResponse.json(operation, { status: operation.statusCode });
+      return customNextResponseError(operation);
     }
 
     // Return the response
