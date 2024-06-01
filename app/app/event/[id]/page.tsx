@@ -87,7 +87,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
             navigator.share({
                 title: "Check out this event!",
                 text: "I found this amazing event. You should check it out!",
-                url: eventURL
+                url: `${window.location.pathname}/event/${id}`
             })
                 .then(() => console.log("Shared successfully"))
                 .catch(error => console.log("Sharing failed:", error));
