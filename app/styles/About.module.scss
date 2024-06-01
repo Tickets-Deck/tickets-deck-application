@@ -1,2 +1,179 @@
 @import "./variables";
 @import "./reusables";
+
+.main {
+    .heroSection {
+        @extend .pageHeroSection;
+        // height: 15vh;
+
+        .textContents {
+            h1 {
+                color: $white;
+            }
+        }
+
+        .image {
+            width: 100%;
+            height: 100%;
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            &::after {
+                content: "";
+                background-color: $white;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: 2;
+                background: linear-gradient(180deg, #8133f1 0%, #430994 100%);
+                opacity: 0.8;
+            }
+        }
+    }
+    .introSection {
+        @include sectionPadding;
+        padding-right: 0;
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        background-color: $dark-grey;
+        color: $white;
+        @include tablet {
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding-top: 2.5rem;
+            padding-bottom: 2.5rem;
+        }
+
+        // .lhs, .rhs {
+        //     width: 50%;
+        // }
+
+        .lhs {
+            display: flex;
+            flex-direction: column;
+            width: 45%;
+            @include tablet {
+                width: 100%;
+            }
+            span {
+                font-size: $font-size-16;
+                font-weight: $fontWeight-400;
+                color: $primary-color-sub;
+                background-color: rgba($color: $primary-color-sub, $alpha: 0.3);
+                width: fit-content;
+                padding: 0.5rem 1rem;
+                border-radius: 1.25rem;
+                margin-bottom: 1rem;
+            }
+            p {
+                font-size: $font-size-16 - 0.125rem;
+                line-height: $font-size-30;
+                font-weight: $fontWeight-300;
+                color: $white;
+                &:not(:last-child) {
+                    margin-bottom: 1.5rem;
+                }
+
+                span {
+                    font-weight: $fontWeight-400;
+                    color: $secondary-color;
+                }
+            }
+        }
+        .rhs {
+            height: 350px;
+            border-radius: 20px;
+            border-start-end-radius: 0;
+            border-end-end-radius: 0;
+            overflow: hidden;
+            pointer-events: none;
+            width: 50%;
+            position: relative;
+            @include tablet {
+                width: 100%;
+            }
+
+            .image {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                display: grid;
+                place-items: center;
+                background-color: rgba($color: $white, $alpha: 0.1);
+                // backdrop-filter: blur(2px);
+                img {
+                    object-fit: cover;
+                }
+                svg {
+                    width: 200px;
+                    height: 200px;
+                    opacity: 0.05;
+                }
+            }
+        }
+    }
+    .whyChooseUs {
+        @include sectionPadding;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+        background-color: $dark-grey-2;
+        color: $white;
+        h2 {
+            width: fit-content;
+            margin: 0 auto;
+            font-weight: $fontWeight-500;
+        }
+        @include tablet {
+            padding-top: 2.5rem;
+            padding-bottom: 2.5rem;
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            .service {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 1.5rem;
+                border-radius: 20px;
+                background-color: $dark-grey;
+                color: $white;
+                transition: all 0.3s ease;
+                text-align: center;
+                &:hover {
+                    background-color: $primary-color;
+                    transform: translateY(-5px);
+                }
+                svg {
+                    font-size: 2rem;
+                    margin-bottom: 1rem;
+                }
+                h3 {
+                    font-size: $font-size-16;
+                    font-weight: $fontWeight-500;
+                    margin-bottom: 0.5rem;
+                }
+                p {
+                    font-size: $font-size-16 - 0.125rem;
+                    font-weight: $fontWeight-300;
+                    line-height: $font-size-24;
+                    opacity: 0.8;
+                }
+            }
+        }
+    }
+}
