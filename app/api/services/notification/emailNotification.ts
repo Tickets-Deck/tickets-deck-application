@@ -13,6 +13,9 @@ export async function processEmailNotification(
   // Get ticker order ID from metadata
   const ticketOrderId = paymentResult.data.metadata.ticketOrderId;
 
+  console.log("🚀 ~ ticketOrderId:", ticketOrderId);
+  console.log("🚀 ~ paymentResult gotten:", paymentResult);
+
   //   console.log(ticketOrderId);
 
   // Get the ticket order from the ticket order ID
@@ -31,7 +34,7 @@ export async function processEmailNotification(
     );
   }
 
-  const qrImageUrl = await generateQRCode(ticketOrder.contactEmail);
+  //   const qrImageUrl = await generateQRCode(ticketOrder.contactEmail);
 
   // console.log("QR image gotten: ", qrImageUrl);
 
@@ -49,24 +52,36 @@ export async function processEmailNotification(
       time: ticketOrder.event.time as string,
       qrImage: ticketOrder.orderId,
       ticketOrderId: ticketOrder.orderId,
-      orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`
+      orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
     }),
+    // attachments: [
+    //   {
+    //     filename: "qr-code.png",
+    //     content: await generateQRCode(ticketOrder.contactEmail),
+    //   },
+    // ],
   });
+
+  //   console.log("Email sent to: ", ticketOrder.contactEmail);
 
   // Get each ordered ticket from the ticket order ID
   const orderedTickets = await prisma.orderedTickets.findMany({
     where: {
-      orderId: ticketOrderId,
+      orderId: ticketOrder.orderId,
     },
   });
 
-  // If we have one ticket, and the associated email is the same as the contact email, we can send one email to the contact email
+  //   console.log("Ordered ticket: ", orderedTickets[0].associatedEmail);
+  //   console.log("Ticket order: ", ticketOrder.contactEmail);
+
+  // TODO: Check logic.
+  // If we have one ticket, and the associated email is the same as the contact email, we can send one email to the contact email ~ this is to avoid sending multiple emails to the same email
   if (
     orderedTickets.length === 1 &&
     orderedTickets[0].associatedEmail === ticketOrder.contactEmail
   ) {
     const orderedTicket = orderedTickets[0];
-    
+
     // const qrImageUrl = await generateQRCode(ticketOrder.contactEmail);
 
     // console.log("QR image gotten: ", qrImageUrl);
@@ -84,8 +99,14 @@ export async function processEmailNotification(
         time: ticketOrder.event.time as string,
         qrImage: ticketOrder.orderId,
         ticketOrderId: ticketOrder.orderId,
-        orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`
+        orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
       }),
+      attachments: [
+        {
+          filename: "qr-code.png",
+          content: await generateQRCode(ticketOrder.contactEmail),
+        },
+      ],
     });
   } else {
     // If we have more than one ticket, we can send an email to each associated email
@@ -108,7 +129,7 @@ export async function processEmailNotification(
           time: ticketOrder.event.time,
           qrImage: ticketOrder.orderId,
           ticketOrderId: ticketOrder.orderId,
-          orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`
+          orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
         }),
       });
     }
