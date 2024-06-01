@@ -20,9 +20,24 @@
     @keyframes bumpOut {
         to {
             // top: 2rem;
-            // right: -100%;
-            opacity: 0;
+            right: -100%;
+            // opacity: 0;
         }
+    }
+}
+
+@mixin navLink {
+    border-radius: 0.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.8rem;
+    margin: 0 auto;
+    gap: .5rem;
+    svg {
+        width: 1rem;
+        height: 1rem;
     }
 }
 
@@ -313,17 +328,56 @@
         flex-direction: column;
         align-items: flex-end;
         z-index: 999;
-        @include bumpInAnimation();
+        // @include bumpInAnimation();
         .navbarOverlay {
-            // background: rgba(255, 255, 255, 0.6);
             background: $white;
             backdrop-filter: blur(10px);
             width: 80%;
             height: 100%;
+            margin: auto 0;
+            // margin-right: 1rem;
+            // transform: translateY(80px);
+            // background: rgba(255, 255, 255, 0.6);
+            // border-radius: 1rem;
             padding: 1.25rem;
             display: flex;
             flex-direction: column;
             z-index: 2;
+
+            .topArea {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 2.5rem;
+                .profileArea {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    .userImage {
+                        width: 56px;
+                        height: 56px;
+                        border-radius: 100%;
+                        position: relative;
+                    }
+                    .userInfo {
+                        display: flex;
+                        flex-direction: column;
+                        h4 {
+                            font-size: 1rem;
+                            font-weight: 500;
+                            color: $dark-grey;
+                            margin-bottom: .25rem;
+                        }
+                        a {
+                            font-size: $font-size-16 - .25rem;
+                            font-weight: 400;
+                            color: $primary-color;
+                            background-color: $white;
+                            width: fit-content;
+                        }
+                    }
+                }
+            }
 
             .closeIcon {
                 margin-left: auto;
@@ -344,25 +398,49 @@
                     }
                 }
             }
+
             .navLinks {
                 display: flex;
                 flex-direction: column;
-                gap: 2.5rem;
-                // align-items: center;
-                justify-content: center;
-                height: 70vh;
+                gap: 1.5rem;
+                height: 100%;
                 span {
-                    border-top: 1px solid rgba($color: $primary-color-sub, $alpha: 0.5);
-                    border-bottom: 1px solid rgba($color: $primary-color-sub, $alpha: 0.5);
-                    width: 80%;
-                    display: flex;
-                    padding: 0.8rem;
-                    justify-content: center;
-                    margin: 0 auto;
+                    // border-top: 1px solid rgba($color: $primary-color-sub, $alpha: 0.5);
+                    // border-bottom: 1px solid rgba($color: $primary-color-sub, $alpha: 0.5);
+                    // border: 1px solid rgba($color: $primary-color-sub, $alpha: 0.5);
+                    @include navLink();
+    
                     &:hover {
                         background-color: rgba($color: $primary-color, $alpha: 0.05);
                         border-radius: 0.5rem;
                         color: $primary-color;
+                        svg {
+                            path {
+                                fill: $primary-color;
+                            }
+                        }
+                    }
+                }
+                .logoutBtn, .loginBtn {
+                    @include navLink();
+                    // border: 1px solid $failed-color;
+                    background-color: rgba($color: $failed-color, $alpha: 0.0);
+                    // margin-top: auto;
+                    color: $failed-color;
+                    svg {
+                        path {
+                            stroke: $failed-color;
+                        }
+                    }
+                }
+                .loginBtn {
+                    // border: 1px solid $primary-color;
+                    color: $primary-color;
+                    background-color: rgba($color: $primary-color, $alpha: 0.05);
+                    svg {
+                        path {
+                            stroke: $primary-color;
+                        }
                     }
                 }
             }
@@ -375,14 +453,15 @@
             width: 100%;
             height: 100%;
             top: 0;
-            left: 0;
+            right: 0;
         }
     }
-    .navbarOverlayContainerClose {
-        right: -100%;
-        .overlay {
-            height: 0;
-        }
-        @include bumpOutAnimation();
-    }
+    
+    // .navbarOverlayContainerClose {
+    //     right: -100%;
+    //     .overlay {
+    //         height: 0;
+    //     }
+    //     @include bumpOutAnimation();
+    // }
 }
