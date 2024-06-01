@@ -11,9 +11,17 @@ type Mail = {
   subject: string;
   body: string;
   bcc?: string;
+  attachments?: { filename: string; content: Buffer | string; }[];
 };
 
-export async function sendMail({ to, name, subject, body, bcc }: Mail) {
+export async function sendMail({
+  to,
+  name,
+  subject,
+  body,
+  bcc,
+  attachments,
+}: Mail) {
   const { SMTP_EMAIL, SMTP_PASSWORD } = process.env;
 
   const transport = nodemailer.createTransport({
@@ -34,6 +42,24 @@ export async function sendMail({ to, name, subject, body, bcc }: Mail) {
   }
 
   try {
+    if (attachments) {
+      const sendMail = await transport.sendMail({
+        from: SMTP_EMAIL,
+        to,
+        bcc,
+        subject,
+        html: body,
+        attachments: [
+          {
+            filename: attachments[0].filename,
+            content: attachments[0].content,
+          },
+        ],
+      });
+
+      return sendMail;
+    }
+
     const sendMail = await transport.sendMail({
       from: SMTP_EMAIL,
       to,
@@ -41,7 +67,6 @@ export async function sendMail({ to, name, subject, body, bcc }: Mail) {
       subject,
       html: body,
     });
-
     return sendMail;
   } catch (error) {
     console.error(error);
