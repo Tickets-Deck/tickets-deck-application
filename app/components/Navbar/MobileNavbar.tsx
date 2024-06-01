@@ -220,7 +220,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ session }): ReactE
                     <motion.div variants={ulVariant} className={styles.navLinks}>
                         {
                             navLinks.map((navLink, index) => (
-                                <Link key={index} href={navLink.link}>
+                                <Link key={index} href={navLink.link} onClick={() => setNavbarIsVisible(false)}>
                                     <motion.span variants={liVariant} className={pathname == navLink.link ? styles.active : ''} key={index}>
                                         {navLink.icon}
                                         {navLink.text}
