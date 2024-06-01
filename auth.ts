@@ -27,14 +27,11 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Log credentials
-        console.log("credentials gotten: ", credentials);
 
         // If email or password is missing, return null to display an error
         if (!credentials?.email || !credentials.password) {
-          console.log("Email or password is missing!");
-          // Return null to display form error that credentials are not correct
-          return null;
+            // Throw an error to display an error message
+            throw new Error("Please provide email and password");
         }
 
         // Check if user exists in database checking each user's email if it matches the email provided
@@ -45,7 +42,8 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
-          return null;
+            // Throw an error to display an error message
+            throw new Error("User account not found. Please sign up, or check your email and try again.");
         }
 
         // Check that password matches
@@ -55,7 +53,8 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!isPasswordValid) {
-          return null;
+            // Throw an error to display an error message
+            throw new Error("Incorrect password. Please check your password and try again.");
         }
 
         // Return user object to be stored in JWT
@@ -82,7 +81,7 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.SECRET,
   callbacks: {
     async signIn({ account, profile }) {
-      console.log("Sign In Callback", { account, profile });
+      // console.log("Sign In Callback", { account, profile });
 
       if (account?.provider === "google") {
         // Check if user exists in database checking each user's email if it matches the email provided
@@ -94,6 +93,16 @@ export const authOptions: NextAuthOptions = {
 
         // If user exists, return true to allow sign in
         if (user) {
+          // Update emailVerified to true
+          await prisma.users.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              emailVerified: true,
+            },
+          });
+
           return true; // Return true to allow sign in
         }
 
@@ -105,6 +114,7 @@ export const authOptions: NextAuthOptions = {
             lastName: profile?.name?.split(" ")[1] as string,
             password: "google-signup-no-password",
             profilePhoto: profile?.picture as string,
+            emailVerified: true,
           },
         });
 
@@ -127,7 +137,7 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage JWTs here
     jwt: async ({ token, user, trigger, session }) => {
-      console.log("JWT Callback", { token, user, trigger, session });
+      // console.log("JWT Callback", { token, user, trigger, session });
 
       // Check prisma for user with email gotten in token
       const exisitingUser = await prisma.users.findUnique({
@@ -165,7 +175,7 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage sessions here
     session: async ({ session, token }) => {
-      console.log("Session Callback", { session, token });
+      // console.log("Session Callback", { session, token });
 
       // Fetch user details from database
       const user = await prisma.users.findUnique({
@@ -173,7 +183,7 @@ export const authOptions: NextAuthOptions = {
           id: token.id as string,
         },
       });
-      console.log("🚀 ~ session: ~ user:", user);
+      // console.log("🚀 ~ session: ~ user:", user);
 
       return {
         ...session,
@@ -194,7 +204,7 @@ export const authOptions: NextAuthOptions = {
   },
   events: {
     async signIn(message) {
-      console.log("Sign In Event", { message });
+      // console.log("Sign In Event", { message });
     },
     async signOut(message) {
       // Delete the session cookie
@@ -208,7 +218,7 @@ export const authOptions: NextAuthOptions = {
       // Delete the new user email from session storage
       sessionStorage.removeItem(StorageKeys.NewlyCreatedUserEmail);
 
-      console.log("Sign Out Event", { message });
+      // console.log("Sign Out Event", { message });
     },
     // async createUser(message) {
     //   console.log("Create User Event", { message });
