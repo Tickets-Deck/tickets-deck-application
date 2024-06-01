@@ -26,7 +26,7 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
         await fetchEvents()
             .then((response) => {
                 if (response) {
-                    console.log(response.data);
+                    // console.log(response.data);
                     setEvents(response.data);
                 }
             })
