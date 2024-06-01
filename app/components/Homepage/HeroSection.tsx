@@ -86,14 +86,14 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEv
                     events={events}
                 />
             </div>
-            {/* <div className={styles.colors}>
+            <div className={styles.colors}>
                 <span></span>
                 <span></span>
                 <span></span>
                 <span></span>
                 <span></span>
                 <span></span>
-            </div> */}
+            </div>
         </section>
     );
 }
