@@ -76,7 +76,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
 
         // console.log(userInformation);
 
-        await signIn('credentials', { ...userInformation, callbackUrl: "http://localhost:9000/events" })
+        await signIn('credentials', { ...userInformation })
             .then((response) => {
                 console.log("response: ", response);
 
