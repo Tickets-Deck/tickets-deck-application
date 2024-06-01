@@ -81,8 +81,8 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                                     <Link href={ApplicationRoutes.GeneralEvents} onClick={() => setNavbarIsVisible(false)}>
                                         <span className={pathname == ApplicationRoutes.GeneralEvents ? styles.active : ''}>Events</span>
                                     </Link>
-                                    <Link href='/about' onClick={() => setNavbarIsVisible(false)}>
-                                        <span className={pathname == '/about' ? styles.active : ''}>About</span>
+                                    <Link href={ApplicationRoutes.About} onClick={() => setNavbarIsVisible(false)}>
+                                        <span className={pathname == ApplicationRoutes.About ? styles.active : ''}>About</span>
                                     </Link>
                                     {/* <Link href='/support' onClick={() => setNavbarIsVisible(false)}>
                                             <span className={pathname == '/support' ? styles.active : ''}>Support</span>
@@ -91,9 +91,17 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                                         <Link href={ApplicationRoutes.Dashboard} onClick={() => setNavbarIsVisible(false)}>
                                             <span className={pathname == ApplicationRoutes.Dashboard ? styles.active : ''}>Dashboard</span>
                                         </Link>
-                                        <Link href='/api/auth/logout' onClick={() => setNavbarIsVisible(false)}>
-                                            <span>Log out</span>
-                                        </Link>
+                                        {/* <Link href='/api/auth/logout'> */}
+                                            <span
+                                                onClick={() => {
+                                                    setNavbarIsVisible(false);
+                                                    signOut();
+                                                    // Clear user credentials from redux store
+                                                    dispatch(clearUserCredentials());
+                                                }}>
+                                                Log out
+                                            </span>
+                                        {/* </Link> */}
                                     </> :
                                         <Link href='/auth/signin' onClick={() => setNavbarIsVisible(false)}>
                                             <span className={pathname == '/account' ? styles.active : ''}>Login</span>
@@ -119,10 +127,10 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                             <Link href={ApplicationRoutes.Home}>
                                 <li>Home</li>
                             </Link>
-                            <Link href='/events'>
+                            <Link href={ApplicationRoutes.GeneralEvents}>
                                 <li>Events</li>
                             </Link>
-                            <Link href='/about'>
+                            <Link href={ApplicationRoutes.About}>
                                 <li>About</li>
                             </Link>
                             {/* <li>Support</li> */}
@@ -140,8 +148,8 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                                     {
                                         navbarDropdownIsVisible &&
                                         <div className={styles.dropdownContainer}>
-                                            <Link href='/app'>Dashboard</Link>
-                                            <Link href='/app/profile'>Profile</Link>
+                                            <Link href={ApplicationRoutes.Dashboard}>Dashboard</Link>
+                                            <Link href={ApplicationRoutes.Profile}>Profile</Link>
                                             <span onClick={() => {
                                                 signOut();
                                                 // Clear user credentials from redux store
@@ -150,7 +158,7 @@ const Navbar: FunctionComponent<NavbarProps> = (): ReactElement => {
                                         </div>
                                     }
                                 </>
-                                    : <Link href='/auth/signin'>
+                                    : <Link href={ApplicationRoutes.SignIn}>
                                         <button>
                                             Log in
                                         </button>
