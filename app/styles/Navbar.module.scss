@@ -357,6 +357,7 @@
                         width: 56px;
                         height: 56px;
                         border-radius: 100%;
+                        overflow: hidden;
                         position: relative;
                     }
                     .userInfo {
@@ -367,6 +368,10 @@
                             font-weight: 500;
                             color: $dark-grey;
                             margin-bottom: .25rem;
+                            max-width: 90%;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                         }
                         a {
                             font-size: $font-size-16 - .25rem;

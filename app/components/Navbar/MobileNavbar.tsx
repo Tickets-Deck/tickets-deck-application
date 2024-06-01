@@ -114,7 +114,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ session }): ReactE
             opacity: 1,
             y: "0%",
             transition: {
-                duration: 0.4,
+                duration: 0.25,
                 ease: "easeOut"
             }
         },
