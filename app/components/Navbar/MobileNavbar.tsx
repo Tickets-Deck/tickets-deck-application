@@ -208,7 +208,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ session }): ReactE
                                 </span>
                                 <div className={styles.userInfo}>
                                     <h4>{user.name}</h4>
-                                    <Link href="/app" onClick={() => setNavbarIsVisible(false)}>
+                                    <Link href={ApplicationRoutes.Profile} onClick={() => setNavbarIsVisible(false)}>
                                         View profile
                                     </Link>
                                 </div>

@@ -353,6 +353,7 @@
                     display: flex;
                     align-items: center;
                     gap: 0.5rem;
+                    width: 100%;
                     .userImage {
                         width: 56px;
                         height: 56px;
@@ -368,6 +369,7 @@
                     .userInfo {
                         display: flex;
                         flex-direction: column;
+                        width: 100%;
                         h4 {
                             font-size: 1rem;
                             font-weight: 500;
