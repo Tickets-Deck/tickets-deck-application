@@ -18,6 +18,7 @@ import { updateUserCredentials } from '../redux/features/user/userSlice';
 import { catchError } from '../constants/catchError';
 import { Toaster } from "sonner";
 import useResponsiveness from '../hooks/useResponsiveness';
+import { useSession } from 'next-auth/react';
 
 export const metadata: Metadata = {
     title: 'Ticketsdeck Events',
@@ -31,6 +32,7 @@ interface LayoutProps {
 
 const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactElement => {
 
+    const { status } = useSession();
     const [loaderIsVisible, setLoaderIsVisible] = useState(true);
 
     const iswindow = typeof window !== "undefined" ? true : false;
@@ -67,10 +69,10 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     }, [iswindow]);
 
     useEffect(() => {
-        if (session) {
+        if (session && status === 'authenticated') {
             handleFetchUserInformation();
         }
-    }, [session])
+    }, [session, status])
 
     const pathname = usePathname();
 
