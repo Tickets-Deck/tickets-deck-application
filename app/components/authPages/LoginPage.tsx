@@ -40,7 +40,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
             return newlyCreatedUserEmail;
         }
     };
-    
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
         // Prevent default form submission
@@ -74,11 +74,20 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
             redirect: false,
         }
 
-        console.log(userInformation);
+        // console.log(userInformation);
 
-        await signIn('credentials', userInformation)
+        await signIn('credentials', { ...userInformation, callbackUrl: "http://localhost:9000/events" })
             .then((response) => {
                 console.log("response: ", response);
+
+                // If we have an error
+                if (response?.error && !response.error.includes("prisma.users.findUnique" || "Authentication failed")) {
+                    setMessage(response.error);
+                    // Close loader
+                    setIsLoading(false);
+                    return;
+                }
+
                 if (response && response.status == StatusCodes.Unauthorized) {
                     // Close loader
                     setIsLoading(false);
@@ -88,8 +97,8 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                 // console.log('Login successful');
             })
             .catch((error) => {
+                // console.log("Error logging in: ", error);
                 setMessage("An error occurred while logging in. Please try again.");
-                console.log("Error logging in: ", error);
                 catchError(error);
                 // Close loader
                 setIsLoading(false);
@@ -100,6 +109,8 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         if (status === "authenticated") {
             // Refresh the page so we get the new session state to the server side
             router.refresh();
+            // Clear newly created user email
+            sessionStorage.removeItem(StorageKeys.NewlyCreatedUserEmail);
             // // Push to homepage 
             router.push(ApplicationRoutes.Home);
         }
@@ -144,7 +155,14 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                                     name="email"
                                     placeholder="email@example.com"
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={(e) => {
+                                        // If we have a value, clear email error message
+                                        if (e.target.value) {
+                                            setEmailErrorMsg(false);
+                                            setMessage("");
+                                        }
+                                        setEmail(e.target.value);
+                                    }}
                                 />
                             </div>
                             {emailErrorMsg && <span className={styles.errorMsg}>Please enter your email address</span>}
@@ -157,7 +175,14 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                                     type={isPasswordVisible ? "text" : "password"}
                                     name="password"
                                     placeholder="password"
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) => {
+                                        // If we have a value, clear email error message
+                                        if (e.target.value) {
+                                            setPasswordErrorMsg(false);
+                                            setMessage("");
+                                        }
+                                        setPassword(e.target.value);
+                                    }}
                                 />
                                 <span
                                     className={styles.clickable}
