@@ -42,14 +42,12 @@ const VerifyEmailPage: FunctionComponent<VerifyEmailPageProps> = (): ReactElemen
     };
 
     async function handleVerifyUserEmail() {
-        console.log("verifying email...")
 
         // Set the isVerifyingEmail state to true
         setIsVerifyingEmail(true);
 
         await verifyUserEmail(token as string)
             .then((response) => {
-                console.log("Verification response: ", response);
 
                 if (response.data.user) {
                     const email = response.data.user.email;
@@ -76,7 +74,7 @@ const VerifyEmailPage: FunctionComponent<VerifyEmailPageProps> = (): ReactElemen
         // Set the isResendingEmail state to true
         setIsResendingEmail(true);
 
-        await resendVerificationLink("email" as string)
+        await resendVerificationLink(retrieveNewlyCreatedUserEmail() as string)
             .then((response) => {
                 console.log("Resend response: ", response);
 
