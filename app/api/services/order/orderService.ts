@@ -1,10 +1,13 @@
 import { ApplicationError } from "@/app/constants/applicationError";
-import { OrderStatus } from "@/app/enums/IOrderStatus";
-import { PaymentStatus } from "@/app/enums/IPaymentStatus";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { TicketOrderRequest } from "@/app/models/ITicketOrder";
 import { prisma } from "@/lib/prisma";
+import { OrderStatus, PaymentStatus } from "@prisma/client";
 import { NextRequest } from "next/server";
+import { handleSuccessfulPayment } from "../payment/paymentService";
+import { processEmailNotification } from "../notification/emailNotification";
+import Paystack from "paystack";
+import { PaymentResultData } from "@/app/models/IPaymentResultData";
 
 export async function fetchOrderInformation(req: NextRequest) {
   // Get the search params from the request url
@@ -66,6 +69,9 @@ export async function fetchOrderInformation(req: NextRequest) {
 }
 
 export async function initializeOrder(req: NextRequest) {
+  // Get the headers from the request
+  const { headers } = req;
+
   // Get the body of the request
   const request = (await req.json()) as TicketOrderRequest;
 
@@ -94,6 +100,12 @@ export async function initializeOrder(req: NextRequest) {
     };
   }
 
+  // Get the total price of the tickets
+  const totalPrice = request.tickets.reduce(
+    (accumulator, ticket) => accumulator + ticket.price,
+    0
+  );
+
   // Create the order
   const ticketOrder = await prisma.ticketOrders.create({
     data: {
@@ -110,15 +122,13 @@ export async function initializeOrder(req: NextRequest) {
         },
       },
       quantity: request.tickets.length,
-      totalPrice: request.tickets.reduce(
-        (accumulator, ticket) => accumulator + ticket.price,
-        0
-      ),
+      totalPrice: totalPrice,
       contactEmail: request.contactEmail,
       // Generate order ID here
       orderId: "T" + Math.random().toString(36).substr(2, 9).toUpperCase(),
-      orderStatus: OrderStatus.Pending,
-      paymentStatus: PaymentStatus.Pending,
+      orderStatus: totalPrice > 0 ? OrderStatus.Pending : OrderStatus.Confirmed,
+      paymentStatus:
+        totalPrice > 0 ? PaymentStatus.Pending : PaymentStatus.Paid,
       paymentId: null,
     },
   });
@@ -138,7 +148,7 @@ export async function initializeOrder(req: NextRequest) {
     });
   }
 
-  // If the order was created by an exisitng user...
+  // If the order was created by an existing user...
   if (request.userId) {
     // Update the user's orders
     await prisma.users.update({
@@ -155,6 +165,210 @@ export async function initializeOrder(req: NextRequest) {
     });
   }
 
+  // If the order is a free order
+  if (totalPrice === 0) {
+    // Initialize the base URL
+    const baseUrl = `${
+      headers.get("x-forwarded-proto") || "http"
+    }://${headers.get("host")}`;
+
+    // Initialize the payment result
+    const paymentResult = {
+      data: {
+        reference: "free_order",
+        amount: 0,
+        paid_at: new Date().toISOString(),
+        status: true,
+        metadata: {
+          ticketOrderId: ticketOrder.id,
+        },
+        currency: "NGN",
+        message: "Free order",
+      },
+    };
+
+    // Process the free order
+    await processFreeOrder(paymentResult as Paystack.Response);
+
+    // Process the email notification to the user
+    await processEmailNotification(paymentResult as Paystack.Response, baseUrl);
+  }
+
+  console.log("🚀 ~ initializeOrder ~ ticketOrder:", ticketOrder)
+
   // Return the created ticket order
   return { data: ticketOrder };
 }
+
+
+export async function processFreeOrder(
+    paymentResult: Paystack.Response
+  ) {
+    try {
+      const { data } = paymentResult;
+  
+      const {
+        reference,
+        amount,
+        paid_at,
+        status,
+        metadata,
+        currency,
+      }: PaymentResultData = data;
+  
+      const ticketOrderId = metadata.ticketOrderId;
+  
+      const existingTicketOrder = await prisma.ticketOrders.findUnique({
+        where: {
+          id: ticketOrderId,
+        },
+      });
+  
+      if (!existingTicketOrder) {
+        throw new Error(
+          "Ticket order based on the provided ticket order ID could not be found"
+        );
+      }
+  
+      // Get the payment status of the order
+      const paymentStatus = existingTicketOrder.paymentStatus;
+  
+      // If payment status is not PaymentStatus.Pending
+      if (paymentStatus !== PaymentStatus.Pending) {
+        throw new Error("Payment status for the order is not pending");
+      }
+  
+      const orderedTickets = await prisma.orderedTickets.findMany({
+        where: {
+          orderId: existingTicketOrder.orderId,
+        },
+      });
+  
+      console.log("orderedTickets", orderedTickets);
+  
+    //   const existingPayment = await prisma.payments.findFirst({
+    //     where: {
+    //       ticketOrderId: existingTicketOrder.id,
+    //     },
+    //   });
+  
+    //   if (!existingPayment) {
+    //     throw new Error(
+    //       "Payment based on the ticket order ID provided not found"
+    //     );
+    //   }
+  
+      const amountPaid = amount / 100;
+  
+      // Begin transaction
+      await prisma.$transaction([
+        // Update the order status, payment status of the order, and the payment ID
+        prisma.ticketOrders.update({
+          where: {
+            id: ticketOrderId,
+          },
+          data: {
+            orderStatus: OrderStatus.Confirmed,
+            paymentStatus: PaymentStatus.Paid,
+            // paymentId: existingPayment.id,
+          },
+        }),
+  
+        // Update the number of ticket orders for the event
+        prisma.events.update({
+          where: {
+            id: existingTicketOrder.eventId,
+          },
+          data: {
+            ticketOrdersCount: {
+              increment: 1,
+            },
+          },
+        }),
+      ]);
+  
+      await prisma.$transaction([
+        // Update the ordered ticket status and payment ID for each ordered ticket in the order
+        prisma.orderedTickets.updateMany({
+          where: {
+            orderId: existingTicketOrder.orderId,
+          },
+          data: {
+            orderStatus: OrderStatus.Confirmed,
+            // paymentId: existingPayment.id,
+          },
+        }),
+  
+        // Update the ticket ordered count and remaining tickets for each ticket in the order
+        prisma.tickets.updateMany({
+          where: {
+            id: {
+              in: orderedTickets.map((orderedTicket) => orderedTicket.ticketId),
+            },
+          },
+          data: {
+            ticketOrdersCount: {
+              increment: 1,
+            },
+            remainingTickets: {
+              decrement: 1,
+            },
+          },
+        })
+      ]);
+  
+      // If the user ID exists, update the number of tickets bought by the user
+      if (existingTicketOrder.userId) {
+        // Update the number of tickets bought by the user
+        await prisma.users.update({
+          where: {
+            id: existingTicketOrder.userId,
+          },
+          data: {
+            ticketsBought: {
+              increment: orderedTickets.length,
+            },
+          },
+        });
+      }
+  
+      // Get the event publisher
+      const eventPublisher = await prisma.events.findUnique({
+        where: {
+          id: existingTicketOrder.eventId,
+        },
+        select: {
+          publisherId: true,
+        },
+      });
+  
+      // If the event publisher exists, update the ticketSold count of the event publisher
+      if (eventPublisher) {
+        // Update the ticketSold count of the event publisher
+        await prisma.users.update({
+          where: {
+            id: eventPublisher.publisherId,
+          },
+          data: {
+            ticketsSold: {
+              increment: orderedTickets.length,
+            },
+            totalRevenue: {
+              increment: amountPaid,
+            },
+          },
+        });
+      }
+  
+      return { data: paymentResult.data };
+    } catch (error) {
+      if (error instanceof Error) {
+        return `Error: ${(error as Error).message}`;
+        //   throw new Error(`Error: ${(error as Error).message}`);
+      } else {
+        // Handle other types of errors
+        return `System Error: ${(error as Error).message}`;
+        //   throw new Error(`System Error: ${(error as Error).message}`);
+      }
+    }
+  }
