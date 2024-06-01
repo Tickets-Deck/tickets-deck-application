@@ -14,6 +14,9 @@ import woman_dancing from "./images/woman_dancing.svg";
 import user_avatar from "./images/user_avatar.png";
 import sad_face from "./images/sad_face.png";
 import fingers_crossed from "./images/fingers_crossed.png";
+import about_hero from "./images/about-hero.jpg";
+
+// import crowd_video from "./videos/crowd_video.mp4";
 
 
 const ImageBg1 = "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140925/hero_images/ImageBg1_nnev1u.jpg";
@@ -42,5 +45,6 @@ export default {
   woman_dancing,
   user_avatar,
   sad_face,
-  fingers_crossed
+  fingers_crossed,
+  about_hero
 };
