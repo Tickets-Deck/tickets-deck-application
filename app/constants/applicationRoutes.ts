@@ -48,6 +48,11 @@ export class ApplicationRoutes {
   static readonly About = "/about";
 
   /**
+   * The route to the contact page
+   */
+  static readonly Contact = "/contact";
+
+  /**
    * The route to the general event page
    */
   static readonly GeneralEvent = "/event/"; // Intentionally left without a closing slash to allow for dynamic event IDs
