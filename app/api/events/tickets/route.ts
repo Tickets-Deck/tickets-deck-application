@@ -98,7 +98,6 @@ export async function DELETE(req: NextRequest) {
     // Return the response
     return NextResponse.json(operation, { status: StatusCodes.Success });
   } catch(error) {
-    console.log("🚀 ~ subscribeToNewsletter ~ error:", error);
     // Return an error if the operation fails
     return NextResponse.json(
       { error: ApplicationError.InternalServerError.Text },
