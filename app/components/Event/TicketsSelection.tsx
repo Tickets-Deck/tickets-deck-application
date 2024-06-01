@@ -84,7 +84,12 @@ const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProp
                         <div className={`${styles.ticket} ${ticketType.selectedTickets > 0 ? styles.active : ''}`} key={index}>
                             <div className={styles.ticket__topArea}>
                                 <p>{ticketType.name}</p>
-                                <h4>&#8358;{ticketType.price.toLocaleString()}</h4>
+                                <h4>
+                                    {ticketType.price > 0 ?
+                                        <>&#8358;{ticketType.price.toLocaleString()}</> :
+                                        "Free"
+                                    }
+                                </h4>
                             </div>
                             <div className={styles.ticket__bottomArea}>
                                 <span onClick={() => { ticketType.selectedTickets > 0 && decrementTicket(ticketType) }}>-</span>
