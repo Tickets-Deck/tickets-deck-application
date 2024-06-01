@@ -39,13 +39,13 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
         }
     };
     function shareEventMobile() {
-        const eventURL = window.location.href;
-        if (navigator.share) {
+        // const eventURL = window.location.href;
+        if (navigator.share) { 
             navigator.share({
                 // title: "Check out this event!",
                 title: `${eventInfo?.title} - Ticketsdeck Events`,
                 text: "I found this amazing event. You should check it out!",
-                url: eventURL
+                url: `${window.location.pathname}/event/${eventInfo.id}`
             })
                 .then(() => console.log("Shared successfully"))
                 .catch(error => console.log("Sharing failed:", error));
