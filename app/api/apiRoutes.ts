@@ -6,7 +6,7 @@ export class ApiRoutes {
    * The dev base url for the application
    */
   static BASE_URL_DEV: string = "http://localhost:9000/";
-//   static BASE_URL_DEV: string = "http://192.168.1.226:9000/";
+  //   static BASE_URL_DEV: string = "http://192.168.1.226:9000/";
 
   /**
    * The test base url for the application
@@ -87,4 +87,9 @@ export class ApiRoutes {
    * The route to Follows endpoint
    */
   static Follows: string = "api/users/follows";
+
+  /**
+   * The route to Customer Enquiries endpoint
+   */
+  static CustomerEnquiries: string = "api/customer-enquiries";
 }
