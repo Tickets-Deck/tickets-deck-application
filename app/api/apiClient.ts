@@ -13,6 +13,7 @@ import { InitializePayStack } from "../models/IInitializePayStack";
 import { TicketCategory } from "../enums/ITicket";
 import { TicketRequest, TicketResponse } from "../models/ITicket";
 import { FollowsActionType } from "../models/IFollows";
+import { CustomerEnquiry } from "../models/ICustomerEnquiries";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_TEST,
@@ -310,4 +311,28 @@ export function useFetchUserFollowMetrics() {
   }
 
   return fetchUserFollowMetrics;
+}
+
+export function useCreateCustomerEnquiry() {
+  async function createCustomerEnquiry(data: CustomerEnquiry) {
+    return API.post(ApiRoutes.CustomerEnquiries, data);
+  }
+
+  return createCustomerEnquiry;
+}
+
+export function useFetchCustomerEnquiries() {
+  async function fetchCustomerEnquiries() {
+    return API.get(ApiRoutes.CustomerEnquiries);
+  }
+
+  return fetchCustomerEnquiries;
+}
+
+export function useUpdateCustomerEnquiriesStatus() {
+  async function updateCustomerEnquiriesById(id: string) {
+    return API.get(`${ApiRoutes.CustomerEnquiries}?id=${id}`);
+  }
+
+  return updateCustomerEnquiriesById;
 }
