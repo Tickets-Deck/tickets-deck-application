@@ -1,14 +1,10 @@
 "use client"
-import { FunctionComponent, MouseEvent, ReactElement, useContext, useEffect, useState } from 'react';
+import { FunctionComponent, ReactElement } from 'react';
 import styles from '../styles/Footer.module.scss';
 import Link from 'next/link';
 import images from '../../public/images';
 import Image from 'next/image';
-import { FacebookIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from './SVGs/SVGicons';
-import { useCreateNewsletterSubscriber } from '../api/apiClient';
-import { ToastContext } from '../extensions/toast';
-import { emailRegex } from '../constants/emailRegex';
-import ComponentLoader from './Loader/ComponentLoader';
+import { InstagramIcon, TwitterIcon } from './SVGs/SVGicons';
 import SubscriptionFormSection from './Footer/SubscriptionFormSection';
 import { useSession } from 'next-auth/react';
 import { ApplicationRoutes } from '../constants/applicationRoutes';
@@ -65,8 +61,12 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                 <div className={`${styles.content} ${styles.content2}`}>
                     <h4>Company</h4>
                     <div className={styles.content__links}>
-                        <li>About Us</li>
-                        <li>Contact Us</li>
+                        <Link href={ApplicationRoutes.About}>
+                            <li>About Us</li>
+                        </Link>
+                        <Link href={ApplicationRoutes.Contact}>
+                            <li>Contact Us</li>
+                        </Link>
                         {/* <li>Help Center</li>
                     <li>Privacy</li>
                     <li>Terms</li>
