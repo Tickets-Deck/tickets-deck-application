@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `Users` ADD COLUMN `verificationTokenExpiry` DATETIME(3) NULL;
+ALTER TABLE `users` ADD COLUMN `verificationTokenExpiry` DATETIME(3) NULL;
