@@ -218,6 +218,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                         autoPlay
                         loop
                         muted
+                        playsInline
                         src="https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4" />
                 </div>
                 <div className={styles.textContents}>

@@ -70,6 +70,7 @@ const AboutPage: FunctionComponent<AboutPageProps> = (): ReactElement => {
                         autoPlay
                         loop
                         muted
+                        playsInline
                         src="https://res.cloudinary.com/dvxqk1487/video/upload/v1717209808/videos/crowd_video_yrahfy.mp4"
                     />
                     <div className={styles.image}>
