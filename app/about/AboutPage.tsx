@@ -4,6 +4,7 @@ import styles from "@/app/styles/About.module.scss";
 import Image from "next/image";
 import images from "@/public/images";
 import CreateEvent from "../components/Homepage/CreateEvent";
+import PageHeroSection from "../components/shared/PageHeroSection";
 
 interface AboutPageProps {
 
@@ -37,15 +38,11 @@ const AboutPage: FunctionComponent<AboutPageProps> = (): ReactElement => {
 
     return (
         <main className={styles.main}>
-            <section className={styles.heroSection}>
-                <div className={styles.image}>
-                    <Image src={images.about_hero} alt="About" sizes="auto" fill />
-                </div>
-                <div className={styles.textContents}>
-                    <h1>About Us</h1>
-                    <p>Ticketsdeck Events ~ where the magic of unforgettable experiences comes to life!</p>
-                </div>
-            </section>
+            <PageHeroSection
+                imageUrl={images.about_hero}
+                title="About Us"
+                description="Ticketsdeck Events ~ where the magic of unforgettable experiences comes to life!"
+            />
             <section className={styles.introSection}>
                 <div className={styles.lhs}>
                     <span>Who We Are</span>

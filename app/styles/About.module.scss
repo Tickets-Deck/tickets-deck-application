@@ -2,38 +2,6 @@
 @import "./reusables";
 
 .main {
-    .heroSection {
-        @extend .pageHeroSection;
-        // height: 15vh;
-
-        .textContents {
-            h1 {
-                color: $white;
-            }
-        }
-
-        .image {
-            width: 100%;
-            height: 100%;
-            img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-            &::after {
-                content: "";
-                background-color: $white;
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                z-index: 2;
-                background: linear-gradient(180deg, #8133f1 0%, #430994 100%);
-                opacity: 0.8;
-            }
-        }
-    }
     .introSection {
         @include sectionPadding;
         padding-right: 0;
