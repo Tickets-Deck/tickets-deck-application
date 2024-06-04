@@ -16,15 +16,24 @@ import sad_face from "./images/sad_face.png";
 import fingers_crossed from "./images/fingers_crossed.png";
 import about_hero from "./images/about-hero.jpg";
 
+import toby from "./images/toby.jpg";
+import simlex from "./images/simlex_x.jpg";
+import sholly from "./images/sholly.jpg";
+
 // import crowd_video from "./videos/crowd_video.mp4";
 
-
-const ImageBg1 = "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140925/hero_images/ImageBg1_nnev1u.jpg";
-const ImageBg2 = "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140882/hero_images/ImageBg2_wk6w74.jpg";
-const ImageBg3 = "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140935/hero_images/ImageBg3_j0fq4y.jpg";
-const ImageBg4 = "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140884/hero_images/ImageBg4_xq1gcm.jpg";
-const ImageBg5 = "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140920/hero_images/ImageBg5_jkbucy.jpg";
-const ImageBg6 = "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701141965/hero_images/ImageBg6_e2jb97.jpg";
+const ImageBg1 =
+  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140925/hero_images/ImageBg1_nnev1u.jpg";
+const ImageBg2 =
+  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140882/hero_images/ImageBg2_wk6w74.jpg";
+const ImageBg3 =
+  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140935/hero_images/ImageBg3_j0fq4y.jpg";
+const ImageBg4 =
+  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140884/hero_images/ImageBg4_xq1gcm.jpg";
+const ImageBg5 =
+  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140920/hero_images/ImageBg5_jkbucy.jpg";
+const ImageBg6 =
+  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701141965/hero_images/ImageBg6_e2jb97.jpg";
 
 export default {
   logoWhite,
@@ -35,8 +44,8 @@ export default {
   ImageBg4,
   ImageBg5,
   ImageBg6,
-//   ImageBg7,
-//   ImageBg8,
+  //   ImageBg7,
+  //   ImageBg8,
   rocket,
   ticketbg,
   event_flyer,
@@ -46,5 +55,8 @@ export default {
   user_avatar,
   sad_face,
   fingers_crossed,
-  about_hero
+  about_hero,
+  toby,
+  simlex,
+  sholly
 };
