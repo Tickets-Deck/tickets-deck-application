@@ -38,6 +38,7 @@ const Navbar: FunctionComponent<NavbarProps> = ({ setSelectedTheme }): ReactElem
                 onMobile &&
                 <MobileNavbar
                     session={session}
+                    appTheme={appTheme}
                 />
             }
             {
