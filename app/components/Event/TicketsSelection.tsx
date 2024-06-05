@@ -1,8 +1,10 @@
 import { FunctionComponent, ReactElement, useEffect, useState, Dispatch, SetStateAction } from "react";
 import styles from "../../styles/EventDetails.module.scss";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
+import { Theme } from "@/app/enums/Theme";
 
 interface TicketsSelectionContainerProps {
+    appTheme: Theme | null
     eventTickets: RetrievedTicketResponse[]
     setEventTickets: Dispatch<SetStateAction<RetrievedTicketResponse[] | undefined>>
     totalPrice: number
@@ -10,7 +12,7 @@ interface TicketsSelectionContainerProps {
 }
 
 const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProps> = (
-    { eventTickets, setEventTickets, totalPrice, setTicketDeliveryModalIsVisible }): ReactElement => {
+    { appTheme, eventTickets, setEventTickets, totalPrice, setTicketDeliveryModalIsVisible }): ReactElement => {
 
 
     const [totalSelectedTicketsCount, setTotalSelectedTicketsCount] = useState(0);
@@ -73,7 +75,7 @@ const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProp
     }, [eventTickets]);
 
     return (
-        <div className={styles.ticketsSelectionContainer}>
+        <div className={appTheme === Theme.Light ? styles.ticketsSelectionContainerLightTheme : styles.ticketsSelectionContainer}>
             <div className={styles.topArea}>
                 <h3>Select the tickets you would like to get, and the number for each.</h3>
                 <p>You can select multiple tickets.</p>

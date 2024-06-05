@@ -4,13 +4,8 @@ import styles from "../../styles/EventDetails.module.scss";
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import images from '../../../public/images';
-import { CalenderIcon, HeartIcon, ShareIcon } from '../../components/SVGs/SVGicons';
-import Tooltip from '../../components/custom/Tooltip';
 import { ToastContext } from '../../extensions/toast';
 import moment from 'moment';
-import EventsGroup from '../../components/events/EventsGroup';
-import Link from 'next/link';
-import { Link as ScrollLink } from 'react-scroll';
 import TicketDelivery from '../../components/Modal/TicketDelivery';
 import SkeletonEventInfo from '../../components/Skeletons/SkeletonEventInfo';
 import { EventResponse } from '@/app/models/IEvents';
@@ -21,6 +16,8 @@ import TicketsSelectionContainer from '@/app/components/Event/TicketsSelection';
 import TicketsFetchErrorContainer from '@/app/components/Event/TicketsFetchError';
 import useResponsiveness from '../../hooks/useResponsiveness';
 import EventMainInfo from '@/app/components/Event/EventInfo';
+import { RootState } from '@/app/redux/store';
+import { useSelector } from 'react-redux';
 
 interface EventDetailsPageProps {
     params: { id: string }
@@ -29,6 +26,7 @@ interface EventDetailsPageProps {
 
 const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }): ReactElement => {
     const router = useRouter();
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
@@ -177,6 +175,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
     return (
         <>
             <TicketDelivery
+                appTheme={appTheme}
                 visibility={ticketDeliveryModalIsVisible}
                 setVisibility={setTicketDeliveryModalIsVisible}
                 eventTickets={eventTickets}
@@ -198,9 +197,11 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                         <h2>Event Information</h2>
                     </div>
                 </section>
+
                 {eventInfo ?
                     <section className={styles.eventInfoContainer}>
                         <EventMainInfo
+                            appTheme={appTheme}
                             eventInfo={eventInfo}
                             setTicketsSelectionContainerIsVisible={setTicketsSelectionContainerIsVisible}
                             addEventToGoogleCalender={addEventToGoogleCalender}
@@ -208,6 +209,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                         <div className={styles.optionalSection} id='optionalSection'>
                             {ticketsSelectionContainerIsVisible && eventTickets && eventTickets.length > 0 &&
                                 <TicketsSelectionContainer
+                                    appTheme={appTheme}
                                     eventTickets={eventTickets}
                                     setEventTickets={setEventTickets}
                                     totalPrice={totalPrice}
@@ -221,6 +223,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                     </section> :
                     <SkeletonEventInfo />
                 }
+
                 {/* <EventsGroup
                     title='Similar Events'
                     subText='Dear superstar, below is a list of all events available at the moment.'

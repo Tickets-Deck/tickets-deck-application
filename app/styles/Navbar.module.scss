@@ -26,6 +26,10 @@
     }
 }
 
+@mixin backgroundColor($color, $alpha: 1.0) {
+    background-color: rgba($color: $color, $alpha: $alpha)
+}
+
 @mixin navLink {
     border-radius: 0.5rem;
     width: 100%;
@@ -45,7 +49,7 @@
     @include sectionPadding;
     padding-top: 1rem;
     padding-bottom: 1rem;
-    background-color: $dark-grey;
+    background-color: var(--dark-grey);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -70,7 +74,7 @@
         p {
             font-size: $font-size-16 - 0.125rem;
             font-weight: $fontWeight-300;
-            color: $white;
+            color: var(--white);
         }
     }
 
@@ -78,7 +82,7 @@
         display: flex;
         align-items: center;
         gap: 1.5rem;
-        color: $white;
+        color: var(--white);
         font-size: $font-size-16 - 0.125rem;
         .navLinks {
             list-style: none;
@@ -90,7 +94,7 @@
             cursor: pointer;
             li {
                 &:hover {
-                    color: $primary-color-sub;
+                    color: var(--primary-color-sub);
                 }
             }
         }
@@ -104,7 +108,7 @@
             .profileCircle {
                 width: 2rem;
                 height: 2rem;
-                border: 1px solid rgba($color: $grey, $alpha: 0.1);
+                border: 1px solid rgba($color: var(--grey), $alpha: 0.1);
                 display: grid;
                 place-items: center;
                 border-radius: 100%;
@@ -123,7 +127,7 @@
             & > h3 {
                 font-weight: $fontWeight-500;
                 font-size: $font-size-16 - 0.125rem;
-                color: $primary-color-sub;
+                color: var(--primary-color-sub);
                 max-width: 90px;
                 text-overflow: ellipsis;
                 overflow: hidden;
@@ -138,7 +142,7 @@
                 svg {
                     width: 1rem;
                     height: 1rem;
-                    color: $white;
+                    color: var(--white);
                     path {
                         fill: $primary-color-sub;
                     }
@@ -146,12 +150,12 @@
             }
             &:hover {
                 .dropdownIcon {
-                    background-color: rgba($color: $white, $alpha: 0.1);
+                    background-color: rgba($color: var(--white), $alpha: 0.1);
                 }
             }
 
             & > .dropdownContainer {
-                background-color: $white;
+                background-color: var(--white);
                 padding: 0.25rem;
                 border-radius: 0.5rem;
                 display: flex;
@@ -169,7 +173,7 @@
                     content: "";
                     width: 0.875rem;
                     height: 0.875rem;
-                    background-color: $white;
+                    background-color: var(--white);
                     rotate: 45deg;
                     position: absolute;
                     top: -0.375rem;
@@ -179,10 +183,10 @@
                 span,
                 a {
                     padding: 0.5rem 0.75rem;
-                    color: $black;
+                    color: var(--black);
                     border-radius: 0.375rem;
                     &:hover {
-                        background-color: rgba($color: $grey, $alpha: 0.8);
+                        background-color: rgba($color: var(--grey), $alpha: 0.8);
                     }
                 }
             }
@@ -191,11 +195,11 @@
                 @include primary-button;
                 padding-top: 0.5rem;
                 padding-bottom: 0.5rem;
-                background-color: $white;
-                color: $dark-grey;
+                background-color: var(--white);
+                color: var(--dark-grey);
                 &:hover {
-                    background-color: $dark-grey;
-                    color: $white;
+                    background-color: var(--dark-grey);
+                    color: var(--white);
                 }
             }
         }
@@ -207,12 +211,14 @@
             display: grid;
             place-items: center;
             cursor: pointer;
+            background-color: rgba($color: var(--white), $alpha: 0.8);
+            
             svg {
                 width: 1.125rem;
                 height: 1.125rem;
             }
             &:hover {
-                background-color: rgba($color: $white, $alpha: 0.1);
+                background-color: rgba($color: var(--white), $alpha: 0.1);
             }
         }
     }
@@ -238,13 +244,13 @@
         top: 0;
         right: 0;
         position: fixed;
-        background-color: rgba($color: $black, $alpha: 0.5);
+        background-color: rgba($color: var(--black), $alpha: 0.5);
         animation: slideIn 400ms cubic-bezier(0.65, -0.07, 0.25, 1.24) 100ms;
         z-index: 5;
     }
 
     .mobileNavbar {
-        background-color: $white;
+        background-color: var(--white);
         width: 85%;
         height: 100vh;
         position: fixed;
@@ -280,7 +286,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: $dark-grey;
+    background-color: var(--dark-grey);
 
     > a {
         display: flex;
@@ -291,7 +297,7 @@
             margin-right: 0.5rem;
         }
         p { 
-            color: $white;
+            color: var(--white);
             font-size: $font-size-16 - .25rem;
         }
     }
@@ -375,7 +381,7 @@
                         h4 {
                             font-size: 1rem;
                             font-weight: 500;
-                            color: $dark-grey;
+                            color: var(--dark-grey);
                             margin-bottom: .25rem;
                             max-width: 90%;
                             white-space: nowrap;
@@ -385,8 +391,8 @@
                         a {
                             font-size: $font-size-16 - .25rem;
                             font-weight: 400;
-                            color: $primary-color;
-                            background-color: $white;
+                            color: var(--primary-color);
+                            background-color: var(--white);
                             width: fit-content;
                         }
                     }
@@ -400,7 +406,7 @@
                 border-radius: 0.5rem;
                 display: grid;
                 place-items: center;
-                background-color: rgba($color: $primary-color, $alpha: 0.05);
+                background-color: rgba($color: var(--primary-color), $alpha: 0.05);
                 &:hover {
                     scale: 0.85;
                 }
@@ -419,15 +425,15 @@
                 gap: 1.5rem;
                 height: 100%;
                 span {
-                    // border-top: 1px solid rgba($color: $primary-color-sub, $alpha: 0.5);
-                    // border-bottom: 1px solid rgba($color: $primary-color-sub, $alpha: 0.5);
-                    // border: 1px solid rgba($color: $primary-color-sub, $alpha: 0.5);
+                    // border-top: 1px solid rgba($color: var(--primary-color-sub, $alpha: 0.5));
+                    // border-bottom: 1px solid rgba($color: var(--primary-color-sub, $alpha: 0.5));
+                    // border: 1px solid rgba($color: var(--primary-color-sub, $alpha: 0.5));
                     @include navLink();
     
                     &:hover {
-                        background-color: rgba($color: $primary-color, $alpha: 0.05);
+                        background-color: rgba($color: var(--primary-color), $alpha: 0.05);
                         border-radius: 0.5rem;
-                        color: $primary-color;
+                        color: var(--primary-color);
                         svg {
                             path {
                                 fill: $primary-color;
@@ -438,9 +444,9 @@
                 .logoutBtn, .loginBtn {
                     @include navLink();
                     // border: 1px solid $failed-color;
-                    background-color: rgba($color: $failed-color, $alpha: 0.0);
+                    background-color: rgba($color: var(--failed-color), $alpha: 0.0);
                     // margin-top: auto;
-                    color: $failed-color;
+                    color: var(--failed-color);
                     svg {
                         path {
                             stroke: $failed-color;
@@ -449,8 +455,8 @@
                 }
                 .loginBtn {
                     // border: 1px solid $primary-color;
-                    color: $primary-color;
-                    background-color: rgba($color: $primary-color, $alpha: 0.05);
+                    color: var(--primary-color);
+                    background-color: rgba($color: var(--primary-color), $alpha: 0.05);
                     svg {
                         path {
                             stroke: $primary-color;
@@ -462,7 +468,7 @@
         .overlay {
             position: absolute;
             content: "";
-            background-color: rgba($color: $dark-grey, $alpha: 0.9);
+            background-color: rgba($color: var(--dark-grey), $alpha: 0.9);
             z-index: 1;
             width: 100%;
             height: 100%;

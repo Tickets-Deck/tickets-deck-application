@@ -10,6 +10,9 @@ import { EventResponse } from "@/app/models/IEvents";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { useRouter } from "next/navigation";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { RootState } from "@/app/redux/store";
+import { useSelector } from "react-redux";
+import { Theme } from "@/app/enums/Theme";
 
 interface EventCardProps {
     event: EventResponse
@@ -23,6 +26,8 @@ interface EventCardProps {
 const EventCard: FunctionComponent<EventCardProps> = (
     { event, mobileAndActionButtonDismiss, consoleDisplay, gridDisplay,
         setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
+
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const { push } = useRouter();
     const windowRes = useResponsiveness();
@@ -77,7 +82,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
     }
 
     return (
-        <div className={`${styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
+        <div className={`${appTheme == Theme.Light ? styles.eventLightTheme : styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
             {/* <div className={styles.backgroundImage}>
                 <Image src={images.ticketbg} alt='Ticket background' />
             </div> */}

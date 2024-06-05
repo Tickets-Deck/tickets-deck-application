@@ -8,18 +8,22 @@ import { InstagramIcon, TwitterIcon } from './SVGs/SVGicons';
 import SubscriptionFormSection from './Footer/SubscriptionFormSection';
 import { useSession } from 'next-auth/react';
 import { ApplicationRoutes } from '../constants/applicationRoutes';
+import { Theme } from '../enums/Theme';
+import { RootState } from '../redux/store';
+import { useSelector } from 'react-redux';
 
 interface FooterProps {
 
 }
 
 const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const { data: session } = useSession();
     const user = session?.user;
 
     return (
-        <section className={styles.footerContainer}>
+        <section className={appTheme == Theme.Light ? styles.footerContainerLightTheme : styles.footerContainer}>
             <div className={styles.lhs}>
                 <div className={styles.lhs__logoArea}>
                     <div className={styles.logoImage}>

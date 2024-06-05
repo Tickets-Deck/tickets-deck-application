@@ -9,12 +9,17 @@ import { CustomerEnquiry } from "../models/ICustomerEnquiries";
 import ComponentLoader from "../components/Loader/ComponentLoader";
 import { useCreateCustomerEnquiry } from "../api/apiClient";
 import { toast } from "sonner"
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
+import { Theme } from "../enums/Theme";
 
 interface ContactPageProps {
 
 }
 
 const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
+
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const createCustomerEnquiry = useCreateCustomerEnquiry();
 
@@ -70,7 +75,7 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
                 title="Contact Us"
                 description="Have a question or need assistance? We're here to help!"
             />
-            <section className={styles.contactSection}>
+            <section className={appTheme === Theme.Light ? styles.contactSectionLightTheme : styles.contactSection}>
                 <div className={styles.lhs}>
                     <p>
                         Do you have any inquiries, requests, or complaints? Feel free to

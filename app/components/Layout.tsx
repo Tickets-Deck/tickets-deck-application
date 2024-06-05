@@ -19,6 +19,9 @@ import { catchError } from '../constants/catchError';
 import { Toaster } from "sonner";
 import useResponsiveness from '../hooks/useResponsiveness';
 import { useSession } from 'next-auth/react';
+import { Theme } from '../enums/Theme';
+import { GlobalProvider } from './Provider';
+import NextTopLoader from 'nextjs-toploader';
 
 export const metadata: Metadata = {
     title: 'Ticketsdeck Events',
@@ -34,6 +37,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     const { status } = useSession();
     const [loaderIsVisible, setLoaderIsVisible] = useState(true);
+    const [selectedTheme, setSelectedTheme] = useState(Theme.Light);
 
     const iswindow = typeof window !== "undefined" ? true : false;
 
@@ -168,17 +172,22 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     };
 
     return (
-        <>
-            {
-                !loaderIsVisible &&
-                <>
+        <html lang="en" data-theme={selectedTheme == Theme.Light ? "light" : "dark"}>
+            <body>
+                <NextTopLoader
+                    color="#5419a7"
+                    initialPosition={0.08}
+                    crawlSpeed={200}
+                    height={3}
+                    crawl={true}
+                    showSpinner={true}
+                    easing="ease"
+                    speed={200}
+                    shadow="0 0 10px #d39efa,0 0 5px #5116a2"
+                />
+                {
+                    !loaderIsVisible &&
                     <ToastContext.Provider value={{ toastOptions, logSuccess, logInfo, logWarning, logError, closeToast }}>
-                        {/* <ToastCard
-                            visibility={toastContext?.toastOptions?.visible ?? false}
-                            title={toastContext?.toastOptions?.title ?? 'Welcome'}
-                            description={toastContext?.toastOptions?.description ?? ''}
-                            messageType={toastContext?.toastOptions?.type ?? ToastMessageType.Info}
-                            timeout={toastContext?.toastOptions?.timeout ?? 0.01} /> */}
                         <Toaster
                             position="top-center"
                             richColors
@@ -190,7 +199,10 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                         />
                         {
                             !isAppPage && <>
-                                <Navbar session={session} />
+                                <Navbar
+                                    setSelectedTheme={setSelectedTheme}
+                                    session={session}
+                                />
                                 {children}
                                 <Footer />
                             </>
@@ -213,16 +225,16 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                             </>
                         }
                     </ToastContext.Provider>
-                </>
-            }
-            {
-                loaderIsVisible && <div className="splashScreen">
-                    <div className="image">
-                        <Image src={images.logoWhite} alt='logo' />
+                }
+                {
+                    loaderIsVisible && <div className="splashScreen">
+                        <div className="image">
+                            <Image src={images.logoWhite} alt='logo' />
+                        </div>
                     </div>
-                </div>
-            }
-        </>
+                }
+            </body>
+        </html>
     )
 }
 

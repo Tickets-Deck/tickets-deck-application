@@ -2,14 +2,14 @@
 @import "./reusables";
 
 .homepage {
-    background-color: $dark-grey;
-    color: $white;
+    background-color: var(--dark-grey);
+    color: var(--white);
 
-    .heroSection {
+    .heroSection, .heroSectionLightTheme {
         @include sectionPadding;
         padding-top: 4.5rem;
         padding-bottom: 4.5rem;
-        background-color: $dark-grey;
+        background-color: var(--dark-grey);
         display: flex;
         // align-items: flex-start;
         align-items: center;
@@ -54,8 +54,9 @@
                     font-family: Mona-Sans-Wide, "sans-serif";
                     font-weight: 500;
                     font-size: $font-size-35;
+                    color: var(--white);
                     span {
-                        // color: $secondary-color;
+                        // color: var(--secondary-color);
                         position: relative;
                         background: linear-gradient(90deg, rgba(253, 253, 255, 100) 100%, rgba(253, 253, 255, 0) 100%);
                         background-clip: text;
@@ -105,9 +106,9 @@
                 gap: 0.75rem;
                 button {
                     @include secondary-button();
-                    background-color: $white;
-                    border: 1.5px solid $white;
-                    color: $dark-grey;
+                    background-color: var(--white);
+                    border: 1.5px solid var(--white);
+                    color: var(--dark-grey);
                     font-weight: $fontWeight-500;
                     &:hover {
                         opacity: 0.6;
@@ -115,7 +116,7 @@
                 }
                 .secondaryButton {
                     background-color: transparent;
-                    color: $white;
+                    color: var(--white);
                 }
             }
         }
@@ -276,7 +277,7 @@
                             font-size: $font-size-18;
                         }
                         span {
-                            color: $secondary-color;
+                            color: var(--secondary-color);
                         }
                         &:nth-child(2) {
                             font-size: $font-size-16 - 0.125rem;
@@ -370,7 +371,7 @@
                         background: rgba(0, 0, 0, 0.3);
                         padding: 0.5rem;
                         outline: none;
-                        color: $white;
+                        color: var(--white);
                         @include bigMobilePhone {
                             font-size: $font-size-16;
                             padding: 0.8rem 0.65rem;
@@ -544,8 +545,62 @@
         }
     }
 
+    .heroSectionLightTheme {
+        background-color: var(--white);
+        color: var(--dark-grey);
+        .backgroundImage {
+            img {
+                object-fit: cover;
+            }
+            &::after {
+                // background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.7) 100%);
+            }
+        }
+        .textContents {
+            h2 {
+                color: var(--dark-grey);
+                // span {
+                //     background: linear-gradient(90deg, rgba(0, 0, 0, 0.4) 100%, rgba(0, 0, 0, 0) 100%);
+                // }
+            }
+            p {
+                color: var(--dark-grey);
+            }
+        }
+        .actionButtons {
+            .secondaryButton {
+                border: 1.5px solid var(--black);
+                color: var(--dark-grey);
+            }
+        }
+        .searchContainer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(0.469rem);
+            border-top: 1.5px solid var(--primary-color);
+            .inputArea {
+                input {
+                    color: var(--dark-grey);
+                    // background: rgba(255, 255, 255, 0.3);
+                    background-color: transparent;
+                    border: 1px solid rgba(0, 0, 0, 0.4);
+                    &::placeholder {
+                        color: rgba($color: $white, $alpha: 0.4);
+                    }
+                }
+                .searchErrorMsg {
+                    svg {
+                        fill: var(--primary-color);
+                    }
+                    p {
+                        color: var(--primary-color);
+                    }
+                }
+            }
+        }
+    }
+
     .servicesSection {
-        background-color: $dark-grey;
+        background-color: var(--dark-grey);
         @include sectionPadding;
         padding-top: 2rem;
 
@@ -591,7 +646,7 @@
                 gap: 20px;
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             }
-            .service {
+            .service, .serviceLightTheme {
                 width: 100%;
                 min-width: 250px;
                 display: flex;
@@ -648,17 +703,24 @@
                         opacity: 0.65;
                     }
                 }
+            } 
+            .serviceLightTheme {
+                background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+                span {
+                    background: rgba(0, 0, 0, 0.2);
+                }
             }
         }
     }
 }
+
 .createEventSection {
     @include sectionPadding;
     display: flex;
     justify-content: space-between;
-    background-color: $white;
+    background-color: var(--white);
     gap: 3rem;
-    border-top: 0.25rem solid $primary-color;
+    border-top: 0.25rem solid var(--primary-color);
     @include bigMobilePhone {
         flex-direction: column;
         padding-top: 3rem;
@@ -670,7 +732,7 @@
         flex-basis: 80%;
         width: 100%;
         position: relative;
-        color: $dark-grey;
+        color: var(--dark-grey);
         display: flex;
         flex-direction: column;
         gap: 0.25rem;

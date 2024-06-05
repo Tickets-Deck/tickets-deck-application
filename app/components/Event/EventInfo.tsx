@@ -8,8 +8,10 @@ import Image from "next/image";
 import images from "@/public/images";
 import moment from "moment";
 import { EventResponse } from "@/app/models/IEvents";
+import { Theme } from "@/app/enums/Theme";
 
 interface EventMainInfoProps {
+    appTheme: Theme | null
     eventInfo: EventResponse
     setTicketsSelectionContainerIsVisible?: Dispatch<SetStateAction<boolean>>
     addEventToGoogleCalender?: () => void
@@ -19,7 +21,7 @@ interface EventMainInfoProps {
 }
 
 const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
-    { eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
+    { appTheme, eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
         forOrdersPage, hideStatusTag, hostUrl }): ReactElement => {
 
     function shareEvent() {
@@ -40,7 +42,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     };
     function shareEventMobile() {
         // const eventURL = window.location.href;
-        if (navigator.share) { 
+        if (navigator.share) {
             navigator.share({
                 // title: "Check out this event!",
                 title: `${eventInfo?.title} - Ticketsdeck Events`,
@@ -55,7 +57,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     };
 
     return (
-        <div className={`${styles.mainSection} ${forOrdersPage ? styles.opMainSection : ''}`}>
+        <div className={`${appTheme === Theme.Light ? styles.mainSectionLightTheme : styles.mainSection} ${forOrdersPage ? styles.opMainSection : ''}`}>
             <div className={forOrdersPage ? styles.eventImageForOrderPage : styles.eventImage}>
                 <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill />
             </div>

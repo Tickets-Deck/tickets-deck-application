@@ -1,13 +1,14 @@
 import { FunctionComponent, ReactElement } from "react";
 import styles from "@/app/styles/About.module.scss";
+import { Theme } from "@/app/enums/Theme";
 
 interface IntroSectionProps {
-
+    appTheme: Theme | null
 }
 
-const IntroSection: FunctionComponent<IntroSectionProps> = (): ReactElement => {
+const IntroSection: FunctionComponent<IntroSectionProps> = ({ appTheme }): ReactElement => {
     return (
-        <section className={styles.introSection}>
+        <section className={appTheme === Theme.Light ? styles.introSectionLightTheme : styles.introSection}>
             <div className={styles.lhs}>
                 <span>Who We Are</span>
                 <p>

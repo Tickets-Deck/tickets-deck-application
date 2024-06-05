@@ -12,6 +12,9 @@ import ComponentLoader from "../Loader/ComponentLoader";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { StorageKeys } from "@/app/constants/storageKeys";
+import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
+import { useFetchUserInformation } from "@/app/api/apiClient";
+import { useDispatch } from "react-redux";
 
 interface LoginProps {
 
@@ -19,10 +22,13 @@ interface LoginProps {
 
 const Login: FunctionComponent<LoginProps> = (): ReactElement => {
 
+    const fetchUserInformation = useFetchUserInformation();
+    const dispatch = useDispatch();
+
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const router = useRouter();
-    const { data, status } = useSession();
+    const { data: session, status } = useSession();
 
     const [email, setEmail] = useState(retrieveNewlyCreatedUserEmail() ?? '');
     const [password, setPassword] = useState('');
@@ -39,6 +45,21 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         if (newlyCreatedUserEmail && newlyCreatedUserEmail !== "" && newlyCreatedUserEmail !== null) {
             return newlyCreatedUserEmail;
         }
+    };
+
+    async function handleFetchUserInformation() {
+        // console.log("Session on layout: ", session);
+
+        await fetchUserInformation(session?.user.id as string)
+            .then((response) => {
+                // console.log("User information on layout: ", response.data);
+                // Save to redux
+                dispatch(updateUserCredentials(response.data));
+            })
+            .catch((error) => {
+                // console.log(error);
+                catchError(error);
+            })
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -77,8 +98,11 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         // console.log(userInformation);
 
         await signIn('credentials', { ...userInformation })
-            .then((response) => {
+            .then(async (response) => {
                 console.log("response: ", response);
+
+                // Fetch user information
+                await handleFetchUserInformation();
 
                 // If we have an error
                 if (response?.error && !response.error.includes("prisma.users.findUnique" || "Authentication failed")) {

@@ -1,105 +1,63 @@
-
-// :root {
-//     /* Dark Theme Colors */
-//     --white: #ffffff;
-//     --black: #000000;
-//     --grey: #f2f2f2;
-//     --dark-grey: #111111;
-//     --dark-grey-2: #222222;
-
-//     --container-grey: #313131;
-//     --text-grey: #717171;
-//     --purple-grey: #adadbc;
-
-//     --primary-color: #8133f1;
-//     --primary-color-sub: #ceb0fa;
-//     --primary-color-sub-50: #efe6fd;
-//     --secondary-color: #fee755;
-//     --grey-bg: #f4f1f1;
-//     --grey-3: #828282;
-// }
-
-// .light-theme {
-//     /* Light Theme Colors */
-//     --white: #ffffff;
-//     --black: #000000;
-//     --grey: #f8f8f8; /* Lighter grey for background */
-//     --dark-grey: #dddddd; /* Lighter dark grey */
-//     --dark-grey-2: #eeeeee; /* Lighter dark grey 2 */
-
-//     --container-grey: #f2f2f2; /* Lighter container grey */
-//     --text-grey: #555555; /* Darker text grey for better readability */
-//     --purple-grey: #7d7d8c;
-
-//     --primary-color: #8133f1;
-//     --primary-color-sub: #ceb0fa;
-//     --primary-color-sub-50: #efe6fd;
-//     --secondary-color: #fee755;
-//     --grey-bg: #f8f8f8; /* Lighter grey for background */
-//     --grey-3: #555555; /* Darker grey 3 for better readability */
-// }
-
 //Color
-$white : #ffffff;
-$black : #000000;
-$grey : #f2f2f2;
-$dark-grey : #111111;   
-$dark-grey-2 : #222222;   
+$white: #ffffff;
+$black: #000000;
+$grey: #f2f2f2;
+$dark-grey: #111111;
+$dark-grey-2: #222222;
 
-$container-grey : #313131;       
-$text-grey : #717171;       
-$purple-grey : #ADADBC;       
+$container-grey: #313131;
+$text-grey: #717171;
+$purple-grey: #adadbc;
 
-$primary-color : #8133F1;
-$primary-color-sub : #CEB0FA;
-$primary-color-sub-50 : #EFE6FD;
-$secondary-color : #FEE755;
-$grey-bg: #F4F1F1;
+$primary-color: #8133f1;
+$primary-color-sub: #ceb0fa;
+$primary-color-sub-50: #efe6fd;
+$secondary-color: #fee755;
+$grey-bg: #f4f1f1;
 $grey-3: #828282;
 
+$success-color: #00c940;
+$failed-color: #dc143c;
+$warning-color: #d3b809;
 
-$success-color : #00c940;
-$failed-color : #DC143C;
-$warning-color : #d3b809;
-
-$peach : #FF7875;
-$standard : #34ABAE;
-$premium : #006aff;
+$peach: #ff7875;
+$standard: #34abae;
+$premium: #006aff;
 
 //Shadow
-$boxShadow : 0rem .625rem 1.25rem rgba(0, 0, 0, 0.5);
+$boxShadow: 0rem 0.625rem 1.25rem rgba(0, 0, 0, 0.5);
 
 //Padding
-$padding-desktop : 8rem;
-$padding-mobile : 1.5rem 4rem;
-$padding-mobile-side : 0rem 1rem;
+$padding-desktop: 8rem;
+$padding-mobile: 1.5rem 4rem;
+$padding-mobile-side: 0rem 1rem;
 
 //Font Size
-$font-size-102 : 6.375rem;
-$font-size-80 : 5rem;
-$font-size-70 : 4.375rem;
-$font-size-60 : 3.75rem;
-$font-size-50 : 3.125rem;
-$font-size-40 : 2.5rem;
-$font-size-35 : 2.188rem;
-$font-size-30 : 1.875rem;
-$font-size-24 : 1.5rem;
-$font-size-20 : 1.25rem;
-$font-size-18 : 1.125rem;
-$font-size-16 : 1rem;
+$font-size-102: 6.375rem;
+$font-size-80: 5rem;
+$font-size-70: 4.375rem;
+$font-size-60: 3.75rem;
+$font-size-50: 3.125rem;
+$font-size-40: 2.5rem;
+$font-size-35: 2.188rem;
+$font-size-30: 1.875rem;
+$font-size-24: 1.5rem;
+$font-size-20: 1.25rem;
+$font-size-18: 1.125rem;
+$font-size-16: 1rem;
 
 //Font weight
-$fontWeight-100 : 100;
-$fontWeight-200 : 200;
-$fontWeight-300 : 300;
-$fontWeight-400 : 400;
-$fontWeight-500 : 500;
-$fontWeight-600 : 600;
-$fontWeight-700 : 700;
-$fontWeight-800 : 800;
-$fontWeight-900 : 900;
+$fontWeight-100: 100;
+$fontWeight-200: 200;
+$fontWeight-300: 300;
+$fontWeight-400: 400;
+$fontWeight-500: 500;
+$fontWeight-600: 600;
+$fontWeight-700: 700;
+$fontWeight-800: 800;
+$fontWeight-900: 900;
 
-// Font types 
+// Font types
 $wide-font: "Mona-Sans-Wide";
 $normal-font: "Mona-Sans";
 $narrow-font: "Mona-Sans-Narrow";

@@ -1,20 +1,21 @@
 @import "./variables";
 @import "./reusables";
 
-@mixin input {
+@mixin input($color: $grey) {
     padding: 0.6rem 0.75rem;
-    background-color: rgba($color: $grey, $alpha: 0.1);
-    border: 1px solid rgba($color: $grey, $alpha: 0.3);
+    background-color: rgba($color: $color, $alpha: 0.1);
+    border: 1px solid rgba($color: $color, $alpha: 0.3);
     outline: none;
     border-radius: 0.5rem;
-    color: $white;
+    color: var(--white);
 }
 
-.ticketDeliveryContainer {
+.ticketDeliveryContainer, .ticketDeliveryContainerLightTheme {
     width: 100%;
     height: 85vh;
     // border: 1px solid #fff;
-    background-color: $dark-grey;
+    background-color: var(--dark-grey);
+    color: var(--white);
     padding: 1.5rem;
     border-radius: 1.25rem;
     display: flex;
@@ -25,14 +26,14 @@
         min-height: fit-content;
         padding: 0;
         border-radius: 0;
-        color: $white;
+        color: var(--white);
         // > button {
         //     display: flex;
         //     align-items: center;
         //     margin-right: auto;
         //     padding: 6px 12px;
         //     border-radius: 8px;
-        //     background-color: $white;
+        //     background-color: var(--white);
         //     border: none;
         //     outline: none;
         //     svg {
@@ -71,7 +72,7 @@
             }
             span {
                 font-size: $font-size-16 - 0.25rem;
-                color: $purple-grey;
+                color: var(--purple-grey);
             }
         }
 
@@ -118,7 +119,7 @@
                         align-items: center;
                         justify-content: space-between;
                         > button {
-                            color: $success-color;
+                            color: var(--success)-color;
                         }
 
                         span {
@@ -128,7 +129,7 @@
                             background-color: rgba($color: $failed-color, $alpha: 0.2);
                             border: none;
                             outline: none;
-                            color: $failed-color;
+                            color: var(--failed)-color;
                             padding: 4px 8px;
                             border-radius: 8px;
                         }
@@ -140,7 +141,7 @@
                         background-color: transparent;
                         border: none;
                         outline: none;
-                        color: $purple-grey;
+                        color: var(--purple-grey);
                     }
                 }
                 // .ticketType {
@@ -187,8 +188,8 @@
                         }
                     }
                     button {
-                        background-color: $dark-grey;
-                        color: $white;
+                        background-color: var(--dark-grey);
+                        color: var(--white);
                         padding: 5px 12px;
                         border-radius: 12px;
                         border: none;
@@ -201,12 +202,15 @@
                             height: 20px;
                             display: block;
                         }
+                        &:disabled {
+                            pointer-events: none;
+                        }
                         @include bigMobilePhone {
                             padding: 5px 16px;
                         }
                     }
                     > .active {
-                        background-color: $primary-color;
+                        background-color: var(--primary-color);
                     }
                 }
                 .valid {
@@ -228,7 +232,7 @@
                     }
                 }
                 #valid {
-                    // color: $primary-color-sub !important;
+                    // color: var(--primary)-color-sub !important;
                     color: #5cb85c;
                     svg {
                         path {
@@ -237,7 +241,7 @@
                     }
                 }
                 #invalid {
-                    color: $failed-color !important;
+                    color: var(--failed-color) !important;
                     font-weight: $fontWeight-400;
                 }
             }
@@ -248,7 +252,7 @@
             gap: 0.25rem;
             margin-top: auto;
             > p {
-                color: $purple-grey;
+                color: var(--purple-grey);
             }
             > span {
                 display: flex;
@@ -274,12 +278,13 @@
                 @include secondary-button;
                 width: 100%;
                 justify-content: center;
-                background-color: $white;
-                color: $black;
+                background-color: var(--white);
+                color: var(--black);
                 font-weight: $fontWeight-600;
             }
         }
     }
+
     .rhs {
         flex-basis: 35%;
         display: flex;
@@ -329,6 +334,7 @@
                     width: 100%;
                 }
                 p {
+                    color: $white;
                     opacity: 0.8;
                 }
             }
@@ -358,7 +364,7 @@
                 justify-content: space-between;
                 > span {
                     font-size: $font-size-16 - 0.25rem;
-                    color: $primary-color-sub-50;
+                    color: var(--primary-color-sub-50);
                 }
                 .value {
                     font-size: $font-size-16 - 0.125rem;
@@ -390,14 +396,50 @@
                 justify-content: center;
                 font-weight: $fontWeight-500;
                 &:first-child {
-                    background-color: $failed-color;
+                    background-color: var(--failed-color);
                 }
                 &:nth-child(2) {
-                    background-color: $white;
-                    color: $dark-grey;
+                    background-color: var(--white);
+                    color: var(--dark-grey);
                 }
                 &:focus {
                     opacity: 0.6;
+                }
+            }
+        }
+    }
+}
+
+.ticketDeliveryContainerLightTheme {
+    .lhs {
+        .ticketsEmailForms {
+            .ticketFormFieldContainer {
+                input {
+                    @include input($grey-3);
+                }
+            }
+        }
+        .ticketCouponArea {
+            .ticketCouponInputFieldContainer {
+                .inputContainer {
+                    input {
+                        @include input($grey-3);
+                    }
+                    button {
+                        background-color: var(--grey-3);
+                        color: var(--black);
+                    }
+                }
+            }
+        }
+    }
+    .rhs {
+        .summaryInfo {
+            &__ticket,
+            &__subs {
+                background-color: rgba($color: $grey-3, $alpha: 0.1);
+                > span {
+                    color: var(--grey-3);
                 }
             }
         }

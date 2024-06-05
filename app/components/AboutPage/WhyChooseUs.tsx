@@ -1,11 +1,12 @@
 import { FunctionComponent, ReactElement } from "react";
 import styles from "@/app/styles/About.module.scss";
+import { Theme } from "@/app/enums/Theme";
 
 interface WhyChooseUsProps {
-
+    appTheme: Theme | null
 }
 
-const WhyChooseUs: FunctionComponent<WhyChooseUsProps> = (): ReactElement => {
+const WhyChooseUs: FunctionComponent<WhyChooseUsProps> = ({ appTheme }): ReactElement => {
 
     const services = [
         {
@@ -29,9 +30,9 @@ const WhyChooseUs: FunctionComponent<WhyChooseUsProps> = (): ReactElement => {
             description: "From initial planning stages to post-event analysis, our suite of tools covers every detail. Ticket sales, event promotion, audience interaction, and data insights are seamlessly integrated, offering organizers a holistic solution to manage events effortlessly."
         }
     ]
-    
+
     return (
-        <section className={styles.whyChooseUs}>
+        <section className={appTheme === Theme.Light ? styles.whyChooseUsLightTheme : styles.whyChooseUs}>
             <h2>Why Choose Us</h2>
 
             <div className={styles.services}>

@@ -11,13 +11,16 @@ import { clearUserCredentials } from "@/app/redux/features/user/userSlice";
 import styles from '@/app/styles/Navbar.module.scss';
 import useOuterClick from "@/app/hooks/useOuterClick";
 import { Session } from "next-auth";
+import { Theme } from "@/app/enums/Theme";
+import { updateAppTheme } from "@/app/redux/features/theme/themeSlice";
 
 interface DesktopNavbarProps {
     isLightTheme: boolean
+    appTheme: Theme | null
     session: Session | null
 }
 
-const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ isLightTheme, session }): ReactElement => {
+const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ isLightTheme, session, appTheme }): ReactElement => {
     const dispatch = useDispatch();
     const user = session?.user;
 
@@ -32,7 +35,7 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ isLightTheme, se
             <Link href={ApplicationRoutes.Home}>
                 <div className={styles.navbarContainer__lhs}>
                     <div className={styles.logo}>
-                        <Image src={images.logoWhite} alt='Logo' />
+                        {appTheme === Theme.Light ? <Image src={images.logoPurple} alt='Logo' /> : <Image src={images.logoWhite} alt='Logo' />}
                     </div>
                     <p>Ticketsdeck Events</p>
                 </div>
@@ -80,8 +83,13 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ isLightTheme, se
                             </Link>
                     }
                 </div>
-                <span className={styles.themeController}>
-                    {isLightTheme ? <MoonIcon /> : <SunIcon />}
+                <span
+                    className={styles.themeController}
+                    onClick={() =>
+                        dispatch(appTheme == Theme.Light ?
+                            updateAppTheme(Theme.Dark) :
+                            updateAppTheme(Theme.Light))}>
+                    {appTheme === Theme.Light ? <MoonIcon /> : <SunIcon />}
                 </span>
             </div>
         </section>

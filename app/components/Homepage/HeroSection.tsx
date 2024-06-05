@@ -11,6 +11,9 @@ import HeroSearchSection from './HeroSearchSection';
 import { useSession } from 'next-auth/react';
 import { EventResponse } from '@/app/models/IEvents';
 import { ApplicationRoutes } from '@/app/constants/applicationRoutes';
+import { RootState } from '@/app/redux/store';
+import { useSelector } from 'react-redux';
+import { Theme } from '@/app/enums/Theme';
 
 interface HeroSectionProps {
     events: EventResponse[]
@@ -18,6 +21,7 @@ interface HeroSectionProps {
 }
 
 const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEvents }): ReactElement => {
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const { data: session } = useSession();
     const user = session?.user;
@@ -62,7 +66,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEv
     }, [imageList.length]);
 
     return (
-        <section className={styles.heroSection}>
+        <section className={appTheme == Theme.Light ? styles.heroSectionLightTheme : styles.heroSection}>
             <div className={styles.backgroundImage}>
                 <Image src={imageList[heroSectionImgIndex].img} alt='People in event' fill />
             </div>

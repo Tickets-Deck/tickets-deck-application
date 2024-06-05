@@ -2,7 +2,7 @@
 @import "./reusables";
 
 .main {
-    .introSection {
+    .introSection, .introSectionLightTheme {
         @include sectionPadding;
         padding-right: 0;
         padding-top: 4rem;
@@ -10,8 +10,8 @@
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        background-color: $dark-grey;
-        color: $white;
+        background-color: var(--dark-grey);
+        color: var(--white);
         @include tablet {
             flex-direction: column;
             align-items: center;
@@ -34,7 +34,7 @@
             span {
                 font-size: $font-size-16;
                 font-weight: $fontWeight-400;
-                color: $primary-color-sub;
+                color: var(--primary-color-sub);
                 background-color: rgba($color: $primary-color-sub, $alpha: 0.3);
                 width: fit-content;
                 padding: 0.5rem 1rem;
@@ -45,14 +45,14 @@
                 font-size: $font-size-16 - 0.125rem;
                 line-height: $font-size-30;
                 font-weight: $fontWeight-300;
-                color: $white;
+                color: var(--white);
                 &:not(:last-child) {
                     margin-bottom: 1.5rem;
                 }
 
                 span {
                     font-weight: $fontWeight-400;
-                    color: $secondary-color;
+                    color: var(--secondary-color);
                 }
             }
         }
@@ -77,7 +77,7 @@
                 left: 0;
                 display: grid;
                 place-items: center;
-                background-color: rgba($color: $white, $alpha: 0.1);
+                background-color: rgba($color: var(--white), $alpha: 0.1);
                 // backdrop-filter: blur(2px);
                 img {
                     object-fit: cover;
@@ -90,12 +90,21 @@
             }
         }
     }
-    .whyChooseUs {
+    .introSectionLightTheme {
+        .lhs {
+            span {
+                background-color: rgba($color: $primary-color, $alpha: 0.3);
+                color: var(--primary-color);
+            }
+        }
+    }
+
+    .whyChooseUs, .whyChooseUsLightTheme {
         @include sectionPadding;
         padding-top: 3rem;
         padding-bottom: 3rem;
-        background-color: $dark-grey-2;
-        color: $white;
+        background-color: var(--dark-grey-2);
+        color: var(--white);
         h2 {
             width: fit-content;
             margin: 0 auto;
@@ -108,7 +117,7 @@
 
         .services {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
             .service {
@@ -118,12 +127,12 @@
                 justify-content: center;
                 padding: 2rem 1.5rem;
                 border-radius: 20px;
-                background-color: $dark-grey;
-                color: $white;
+                background-color: var(--dark-grey);
+                color: var(--white);
                 transition: all 0.3s ease;
                 text-align: center;
                 &:hover {
-                    background-color: $primary-color;
+                    background-color: var(--primary-color);
                     transform: translateY(-5px);
                 }
                 svg {
@@ -142,11 +151,23 @@
                     opacity: 0.8;
                 }
             }
+            @include smallmobilePhone {
+                grid-template-columns: none;
+                // grid-template-rows: repeat(3, 1fr);
+            }
         }
     }
+    .whyChooseUsLightTheme {
+        .service {
+            &:hover {
+                color: var(--black);
+            }
+        }
+    }
+
     .teamSection {
         @extend .whyChooseUs;
-        background-color: $dark-grey;
+        background-color: var(--dark-grey);
 
         .topArea {
             display: flex;
@@ -170,14 +191,14 @@
                 justify-content: center;
                 padding: 2rem 1.5rem;
                 border-radius: 20px;
-                // background-color: $dark-grey-2;
+                // background-color: var(--dark-grey-2);
                 background-color: transparent;
-                color: $white;
+                color: var(--white);
                 transition: all 0.3s ease;
                 text-align: center;
                 // width: fit-content;
                 // &:hover {
-                //     background-color: $primary-color;
+                //     background-color: var(--primary-color);
                 //     transform: translateY(-5px);
                 // }
                 .image {
@@ -219,6 +240,9 @@
                             svg {
                                 width: 1.25rem;
                                 height: 1.25rem;
+                                path {
+                                    fill: var(--white);
+                                }
                             }
                             &:hover {
                                 transform: translateY(-2px);

@@ -2,10 +2,8 @@ import { ToastContext } from "../../extensions/toast";
 import { FunctionComponent, ReactElement, useState, useContext, Dispatch, SetStateAction, useEffect, ChangeEvent } from "react";
 import styles from "../../styles/TicketDelivery.module.scss";
 import ModalWrapper from "./ModalWrapper";
-import Image from "next/image";
-import images from "../../../public/images";
 import { CheckIcon, CloseIcon } from "../SVGs/SVGicons";
-import { ITicketPricing, RetrievedITicketPricing } from "../../models/ITicketPricing";
+import { RetrievedITicketPricing } from "../../models/ITicketPricing";
 import { emailRegex } from "../../constants/emailRegex";
 import PanelWrapper from "./PanelWrapper";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
@@ -15,16 +13,16 @@ import useResponsiveness from "../../hooks/useResponsiveness";
 import { useCreateTicketOrder, useInitializePaystackPayment } from "@/app/api/apiClient";
 import { SingleTicketOrderRequest, TicketOrderRequest } from "@/app/models/ITicketOrder";
 import { useSelector } from "react-redux";
-import { UserCredentialsResponse } from "@/app/models/IUser";
 import { RootState } from "@/app/redux/store";
 import Toggler from "../custom/Toggler";
 import { toast } from "sonner";
-import moment from "moment";
 import MobileOrderSummarySection from "../TicketDelivery/MobileOrderSummarySection";
 import ComponentLoader from "../Loader/ComponentLoader";
 import EmailVerificationPrompt from "./EmailVerificationPrompt";
+import { Theme } from "@/app/enums/Theme";
 
 interface TicketDeliveryProps {
+    appTheme: Theme | null
     setVisibility: Dispatch<SetStateAction<boolean>>
     visibility: boolean
     eventTickets: RetrievedTicketResponse[] | undefined
@@ -39,7 +37,7 @@ enum ValidationStatus {
 }
 
 const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
-    { visibility, setVisibility, eventTickets, eventInfo, totalPrice }): ReactElement => {
+    { appTheme, visibility, setVisibility, eventTickets, eventInfo, totalPrice }): ReactElement => {
 
     const createTicketOrder = useCreateTicketOrder();
     const initializePaystackPayment = useInitializePaystackPayment();
@@ -424,7 +422,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             {onDesktop &&
                 <>
                     <ModalWrapper disallowOverlayFunction visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff' }}>
-                        <div className={styles.ticketDeliveryContainer}>
+                        <div className={appTheme === Theme.Light ? styles.ticketDeliveryContainerLightTheme : styles.ticketDeliveryContainer}>
                             <div className={styles.lhs}>
                                 <div className={styles.top}>
                                     <h3>Ticket Delivery Details</h3>

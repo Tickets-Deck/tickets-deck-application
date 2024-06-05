@@ -8,12 +8,15 @@ import PageHeroSection from "../components/shared/PageHeroSection";
 import IntroSection from "../components/AboutPage/IntroSection";
 import WhyChooseUs from "../components/AboutPage/WhyChooseUs";
 import TeamSection from "../components/AboutPage/TeamSection";
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 
 interface AboutPageProps {
 
 }
 
 const AboutPage: FunctionComponent<AboutPageProps> = (): ReactElement => {
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     return (
         <main className={styles.main}>
@@ -22,8 +25,8 @@ const AboutPage: FunctionComponent<AboutPageProps> = (): ReactElement => {
                 title="About Us"
                 description="Ticketsdeck Events ~ where the magic of unforgettable experiences comes to life!"
             />
-            <IntroSection />
-            <WhyChooseUs />
+            <IntroSection appTheme={appTheme} />
+            <WhyChooseUs appTheme={appTheme} />
             <TeamSection />
             {/* <CreateEvent /> */}
         </main>
