@@ -4,7 +4,7 @@ import { FunctionComponent, ReactElement, useRef, useState } from "react";
 import styles from '@/app/styles/Navbar.module.scss';
 import Image from "next/image";
 import images from "@/public/images";
-import { AboutIcon, CloseMenuIcon, ContactIcon, DashboardIcon, EventsIcon, HamburgerMenuIcon, HomeIcon, LoginIcon, LogoutIcon, ProfileIcon, SunIcon } from "../SVGs/SVGicons";
+import { AboutIcon, CloseMenuIcon, ContactIcon, DashboardIcon, EventsIcon, HamburgerMenuIcon, HomeIcon, LoginIcon, LogoutIcon, MoonIcon, ProfileIcon, SunIcon } from "../SVGs/SVGicons";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -12,12 +12,15 @@ import { Session } from "next-auth";
 import { clearUserCredentials } from "@/app/redux/features/user/userSlice";
 import { signOut } from 'next-auth/react';
 import { motion } from "framer-motion";
+import { Theme } from "@/app/enums/Theme";
+import { updateAppTheme } from "@/app/redux/features/theme/themeSlice";
 
 interface MobileNavbarProps {
     session: Session | null
+    appTheme: Theme | null
 }
 
-const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ session }): ReactElement => {
+const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ appTheme, session }): ReactElement => {
     const dispatch = useDispatch();
     const user = session?.user;
 
@@ -187,7 +190,9 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ session }): ReactE
                 <p>Ticketsdeck <br /> Events</p>
             </Link>
             <motion.div variants={hideNavItemsVariant} className={styles.buttons}>
-                <span><SunIcon /></span>
+                <span onClick={() => dispatch(appTheme == Theme.Light ? updateAppTheme(Theme.Dark) : updateAppTheme(Theme.Light))}>
+                    {appTheme === Theme.Light ? <MoonIcon /> : <SunIcon />}
+                </span>
                 <span onClick={() => setNavbarIsVisible(true)}><HamburgerMenuIcon /></span>
             </motion.div>
 
