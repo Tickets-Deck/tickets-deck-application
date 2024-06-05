@@ -10,6 +10,8 @@ import { useFetchOrderInformationById } from "@/app/api/apiClient";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { UserTicketOrder } from "@/app/models/IUserTicketOrder";
 import moment from "moment";
+import { RootState } from "@/app/redux/store";
+import { useSelector } from "react-redux";
 
 interface OrdersPageProps {
     orderId: string
@@ -17,6 +19,8 @@ interface OrdersPageProps {
 }
 
 const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): ReactElement => {
+
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const fetchOrderInformationById = useFetchOrderInformationById();
     const { data: session, status } = useSession();
@@ -193,6 +197,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
                     <div className={styles.orderInformationContainer}>
                         <div className={styles.eventContainer}>
                             <EventMainInfo
+                                appTheme={appTheme}
                                 eventInfo={orderInformation?.event as EventResponse}
                                 forOrdersPage
                                 hideStatusTag
