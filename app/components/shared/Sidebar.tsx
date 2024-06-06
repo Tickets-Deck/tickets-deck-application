@@ -7,6 +7,8 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { motion } from "framer-motion";
+import { mobileMenuVariant } from "@/app/animations/navbarAnimations";
 
 interface SidebarProps {
     isMobileSidebarOpen: boolean;
@@ -49,7 +51,11 @@ const Sidebar: FunctionComponent<SidebarProps> = ({ isMobileSidebarOpen, setIsMo
     }
 
     return (
-        <div className={onMobile ? isMobileSidebarOpen ? styles.sidebarOpen : styles.sidebarClose : styles.sidebar}>
+        <motion.div
+            initial="closed"
+            variants={mobileMenuVariant({direction: "fromRight", inDelay: 0, outDelay: 0.1})}
+            animate={isMobileSidebarOpen ? "opened" : "closed"}
+            className={styles.sidebar}>
             <div className={styles.sidebar__menu}>
                 <ul>
                     <ReusableLink
@@ -100,7 +106,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({ isMobileSidebarOpen, setIsMo
                     </li>
                 </ul>
             </div>
-        </div>
+        </motion.div>
     );
 }
 

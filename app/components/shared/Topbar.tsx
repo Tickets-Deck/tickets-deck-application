@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { motion } from "framer-motion";
 
 interface TopbarProps {
     isMobileSidebarOpen: boolean
@@ -48,9 +49,9 @@ const Topbar: FunctionComponent<TopbarProps> = ({ isMobileSidebarOpen, setIsMobi
                 </Link>
                 {
                     onMobile &&
-                    <span className={styles.menu} onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}>
+                    <motion.span whileTap={{ scale: 0.6 }} className={styles.menu} onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}>
                         <HamburgerMenuIcon />
-                    </span>
+                    </motion.span>
                 }
             </div>
         </div>

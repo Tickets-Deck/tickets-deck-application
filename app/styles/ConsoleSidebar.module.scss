@@ -136,16 +136,16 @@
     }
 }
 
-.sidebarOpen {
-    @extend .sidebar;
-    left: 0;
-    // transform: translateX(0);
-    @include bumpInAnimation();
-}
+// .sidebarOpen {
+//     @extend .sidebar;
+//     left: 0;
+//     // transform: translateX(0);
+//     @include bumpInAnimation();
+// }
 
-.sidebarClose {
-    @extend .sidebar;
-    left: -100%;
-    // transform: translateX(-100%);
-    @include bumpOutAnimation();
-}
+// .sidebarClose {
+//     @extend .sidebar;
+//     left: -100%;
+//     // transform: translateX(-100%);
+//     @include bumpOutAnimation();
+// }
