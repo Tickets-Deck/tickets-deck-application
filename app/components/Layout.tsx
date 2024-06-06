@@ -37,7 +37,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     const { status } = useSession();
     const [loaderIsVisible, setLoaderIsVisible] = useState(true);
-    const [selectedTheme, setSelectedTheme] = useState(Theme.Light);
+    const [selectedTheme, setSelectedTheme] = useState(Theme.Dark);
 
     const iswindow = typeof window !== "undefined" ? true : false;
 
@@ -208,21 +208,23 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                             </>
                         }
                         {
-                            isAppPage && <>
-                                <div className="appLayout">
-                                    <Topbar
+                            isAppPage &&
+                            <div className="appLayout">
+                                <Topbar
+                                    isMobileSidebarOpen={isMobileSidebarOpen}
+                                    setIsMobileSidebarOpen={setIsMobileSidebarOpen}
+                                />
+                                <div className="appLayout__body">
+                                    {/* {onDesktop && <Sidebar />} */}
+                                    <Sidebar
                                         isMobileSidebarOpen={isMobileSidebarOpen}
                                         setIsMobileSidebarOpen={setIsMobileSidebarOpen}
                                     />
-                                    <div className="appLayout__body">
-                                        {/* {onDesktop && <Sidebar />} */}
-                                        <Sidebar isMobileSidebarOpen={isMobileSidebarOpen} />
-                                        <div className="innerBody" style={(isEventsPage || isViewEventPage) ? { padding: 0 } : {}}>
-                                            {children}
-                                        </div>
+                                    <div className="innerBody" style={(isEventsPage || isViewEventPage) ? { padding: 0 } : {}}>
+                                        {children}
                                     </div>
                                 </div>
-                            </>
+                            </div>
                         }
                     </ToastContext.Provider>
                 }
