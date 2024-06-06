@@ -19,7 +19,7 @@ const storedAppTheme = isLocalStorageAvailable
 // Define the initial state using the ThemeState interface
 const initialState: ThemeState = storedAppTheme
   ? {appTheme: JSON.parse(storedAppTheme) as Theme}
-  : { appTheme: Theme.Light };
+  : { appTheme: Theme.Dark };
 
 export const themeSlice = createSlice({
   name: "appTheme",
