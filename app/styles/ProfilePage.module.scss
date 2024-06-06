@@ -77,6 +77,10 @@
         display: flex;
         gap: 1.5rem;
         position: relative;
+        @include tablet {
+            flex-direction: column;
+            padding: 1rem;
+        }
 
         .profileInfo {
             display: flex;
@@ -90,6 +94,10 @@
             max-width: 30%;
             // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding-bottom: 1rem;
+            @include tablet {
+                flex-basis: 100%;
+                max-width: 100%;
+            }
 
             .basicInfoSection {
                 // border: 1px solid #000;
@@ -280,16 +288,25 @@
             background-color: $white;
             flex-basis: 70%;
             height: fit-content;
+            @include tablet {
+                flex-basis: 100%;
+            }
             .optionSelectionContainer {
                 width: 100%;
                 display: flex;
                 align-items: center;
+                @include tablet {
+                    overflow-x: auto;
+                }
                 span {
                     padding: 0.8rem 1rem;
                     font-size: $font-size-16 - 0.25rem;
                     opacity: 0.5;
                     cursor: pointer;
                     border-bottom: 0.125rem solid transparent;
+                    @include tablet {
+                        white-space: nowrap;
+                    }
                     &:not(.active):hover {
                         opacity: 1;
                     }
@@ -313,6 +330,10 @@
 
                     .formRow {
                         display: flex;
+                        @include tablet {
+                            flex-direction: column;
+                            gap: 1rem;
+                        }
                         gap: 1.5rem;
                         .formField {
                             width: 100%;
@@ -418,6 +439,17 @@
                         color: $white;
                     }
                 }
+                > .editButton {
+                    @include editButton();
+                    margin-top: 2rem;
+                    background-color: $black;
+                    color: $white;
+                    svg {
+                        path {
+                            fill: $white;
+                        }
+                    }
+                }
             }
         }
     }
@@ -426,5 +458,8 @@
         height: 40vh;
         display: grid;
         place-items: center;
+        @include tablet {
+            height: calc(100vh - 50px);
+        }
     }
 }

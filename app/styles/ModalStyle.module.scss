@@ -61,8 +61,12 @@
         @include modalBumpInAnimation();
 
         @include tablet {
-            width: 100%;
-            max-width: 80%;
+            width: auto;
+            max-width: 90%;
+        }
+
+        @include bigMobilePhone {
+            width: 100% !important;
         }
     }
 }
