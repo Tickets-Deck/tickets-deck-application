@@ -14,29 +14,6 @@ import { ApplicationRoutes } from "../constants/applicationRoutes";
 interface DashboardPageProps {
 }
 
-// export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-
-//     // Get session
-//     const session = await getServerSession(req, res, {});
-
-//     console.log({session});
-
-//     // If session is null...
-//     if (!session) {
-//         // Redirect
-//         return {
-//             redirect: {
-//                 permanent: false,
-//                 destination: '/auth/signin'
-//             }
-//         }
-//     }
-
-//     return {
-//         props: {}
-//     };
-// }
-
 const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement => {
 
     const fetchDashboardInfo = useFetchDashboardInfo();
@@ -48,16 +25,20 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
     const [isLoading, setIsLoading] = useState(true);
 
     async function handleFetchDashboardInfo() {
+
         // Start loader
         setIsLoading(true);
-        try {
-            const response = await fetchDashboardInfo(user?.id as string);
-            setDashboardInfo(response.data);
-        } catch (error) {
-            catchError(error);
-        } finally {
-            setIsLoading(false);
-        }
+
+        await fetchDashboardInfo(user?.id as string)
+            .then((response) => {
+                setDashboardInfo(response.data);
+            })
+            .catch((error) => {
+                catchError(error);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
     useEffect(() => {
@@ -82,7 +63,7 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
             </div>
 
             {
-                !isLoading && dashboardInfo && 
+                !isLoading && dashboardInfo &&
                 <div className={styles.kpiSection}>
                     <Link href={ApplicationRoutes.Events} className={styles.kpi}>
                         <span><EventIcon /></span>
