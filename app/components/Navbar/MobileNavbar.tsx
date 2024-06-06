@@ -189,10 +189,16 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ appTheme, session 
                 </div>
                 <p>Ticketsdeck <br /> Events</p>
             </Link>
-            <motion.div variants={hideNavItemsVariant} className={styles.buttons}>
-                <span onClick={() => dispatch(appTheme == Theme.Light ? updateAppTheme(Theme.Dark) : updateAppTheme(Theme.Light))}>
+            <motion.div variants={hideNavItemsVariant} className={styles.menuItems}>
+                {/* <span onClick={() => dispatch(appTheme == Theme.Light ? updateAppTheme(Theme.Dark) : updateAppTheme(Theme.Light))}>
                     {appTheme === Theme.Light ? <MoonIcon /> : <SunIcon />}
-                </span>
+                </span> */}
+                {
+                    user &&
+                    <Link href={ApplicationRoutes.Profile} className={styles.profilePhoto}>
+                        <Image src={user?.image ?? images.user_avatar} alt="Profile photo" fill sizes="auto" />
+                    </Link>
+                }
                 <span onClick={() => setNavbarIsVisible(true)}><HamburgerMenuIcon /></span>
             </motion.div>
 
