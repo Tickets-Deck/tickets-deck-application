@@ -1,15 +1,14 @@
 "use client"
 import { ReactElement, FunctionComponent, useContext, useState, useEffect } from "react";
 import styles from "../../styles/ProfilePage.module.scss"
-import Image from "next/image";
 import { ToastContext } from "@/app/extensions/toast";
 import { ProfilePageTab } from "@/app/enums/ProfilePageTab";
 import { useFetchUserInformation, useUpdateUserInformation } from "@/app/api/apiClient";
 import { useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
 import { useRouter } from "next/navigation";
-import { UserCredentialsRequest, UserCredentialsResponse, UserCredentialsUpdateRequest } from "@/app/models/IUser";
-import { CheckIcon, CloseIcon, EditIcon } from "@/app/components/SVGs/SVGicons";
+import { UserCredentialsResponse, UserCredentialsUpdateRequest } from "@/app/models/IUser";
+import { EditIcon } from "@/app/components/SVGs/SVGicons";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import PhotoUpload from "@/app/components/Modal/PhotoUpload";
 import UserAvatarContainer from "@/app/components/ProfilePage/UserAvatarContainer";
@@ -20,6 +19,7 @@ import Link from "next/link"
 import { useDispatch } from "react-redux";
 import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import useResponsiveness from "@/app/hooks/useResponsiveness";
 
 interface ProfilePageProps {
 
@@ -32,6 +32,11 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
     const toastHandler = useContext(ToastContext);
     const { push, prefetch } = useRouter();
     const updateUserInformation = useUpdateUserInformation();
+
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     const [isUpdatingUserInformation, setIsUpdatingUserInformation] = useState(false);
     const [currentTab, setCurrentTab] = useState(ProfilePageTab.AccountSettings);
@@ -149,19 +154,14 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
         }
     }, [triggerInfoUpdate]);
 
-    // useEffect(() => {
-    //     if (!session) {
-    //         push('/auth/signin');
-    //     }
-    // }, [session])
-
     return (
         <div className={styles.profilePage}>
             {
                 userInformation &&
                 <>
                     {
-                        isPhotoUploadModalVisible && <PhotoUpload
+                        isPhotoUploadModalVisible &&
+                        <PhotoUpload
                             visibility={isPhotoUploadModalVisible}
                             setVisibility={setIsPhotoUploadModalVisible}
                             handleFetchUserInformation={handleFetchUserInformation}
@@ -194,7 +194,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                 <div className={styles.stat}>
                                     <p>Tickets Sold</p>
                                     <span>{userInformation.ticketsSold}</span>
-                                </div> 
+                                </div>
                                 <div className={styles.stat}>
                                     <p className={styles.userLink}>
                                         <Link target="_blank" href={`${window.location.origin}/u/${userInformation.username ?? userInformation.id}`}>
@@ -213,7 +213,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                 <span className={currentTab === ProfilePageTab.AccountSettings ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.AccountSettings)}>Account Settings</span>
                                 <span className={currentTab === ProfilePageTab.IdentityVerification ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.IdentityVerification)}>Identity Verification</span>
                                 <span className={currentTab === ProfilePageTab.BankInformation ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.BankInformation)}>Bank Information</span>
-                                <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}><EditIcon /> Edit Profile</button>
+                                {onDesktop && <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}><EditIcon /> Edit Profile</button>}
                             </div>
                             <div className={styles.settingsFormContainer}>
                                 {
@@ -244,6 +244,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                         </button>
                                     </div>
                                 }
+                                {isMobile && !isFormFieldsEditable && currentTab === ProfilePageTab.AccountSettings && <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}><EditIcon /> Edit Profile</button>}
                             </div>
                         </div>
                     </div>
