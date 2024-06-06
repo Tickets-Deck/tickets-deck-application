@@ -83,14 +83,14 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ isLightTheme, se
                             </Link>
                     }
                 </div>
-                <span
+                {/* <span
                     className={styles.themeController}
                     onClick={() =>
                         dispatch(appTheme == Theme.Light ?
                             updateAppTheme(Theme.Dark) :
                             updateAppTheme(Theme.Light))}>
                     {appTheme === Theme.Light ? <MoonIcon /> : <SunIcon />}
-                </span>
+                </span> */}
             </div>
         </section>
     );
