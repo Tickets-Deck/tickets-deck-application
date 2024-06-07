@@ -336,3 +336,11 @@ export function useUpdateCustomerEnquiriesStatus() {
 
   return updateCustomerEnquiriesById;
 }
+
+export function useFetchUserRecentTransactions() {
+  async function fetchUserRecentTransactions(userId: string, duration?: string) {
+    return API.get(`${ApiRoutes.UserRecentTransactions}?userId=${userId}${duration ? `&duration=${duration}` : undefined}`);
+  }
+
+  return fetchUserRecentTransactions;
+}
