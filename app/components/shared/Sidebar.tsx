@@ -53,7 +53,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({ isMobileSidebarOpen, setIsMo
     return (
         <motion.div
             initial="closed"
-            variants={mobileMenuVariant({direction: "fromRight", inDelay: 0, outDelay: 0.1})}
+            variants={onMobile ? mobileMenuVariant({direction: "fromRight", inDelay: 0, outDelay: 0.1}) : undefined}
             animate={isMobileSidebarOpen ? "opened" : "closed"}
             className={styles.sidebar}>
             <div className={styles.sidebar__menu}>
