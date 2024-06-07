@@ -69,6 +69,8 @@
                 top: 0;
                 bottom: 0;
                 width: 3px;
+                border-start-end-radius: 8px;
+                border-end-end-radius: 8px;
                 background-color: transparent;
                 transition: all 0.2s cubic-bezier(0.55, 0.055, 0.675, 0.19);
             }

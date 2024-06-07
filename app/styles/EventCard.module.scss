@@ -183,7 +183,7 @@
                     background-color: transparent;
                     cursor: pointer;
                     &:hover {
-                        background-color: rgba($color: var(--white), $alpha: 0.2);
+                        background-color: rgba($color: $white, $alpha: 0.2);
                     }
                     svg {
                         width: 0.8rem;
