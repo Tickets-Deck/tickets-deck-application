@@ -41,7 +41,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
     const userInfo = useSelector((state: RootState) => state.userCredentials.userInfo);
     const [selectedTicketTab, setSelectedTicketTab] = useState(TicketTab.Bought);
     const [isFetchingUserTicketOrders, setIsFetchingUserTicketOrders] = useState(true);
-    const [UserTicketOrder, setUserTicketOrders] = useState<UserTicketOrder[]>([]);
+    const [userTicketOrder, setUserTicketOrders] = useState<UserTicketOrder[]>([]);
 
     // const [selectedTicketOrder, setSelectedTicketOrder] = useState<UserTicketOrder>();
     const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] = useState<TicketPass>();
@@ -224,7 +224,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                             </tr>
 
                             {
-                                UserTicketOrder.map((userTicketOrder, index) => {
+                                userTicketOrder.map((userTicketOrder, index) => {
                                     return (
                                         <tr key={index}>
                                             <td>{userTicketOrder.ticket.event.title}</td>
@@ -261,13 +261,13 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                     </table>
 
                     {
-                        UserTicketOrder.length == 0 && !isFetchingUserTicketOrders &&
+                        userTicketOrder.length == 0 && !isFetchingUserTicketOrders &&
                         <div className={styles.tableInfoUnavailable}>
                             <p>There is no data available</p>
                         </div>
                     }
                     {
-                        UserTicketOrder.length == 0 && isFetchingUserTicketOrders &&
+                        userTicketOrder.length == 0 && isFetchingUserTicketOrders &&
                         <div className={styles.tableLoader}>
                             <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />
                         </div>
