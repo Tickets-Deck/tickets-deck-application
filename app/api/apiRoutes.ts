@@ -92,4 +92,9 @@ export class ApiRoutes {
    * The route to Customer Enquiries endpoint
    */
   static CustomerEnquiries: string = "api/customer-enquiries";
+
+  /**
+   * The route to User Recent Transactions endpoint
+   */
+  static UserRecentTransactions: string = "api/users/recent-transactions";
 }
