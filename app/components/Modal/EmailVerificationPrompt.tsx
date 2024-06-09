@@ -1,6 +1,6 @@
 import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useState } from "react";
 import ModalWrapper from "./ModalWrapper";
-import styles from "@/app/styles/EmailVerificationPrompt.module.scss";
+import styles from "@/app/styles/promptModal.module.scss";
 import { CloseIcon } from "../SVGs/SVGicons";
 import { useResendVerificationLink } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
@@ -11,9 +11,10 @@ interface EmailVerificationPromptProps {
     visibility: boolean
     setVisibility: Dispatch<SetStateAction<boolean>>
     userEmail: string
+    userName: string
 }
 
-const EmailVerificationPrompt: FunctionComponent<EmailVerificationPromptProps> = ({ visibility, setVisibility, userEmail }): ReactElement => {
+const EmailVerificationPrompt: FunctionComponent<EmailVerificationPromptProps> = ({ visibility, setVisibility, userEmail, userName }): ReactElement => {
 
     const resendVerificationLink = useResendVerificationLink();
     const [isResendingEmail, setIsResendingEmail] = useState(false);
@@ -25,12 +26,19 @@ const EmailVerificationPrompt: FunctionComponent<EmailVerificationPromptProps> =
 
         await resendVerificationLink(userEmail)
             .then((response) => {
-                console.log("Resend response: ", response);
+                // console.log("Resend response: ", response);
 
                 if (response.data.error) {
                     // Show error message
                     toast.error("An error occurred while sending the verification link. Please try again.");
+                    return;
                 }
+
+                // Show success message
+                toast.success("Verification link has been sent successfully.", { duration: 10000 });
+
+                // Close the modal
+                setVisibility(false);
             })
             .catch((error) => {
                 console.log("🚀 ~ handleResendVerificationLink ~ error:", error);
@@ -49,13 +57,13 @@ const EmailVerificationPrompt: FunctionComponent<EmailVerificationPromptProps> =
             <div className={styles.emailVerificationPromptModal}>
                 <div className={styles.topAreaSection}>
                     <div className={styles.topArea}>
-                        <h3>Hello Simlex</h3>
+                        <h3>Hello {userName}</h3>
                         <p>Please verify your email to proceed.</p>
                     </div>
                     <span className={styles.closeIcon} onClick={() => setVisibility(false)}><CloseIcon /></span>
                 </div>
                 <div className={styles.actionButton}>
-                    <button onClick={() => handleResendVerificationLink()}>
+                    <button onClick={() => handleResendVerificationLink()} disabled={isResendingEmail}>
                         Get verification link
                         {isResendingEmail && <ComponentLoader isSmallLoader customBackground="#DC143C" lightTheme customLoaderColor="#fff" />}
                     </button>
