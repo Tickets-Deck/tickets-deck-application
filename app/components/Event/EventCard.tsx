@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { FunctionComponent, ReactElement, useContext, Dispatch, SetStateAction } from "react";
+import { FunctionComponent, ReactElement, useContext, Dispatch, SetStateAction, useState } from "react";
 import { DeleteIcon, EditIcon, HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
 import Image from "next/image";
-import images from "../../../public/images";
 import styles from "../../styles/EventCard.module.scss";
 import moment from "moment";
 import { ToastContext } from "../../extensions/toast";
@@ -13,6 +12,7 @@ import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { RootState } from "@/app/redux/store";
 import { useSelector } from "react-redux";
 import { Theme } from "@/app/enums/Theme";
+import { motion } from "framer-motion";
 
 interface EventCardProps {
     event: EventResponse
@@ -34,6 +34,8 @@ const EventCard: FunctionComponent<EventCardProps> = (
     const isMobile = windowRes.width && windowRes.width < 768;
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
     const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
+    const [isEventLiked, setIsEventLiked] = useState(false);
 
     const toasthandler = useContext(ToastContext);
 
@@ -86,7 +88,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
             {/* <div className={styles.backgroundImage}>
                 <Image src={images.ticketbg} alt='Ticket background' />
             </div> */}
-            <span className={styles.event__tag}>Latest</span>
+            {/* <span className={styles.event__tag}>Latest</span> */}
             <div className={styles.event__image}>
                 <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
                     <Image src={event.mainImageUrl} alt='Event flyer' fill />
@@ -112,14 +114,23 @@ const EventCard: FunctionComponent<EventCardProps> = (
                 {(!mobileAndActionButtonDismiss || consoleDisplay) &&
                     <div className={styles.eventInfo__rhs}>
                         <div className={styles.actions}>
-                            <button className={styles.actions__like}><LikeIcon /></button>
+                            <button className={styles.actions__like} onClick={() => setIsEventLiked(!isEventLiked)}>
+                                <motion.span
+                                    style={{ width: "100%", height: "100%", display: "grid", placeItems: "center" }}
+                                    whileTap={{ scale: 3 }}
+                                    transition={{ duration: 0.5 }}>
+                                    <LikeIcon isLiked={isEventLiked} />
+                                </motion.span>
+                            </button>
                             <button
                                 className={styles.actions__share}
                                 onClick={() => shareEvent(`${window.location.origin + ApplicationRoutes.GeneralEvent + event.id}`)}>
                                 <ShareIcon />
                             </button>
                         </div>
-                        <p className={styles.restriction}>{event.allowedGuestType}</p>
+                        <p className={styles.restriction}>
+                            {event.allowedGuestType}
+                        </p>
                     </div>}
             </div>
             <div className={styles.actionBtnContainer}>
