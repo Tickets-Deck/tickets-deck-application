@@ -15,6 +15,7 @@ import { ApplicationContext, ApplicationContextData } from "@/app/context/Applic
 import { useSession } from "next-auth/react";
 import { useFetchEventLikeStatus, useLikeEvent } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
+import EventLikeButton from "../custom/EventLikeButton";
 
 interface EventMainInfoProps {
     appTheme: Theme | null
@@ -106,8 +107,8 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
             .catch((error) => {
                 catchError(error);
             })
-    };  
- 
+    };
+
     // Use useEffect to fetch the event's like status when the component mounts
     useEffect(() => {
         if (session) {
@@ -187,7 +188,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                             <CalenderIcon />
                         </div>
                     </Tooltip>
-                    <Tooltip
+                    {/* <Tooltip
                         position={onMobile ? "top" : onDesktop ? "left" : undefined}
                         tooltipText='Like event' action={() => handleUpdateUserFavouriteEvents(eventInfo.id, isEventLiked ? EventFavoriteAction.Unlike : EventFavoriteAction.Like)}>
                         <div className={styles.actionButton}>
@@ -198,7 +199,8 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                                 <LikeIcon isLiked={isEventLiked} />
                             </motion.span>
                         </div>
-                    </Tooltip>
+                    </Tooltip> */}
+                    <EventLikeButton eventInfo={eventInfo} forEventInfo />
                     <Tooltip
                         position={onMobile ? "top" : onDesktop ? "left" : undefined}
                         tooltipText='Share event'>
