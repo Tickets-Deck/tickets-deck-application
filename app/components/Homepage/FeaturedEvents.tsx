@@ -1,6 +1,6 @@
 "use client"
 
-import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
+import { FunctionComponent, ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import styles from '../../styles/FeaturedEvents.module.scss';
 import Image from 'next/image';
 import images from '../../../public/images';
@@ -14,6 +14,7 @@ import { EventResponse } from '@/app/models/IEvents';
 import ComponentLoader from '../Loader/ComponentLoader';
 import useResponsiveness from '../../hooks/useResponsiveness';
 import { ApplicationRoutes } from '@/app/constants/applicationRoutes';
+import { StorageKeys } from '@/app/constants/storageKeys';
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean
@@ -26,6 +27,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
     const toasthandler = useContext(ToastContext);
     // const [events, setEvents] = useState<EventResponse[]>([]);
     // const [isFetchingEvents, setIsFetchingEvents] = useState(true);
+    const [retrievedFeaturedEvents, setRetrievedFeaturedEvents] = useState<EventResponse[]>();
 
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
@@ -62,6 +64,32 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
             console.log("Web Share API not supported");
         }
     };
+
+    function persistFeaturedEvents() {
+        if (events.length > 0 && !sessionStorage.getItem(StorageKeys.FeaturedEvents)) {
+            sessionStorage.setItem(StorageKeys.FeaturedEvents, JSON.stringify(events.slice(0, 3)));
+        }
+    }
+
+    function retrieveFeaturedEvents() {
+        const _featuredEvents = sessionStorage.getItem(StorageKeys.FeaturedEvents);
+
+        if (_featuredEvents && _featuredEvents.length > 0) {
+            setRetrievedFeaturedEvents(JSON.parse(_featuredEvents));
+            return;
+        }
+
+        setRetrievedFeaturedEvents(events.slice(0, 3));
+    }
+
+    // Use usememo hook to persist the featured events in session storage and only update when events change
+    // useMemo(() => {
+    //     persistFeaturedEvents();
+    // }, [events]);
+
+    // useEffect(() => {
+    //     retrieveFeaturedEvents();
+    // }, []);
 
     return (
         <section className={styles.featuredEvents}>
