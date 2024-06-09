@@ -38,10 +38,10 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                     {/* <Link href='https://www.facebook.com/ticketsdeck0' target="_blank">
                         <span><FacebookIcon /></span>
                     </Link> */}
-                    <Link href='https://twitter.com/theticketsdeck?t=iEC9AjmBaJxk7go7TEXgXQ&s=09' target="_blank">
+                    <Link href='https://x.com/ticketsdeck_e' target="_blank">
                         <span><TwitterIcon /></span>
                     </Link>
-                    <Link href='https://www.instagram.com/theticketsdeck/' target="_blank">
+                    <Link href='https://www.instagram.com/ticketsdeck_e' target="_blank">
                         <span><InstagramIcon /></span>
                     </Link>
                     {/* <Link href='https://www.linkedin.com/company/theticketsdeck/?viewAsMember=true' target="_blank">
