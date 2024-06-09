@@ -1,7 +1,6 @@
 "use client";
 import { FunctionComponent, ReactElement, useContext, useEffect, useState } from "react";
 import styles from "../styles/Events.module.scss";
-import FeaturedEvents from "../components/Homepage/FeaturedEvents";
 import EventsGroup from "../components/events/EventsGroup";
 import { useFetchEvents } from "../api/apiClient";
 import { EventResponse } from "../models/IEvents";
@@ -64,6 +63,10 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
                 title={<h2>Escape the Ordinary: <br /><span>Dive into Event Paradise!</span></h2>}
                 description={<p>Embark on a journey through events that'll transport you to a world of excitement and wonder. <span>Ready to be amazed?</span> 🚀</p>}
             />
+
+            {/* <section>
+                Category
+            </section> */}
 
             {/* <FeaturedEvents
                 isNotHomepage
