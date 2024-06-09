@@ -97,4 +97,9 @@ export class ApiRoutes {
    * The route to User Recent Transactions endpoint
    */
   static UserRecentTransactions: string = "api/users/recent-transactions";
+
+  /**
+   * The route to Like Event endpoint
+   */
+  static LikeEvent: string = "api/events/like";
 }
