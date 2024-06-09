@@ -66,3 +66,8 @@ export type EventResponse = {
   ticketsPurchasedCount: number;
   ticketsPurchased: TicketPurchased[];
 };
+
+export enum EventFavoriteAction {
+    Like = "like",
+    Unlike = "unlike"
+}
