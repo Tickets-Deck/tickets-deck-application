@@ -193,7 +193,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                             src="https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4" />
                     </div>
                     <div className={styles.textContents}>
-                        <span>Time to party! <span className={styles.img}><Image src={images.woman_dancing} alt='Woman dancing' /></span></span>
+                        <span>Time to grab those tickets! <span className={styles.img}><Image src={images.woman_dancing} alt='Woman dancing' /></span></span>
                         <h2>Event Information</h2>
                     </div>
                 </section>
