@@ -13,6 +13,7 @@ import { RootState } from "@/app/redux/store";
 import { useSelector } from "react-redux";
 import { Theme } from "@/app/enums/Theme";
 import { motion } from "framer-motion";
+import EventLikeButton from "../custom/EventLikeButton";
 
 interface EventCardProps {
     event: EventResponse
@@ -114,14 +115,15 @@ const EventCard: FunctionComponent<EventCardProps> = (
                 {(!mobileAndActionButtonDismiss || consoleDisplay) &&
                     <div className={styles.eventInfo__rhs}>
                         <div className={styles.actions}>
-                            <button className={styles.actions__like} onClick={() => setIsEventLiked(!isEventLiked)}>
+                            {/* <button className={styles.actions__like} onClick={() => setIsEventLiked(!isEventLiked)}>
                                 <motion.span
                                     style={{ width: "100%", height: "100%", display: "grid", placeItems: "center" }}
                                     whileTap={{ scale: 3 }}
                                     transition={{ duration: 0.5 }}>
                                     <LikeIcon isLiked={isEventLiked} />
                                 </motion.span>
-                            </button>
+                            </button> */}
+                            <EventLikeButton eventInfo={event} forEventCard />
                             <button
                                 className={styles.actions__share}
                                 onClick={() => shareEvent(`${window.location.origin + ApplicationRoutes.GeneralEvent + event.id}`)}>
