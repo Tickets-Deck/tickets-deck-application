@@ -27,11 +27,10 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-
         // If email or password is missing, return null to display an error
         if (!credentials?.email || !credentials.password) {
-            // Throw an error to display an error message
-            throw new Error("Please provide email and password");
+          // Throw an error to display an error message
+          throw new Error("Please provide email and password");
         }
 
         // Check if user exists in database checking each user's email if it matches the email provided
@@ -42,8 +41,10 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
-            // Throw an error to display an error message
-            throw new Error("User account not found. Please sign up, or check your email and try again.");
+          // Throw an error to display an error message
+          throw new Error(
+            "User account not found. Please sign up, or check your email and try again."
+          );
         }
 
         // Check that password matches
@@ -53,8 +54,10 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!isPasswordValid) {
-            // Throw an error to display an error message
-            throw new Error("Incorrect password. Please check your password and try again.");
+          // Throw an error to display an error message
+          throw new Error(
+            "Incorrect password. Please check your password and try again."
+          );
         }
 
         // Return user object to be stored in JWT
@@ -204,7 +207,7 @@ export const authOptions: NextAuthOptions = {
   },
   events: {
     async signIn(message) {
-      // console.log("Sign In Event", { message });
+    //   console.log("Sign In Event", { message });
     },
     async signOut(message) {
       // Delete the session cookie
