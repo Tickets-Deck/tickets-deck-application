@@ -1,6 +1,6 @@
 "use client"
 import type { Metadata } from 'next'
-import { FunctionComponent, ReactElement, ReactNode, useEffect, useState } from 'react';
+import { FunctionComponent, ReactElement, ReactNode, useContext, useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { ToastContext } from '../extensions/toast';
@@ -20,8 +20,9 @@ import { Toaster } from "sonner";
 import useResponsiveness from '../hooks/useResponsiveness';
 import { useSession } from 'next-auth/react';
 import { Theme } from '../enums/Theme';
-import { GlobalProvider } from './Provider';
 import NextTopLoader from 'nextjs-toploader';
+import UserLoginPrompt from './Modal/UserLoginPrompt';
+import { ApplicationContext, ApplicationContextData } from '../context/ApplicationContext';
 
 export const metadata: Metadata = {
     title: 'Ticketsdeck Events',
@@ -82,6 +83,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     // const toastContext = useContext(ToastContext);
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+    const { isUserLoginPromptVisible, toggleUserLoginPrompt } = useContext(ApplicationContext) as ApplicationContextData;
 
     const isAppPage = pathname.includes('/app');
     const isEventsPage = pathname == '/app/events';
@@ -185,6 +187,11 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                     speed={200}
                     shadow="0 0 10px #d39efa,0 0 5px #5116a2"
                 />
+                <UserLoginPrompt
+                    visibility={isUserLoginPromptVisible}
+                    setVisibility={toggleUserLoginPrompt}
+                />
+
                 {
                     !loaderIsVisible &&
                     <ToastContext.Provider value={{ toastOptions, logSuccess, logInfo, logWarning, logError, closeToast }}>
@@ -231,7 +238,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                 {
                     loaderIsVisible && <div className="splashScreen">
                         <div className="image">
-                            <Image src={images.logoWhite} alt='logo' />
+                            <Image src={images.logoWhite} priority alt='logo' />
                         </div>
                     </div>
                 }
