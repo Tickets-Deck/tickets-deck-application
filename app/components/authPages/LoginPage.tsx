@@ -48,11 +48,8 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
     };
 
     async function handleFetchUserInformation() {
-        // console.log("Session on layout: ", session);
-
         await fetchUserInformation(session?.user.id as string)
             .then((response) => {
-                // console.log("User information on layout: ", response.data);
                 // Save to redux
                 dispatch(updateUserCredentials(response.data));
             })
@@ -99,10 +96,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
 
         await signIn('credentials', { ...userInformation })
             .then(async (response) => {
-                console.log("response: ", response);
-
-                // Fetch user information
-                await handleFetchUserInformation();
+                // console.log("login response: ", response);
 
                 // If we have an error
                 if (response?.error && !response.error.includes("prisma.users.findUnique" || "Authentication failed")) {
@@ -133,9 +127,11 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         if (status === "authenticated") {
             // Refresh the page so we get the new session state to the server side
             router.refresh();
+            // Fetch user information
+            handleFetchUserInformation();
             // Clear newly created user email
             sessionStorage.removeItem(StorageKeys.NewlyCreatedUserEmail);
-            // // Push to homepage 
+            // Push to homepage 
             router.push(ApplicationRoutes.Home);
         }
     }, [status]);
