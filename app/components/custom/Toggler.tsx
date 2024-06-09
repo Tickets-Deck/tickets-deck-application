@@ -18,7 +18,7 @@ const Toggler: FunctionComponent<TogglerProps> = (
         <div
             className={styles.togglerContainer}
             style={{ '--main-color': `#${mainColor}`, '--disabled-color': `#${disabledColor}`, '--toggler-indicator-color': `#${togglerIndicatorColor}` } as CSSProperties}>
-            <input type='checkbox' checked={checkboxValue} onChange={(e) => setCheckboxValue(e.currentTarget.checked)} />
+            <input type='checkbox' name="checkbox" checked={checkboxValue} onChange={(e) => setCheckboxValue(e.currentTarget.checked)} />
             <span className={styles.toggler}>
                 <span className={styles.togglerIndicator}></span>
             </span>
