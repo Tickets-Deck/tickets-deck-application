@@ -92,12 +92,15 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
                         </div>
                         <div className={styles.ticketsContainer}>
                             <h2>Tickets</h2>
+                            <p>Primary email: {orderInformation?.contactEmail}</p>
                             <div className={styles.tickets}>
                                 {
                                     orderInformation?.orderedTickets.map((orderedTickets, index) => (
                                         <div className={styles.ticket} key={index}>
                                             <h3>{orderedTickets.ticket.name}</h3>
-                                            <p>{orderedTickets.associatedEmail}</p>
+                                            <p style={orderedTickets.associatedEmail ? {} : { fontSize: "14px", fontStyle: "italic", opacity: 0.5 }}>
+                                                {orderedTickets.associatedEmail ?? "Sent to primary email"}
+                                            </p>
                                             <button><DownloadIcon /></button>
                                         </div>
                                     ))

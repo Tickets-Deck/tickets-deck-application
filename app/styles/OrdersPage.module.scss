@@ -89,6 +89,13 @@
             > h2 {
                 font-size: $font-size-24;
                 font-weight: $fontWeight-500;
+                margin-bottom: 0.25rem;
+            }
+            > p {
+                font-size: $font-size-16 - .125rem;
+                font-weight: $fontWeight-400;
+                color: $white;
+                opacity: 0.7;
                 margin-bottom: 1rem;
             }
             .tickets {
