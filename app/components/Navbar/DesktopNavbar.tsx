@@ -57,7 +57,7 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ isLightTheme, se
                     {
                         user ? <>
                             <div className={styles.profileCircle}>
-                                {<Image src={user?.image ?? images.user_avatar} alt='Profile picture' fill /> ?? <UserIcon />}
+                                {<Image src={user?.image ?? images.user_avatar} alt='Profile picture' fill sizes="auto" /> ?? <UserIcon />}
                             </div>
                             <h3>{user?.name ?? 'Account'}</h3>
                             <span className={styles.dropdownIcon}>
