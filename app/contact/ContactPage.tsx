@@ -84,7 +84,7 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
                         assist you with any concerns you may have.
                     </p>
                     <div className={styles.links}>
-                        <Link href="mailto:contact@company.com"><MailIcon />events.ticketsdeck@gmail.com</Link>
+                        <Link href="mailto:ticketsdeckevents@gmail.com"><MailIcon />ticketsdeckevents@gmail.com</Link>
                         <Link href="tel:8065926316"><PhoneIcon />(234) 806 592 6316</Link>
                         <Link href="tel:9057977870"><PhoneIcon />(234) 905 797 7870</Link>
                         <Link href={"https://www.google.com/maps/search/?api=1&query=Lagos,+Nigeria"}><LocationIcon />Lagos, Nigeria</Link>
