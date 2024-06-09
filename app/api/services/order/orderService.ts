@@ -194,7 +194,7 @@ export async function initializeOrder(req: NextRequest) {
     await processEmailNotification(paymentResult as Paystack.Response, baseUrl);
   }
 
-  console.log("🚀 ~ initializeOrder ~ ticketOrder:", ticketOrder)
+//   console.log("🚀 ~ initializeOrder ~ ticketOrder:", ticketOrder)
 
   // Return the created ticket order
   return { data: ticketOrder };
@@ -244,7 +244,7 @@ export async function processFreeOrder(
         },
       });
   
-      console.log("orderedTickets", orderedTickets);
+    //   console.log("orderedTickets", orderedTickets);
   
     //   const existingPayment = await prisma.payments.findFirst({
     //     where: {
