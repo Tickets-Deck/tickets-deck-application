@@ -1,5 +1,5 @@
 import { ApplicationError } from "@/app/constants/applicationError";
-import { EventRequest } from "@/app/models/IEvents";
+import { EventFavoriteAction, EventRequest } from "@/app/models/IEvents";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
@@ -612,4 +612,176 @@ export async function deleteEvent(req: NextRequest) {
 
   // Return success message
   return { message: "Event deleted successfully" };
+}
+
+export async function likeEvent(req: NextRequest) {
+  // Get the search params from the request url
+  const searchParams = new URLSearchParams(req.url.split("?")[1]);
+
+  // Get the userId from the search params
+  const userId = searchParams.get("userId");
+
+  // Get the eventId from the search params
+  const eventId = searchParams.get("eventId");
+
+  // Get the action from the search params
+  const action = searchParams.get("action");
+
+  // If a userId is not provided, return 400
+  if (!userId) {
+    return {
+      error: ApplicationError.UserIdIsRequired.Text,
+      errorCode: ApplicationError.UserIdIsRequired.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // If an eventId is not provided, return 400
+  if (!eventId) {
+    return {
+      error: ApplicationError.EventIdIsRequired.Text,
+      errorCode: ApplicationError.EventIdIsRequired.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // Find the user with the provided userId
+  const user = await prisma.users.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  // If user is not found, return 404
+  if (!user) {
+    return {
+      error: ApplicationError.UserWithIdNotFound.Text,
+      errorCode: ApplicationError.UserWithIdNotFound.Code,
+      statusCode: StatusCodes.NotFound,
+    };
+  }
+
+  // Find the event with the provided eventId
+  const event = await prisma.events.findUnique({
+    where: {
+      id: eventId,
+    },
+  });
+
+  // If event is not found, return 404
+  if (!event) {
+    return {
+      error: ApplicationError.EventWithIdNotFound.Text,
+      errorCode: ApplicationError.EventWithIdNotFound.Code,
+      statusCode: StatusCodes.NotFound,
+    };
+  }
+
+  // If the action is unlike, delete the user's like on the event
+  if (action === EventFavoriteAction.Unlike) {
+    // Check the database for the like status of the event by the user
+    const likedEvent = await prisma.favorites.findFirst({
+      where: {
+        userId: user.id,
+        eventId: event.id,
+      },
+    });
+
+    // Delete the user's like on the event
+    await prisma.favorites.delete({
+      where: {
+        id: likedEvent?.id,
+      },
+    });
+
+    // Return success message
+    return { message: "Event unliked successfully" };
+  }
+
+  // Else, like the event
+
+  // Update the user's liked events ~ favourites
+  await prisma.favorites.create({
+    data: {
+      userId: user.id,
+      eventId: event.id,
+    },
+  });
+
+  // Return success message
+  return { message: "Event liked successfully" };
+}
+
+export async function fetchEventLikeStatus(req: NextRequest) {
+  // Get the search params from the request url
+  const searchParams = new URLSearchParams(req.url.split("?")[1]);
+
+  // Get the userId from the search params
+  const userId = searchParams.get("userId");
+
+  // Get the eventId from the search params
+  const eventId = searchParams.get("eventId");
+
+  // If a userId is not provided, return 400
+  if (!userId) {
+    return {
+      error: ApplicationError.UserIdIsRequired.Text,
+      errorCode: ApplicationError.UserIdIsRequired.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // If an eventId is not provided, return 400
+  if (!eventId) {
+    return {
+      error: ApplicationError.EventIdIsRequired.Text,
+      errorCode: ApplicationError.EventIdIsRequired.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // Find the user with the provided userId
+  const user = await prisma.users.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  // If user is not found, return 404
+  if (!user) {
+    return {
+      error: ApplicationError.UserWithIdNotFound.Text,
+      errorCode: ApplicationError.UserWithIdNotFound.Code,
+      statusCode: StatusCodes.NotFound,
+    };
+  }
+
+  // Find the event with the provided eventId
+  const event = await prisma.events.findUnique({
+    where: {
+      id: eventId,
+    },
+  });
+
+  // If event is not found, return 404
+  if (!event) {
+    return {
+      error: ApplicationError.EventWithIdNotFound.Text,
+      errorCode: ApplicationError.EventWithIdNotFound.Code,
+      statusCode: StatusCodes.NotFound,
+    };
+  }
+
+  // Check the database for the like status of the event by the user
+  const likedEvent = await prisma.favorites.findFirst({
+    where: {
+      userId: user.id,
+      eventId: event.id,
+    },
+  });
+
+  const userLikedEvent = likedEvent ? true : false;
+
+  // Return the like status
+  return { data: { userLikedEvent } };
 }
