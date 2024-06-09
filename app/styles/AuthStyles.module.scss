@@ -144,6 +144,10 @@
                 .rowFormFieldContainer {
                     display: flex;
                     gap: 0.5rem;
+                    @include tablet {
+                        gap: 1rem;
+                        flex-direction: column;
+                    }
                 }
                 .formFieldContainer {
                     display: flex;
