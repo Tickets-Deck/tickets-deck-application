@@ -11,4 +11,9 @@ export class StorageKeys {
    * Key for the user selected theme
    */
   static readonly AppTheme = "Theme";
+
+  /**
+   * Key for the featured events
+   */
+  static readonly FeaturedEvents = "FeaturedEvents";
 }
