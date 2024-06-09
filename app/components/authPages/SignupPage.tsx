@@ -3,19 +3,17 @@ import { ReactElement, FunctionComponent, useState, FormEvent, useContext, useEf
 import styles from "../../styles/AuthStyles.module.scss";
 import Image from "next/image";
 import images from "../../../public/images";
-import { EmailIcon, EyeIcon, FacebookIcon, GoogleIcon, PasswordIcon, UserIcon } from "../SVGs/SVGicons";
+import { EmailIcon, EyeIcon, GoogleIcon, PasswordIcon, UserIcon } from "../SVGs/SVGicons";
 import Link from "next/link";
 import { UserCredentialsRequest } from "../../models/IUser";
 import { emailRegex } from "../../constants/emailRegex";
 import { ToastContext } from "../../extensions/toast";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { useRouter } from "next/navigation";
-import { signUp } from "../../actions/users/signUp";
 import { signIn, useSession } from "next-auth/react";
 import { useCreateUser } from "@/app/api/apiClient";
 import { toast } from "sonner";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
-import { StorageKeys } from "@/app/constants/storageKeys";
 
 interface SignupPageProps {
 
