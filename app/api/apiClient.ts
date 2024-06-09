@@ -7,7 +7,7 @@ import {
   UserCredentialsUpdateRequest,
   UsernameRequest,
 } from "../models/IUser";
-import { EventRequest, EventResponse } from "../models/IEvents";
+import { EventRequest } from "../models/IEvents";
 import { TicketOrderRequest } from "../models/ITicketOrder";
 import { InitializePayStack } from "../models/IInitializePayStack";
 import { TicketCategory } from "../enums/ITicket";
@@ -338,9 +338,25 @@ export function useUpdateCustomerEnquiriesStatus() {
 }
 
 export function useFetchUserRecentTransactions() {
-  async function fetchUserRecentTransactions(userId: string, duration?: string) {
-    return API.get(`${ApiRoutes.UserRecentTransactions}?userId=${userId}${duration ? `&duration=${duration}` : undefined}`);
-  }
+    async function fetchUserRecentTransactions(userId: string, duration?: string) {
+        return API.get(`${ApiRoutes.UserRecentTransactions}?userId=${userId}${duration ? `&duration=${duration}` : undefined}`);
+    }
 
   return fetchUserRecentTransactions;
+}
+
+export function useFetchEventLikeStatus() {
+    async function fetchEventLikeStatus(userId: string, eventId: string) {
+        return API.get(`${ApiRoutes.LikeEvent}?userId=${userId}&eventId=${eventId}`);
+    }
+    
+    return fetchEventLikeStatus;
+}
+
+export function useLikeEvent() {
+    async function likeEvent(userId: string, eventId: string, action: string) {
+        return API.post(`${ApiRoutes.LikeEvent}?userId=${userId}&eventId=${eventId}&action=${action}`);
+    }
+
+    return likeEvent;
 }
