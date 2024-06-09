@@ -58,7 +58,7 @@ const TeamSection: FunctionComponent<TeamSectionProps> = (): ReactElement => {
         },
         {
             name: "Oluwashola Afolabi",
-            role: "Product Designer",
+            role: "Brand & Product Designer",
             image: images.sholly,
             socials: [
                 {
