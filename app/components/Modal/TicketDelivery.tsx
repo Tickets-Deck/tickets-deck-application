@@ -42,8 +42,6 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     const createTicketOrder = useCreateTicketOrder();
     const initializePaystackPayment = useInitializePaystackPayment();
 
-    const toastHandler = useContext(ToastContext);
-
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
@@ -54,9 +52,15 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     // }, [eventTickets]);
 
     const userInfo = useSelector((state: RootState) => state.userCredentials.userInfo);
-    // console.log("🚀 ~ userInfo:", userInfo)
 
-    // console.log({ userInfo });
+    // useEffect(() => {
+    //     alert("user profile information" + JSON.stringify(userProfileInformation));
+    // }, [userProfileInformation]);
+    // useEffect(() => {
+    //     alert("user info" + JSON.stringify(userInfo));
+    // }, [userInfo]);
+
+    // console.log("🚀 ~ userInfo:", userInfo)
 
     const [ticketPricings, setTicketPricings] = useState<RetrievedITicketPricing[]>([]);
     // const [ticketsTotalPrice, setTicketsTotalPrice] = useState<number>(0);
@@ -480,7 +484,12 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                     <label htmlFor="coupon">Do you have any coupon code?</label>
                                     <div className={styles.ticketCouponInputFieldContainer}>
                                         <div className={styles.inputContainer}>
-                                            <input tabIndex={1} type="text" value={couponCodeValue} maxLength={10}
+                                            <input
+                                                tabIndex={1}
+                                                type="text"
+                                                id="coupon"
+                                                value={couponCodeValue}
+                                                maxLength={10}
                                                 onChange={(e) => {
                                                     setCouponCodeValue(e.target.value.trim())
                                                     setCodeValidationStatus(ValidationStatus.NotInitiated)
@@ -527,7 +536,6 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                             width: '100%'
                         }}>
                     <div className={styles.ticketDeliveryContainer}>
-                        {/* <button><CloseIcon /> Close</button> */}
                         <div className={styles.lhs}>
                             <div className={styles.top}>
                                 <h3>Ticket Delivery Details</h3>
@@ -579,7 +587,11 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                 <label htmlFor="coupon">Do you have any coupon code?</label>
                                 <div className={styles.ticketCouponInputFieldContainer}>
                                     <div className={styles.inputContainer}>
-                                        <input type="text" value={couponCodeValue} maxLength={10}
+                                        <input
+                                            type="text"
+                                            id="coupon"
+                                            value={couponCodeValue}
+                                            maxLength={10}
                                             onChange={(e) => {
                                                 setCouponCodeValue(e.target.value.trim())
                                                 setCodeValidationStatus(ValidationStatus.NotInitiated)
@@ -622,6 +634,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                     visibility={emailVerificationPromptIsVisible}
                     setVisibility={setEmailVerificationPromptIsVisible}
                     userEmail={userInfo?.email as string}
+                    userName={userInfo?.firstName as string}
                 />
             }
         </>
