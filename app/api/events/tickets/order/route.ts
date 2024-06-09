@@ -2,11 +2,7 @@ import { validateRequestMethod } from "@/app/api/services/api-services/requestMe
 import { initializeOrder } from "@/app/api/services/order/orderService";
 import { customNextResponseError } from "@/app/api/utils/customNextResponseError";
 import { ApplicationError } from "@/app/constants/applicationError";
-import { OrderStatus } from "@/app/enums/IOrderStatus";
-import { PaymentStatus } from "@/app/enums/IPaymentStatus";
 import { StatusCodes } from "@/app/models/IStatusCodes";
-import { TicketOrderRequest } from "@/app/models/ITicketOrder";
-import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
