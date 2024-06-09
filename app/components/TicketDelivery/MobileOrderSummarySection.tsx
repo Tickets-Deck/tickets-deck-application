@@ -18,7 +18,7 @@ const MobileOrderSummarySection: FunctionComponent<MobileOrderSummarySectionProp
         <>
             <div className={styles.eventImageContainer}>
                 <div className={styles.eventImage}>
-                    <Image src={eventInfo?.mainImageUrl as string} fill alt="Flyer" />
+                    {eventInfo?.mainImageUrl && <Image src={eventInfo.mainImageUrl as string} fill alt="Flyer" />}
                 </div>
                 <div className={styles.eventDetails}>
                     <h3>{eventInfo?.title}</h3>
