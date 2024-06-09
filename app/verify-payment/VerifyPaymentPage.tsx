@@ -59,25 +59,22 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
 
         await verifyPaystackPayment(trxref as string)
             .then((response) => {
-                // console.log(response);
-                // console.log(response.data.data.metadata.ticketOrderId);
-                const ticketOrderId = response.data.metadata.ticketOrderId;
+                if (response.data.message && response.data.ticketOrderId && response.data.message == "Payment successfully processed.") {
+                    const ticketOrderId = response.data?.ticketOrderId;
+                    // Set payment status state
+                    setPaymentStatus(PaymentStatus.Success);
+                    // Route to order page
+                    router.push(`/order/${ticketOrderId}`);
+                    return;
+                }
+
+                const ticketOrderId = response.data?.metadata.ticketOrderId;
 
                 // Set payment status state
                 setPaymentStatus(PaymentStatus.Success);
 
-                /// TODO: Show a success message to the user and action button to redirect to user dashboard or home page
-
                 // Route to order page
                 router.push(`/order/${ticketOrderId}`);
-
-                // Route to user dashboard
-                // if (userInfo) {
-                //     router.push('/app/tickets?t=1');
-                //     return;
-                // } else {
-                //     router.push(ApplicationRoutes.Home);
-                // }
             })
             .catch((error) => {
                 if (error.response) {
