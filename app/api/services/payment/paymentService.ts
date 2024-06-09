@@ -383,8 +383,8 @@ export async function verifyPayment(req: NextRequest) {
 
   if (existingPayment) {
     return {
-      message:
-        "Your payment has already been successfully processed. You are all set for the event.",
+      ticketOrderId: existingPayment.ticketOrderId,
+      message: "Payment successfully processed.",
     };
   }
 
