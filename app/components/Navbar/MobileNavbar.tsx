@@ -60,7 +60,6 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ appTheme, session 
             initial="closed"
             animate={navbarIsVisible ? "opened" : "closed"}
             className={styles.mobileNavbarContainer}>
-
             <Link href={ApplicationRoutes.Home}>
                 <div className={styles.logo}>
                     <Image src={images.logoWhite} alt='Logo' />
