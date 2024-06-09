@@ -41,6 +41,7 @@ export async function processEmailNotification(
       orderId: ticketOrder.orderId,
     },
   });
+//   console.log("🚀 ~ orderedTickets:", orderedTickets);
 
   // Check if we have only one ordered ticket, and if the associated email for the ordered ticket is the same as the contact email
   // If this is the case, we can send one email to the contact email
@@ -48,12 +49,13 @@ export async function processEmailNotification(
 
   if (
     orderedTickets.length === 1 &&
-    orderedTickets[0].associatedEmail == ticketOrder.contactEmail
+    (orderedTickets[0].associatedEmail == ticketOrder.contactEmail ||
+      !orderedTickets[0].associatedEmail)
   ) {
     const orderedTicket = orderedTickets[0];
 
     await sendMail({
-      to: orderedTicket.associatedEmail as string,
+      to: orderedTicket.contactEmail as string,
       name: "Ticket Order",
       subject: ticketOrder.event.title,
       body: compileTicketOrderTemplate({
@@ -104,11 +106,11 @@ export async function processEmailNotification(
     // ],
   });
 
-  // If we have more than one ticket, we can send an email to each associated email
+  // If we have more than one ticket, we can send an email to each associated email of the ticket order if it exists
   for (const ticket of orderedTickets) {
-    // await sendMail(ticket.contactEmail);
+    // If the associated email is the same as the contact email, or the associated email does not exist, we can skip sending an email to the associated email
     if (!ticket.associatedEmail) {
-      throw new Error("Ticket does not have an associated email");
+      continue;
     }
 
     await sendMail({
