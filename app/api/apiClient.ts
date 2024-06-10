@@ -14,6 +14,7 @@ import { TicketCategory } from "../enums/ITicket";
 import { TicketRequest, TicketResponse } from "../models/ITicket";
 import { FollowsActionType } from "../models/IFollows";
 import { CustomerEnquiry } from "../models/ICustomerEnquiries";
+import { PasswordResetLinkRequest, PasswordResetRequest } from "../models/IPassword";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_TEST,
@@ -338,25 +339,52 @@ export function useUpdateCustomerEnquiriesStatus() {
 }
 
 export function useFetchUserRecentTransactions() {
-    async function fetchUserRecentTransactions(userId: string, duration?: string) {
-        return API.get(`${ApiRoutes.UserRecentTransactions}?userId=${userId}${duration ? `&duration=${duration}` : undefined}`);
-    }
+  async function fetchUserRecentTransactions(
+    userId: string,
+    duration?: string
+  ) {
+    return API.get(
+      `${ApiRoutes.UserRecentTransactions}?userId=${userId}${
+        duration ? `&duration=${duration}` : undefined
+      }`
+    );
+  }
 
   return fetchUserRecentTransactions;
 }
 
 export function useFetchEventLikeStatus() {
-    async function fetchEventLikeStatus(userId: string, eventId: string) {
-        return API.get(`${ApiRoutes.LikeEvent}?userId=${userId}&eventId=${eventId}`);
-    }
-    
-    return fetchEventLikeStatus;
+  async function fetchEventLikeStatus(userId: string, eventId: string) {
+    return API.get(
+      `${ApiRoutes.LikeEvent}?userId=${userId}&eventId=${eventId}`
+    );
+  }
+
+  return fetchEventLikeStatus;
 }
 
 export function useLikeEvent() {
-    async function likeEvent(userId: string, eventId: string, action: string) {
-        return API.post(`${ApiRoutes.LikeEvent}?userId=${userId}&eventId=${eventId}&action=${action}`);
-    }
+  async function likeEvent(userId: string, eventId: string, action: string) {
+    return API.post(
+      `${ApiRoutes.LikeEvent}?userId=${userId}&eventId=${eventId}&action=${action}`
+    );
+  }
 
-    return likeEvent;
+  return likeEvent;
+}
+
+export function useRequestPasswordResetLink() {
+  async function requestPasswordResetLink(data: PasswordResetLinkRequest) {
+    return API.post(ApiRoutes.UserPasswordResetLink, data);
+  }
+
+  return requestPasswordResetLink;
+}
+
+export function useResetPassword() {
+    async function resetPassword(data: PasswordResetRequest) {
+        return API.post(ApiRoutes.UserPasswordReset, data);
+    }
+    
+    return resetPassword;
 }
