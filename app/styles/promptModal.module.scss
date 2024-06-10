@@ -7,6 +7,11 @@
     padding: 1.5rem;
     border-radius: 20px;
     background-color: $container-grey;
+    background: linear-gradient(180deg, $container-grey-20 0%, $container-grey 100%);
+    @include bigMobilePhone {
+        width: 100%;
+        max-width: 100%;
+    }
 
     .topAreaSection {
         display: flex;
