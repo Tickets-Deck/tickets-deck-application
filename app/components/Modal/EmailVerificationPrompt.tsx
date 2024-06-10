@@ -54,7 +54,7 @@ const EmailVerificationPrompt: FunctionComponent<EmailVerificationPromptProps> =
 
     return (
         <ModalWrapper disallowOverlayFunction visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
-            <div className={styles.emailVerificationPromptModal}>
+            <div className={styles.promptModal}>
                 <div className={styles.topAreaSection}>
                     <div className={styles.topArea}>
                         <h3>Hello {userName}</h3>
