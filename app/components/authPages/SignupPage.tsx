@@ -14,6 +14,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useCreateUser } from "@/app/api/apiClient";
 import { toast } from "sonner";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import ImagesDisplay from "./ImagesDisplay";
 
 interface SignupPageProps {
 
@@ -291,37 +292,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                         </div>
                     </div>
                 </form>
-                <div className={styles.imagesDisplay}>
-                    <span>
-                        <Image src={images.logoPurple} alt="Logo" />
-                    </span>
-                    <div className={styles.images}>
-                        <div className={styles.column}>
-                            <span><Image src={images.ImageBg6} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg2} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg3} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg1} alt="Event" fill /></span>
-                        </div>
-                        <div className={styles.column}>
-                            <span><Image src={images.ImageBg5} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg6} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg3} alt="Event" fill /></span>
-                        </div>
-                        <div className={styles.column}>
-                            <span><Image src={images.ImageBg1} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg3} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg5} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                        </div>
-                        <div className={styles.column}>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                        </div>
-                    </div>
-                </div>
+                <ImagesDisplay />
             </div>
         </div>
     );
