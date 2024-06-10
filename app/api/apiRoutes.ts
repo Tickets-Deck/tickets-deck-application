@@ -102,4 +102,20 @@ export class ApiRoutes {
    * The route to Like Event endpoint
    */
   static LikeEvent: string = "api/events/like";
+
+  /**
+   * The route to Request User Password Reset Link endpoint
+   */
+  static UserPasswordResetLink: string =
+    "api/users/password/request-reset-link";
+
+  /**
+   * The route to User Password Reset endpoint
+   */
+  static UserPasswordReset: string = "api/users/password/reset";
+
+  /**
+   * The route to User Password Change endpoint
+   */
+  static UserPasswordChange: string = "api/users/password/change";
 }
