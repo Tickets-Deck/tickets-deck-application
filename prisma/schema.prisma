@@ -12,22 +12,24 @@ datasource db {
 }
 
 model Users {
-    id                      String    @id @default(uuid())
-    email                   String    @unique
-    emailVerified           Boolean   @default(false)
-    firstName               String
-    lastName                String
-    username                String?   @unique
-    profilePhoto            String?
-    profilePhotoId          String?
-    coverPhoto              String?
-    coverPhotoId            String?
-    phone                   String?
-    password                String
-    occupation              String?
-    bio                     String?
-    verificationToken       String?
-    verificationTokenExpiry DateTime?
+    id                       String    @id @default(uuid())
+    email                    String    @unique
+    emailVerified            Boolean   @default(false)
+    firstName                String
+    lastName                 String
+    username                 String?   @unique
+    profilePhoto             String?
+    profilePhotoId           String?
+    coverPhoto               String?
+    coverPhotoId             String?
+    phone                    String?
+    password                 String
+    occupation               String?
+    bio                      String?
+    verificationToken        String?
+    verificationTokenExpiry  DateTime?
+    passwordResetToken       String?
+    passwordResetTokenExpiry DateTime?
 
     facebookUrl  String?
     twitterUrl   String?
