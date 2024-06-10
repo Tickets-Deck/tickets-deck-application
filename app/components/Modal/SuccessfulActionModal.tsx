@@ -10,6 +10,7 @@ interface SuccessfulActionModalProps {
 const SuccessfulActionModal: FunctionComponent<SuccessfulActionModalProps> = ({ visibility, setVisibility }): ReactElement => {
     return (
         <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
+            <>&nbsp;</>
             {/* <div className={styles.loginPromptModal}>
                 <div className={styles.topAreaSection}>
                     <div className={styles.topArea}>
