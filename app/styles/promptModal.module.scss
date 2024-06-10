@@ -1,7 +1,7 @@
 @import "./variables";
 @import "./reusables";
 
-.emailVerificationPromptModal, .loginPromptModal {
+.promptModal {
     width: 21.875rem;
     max-width: 21.875rem;
     padding: 1.5rem;
@@ -34,6 +34,28 @@
         }
         .closeIcon {
             @include closeIcon($white);
+        }
+    }
+    .content {
+        margin-top: 1rem;
+        h4 {
+            font-size: $font-size-16 - .125rem;
+            font-weight: $fontWeight-400;
+            margin-bottom: 0.25rem;
+        }
+        p, li {
+            font-size: $font-size-16 - .25rem;
+            font-weight: $fontWeight-300;
+            line-height: 20px;
+            color: $grey;
+            opacity: 0.8;
+            text-decoration: none;
+            span {
+                color: $primary-color-sub; 
+            }
+        }
+        ul {
+            padding-left: 10px;
         }
     }
     .actionButton {
