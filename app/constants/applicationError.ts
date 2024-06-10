@@ -173,6 +173,14 @@ export class ApplicationError extends BaseApplicationError {
     Code: "USER_1016",
   };
 
+  /**
+   * The error message for ~ User signed up with third party social media
+   */
+  static UserSignedUpWithSocialMedia: IApplicationError = {
+    Text: "User signed up with third party social media",
+    Code: "USER_1017",
+  };
+
   //#endregion
 
   //#region Email Errors
@@ -515,6 +523,58 @@ export class ApplicationError extends BaseApplicationError {
   static TransactionReferenceIsRequired: IApplicationError = {
     Text: "Transaction reference is required",
     Code: "PAYMENT_1001",
+  };
+
+  //#endregion
+
+  //#region Password Errors
+
+  /**
+   * The error message for ~ Password is required
+   */
+  static PasswordIsRequired: IApplicationError = {
+    Text: "Password is required",
+    Code: "PASSWORD_1000",
+  };
+
+  /**
+   * The error message for ~ Password is not valid
+   */
+  static PasswordIsNotValid: IApplicationError = {
+    Text: "Password is not valid",
+    Code: "PASSWORD_1001",
+  };
+
+  /**
+   * The error message for ~ Passwords do not match
+   */
+  static PasswordsDoNotMatch: IApplicationError = {
+    Text: "Passwords do not match",
+    Code: "PASSWORD_1002",
+  };
+
+  /**
+   * The error message for ~ Failed to send password reset email
+   */
+  static FailedToSendPasswordResetEmail: IApplicationError = {
+    Text: "Failed to send password reset email",
+    Code: "PASSWORD_1003",
+  };
+
+  /**
+   * The error message for ~ Password reset token has expired
+   */
+  static PasswordResetTokenExpired: IApplicationError = {
+    Text: "Password reset token has expired",
+    Code: "PASSWORD_1004",
+  };
+
+  /**
+   * The error message for ~ Password is the same as the old password
+   */
+  static PasswordSameAsOld: IApplicationError = {
+    Text: "Password is the same as the old password",
+    Code: "PASSWORD_1005",
   };
 
   //#endregion
