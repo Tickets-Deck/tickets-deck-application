@@ -15,6 +15,7 @@ import { StorageKeys } from "@/app/constants/storageKeys";
 import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
 import { useFetchUserInformation } from "@/app/api/apiClient";
 import { useDispatch } from "react-redux";
+import ImagesDisplay from "./ImagesDisplay";
 
 interface LoginProps {
 
@@ -212,6 +213,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                             </div>
                             {passwordErrorMsg && <span className={styles.errorMsg}>Please enter your password</span>}
                         </div>
+                        <Link href={ApplicationRoutes.ForgotPassword}>Forgot password?</Link>
                         {message && <span className={styles.errorMsg}>{message}</span>}
                         <button type="submit" disabled={isLoading}>
                             Log in
@@ -223,37 +225,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                         </div>
                     </form>
                 </div>
-                <div className={styles.imagesDisplay}>
-                    <span>
-                        <Image src={images.logoPurple} alt="Logo" />
-                    </span>
-                    <div className={styles.images}>
-                        <div className={styles.column}>
-                            <span><Image src={images.ImageBg6} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg2} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg3} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg1} alt="Event" fill /></span>
-                        </div>
-                        <div className={styles.column}>
-                            <span><Image src={images.ImageBg5} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg6} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg3} alt="Event" fill /></span>
-                        </div>
-                        <div className={styles.column}>
-                            <span><Image src={images.ImageBg1} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg3} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg5} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                        </div>
-                        <div className={styles.column}>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                            <span><Image src={images.ImageBg4} alt="Event" fill /></span>
-                        </div>
-                    </div>
-                </div>
+                <ImagesDisplay />
             </div>
         </div>
     );
