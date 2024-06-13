@@ -1,7 +1,7 @@
 import { ReactElement, FunctionComponent, Dispatch, SetStateAction, useRef, ChangeEvent, useState, useEffect } from "react";
 import styles from '../../../styles/CreateEvent.module.scss';
 import { EventRequest } from "@/app/models/IEvents";
-import { CalenderIcon, CloseIcon, DeleteIcon } from "../../SVGs/SVGicons";
+import { CalenderIcon, CloseIcon, DeleteIcon, EditIcon } from "../../SVGs/SVGicons";
 import { DatePicker } from "@fluentui/react";
 import { TicketRequest, TicketResponse } from "@/app/models/ITicket";
 import ModalWrapper from "../../Modal/ModalWrapper";
@@ -23,6 +23,8 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
     const purchaseStartDateRef = useRef(null);
     const purchaseEndDateRef = useRef(null);
 
+    const [isEditingTicket, setIsEditingTicket] = useState(false);
+
     function deleteTicket(ticket: TicketRequest) {
 
         // Create a representation of the event request
@@ -33,13 +35,29 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
         setEventRequest({ ...eventRequest as EventRequest, tickets: filteredTickets ?? [] as TicketRequest[] });
     }
 
+    function editTicket(ticketIndex: number, ticket: TicketRequest) {
+        // Create a representation of the event request
+        const _eventRequest = eventRequest;
+
+        // Set the ticket to be edited
+        // setEventRequest({ ...eventRequest as EventRequest, ticketToEdit: ticket });
+    }
+
     const [isTicketCreationModalVisible, setIsTicketCreationModalVisible] = useState(false);
+    const [selectedTicketIndex, setSelectedTicketIndex] = useState<number | undefined>();
 
     useEffect(() => {
         if (eventRequest && eventRequest?.tickets.length > 0) {
             setTicketValidationMessage(undefined);
         }
-    }, [eventRequest?.tickets])
+    }, [eventRequest?.tickets]);
+
+    useEffect(() => {
+        if(!isTicketCreationModalVisible) {
+            setIsEditingTicket(false);
+            setSelectedTicketIndex(undefined);
+        }
+    }, [isTicketCreationModalVisible])
 
     return (
         <div className={styles.ticketDetailsSection}>
@@ -49,6 +67,8 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
                 setModalVisibility={setIsTicketCreationModalVisible}
                 eventRequest={eventRequest}
                 setEventRequest={setEventRequest}
+                isEditingTicket={isEditingTicket}
+                selectedTicketIndex={selectedTicketIndex}
             />
 
             <div className={styles.topSection}>
@@ -68,7 +88,11 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
                         <div className={styles.ticketCard} key={index}>
                             <div className={styles.ticketCardHeader}>
                                 <h3>{ticket.name}</h3>
-                                <span onClick={() => deleteTicket(ticket)}><DeleteIcon /></span>
+                                <span onClick={() => {
+                                    setIsEditingTicket(true)
+                                    setSelectedTicketIndex(index)
+                                    setIsTicketCreationModalVisible(true)
+                                }}><EditIcon /></span>
                             </div>
                             <div className={styles.ticketCardBody}>
                                 <div className={styles.info}>
