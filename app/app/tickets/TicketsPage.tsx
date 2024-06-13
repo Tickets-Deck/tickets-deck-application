@@ -1,5 +1,5 @@
 "use client";
-import { FunctionComponent, ReactElement, useEffect, useRef, useState } from "react";
+import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "@/app/styles/Tickets.module.scss";
 import DynamicTab from "@/app/components/custom/DynamicTab";
 import { DownloadIcon } from "@/app/components/SVGs/SVGicons";
@@ -39,7 +39,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
     const tab = params.get('t');
 
     const userInfo = useSelector((state: RootState) => state.userCredentials.userInfo);
-    const [selectedTicketTab, setSelectedTicketTab] = useState(TicketTab.Bought);
+    const [selectedTicketTab, setSelectedTicketTab] = useState<TicketTab>(tab == "0" ? TicketTab.Bought : TicketTab.Sold);
     const [isFetchingUserTicketOrders, setIsFetchingUserTicketOrders] = useState(true);
     const [userTicketOrder, setUserTicketOrders] = useState<UserTicketOrder[]>([]);
 
@@ -199,10 +199,11 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                 <div className={styles.topArea}>
                     <h3>Tickets page</h3>
                 </div>
+
                 <div className={styles.filterSection}>
                     <DynamicTab
                         currentTab={selectedTicketTab}
-                        setCurrentTab={setSelectedTicketTab}
+                        setCurrentTab={setSelectedTicketTab as Dispatch<SetStateAction<TicketTab>>}
                         arrayOfTabOptions={ticketTabOptions}
                         tabCustomWidth={140}
                         tabCustomHeight={44}
@@ -210,6 +211,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                         containerbackgroundColor="#fff"
                     />
                 </div>
+
                 <div className={styles.tableContainer}>
                     <table>
                         <tbody>
