@@ -45,8 +45,11 @@
         "react-to-print": "^2.15.1",
         "sass": "^1.69.5",
         "sharp": "^0.33.2",
+        "socket.io": "^4.7.5",
+        "socket.io-client": "^4.7.5",
         "sonner": "^1.4.3",
-        "uuid": "^9.0.1"
+        "uuid": "^9.0.1",
+        "ws": "^8.17.0"
     },
     "devDependencies": {
         "@prisma/client": "^5.14.0",
@@ -58,6 +61,7 @@
         "@types/react-dom": "^18",
         "@types/react-scroll": "^1.8.10",
         "@types/uuid": "^9.0.8",
+        "@types/ws": "^8.5.10",
         "prisma": "^5.14.0",
         "typescript": "^5"
     }
