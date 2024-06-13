@@ -117,6 +117,9 @@ export async function fetchUserTickets(req: NextRequest) {
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     let soldTicketsWithEvent = [];
