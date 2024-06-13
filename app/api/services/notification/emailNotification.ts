@@ -69,12 +69,12 @@ export async function processEmailNotification(
         ticketOrderId: ticketOrder.orderId,
         orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
       }),
-      attachments: [
-        {
-          filename: "qr-code.png",
-          content: await generateQRCode(ticketOrder.contactEmail),
-        },
-      ],
+    //   attachments: [
+    //     {
+    //       filename: "qr-code.png",
+    //       content: await generateQRCode(ticketOrder.contactEmail),
+    //     },
+    //   ],
     });
 
     return;
