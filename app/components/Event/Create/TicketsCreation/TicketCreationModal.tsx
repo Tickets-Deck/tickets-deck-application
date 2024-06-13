@@ -17,11 +17,13 @@ interface TicketCreationModalProps {
     forExistingEvent?: boolean
     eventId?: string
     handleFetchEventInfo?: () => Promise<void>
+    isEditingTicket?: boolean
+    selectedTicketIndex?: number
 }
 
 const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
-    { modalVisibility, setModalVisibility, eventRequest,
-        setEventRequest, forExistingEvent, eventId, handleFetchEventInfo }): ReactElement => {
+    { modalVisibility, setModalVisibility, eventRequest, isEditingTicket,
+        setEventRequest, forExistingEvent, eventId, handleFetchEventInfo, selectedTicketIndex }): ReactElement => {
 
     const createTicketForSpecifiedEvent = useCreateTicketForSpecifiedEvent();
 
@@ -152,6 +154,32 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
         setModalVisibility(false);
     };
 
+    function updateExistingTicket() {
+        if (!validateForm()) {
+            return;
+        }
+
+        // If there are created tickets...
+        if (eventRequest?.tickets) {
+            const updatedTickets = eventRequest?.tickets.map((ticket, index) => {
+                if (index == selectedTicketIndex) {
+                    return ticketFormRequest as TicketRequest;
+                }
+                return ticket;
+            });
+
+            setEventRequest({
+                ...eventRequest as EventRequest,
+                tickets: updatedTickets
+            });
+        }
+
+        // Clear all fields
+        setTicketFormRequest({} as TicketRequest);
+        // Close modal
+        setModalVisibility(false);
+    }
+
     async function handleAddNewTicketToEvent() {
         // console.log("New ticket: ", ticketFormRequest);
         // console.log("Event: ", eventId);
@@ -185,14 +213,28 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
                 // Show loader
                 setIsCreatingNewTicket(false);
             })
-    }
+    };
+
+    useEffect(() => {
+        // If we are editing a ticket, set the ticket form request to the selected ticket
+        if (isEditingTicket && eventRequest?.tickets && selectedTicketIndex != undefined) {
+            setTicketFormRequest(eventRequest?.tickets[selectedTicketIndex]);
+        }
+    }, [selectedTicketIndex]);
 
     return (
         <ModalWrapper visibility={modalVisibility} setVisibility={setModalVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
             <div className={styles.ticketCreationModal}>
                 <div className={styles.topArea}>
-                    <h4>Create Ticket</h4>
-                    <span className={styles.closeIcon} onClick={() => setModalVisibility(false)}><CloseIcon /></span>
+                    <h4>{isEditingTicket ? "Edit Ticket" : "Create Ticket"}</h4>
+                    <span
+                        className={styles.closeIcon}
+                        onClick={() => {
+                            setModalVisibility(false)
+                            setTicketFormRequest({} as TicketRequest);
+                        }}>
+                        <CloseIcon />
+                    </span>
                 </div>
                 <div className={styles.mainFormSection}>
                     <div className={styles.formField}>
@@ -333,8 +375,12 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
                     <button
                         type="button"
                         disabled={forExistingEvent && isCreatingNewTicket}
-                        onClick={() => forExistingEvent ? handleAddNewTicketToEvent() : addNewTicket()}>
-                        {forExistingEvent && isCreatingNewTicket ? "Adding ticket..." : "Add Ticket"}
+                        onClick={() => isEditingTicket ? updateExistingTicket() : forExistingEvent ? handleAddNewTicketToEvent() : addNewTicket()}>
+                        {
+                            isEditingTicket ?
+                                <>Update ticket</> :
+                                <>{forExistingEvent && isCreatingNewTicket ? "Adding ticket..." : "Add Ticket"}</>
+                        }
                         {/* {forExistingEvent ? isCreatingNewTicket ? "Creating ticket..." : "Create Ticket" : "Add Ticket"} */}
                     </button>
                 </div>
