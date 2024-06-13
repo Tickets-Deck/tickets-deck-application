@@ -84,6 +84,20 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
             });
     }
 
+    function greeting() {
+        const date = new Date();
+        const hours = date.getHours();
+        let greeting = "Good morning";
+
+        if (hours >= 12 && hours < 17) {
+            greeting = "Good afternoon";
+        } else if (hours >= 17 && hours < 24) {
+            greeting = "Good evening";
+        }
+
+        return greeting;
+    }
+
     useEffect(() => {
         if (user) {
             handleFetchDashboardInfo();
@@ -103,7 +117,7 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
                 userInfo &&
                 <div className={styles.greetings}>
                     <p>{moment(new Date).format("dddd, Do MMM YYYY")}</p>
-                    <h4>Good evening, {userInfo?.firstName}!</h4>
+                    <h4>{greeting()}, {userInfo?.firstName}!</h4>
                 </div>
             }
 
