@@ -16,4 +16,9 @@ export class StorageKeys {
    * Key for the featured events
    */
   static readonly FeaturedEvents = "FeaturedEvents";
+
+  /**
+   * Key for the events
+   */
+  static readonly Events = "Events";
 }
