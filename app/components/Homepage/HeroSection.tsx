@@ -94,11 +94,22 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEv
                             <button className={styles.primaryButton}>Explore Events</button>
                         </Link>
                         {
-                            userInfo && userInfo.emailVerified ?
-                                <Link href={user ? ApplicationRoutes.CreateEvent : ApplicationRoutes.SignIn}>
-                                    <button className={styles.secondaryButton}>Create Event</button>
-                                </Link> :
-                                <button className={styles.secondaryButton} onClick={() => showEmailVerificationAlert()}>Create Event</button>
+                            !user &&
+                            <Link href={ApplicationRoutes.SignIn}>
+                                <button className={styles.secondaryButton}>Create Event</button>
+                            </Link>
+                        }
+                        {
+                            user && !userInfo?.emailVerified &&
+                            <button className={styles.secondaryButton} onClick={() => showEmailVerificationAlert()}>
+                                Create Event
+                            </button>
+                        }
+                        {
+                            user && userInfo?.emailVerified &&
+                            <Link href={ApplicationRoutes.CreateEvent}>
+                                <button className={styles.secondaryButton}>Create Event</button>
+                            </Link>
                         }
                     </div>
                 </div>

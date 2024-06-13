@@ -115,6 +115,7 @@
                 font-size: $font-size-16 + 0.125rem;
                 font-family: Mona-Sans-Wide, "sans-serif";
                 font-weight: $fontWeight-500;
+                width: fit-content;
             }
             .dateTime {
                 display: flex;
