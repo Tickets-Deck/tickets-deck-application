@@ -208,6 +208,14 @@
         // border: 2px solid #fff;
         @include tablet {
             border: none;
+            padding-bottom: 4rem;
+        }
+
+        // style button with type submit
+        button[type="submit"] {
+            @include tablet {
+                margin: 0 auto;
+            }
         }
 
         .formContainer {
@@ -522,6 +530,9 @@
 
             &__eventInfo {
                 display: flex;
+                @include tablet {
+                    flex-direction: column;
+                }
 
                 .lhs,
                 .rhs {
@@ -615,6 +626,9 @@
                         display: grid;
                         // grid-template-columns: repeat(2, 1fr);
                         grid-template-columns: repeat(2, minmax(100px, 1fr));
+                        @include tablet {
+                            margin-bottom: 2rem;
+                        }
 
                         .ticketCardBody {
                             padding: 1rem;
