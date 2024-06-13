@@ -91,7 +91,7 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({ eventInfo, f
             }
             {
                 forEventCard &&
-                <button className={eventCardStyles.actions__like} onClick={() => handleUpdateUserFavouriteEvents(eventInfo.id, isEventLiked ? EventFavoriteAction.Unlike : EventFavoriteAction.Like)}>
+                <button style={{ display: "none" }} className={eventCardStyles.actions__like} onClick={() => handleUpdateUserFavouriteEvents(eventInfo.id, isEventLiked ? EventFavoriteAction.Unlike : EventFavoriteAction.Like)}>
                     <motion.span
                         style={{ width: "100%", height: "100%", display: "grid", placeItems: "center" }}
                         whileTap={{ scale: 3 }}
