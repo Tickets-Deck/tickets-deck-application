@@ -119,7 +119,7 @@
                         align-items: center;
                         justify-content: space-between;
                         > button {
-                            color: var(--success)-color;
+                            color: var(--success-color);
                         }
 
                         span {
@@ -129,7 +129,7 @@
                             background-color: rgba($color: $failed-color, $alpha: 0.2);
                             border: none;
                             outline: none;
-                            color: var(--failed)-color;
+                            color: var(--failed-color);
                             padding: 4px 8px;
                             border-radius: 8px;
                         }
@@ -232,7 +232,7 @@
                     }
                 }
                 #valid {
-                    // color: var(--primary)-color-sub !important;
+                    // color: var(--primary-color-sub) !important;
                     color: #5cb85c;
                     svg {
                         path {
