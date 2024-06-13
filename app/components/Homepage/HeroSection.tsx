@@ -14,6 +14,7 @@ import { ApplicationRoutes } from '@/app/constants/applicationRoutes';
 import { RootState } from '@/app/redux/store';
 import { useSelector } from 'react-redux';
 import { Theme } from '@/app/enums/Theme';
+import EmailVerificationPrompt from '../Modal/EmailVerificationPrompt';
 
 interface HeroSectionProps {
     events: EventResponse[]
@@ -51,9 +52,21 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEv
         // {
         //     img: images.ImageBg8,
         // },
-    ]
+    ];
 
+    const userInfo = useSelector((state: RootState) => state.userCredentials.userInfo);
     const [heroSectionImgIndex, setHeroSectionImgIndex] = useState(0);
+    const [emailVerificationPromptIsVisible, setEmailVerificationPromptIsVisible] = useState(false);
+
+    function showEmailVerificationAlert() {
+
+        // Check for the email verification status if the user is logged in.
+        if (userInfo && !userInfo.emailVerified) {
+            // toast.error("Please verify your email address to continue.");
+            setEmailVerificationPromptIsVisible(true);
+            return;
+        }
+    }
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -66,39 +79,55 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEv
     }, [imageList.length]);
 
     return (
-        <section className={appTheme == Theme.Light ? styles.heroSectionLightTheme : styles.heroSection}>
-            <div className={styles.backgroundImage}>
-                <Image src={imageList[heroSectionImgIndex].img} alt='People in event' fill />
-            </div>
-            <div className={styles.heroSection__lhs}>
-                <div className={styles.textContents}>
-                    <h2>Find The Next Big <br />Event To <span>Attend</span></h2>
-                    <p>"From music festivals to sports games, find the perfect tickets for your entertainment needs!"</p>
+        <>
+            <section className={appTheme == Theme.Light ? styles.heroSectionLightTheme : styles.heroSection}>
+                <div className={styles.backgroundImage}>
+                    <Image src={imageList[heroSectionImgIndex].img} alt='People in event' fill />
                 </div>
-                <div className={styles.actionButtons}>
-                    <Link href={`/events`}>
-                        <button className={styles.primaryButton}>Explore Events</button>
-                    </Link>
-                    <Link href={user ? ApplicationRoutes.CreateEvent : ApplicationRoutes.SignIn}>
-                        <button className={styles.secondaryButton}>Create Event</button>
-                    </Link>
+                <div className={styles.heroSection__lhs}>
+                    <div className={styles.textContents}>
+                        <h2>Find The Next Big <br />Event To <span>Attend</span></h2>
+                        <p>"From music festivals to sports games, find the perfect tickets for your entertainment needs!"</p>
+                    </div>
+                    <div className={styles.actionButtons}>
+                        <Link href={`/events`}>
+                            <button className={styles.primaryButton}>Explore Events</button>
+                        </Link>
+                        {
+                            userInfo && userInfo.emailVerified ?
+                                <Link href={user ? ApplicationRoutes.CreateEvent : ApplicationRoutes.SignIn}>
+                                    <button className={styles.secondaryButton}>Create Event</button>
+                                </Link> :
+                                <button className={styles.secondaryButton} onClick={() => showEmailVerificationAlert()}>Create Event</button>
+                        }
+                    </div>
                 </div>
-            </div>
-            <div className={styles.heroSection__rhs}>
-                <HeroSearchSection
-                    isFetchingEvents={isFetchingEvents}
-                    events={events}
+                <div className={styles.heroSection__rhs}>
+                    <HeroSearchSection
+                        isFetchingEvents={isFetchingEvents}
+                        events={events}
+                    />
+                </div>
+                <div className={styles.colors}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </section>
+
+            {
+                emailVerificationPromptIsVisible &&
+                <EmailVerificationPrompt
+                    visibility={emailVerificationPromptIsVisible}
+                    setVisibility={setEmailVerificationPromptIsVisible}
+                    userEmail={userInfo?.email as string}
+                    userName={userInfo?.firstName as string}
                 />
-            </div>
-            <div className={styles.colors}>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </section>
+            }
+        </>
     );
 }
 
