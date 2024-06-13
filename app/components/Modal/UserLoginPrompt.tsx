@@ -14,7 +14,7 @@ const UserLoginPrompt: FunctionComponent<UserLoginPromptProps> = ({ visibility, 
 
     return (
         <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
-            <div className={styles.loginPromptModal}>
+            <div className={styles.promptModal}>
                 <div className={styles.topAreaSection}>
                     <div className={styles.topArea}>
                         <h3>Hello there</h3>
