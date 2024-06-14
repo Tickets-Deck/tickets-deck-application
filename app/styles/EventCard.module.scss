@@ -4,7 +4,8 @@
 .event, .gridDisplay, .eventLightTheme {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    justify-content: space-between;
+    // gap: 1rem; 
     position: relative;
     width: 100%; 
     max-width: 35%;
@@ -215,6 +216,8 @@
             border-radius: 0.5rem;
             cursor: pointer;
             scale: 0.9;
+            display: grid;
+            place-items: center;
             &:hover {
                 background-color: darken($color: $failed-color, $amount: 10%);
             }
