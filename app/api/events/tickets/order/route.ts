@@ -1,4 +1,4 @@
-import { validateRequestMethod } from "@/app/api/services/api-services/requestMethodValidator";
+import { validateRequestMethod } from "@/app/api/services/reusable-services/requestMethodValidator";
 import { initializeOrder } from "@/app/api/services/order/orderService";
 import { customNextResponseError } from "@/app/api/utils/customNextResponseError";
 import { ApplicationError } from "@/app/constants/applicationError";

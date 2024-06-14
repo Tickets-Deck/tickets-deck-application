@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { uploadProfilePhoto } from "../../services/user/photoService";
 import { customNextResponseError } from "../../utils/customNextResponseError";
-import { validateRequestMethod } from "../../services/api-services/requestMethodValidator";
+import { validateRequestMethod } from "../../services/reusable-services/requestMethodValidator";
 import { ApplicationError } from "@/app/constants/applicationError";
 
 export async function POST(req: NextRequest) {

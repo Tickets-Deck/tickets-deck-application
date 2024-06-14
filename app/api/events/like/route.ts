@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateRequestMethod } from "../../services/api-services/requestMethodValidator";
+import { validateRequestMethod } from "../../services/reusable-services/requestMethodValidator";
 import { customNextResponseError } from "../../utils/customNextResponseError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { ApplicationError } from "@/app/constants/applicationError";

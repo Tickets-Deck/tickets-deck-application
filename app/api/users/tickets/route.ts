@@ -2,7 +2,7 @@ import { StatusCodes } from "@/app/models/IStatusCodes";
 import { NextRequest, NextResponse } from "next/server";
 import { fetchUserTickets } from "../../services/ticket/ticketService";
 import { customNextResponseError } from "../../utils/customNextResponseError";
-import { validateRequestMethod } from "../../services/api-services/requestMethodValidator";
+import { validateRequestMethod } from "../../services/reusable-services/requestMethodValidator";
 import { ApplicationError } from "@/app/constants/applicationError";
 
 export async function GET(req: NextRequest) {

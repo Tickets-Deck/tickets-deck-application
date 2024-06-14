@@ -1,4 +1,4 @@
-import { validateRequestMethod } from "@/app/api/services/api-services/requestMethodValidator";
+import { validateRequestMethod } from "@/app/api/services/reusable-services/requestMethodValidator";
 import { requestPasswordResetLink } from "@/app/api/services/user/passwordService";
 import { customNextResponseError } from "@/app/api/utils/customNextResponseError";
 import { ApplicationError } from "@/app/constants/applicationError";

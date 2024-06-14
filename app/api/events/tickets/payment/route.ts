@@ -14,7 +14,7 @@ import {
   verifyPayment,
 } from "@/app/api/services/payment/paymentService";
 import { processEmailNotification } from "@/app/api/services/notification/emailNotification";
-import { validateRequestMethod } from "@/app/api/services/api-services/requestMethodValidator";
+import { validateRequestMethod } from "@/app/api/services/reusable-services/requestMethodValidator";
 import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { customNextResponseError } from "@/app/api/utils/customNextResponseError";

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { updateUsername } from "../../services/user/usernameService";
 import { customNextResponseError } from "../../utils/customNextResponseError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
-import { validateRequestMethod } from "../../services/api-services/requestMethodValidator";
+import { validateRequestMethod } from "../../services/reusable-services/requestMethodValidator";
 import { ApplicationError } from "@/app/constants/applicationError";
 
 export async function PUT(req: NextRequest) {

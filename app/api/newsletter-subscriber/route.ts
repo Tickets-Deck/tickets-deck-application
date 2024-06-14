@@ -1,6 +1,6 @@
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { NextRequest, NextResponse } from "next/server";
-import { validateRequestMethod } from "../services/api-services/requestMethodValidator";
+import { validateRequestMethod } from "../services/reusable-services/requestMethodValidator";
 import { subscribeToNewsletter } from "../services/webContent/newsletterSubscriptionService";
 import { customNextResponseError } from "../utils/customNextResponseError";
 import { ApplicationError } from "@/app/constants/applicationError";

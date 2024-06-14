@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { validateRequestMethod } from "../../services/api-services/requestMethodValidator";
+import { validateRequestMethod } from "../../services/reusable-services/requestMethodValidator";
 import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { fetchOrderInformation } from "../../services/order/orderService";
