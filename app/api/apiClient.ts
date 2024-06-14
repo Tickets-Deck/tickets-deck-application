@@ -14,7 +14,10 @@ import { TicketCategory } from "../enums/ITicket";
 import { TicketRequest, TicketResponse } from "../models/ITicket";
 import { FollowsActionType } from "../models/IFollows";
 import { CustomerEnquiry } from "../models/ICustomerEnquiries";
-import { PasswordResetLinkRequest, PasswordResetRequest } from "../models/IPassword";
+import {
+  PasswordResetLinkRequest,
+  PasswordResetRequest,
+} from "../models/IPassword";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_TEST,
@@ -382,9 +385,17 @@ export function useRequestPasswordResetLink() {
 }
 
 export function useResetPassword() {
-    async function resetPassword(data: PasswordResetRequest) {
-        return API.post(ApiRoutes.UserPasswordReset, data);
-    }
-    
-    return resetPassword;
+  async function resetPassword(data: PasswordResetRequest) {
+    return API.post(ApiRoutes.UserPasswordReset, data);
+  }
+
+  return resetPassword;
+}
+
+export function useFetchUserWalletBalance() {
+  async function fetchUserWalletBalance(userId: string) {
+    return API.get(`${ApiRoutes.UserWalletBalance}?userId=${userId}`);
+  }
+
+  return fetchUserWalletBalance;
 }
