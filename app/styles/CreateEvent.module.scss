@@ -77,8 +77,8 @@
             color: $white;
             font-size: $font-size-16 - 0.25rem;
             font-weight: $fontWeight-400;
-            padding-top: 0.8rem - 0.15rem;
-            padding-bottom: 0.8rem - 0.15rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
             &::placeholder {
                 color: rgba($color: $white, $alpha: 0.5);
             }
