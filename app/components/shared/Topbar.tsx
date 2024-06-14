@@ -35,10 +35,10 @@ const Topbar: FunctionComponent<TopbarProps> = ({ isMobileSidebarOpen, setIsMobi
                 </div>
             </Link>
             <div className={styles.topbar__rhs}>
-                <div className={styles.searchContainer}>
+                {/* <div className={styles.searchContainer}>
                     <SearchIcon />
                     <input type="text" placeholder="Search for event" />
-                </div>
+                </div> */}
                 <Link href={ApplicationRoutes.Profile}>
                     <div className={styles.accountContainer}>
                         <div className={styles.accountContainer__image}>
