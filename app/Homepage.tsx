@@ -3,12 +3,13 @@ import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import HeroSection from "./components/Homepage/HeroSection";
 import FeaturedEvents from "./components/Homepage/FeaturedEvents";
 import Services from "./components/Homepage/Services";
-import styles from './styles/Home.module.scss'; 
+import styles from './styles/Home.module.scss';
 import CreateEvent from "./components/Homepage/CreateEvent";
 import { useFetchEvents } from "./api/apiClient";
 import { EventResponse } from "./models/IEvents";
 import { StorageKeys } from "./constants/storageKeys";
- 
+import BetaTestModal from "./components/Modal/BetaTestModal";
+
 interface HomepageProps {
 
 }
@@ -19,6 +20,7 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
 
     const [events, setEvents] = useState<EventResponse[]>([]);
     const [isFetchingEvents, setIsFetchingEvents] = useState(true);
+    const [showBetaTestModal, setShowBetaTestModal] = useState(false);
 
     // function retrieveEventsFromDb() {
     //     const _retrievedEvents = sessionStorage.getItem(StorageKeys.Events);
@@ -71,19 +73,43 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
         handleFetchEvents();
     }, []);
 
+    // Show beta test modal after 5 seconds, and only once
+    useEffect(() => {
+        // Check if beta test modal has been viewed
+        const viewed = localStorage.getItem(StorageKeys.BetaTestModalViewed);
+
+        // If it has been viewed, stop execution
+        if (viewed) {
+            return;
+        }
+
+        // Show beta test modal after 5 seconds
+        const timer = setTimeout(() => {
+            setShowBetaTestModal(true);
+
+            // Save to local storage
+            localStorage.setItem(StorageKeys.BetaTestModalViewed, 'true');
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
-        <div className={styles.homepage}>
-            <HeroSection
-                isFetchingEvents={isFetchingEvents}
-                events={events}
-            />
-            <FeaturedEvents
-                isFetchingEvents={isFetchingEvents}
-                events={events}
-            />
-            <Services />
-            <CreateEvent />
-        </div>
+        <>
+            <BetaTestModal forGeneralMessage visibility={showBetaTestModal} setVisibility={setShowBetaTestModal} />
+            <div className={styles.homepage}>
+                <HeroSection
+                    isFetchingEvents={isFetchingEvents}
+                    events={events}
+                />
+                <FeaturedEvents
+                    isFetchingEvents={isFetchingEvents}
+                    events={events}
+                />
+                <Services />
+                <CreateEvent />
+            </div>
+        </>
     );
 }
 
