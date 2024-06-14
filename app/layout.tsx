@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './styles/globals.scss'
-import NextTopLoader from 'nextjs-toploader'
 import Layout from './components/Layout'
 import { GlobalProvider } from './components/Provider'
 import { getServerSession } from 'next-auth'
