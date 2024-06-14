@@ -6,7 +6,7 @@ import {
 } from "../services/user/usersService";
 import { customNextResponseError } from "../utils/customNextResponseError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
-import { validateRequestMethod } from "../services/api-services/requestMethodValidator";
+import { validateRequestMethod } from "../services/reusable-services/requestMethodValidator";
 import { ApplicationError } from "@/app/constants/applicationError";
 
 export async function GET(req: NextRequest) {
