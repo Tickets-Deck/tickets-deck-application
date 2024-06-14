@@ -2,6 +2,8 @@ import { Dispatch, FunctionComponent, ReactElement, SetStateAction } from "react
 import ModalWrapper from "./ModalWrapper";
 import styles from "@/app/styles/promptModal.module.scss";
 import { CloseIcon } from "../SVGs/SVGicons";
+import Link from "next/link";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 interface BetaTestModalProps {
     visibility: boolean
@@ -15,10 +17,15 @@ const BetaTestModal: FunctionComponent<BetaTestModalProps> = ({ visibility, setV
                 <div className={styles.topAreaSection}>
                     <div className={styles.topArea}>
                         <h3>Hello there</h3>
-                        <p>
-                            We are currently in beta testing phase. Some features may not work as expected.
-                            We are working hard to make sure everything is perfect. Thank you for your patience.
-                        </p>
+                        <div className={styles.content}>
+                            <p>
+                                We are currently in beta testing phase. Some features may not work as expected.
+                                We are working hard to make sure everything is perfect. Thank you for your patience.
+                            </p>
+                            <p>
+                                If you would like to report a bug or have any feedback, please click&nbsp;<Link href={ApplicationRoutes.Contact}>here</Link> to contact us.
+                            </p>
+                        </div>
                     </div>
                     <span className={styles.closeIcon} onClick={() => setVisibility(false)}><CloseIcon /></span>
                 </div>
