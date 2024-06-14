@@ -11,7 +11,7 @@ export class ApiRoutes {
   /**
    * The test base url for the application
    */
-//   static BASE_URL_TEST: string = "https://ticketsdeck.netlify.app";
+  //   static BASE_URL_TEST: string = "https://ticketsdeck.netlify.app";
   static BASE_URL_TEST: string = "https://beta.events.ticketsdeck.com";
 
   /**
@@ -119,4 +119,9 @@ export class ApiRoutes {
    * The route to User Password Change endpoint
    */
   static UserPasswordChange: string = "api/users/password/change";
+
+  /**
+   * The route to User Wallet Balance endpoint
+   */
+  static UserWalletBalance: string = "api/users/wallet-balance";
 }
