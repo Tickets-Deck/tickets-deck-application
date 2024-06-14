@@ -72,7 +72,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ appTheme, session 
                 </span> */}
                 {
                     user &&
-                    <Link href={ApplicationRoutes.Profile} className={styles.profilePhoto}>
+                    <Link href={ApplicationRoutes.Dashboard} className={styles.profilePhoto}>
                         <Image src={user?.image ?? images.user_avatar} alt="Profile photo" fill sizes="auto" />
                     </Link>
                 }
