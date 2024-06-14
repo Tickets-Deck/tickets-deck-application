@@ -44,20 +44,25 @@
     .content {
         margin-top: 1rem;
         h4 {
-            font-size: $font-size-16 - .125rem;
+            font-size: $font-size-16 - 0.125rem;
             font-weight: $fontWeight-400;
             margin-bottom: 0.25rem;
         }
-        p, li {
-            font-size: $font-size-16 - .25rem;
+        p,
+        li {
+            font-size: $font-size-16 - 0.25rem;
             font-weight: $fontWeight-300;
             line-height: 20px;
             color: $grey;
             opacity: 0.8;
             text-decoration: none;
             span {
-                color: $primary-color-sub; 
+                color: $primary-color-sub;
             }
+        }
+        a {
+            color: $primary-color-sub;
+            text-decoration: underline;
         }
         ul {
             padding-left: 10px;
@@ -68,14 +73,15 @@
         justify-content: flex-end;
         margin-top: 1rem;
         gap: 0.5rem;
-        button, a {
+        button,
+        a {
             @include tertiary-button;
             padding: 8px 16px;
             &:nth-child(2) {
                 background-color: $failed-color;
                 color: $white;
                 &:hover {
-                    background-color: darken($color: $failed-color, $amount: 10%)
+                    background-color: darken($color: $failed-color, $amount: 10%);
                 }
             }
         }
