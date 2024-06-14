@@ -187,14 +187,14 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                 </div>
                             </div>
                             <div className={styles.stats}>
-                                <div className={styles.stat}>
+                                <Link href={ApplicationRoutes.Events} className={styles.stat}>
                                     <p>Events</p>
                                     <span>{userInformation?.eventsCount}</span>
-                                </div>
-                                <div className={styles.stat}>
+                                </Link>
+                                <Link href={`${ApplicationRoutes.EventTickets}?t=1`} className={styles.stat}>
                                     <p>Tickets Sold</p>
                                     <span>{userInformation.ticketsSold}</span>
-                                </div>
+                                </Link>
                                 <div className={styles.stat}>
                                     <p className={styles.userLink}>
                                         <Link target="_blank" href={`${window.location.origin}/u/${userInformation.username ?? userInformation.id}`}>
