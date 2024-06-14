@@ -143,9 +143,9 @@ img {
     object-fit: contain;
 }
 
-input {
+input, textarea {
     @include tablet {
-        font-size: $font-size-16;
+        font-size: $font-size-16 !important;
     }
 }
 
