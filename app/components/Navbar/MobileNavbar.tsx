@@ -96,8 +96,8 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ appTheme, session 
                                 </span>
                                 <div className={styles.userInfo}>
                                     <h4>{user.name}</h4>
-                                    <Link href={ApplicationRoutes.Profile} onClick={() => setNavbarIsVisible(false)}>
-                                        View profile
+                                    <Link href={ApplicationRoutes.Dashboard} onClick={() => setNavbarIsVisible(false)}>
+                                        View dashboard
                                     </Link>
                                 </div>
                             </motion.div>
