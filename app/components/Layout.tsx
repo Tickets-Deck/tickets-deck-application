@@ -185,7 +185,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                     showSpinner={true}
                     easing="ease"
                     speed={200}
-                    shadow="0 0 10px #d39efa,0 0 5px #5116a2"
+                    shadow="0 0 10px #f1fa9e,0 0 5px #ceb0fa"
                 />
                 <UserLoginPrompt
                     visibility={isUserLoginPromptVisible}
