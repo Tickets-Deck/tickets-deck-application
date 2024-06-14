@@ -51,7 +51,7 @@
 @mixin primary-button {
     width: fit-content;
     height: fit-content;
-    border-radius: 0.5rem;
+    border-radius: 0.625rem;
     cursor: pointer;
     font-size: $font-size-16 - 0.125rem;
     padding: 0.8rem 1.6rem;
