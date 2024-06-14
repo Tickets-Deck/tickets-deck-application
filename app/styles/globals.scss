@@ -1,4 +1,7 @@
 @use "./fonts";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import "./variables";
 @import "./reusables";
 
@@ -260,8 +263,8 @@ button {
 }
 
 .appLayout {
-    height: 100vh;
-    overflow: hidden;
+    // height: 100vh;
+    // overflow: hidden;
     &__body {
         display: flex;
         .innerBody {
