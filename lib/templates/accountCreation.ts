@@ -7,7 +7,7 @@ export const accountCreationTemplate = `
   <meta name="x-apple-disable-message-reformatting">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta content="telephone=no" name="format-detection">
-  <title>Account Creation</title><!--[if (mso 16)]>
+  <title>Thank You for Choosing Us</title><!--[if (mso 16)]>
     <style type="text/css">
     a {text-decoration: none;}
     </style>
@@ -129,7 +129,7 @@ a[x-apple-data-detectors] {
                             <br><br>
                         </p>
                         <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">
-                            Whether you're planning a rocking party, a cozy gathering, or a community event, Ticketsdeck is your go-to platform for turning your ideas into reality.
+                            Whether you're planning a rocking party, a cozy gathering, an online workshop or a community event, Ticketsdeck is your go-to platform for turning your ideas into reality.
                             <br><br>
                         </p>
                         <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">

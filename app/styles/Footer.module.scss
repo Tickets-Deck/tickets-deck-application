@@ -1,14 +1,14 @@
 @import "./variables";
 @import "./reusables";
 
-.footerContainer {
+.footerContainer, .footerContainerLightTheme {
     @include sectionPadding;
     padding-top: 3rem;
     padding-bottom: 3rem;
-    background-color: $dark-grey;
+    background-color: var(--dark-grey);
     display: flex;
     align-items: flex-start;
-    color: $white;
+    color: var(--white);
     gap: 3.25rem;
     @include tablet {
         flex-direction: column;
@@ -23,7 +23,7 @@
         width: 30%;
         min-width: 30%;
         font-weight: $fontWeight-300;
-        // color: $black;
+        // color: var(--black);
         // flex-basis: 25%;
         @include tablet {
             width: 100%;
@@ -91,7 +91,7 @@
                 margin-bottom: 1.25rem;
                 white-space: nowrap;
                 width: fit-content;
-                color: $primary-color-sub;
+                color: var(--primary-color-sub);
                 font-weight: $fontWeight-500;
             }
             &__links {
@@ -122,7 +122,7 @@
                 width: fit-content;
                 border-radius: 1.5rem;
                 overflow: hidden;
-                background-color: $white;
+                background-color: var(--white);
                 gap: 0rem;
                 // border: 1.008px solid #000;
                 @include midSizeMobilePhone {
@@ -133,23 +133,24 @@
                     border-radius: 0;
                 }
                 input {
-                    padding: 0.625rem;
+                    padding: 0.85rem 0.625rem;
                     padding-left: 1rem;
                     border-radius: 1.5rem;
                     outline: none;
                     border: none;
                     background: transparent;
-                    color: $dark-grey;
+                    color: var(--dark-grey);
                     &::placeholder {
-                        color: $grey-3;
+                        color: var(--grey-3);
                     }
                     @include midSizeMobilePhone {
-                        background-color: $white;
+                        background-color: var(--white);
                         width: 100%;
                     }
                 }
                 button {
                     @include primary-button;
+                    font-size: 1rem;
                     border-radius: 1.5rem;
                     white-space: nowrap;
                     height: 100%;
@@ -175,6 +176,41 @@
         .content3 {
             @include tablet {
                 order: 1;
+            }
+        }
+    }
+}
+
+.footerContainerLightTheme {
+    .lhs {
+        svg {
+            path {
+                fill: var(--white);
+            }
+        }
+    }
+    .rhs {
+        .content {
+            h4 {
+                color: var(--white);
+            }
+            &__links {
+                li {
+                    color: var(--white);
+                }
+            }
+            .joinText {
+                color: var(--white);
+            }
+            &__subscribeArea {
+                background: var(--dark-grey-2);
+                input {
+                    background: var(--dark-grey-2);
+                    color: var(--white);
+                    &::placeholder {
+                        color: var(--grey-3);
+                    }
+                }
             }
         }
     }

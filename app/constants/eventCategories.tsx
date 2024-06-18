@@ -1,6 +1,7 @@
 export const categories = [
     "Networking",
     "Conferences",
+    "Religion",
     "Arts and culture",
     "Music",
     "Seminars",

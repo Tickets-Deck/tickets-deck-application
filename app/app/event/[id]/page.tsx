@@ -87,7 +87,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
             navigator.share({
                 title: "Check out this event!",
                 text: "I found this amazing event. You should check it out!",
-                url: eventURL
+                url: `${window.location.pathname}/event/${id}`
             })
                 .then(() => console.log("Shared successfully"))
                 .catch(error => console.log("Sharing failed:", error));
@@ -218,10 +218,11 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                         autoPlay
                         loop
                         muted
+                        playsInline
                         src="https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4" />
                 </div>
                 <div className={styles.textContents}>
-                    <span>Time to party! <span className={styles.img}><Image src={images.woman_dancing} alt='Woman dancing' /></span></span>
+                    <span>Time to grab those tickets! <span className={styles.img}><Image src={images.woman_dancing} alt='Woman dancing' /></span></span>
                     <h2>Event Information</h2>
                 </div>
             </section>
@@ -231,7 +232,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                         <div className={styles.eventImage}>
                             <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill />
                         </div>
-                        <span className={styles.tag}>Latest</span>
+                        {/* <span className={styles.tag}>Latest</span> */}
                         <div className={styles.eventDetails}>
                             <div className={styles.leftInfo}>
                                 <h2 className={styles.title}>{eventInfo?.title}</h2>

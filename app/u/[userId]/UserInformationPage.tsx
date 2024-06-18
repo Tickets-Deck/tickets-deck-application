@@ -2,7 +2,7 @@
 import { ReactElement, FunctionComponent, useState, useEffect } from "react";
 import styles from "../../styles/UserInformationPage.module.scss";
 import { UserCredentialsResponse } from "@/app/models/IUser";
-import { useFetchUserInformation, useFetchUserInformationByUserName } from "@/app/api/apiClient";
+import { useFetchUserFollowMetrics, useFetchUserInformation, useFetchUserInformationByUserName, useFollowUser } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
 import UserAvatarContainer from "@/app/components/ProfilePage/UserAvatarContainer";
 import Link from "next/link";
@@ -14,6 +14,9 @@ import UserPersonalInfo from "@/app/components/UserInformationPage/UserPersonalI
 import UserSocials from "@/app/components/UserInformationPage/UserSocials";
 import UserStats from "@/app/components/UserInformationPage/UserStats";
 import UserHighlights from "@/app/components/UserInformationPage/UserHighlights";
+import { FollowsActionType, IUserFollowMetrics } from "@/app/models/IFollows";
+import { toast } from "sonner";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 interface UserInformationPageProps {
     identifier: string
@@ -22,17 +25,20 @@ interface UserInformationPageProps {
 
 const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ identifier, session }): ReactElement => {
 
-    const fetchUserInformation = useFetchUserInformation();
+    // const fetchUserInformation = useFetchUserInformation();
+    const followUser = useFollowUser();
+    const fetchUserFollowMetrics = useFetchUserFollowMetrics();
     const fetchUserInformationByUsername = useFetchUserInformationByUserName();
     const [userInformation, setUserInformation] = useState<UserCredentialsResponse>();
     const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(true);
     const [isPhotoUploadModalVisible, setIsPhotoUploadModalVisible] = useState(false);
+    const [isInteractingWithUserProfile, setIsInteractingWithUserProfile] = useState(false);
+    const [isFollowingUser, setIsFollowingUser] = useState<boolean | null>(null);
 
     const isForUser = session?.user.id === userInformation?.id;
 
-
-    async function handleFetchUserInformation() {
-        console.log("Fetching user information", identifier);
+    async function handleFetchUserInformation(hideLoader?: boolean) {
+        // console.log("Fetching user information", identifier);
 
         // Identifier could be username or userId...
         // Check if identifier is a userId; that is if it includes a hyphen
@@ -42,15 +48,15 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ iden
         // console.log({ userId, username })
 
         // Show loading indicator
-        setIsFetchingUserInformation(true);
+        !hideLoader && setIsFetchingUserInformation(true);
 
         await fetchUserInformationByUsername(userId ? { userId } : username ? { username } : {})
             .then((response) => {
-                console.log(response.data);
+                // console.log(response.data);
                 setUserInformation(response.data);
             })
             .catch((error) => {
-                console.log(error);
+                // console.log(error);
                 catchError(error);
             })
             .finally(() => {
@@ -58,11 +64,59 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ iden
             })
     };
 
+    async function handleFetchUserFollowMetrics() {
+        await fetchUserFollowMetrics(userInformation?.id as string, session?.user.id as string)
+            .then((response) => {
+                // console.log("Fetched metrics: ", response.data);
+
+                const result = response.data as IUserFollowMetrics;
+
+                if (result.isFollowing == true) {
+                    setIsFollowingUser(true);
+                }
+                if (result.isFollowing == false) {
+                    setIsFollowingUser(false);
+                }
+            })
+            .catch((error) => {
+                // console.log("Failed to fetch user follow metrics: ", error);
+                catchError(error);
+            })
+    }
+
+    async function handleInteractWithUser(followActionType: FollowsActionType) {
+
+        // Spin up loader
+        setIsInteractingWithUserProfile(true);
+
+        await followUser(session?.user.id as string, userInformation?.id as string, followActionType)
+            .then(async () => {
+
+                handleFetchUserFollowMetrics();
+
+                // Refetch user information
+                await handleFetchUserInformation(true);
+            })
+            .catch((error) => {
+                catchError(error);
+                toast.error("Failed to follow user");
+            })
+            .finally(() => {
+                setIsInteractingWithUserProfile(false);
+            })
+    }
+
     useEffect(() => {
         if (identifier) {
             handleFetchUserInformation();
         }
     }, [identifier]);
+
+    useEffect(() => {
+        if(userInformation) {
+            handleFetchUserFollowMetrics();
+        }
+    }, [userInformation]);
 
     return (
         <div className={styles.profilePage}>
@@ -84,10 +138,21 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ iden
                         <UserStats
                             userInformation={userInformation}
                         />
-                        {isForUser &&
-                            <Link href="/app/profile" className={styles.updateProfileBtn}>
+                        {isForUser && session ?
+                            <Link href={ApplicationRoutes.Profile} className={styles.updateProfileBtn}>
                                 Update Profile
-                            </Link>
+                            </Link> :
+                            <>
+                                {
+                                    session && isFollowingUser !== null &&
+                                    <button
+                                        className={styles.updateProfileBtn}
+                                        disabled={isInteractingWithUserProfile}
+                                        onClick={() => handleInteractWithUser(isFollowingUser ? FollowsActionType.Unfollow : FollowsActionType.Follow)}>
+                                        {isFollowingUser ? "Unfollow" : "Follow"}
+                                    </button>
+                                }
+                            </>
                         }
                         <UserHighlights
                             userInformation={userInformation}

@@ -1,5 +1,5 @@
-import { CSSProperties, Dispatch, FunctionComponent, ReactElement, SetStateAction } from "react";
-import { CalenderIcon, HeartIcon, ShareIcon } from "../SVGs/SVGicons";
+import { CSSProperties, Dispatch, FunctionComponent, ReactElement, SetStateAction, useContext, useEffect, useState } from "react";
+import { CalenderIcon, HeartIcon, LikeIcon, ShareIcon } from "../SVGs/SVGicons";
 import styles from "@/app/styles/EventInfo.module.scss";
 import { Link as ScrollLink } from 'react-scroll';
 import Tooltip from "../custom/Tooltip";
@@ -7,18 +7,42 @@ import Link from "next/link";
 import Image from "next/image";
 import images from "@/public/images";
 import moment from "moment";
-import { EventResponse } from "@/app/models/IEvents";
+import { EventFavoriteAction, EventResponse } from "@/app/models/IEvents";
+import { Theme } from "@/app/enums/Theme";
+import { motion } from "framer-motion";
+import useResponsiveness from "@/app/hooks/useResponsiveness";
+import { ApplicationContext, ApplicationContextData } from "@/app/context/ApplicationContext";
+import { useSession } from "next-auth/react";
+import { useFetchEventLikeStatus, useLikeEvent } from "@/app/api/apiClient";
+import { catchError } from "@/app/constants/catchError";
+import EventLikeButton from "../custom/EventLikeButton";
 
 interface EventMainInfoProps {
+    appTheme: Theme | null
     eventInfo: EventResponse
     setTicketsSelectionContainerIsVisible?: Dispatch<SetStateAction<boolean>>
     addEventToGoogleCalender?: () => void
     forOrdersPage?: boolean
     hideStatusTag?: boolean
+    hostUrl?: string
 }
 
 const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
-    { eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender, forOrdersPage, hideStatusTag }): ReactElement => {
+    { appTheme, eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
+        forOrdersPage, hideStatusTag, hostUrl }): ReactElement => {
+
+    const { data: session } = useSession();
+    const likeEvent = useLikeEvent();
+    const fetchEventLikeStatus = useFetchEventLikeStatus();
+
+    const windowRes = useResponsiveness();
+    const isMobile = windowRes.width && windowRes.width < 768;
+    const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
+    const { isUserLoginPromptVisible, toggleUserLoginPrompt } = useContext(ApplicationContext) as ApplicationContextData;
+
+    const [isEventLiked, setIsEventLiked] = useState(false);
 
     function shareEvent() {
         const eventURL = window.location.href;
@@ -37,13 +61,13 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
         }
     };
     function shareEventMobile() {
-        const eventURL = window.location.href;
+        // const eventURL = window.location.href;
         if (navigator.share) {
             navigator.share({
                 // title: "Check out this event!",
                 title: `${eventInfo?.title} - Ticketsdeck Events`,
                 text: "I found this amazing event. You should check it out!",
-                url: eventURL
+                url: `${window.location.pathname}/event/${eventInfo.id}`
             })
                 .then(() => console.log("Shared successfully"))
                 .catch(error => console.log("Sharing failed:", error));
@@ -52,19 +76,59 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
         }
     };
 
+    async function handleUpdateUserFavouriteEvents(eventId: string, action: string = EventFavoriteAction.Like) {
+
+        // Check if user is logged in and prompt user to login if not
+        if (!isUserLoginPromptVisible && !session) {
+            toggleUserLoginPrompt();
+            return;
+        }
+
+        // Update the event's like status
+        setIsEventLiked(!isEventLiked);
+
+        await likeEvent(session?.user.id as string, eventId, action)
+            .then((response) => {
+                // console.log("🚀 ~ .then ~ response:", response)
+            })
+            .catch((error) => {
+                catchError(error);
+                // Revert the event's like status
+                setIsEventLiked(!isEventLiked);
+            })
+    };
+
+    async function handleFetchEventLikeStatus(eventId: string) {
+        await fetchEventLikeStatus(session?.user.id as string, eventId)
+            .then((response) => {
+                // console.log("🚀 ~ .then ~ response:", response)
+                setIsEventLiked(response.data.userLikedEvent);
+            })
+            .catch((error) => {
+                catchError(error);
+            })
+    };
+
+    // Use useEffect to fetch the event's like status when the component mounts
+    useEffect(() => {
+        if (session) {
+            handleFetchEventLikeStatus(eventInfo.id);
+        }
+    }, [session]);
+
     return (
-        <div className={`${styles.mainSection} ${forOrdersPage ? styles.opMainSection : ''}`}>
+        <div className={`${appTheme === Theme.Light ? styles.mainSectionLightTheme : styles.mainSection} ${forOrdersPage ? styles.opMainSection : ''}`}>
             <div className={forOrdersPage ? styles.eventImageForOrderPage : styles.eventImage}>
-                <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill />
+                <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill sizes="auto" />
             </div>
-            {!hideStatusTag && <span className={styles.tag}>Latest</span>}
+            {/* {!hideStatusTag && <span className={styles.tag}>Latest</span>} */}
             <div className={styles.eventDetails}>
                 <div className={styles.leftInfo}>
                     <h2 className={styles.title}>{eventInfo?.title}</h2>
                     <p className={styles.datePosted}>Posted on: {moment(eventInfo.createdAt).format('Do MMMM YYYY')}</p>
                     <Link className={styles.publisherInfo} href={`/u/${eventInfo.user.username ?? eventInfo.user.id}`}>
                         <div className={styles.publisherInfo__image}>
-                            <Image src={eventInfo.user.profilePhoto ?? images.user_avatar} alt='Avatar' fill />
+                            <Image src={eventInfo.user.profilePhoto ?? images.user_avatar} alt='Avatar' fill sizes="auto" />
                         </div>
                         <div className={styles.publisherInfo__name}>{`${eventInfo?.user.firstName} ${eventInfo?.user.lastName}`}</div>
                     </Link>
@@ -88,7 +152,10 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     {
                         forOrdersPage ?
                             <div className={styles.bottomArea}>
-                                <button className={styles.reportEvent} disabled>Report event</button>
+                                <Link href={`${hostUrl}/event/${eventInfo.id}`} className={styles.rePurchaseBtn}>
+                                    Buy again
+                                </Link>
+                                {/* <button className={styles.reportEvent} disabled>Report event</button> */}
                             </div>
                             :
                             <div className={styles.bottomArea}>
@@ -114,17 +181,29 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     }
                 </div>
                 <div className={forOrdersPage ? styles.actionButtonsForOrderPage : styles.actionButtons}>
-                    <Tooltip tooltipText='Add to calender'>
+                    <Tooltip
+                        position={onMobile ? "top" : onDesktop ? "left" : undefined}
+                        tooltipText='Add to calender'>
                         <div className={styles.actionButton} onClick={() => addEventToGoogleCalender && addEventToGoogleCalender()}>
                             <CalenderIcon />
                         </div>
                     </Tooltip>
-                    <Tooltip tooltipText='Like event'>
+                    {/* <Tooltip
+                        position={onMobile ? "top" : onDesktop ? "left" : undefined}
+                        tooltipText='Like event' action={() => handleUpdateUserFavouriteEvents(eventInfo.id, isEventLiked ? EventFavoriteAction.Unlike : EventFavoriteAction.Like)}>
                         <div className={styles.actionButton}>
-                            <HeartIcon />
+                            <motion.span
+                                style={{ width: "100%", height: "100%", display: "grid", placeItems: "center" }}
+                                whileTap={{ scale: 2.5 }}
+                                transition={{ duration: 0.35 }}>
+                                <LikeIcon isLiked={isEventLiked} />
+                            </motion.span>
                         </div>
-                    </Tooltip>
-                    <Tooltip tooltipText='Share event'>
+                    </Tooltip> */}
+                    <EventLikeButton eventInfo={eventInfo} forEventInfo />
+                    <Tooltip
+                        position={onMobile ? "top" : onDesktop ? "left" : undefined}
+                        tooltipText='Share event'>
                         <div
                             className={styles.actionButton}
                             style={{ backgroundColor: '#D5542A' }}

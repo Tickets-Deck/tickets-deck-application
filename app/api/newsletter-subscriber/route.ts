@@ -1,69 +1,30 @@
 import { StatusCodes } from "@/app/models/IStatusCodes";
-import { compileNewsletterSubscriptionTemplate, sendMail } from "@/lib/mail";
-import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { validateRequestMethod } from "../services/reusable-services/requestMethodValidator";
+import { subscribeToNewsletter } from "../services/webContent/newsletterSubscriptionService";
+import { customNextResponseError } from "../utils/customNextResponseError";
+import { ApplicationError } from "@/app/constants/applicationError";
 
 export async function POST(req: NextRequest) {
-  if (req.method === "POST") {
-    const request = await req.json();
+  // validate request method
+  await validateRequestMethod(req, "POST");
 
-    try {
-      const { email } = request;
+  try {
+    // Call the function to subscribe to the newsletter
+    const operation = await subscribeToNewsletter(req);
 
-      // If email is not provided, return 400
-      if (!email) {
-        return NextResponse.json(
-          { error: "Email is required" },
-          { status: 400 }
-        );
-      }
-
-      // If email is not valid, return 400
-      if (!email.includes("@")) {
-        return NextResponse.json(
-          { error: "Email is not valid" },
-          { status: 400 }
-        );
-      }
-
-      // Check if email already exists
-      const subscriberExists = await prisma.newsLetterSubscribers.findFirst({
-        where: {
-          email,
-        },
-      });
-
-      // If email already exists, return 400
-      if (subscriberExists) {
-        return NextResponse.json(
-          { error: "Email already exists" },
-          { status: 400 }
-        );
-      }
-
-      // Save it to the database
-      const subscriber = await prisma.newsLetterSubscribers.create({
-        data: {
-          email, 
-        },
-      });
-
-      // Send email to the subscriber
-      await sendMail({
-        to: email,
-        name: "Subscriber",
-        subject: "Welcome to the newsletter",
-        body: compileNewsletterSubscriptionTemplate(email),
-        // body: `<p>Thank you for subscribing to the newsletter</p>`,
-      });
-
-      return NextResponse.json(subscriber, { status: StatusCodes.Created });
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json(
-        { error: "Something went wrong" },
-        { status: 500 }
-      );
+    // If operation fails, return the error
+    if (operation.error) {
+      return customNextResponseError(operation);
     }
+
+    // Return the response
+    return NextResponse.json(operation, { status: StatusCodes.Success });
+  } catch {
+    // Return an error if the operation fails
+    return NextResponse.json(
+      { error: ApplicationError.FailedToSubscribeToNewsletter.Text },
+      { status: StatusCodes.InternalServerError }
+    );
   }
 }

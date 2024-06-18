@@ -41,6 +41,7 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   bookmarks: Bookmarks[];
   favorites: Favourites[];
 
+  emailVerified: boolean;
   isVerified: boolean;
   isBlocked: boolean;
   isSuspended: boolean;

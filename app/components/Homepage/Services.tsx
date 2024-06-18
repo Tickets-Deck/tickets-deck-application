@@ -2,12 +2,16 @@
 import { FunctionComponent, ReactElement, useEffect } from 'react';
 import styles from '../../styles/Home.module.scss';
 import { CreateEventsIcon, EasyManagementIcon, EfficientPaymentIcon, PlatformIcon, QuickTicketBookingIcon, ThinkingEmojiIcon, TrackPerformanceIcon } from '../SVGs/SVGicons';
+import { RootState } from '@/app/redux/store';
+import { useSelector } from 'react-redux';
+import { Theme } from '@/app/enums/Theme';
 
 interface ServicesProps {
 
 }
 
 const Services: FunctionComponent<ServicesProps> = (): ReactElement => {
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const services = [
         {
@@ -50,7 +54,7 @@ const Services: FunctionComponent<ServicesProps> = (): ReactElement => {
             </div>
             <div className={styles.servicesContainer}>
                 {services.map((service, index) =>
-                    <div className={styles.service} key={index}>
+                    <div className={appTheme == Theme.Light ? styles.serviceLightTheme : styles.service} key={index}>
                         <span>{service.icon}</span>
                         <div className={styles.service__textContents}>
                             <h2>{service.title}</h2>

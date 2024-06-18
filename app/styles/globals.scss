@@ -1,44 +1,83 @@
 @use "./fonts";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import "./variables";
-@import "./reusables"; 
+@import "./reusables";
 
-// :root {
-//   --max-width: 81.25rem;
-//   --border-radius: .75rem;
-//   --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
-//     'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
-//     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+html[data-theme="light"] {
+    /* Light Theme Colors */
+    --white: #000000;
+    --black: #ffffff;
+    --grey: #f8f8f8; /* Lighter grey for background */
+    --dark-grey: #F2F2F2; /* Lighter dark grey */
+    --dark-grey-2: #eeeeee; /* Lighter dark grey 2 */
+    --dark-grey-3: #ebebeb;
 
-//   --foreground-rgb: 0, 0, 0;
-//   --background-start-rgb: 214, 219, 220;
-//   --background-end-rgb: 255, 255, 255;
-// }
+    --container-grey: #f2f2f2; /* Lighter container grey */
+    --text-grey: #555555; /* Darker text grey for better readability */
+    --purple-grey: #7d7d8c;
 
-// @media (prefers-color-scheme: dark) {
-//   :root {
-//     --foreground-rgb: 255, 255, 255;
-//     --background-start-rgb: 0, 0, 0;
-//     --background-end-rgb: 0, 0, 0;
-//   }
-// }
+    --primary-color: #8133f1;
+    --primary-color-sub: #ceb0fa;
+    --primary-color-sub-50: #efe6fd;
+    --secondary-color: #fee755;
+    --grey-bg: #f8f8f8; /* Lighter grey for background */
+    --grey-3: #555555; /* Darker grey 3 for better readability */
+    
+    --success-color: #00c940;
+    --failed-color: #dc143c;
+    --warning-color: #d3b809;
+    --peach: #ff7875;
+    --standard: #34abae;
+    --premium: #006aff;
+}
+
+html[data-theme="dark"] {
+    /* Dark Theme Colors */
+    --white: #ffffff;
+    --black: #000000;
+    --grey: #f2f2f2;
+    --dark-grey: #111111;
+    --dark-grey-2: #222222;
+    --dark-grey-3: #3E3D44;
+
+    --container-grey: #313131;
+    --text-grey: #717171;
+    --purple-grey: #adadbc;
+
+    --primary-color: #8133f1;
+    --primary-color-sub: #ceb0fa;
+    --primary-color-sub-50: #efe6fd;
+    --secondary-color: #fee755;
+    --grey-bg: #f4f1f1;
+    --grey-3: #828282;
+
+    --success-color: #00c940;
+    --failed-color: #dc143c;
+    --warning-color: #d3b809;
+    --peach: #ff7875;
+    --standard: #34abae;
+    --premium: #006aff;
+}
 
 * {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-  scroll-behavior: smooth;
-  font-family: $normal-font, sans-serif;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    scroll-behavior: smooth;
+    font-family: $normal-font, sans-serif;
 
-  -webkit-tap-highlight-color: transparent;
-//   user-select: none;
-//   -ms-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    //   user-select: none;
+    //   -ms-user-select: none;
 }
 
 html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
-  scrollbar-width: thin;
+    max-width: 100vw;
+    overflow-x: hidden;
+    scrollbar-width: thin;
 }
 
 // body {
@@ -53,25 +92,32 @@ body {
 
 // @media (prefers-color-scheme: dark) {
 //   html {
-    // color-scheme: dark;
+// color-scheme: dark;
 //   }
 // }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: Mona-Sans-Wide, sans-serif;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
-  -ms-user-select: none;
-  user-select: none;
+    color: inherit;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
-    transition: background-color 600000s 0s, color 600000s 0s;
+    transition:
+        background-color 600000s 0s,
+        color 600000s 0s;
     background-color: transparent !important;
 }
 input[data-autocompleted] {
@@ -97,12 +143,18 @@ img {
     object-fit: contain;
 }
 
+input, textarea {
+    @include tablet {
+        font-size: $font-size-16 !important;
+    }
+}
 
 button {
     overflow: hidden;
     position: relative;
     border: none;
     outline: none;
+    font-size: $font-size-16;
     &:disabled {
         pointer-events: none;
         opacity: 0.6;
@@ -115,7 +167,7 @@ button {
     min-height: 100vh;
     display: grid;
     place-items: center;
-    background-color: $dark-grey;
+    background-color: var(--dark-grey);
 
     .image {
         width: 3.25rem;
@@ -137,9 +189,11 @@ button {
 .tooltipWrapper {
     position: relative;
     cursor: pointer;
-    .tooltip, .top, .right {
+    .tooltip,
+    .top,
+    .right {
         pointer-events: none;
-        font-size: $font-size-16 - .25rem;
+        font-size: $font-size-16 - 0.25rem;
         white-space: nowrap;
         position: absolute;
         top: 50%;
@@ -148,18 +202,18 @@ button {
         width: fit-content;
         transform: translate(0%, -50%);
         background-color: $dark-grey;
-        padding: .35rem 0.6rem .3rem;
-        border-radius: .4rem;
+        padding: 0.35rem 0.6rem 0.3rem;
+        border-radius: 0.4rem;
         z-index: 2;
         &::after {
-            content: '';
+            content: "";
             background-color: $dark-grey;
             position: absolute;
             right: 0%;
             top: 45%;
             transform: translate(0%, -50%);
-            width: .5rem;
-            height: .5rem;
+            width: 0.5rem;
+            height: 0.5rem;
             rotate: 45deg;
             z-index: -1;
         }
@@ -209,8 +263,8 @@ button {
 }
 
 .appLayout {
-    height: 100vh;
-    overflow: hidden;
+    // height: 100vh;
+    // overflow: hidden;
     &__body {
         display: flex;
         .innerBody {
@@ -228,7 +282,6 @@ button {
     }
 }
 
-
 .bodyNoScroll {
     // position: fixed;
     // width: 100%;
@@ -242,7 +295,8 @@ button {
 .root-98 {
     width: 100%;
 }
-.ms-TextField-fieldGroup, .fieldGroup-106 {
+.ms-TextField-fieldGroup,
+.fieldGroup-106 {
     background: transparent;
 }
 .readOnlyTextField-116 {

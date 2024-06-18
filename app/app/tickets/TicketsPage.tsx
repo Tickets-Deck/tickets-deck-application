@@ -1,5 +1,5 @@
 "use client";
-import { FunctionComponent, ReactElement, useEffect, useRef, useState } from "react";
+import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "@/app/styles/Tickets.module.scss";
 import DynamicTab from "@/app/components/custom/DynamicTab";
 import { DownloadIcon } from "@/app/components/SVGs/SVGicons";
@@ -39,9 +39,9 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
     const tab = params.get('t');
 
     const userInfo = useSelector((state: RootState) => state.userCredentials.userInfo);
-    const [selectedTicketTab, setSelectedTicketTab] = useState(TicketTab.Bought);
+    const [selectedTicketTab, setSelectedTicketTab] = useState<TicketTab>(tab == "0" ? TicketTab.Bought : TicketTab.Sold);
     const [isFetchingUserTicketOrders, setIsFetchingUserTicketOrders] = useState(true);
-    const [UserTicketOrder, setUserTicketOrders] = useState<UserTicketOrder[]>([]);
+    const [userTicketOrder, setUserTicketOrders] = useState<UserTicketOrder[]>([]);
 
     // const [selectedTicketOrder, setSelectedTicketOrder] = useState<UserTicketOrder>();
     const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] = useState<TicketPass>();
@@ -199,10 +199,11 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                 <div className={styles.topArea}>
                     <h3>Tickets page</h3>
                 </div>
+
                 <div className={styles.filterSection}>
                     <DynamicTab
                         currentTab={selectedTicketTab}
-                        setCurrentTab={setSelectedTicketTab}
+                        setCurrentTab={setSelectedTicketTab as Dispatch<SetStateAction<TicketTab>>}
                         arrayOfTabOptions={ticketTabOptions}
                         tabCustomWidth={140}
                         tabCustomHeight={44}
@@ -210,6 +211,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                         containerbackgroundColor="#fff"
                     />
                 </div>
+
                 <div className={styles.tableContainer}>
                     <table>
                         <tbody>
@@ -224,14 +226,14 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                             </tr>
 
                             {
-                                UserTicketOrder.map((userTicketOrder, index) => {
+                                userTicketOrder.map((userTicketOrder, index) => {
                                     return (
                                         <tr key={index}>
                                             <td>{userTicketOrder.ticket.event.title}</td>
                                             <td>{userTicketOrder.ticket.name}</td>
                                             <td>&#8358;{Number(userTicketOrder.ticket.price).toLocaleString()}</td>
                                             <td>
-                                                <a href={`mailto:${userTicketOrder.associatedEmail}`}>{userTicketOrder.associatedEmail}</a>
+                                                <a href={`mailto:${userTicketOrder.associatedEmail ?? userTicketOrder.contactEmail}`}>{userTicketOrder.associatedEmail ?? userTicketOrder.contactEmail}</a>
                                             </td>
                                             <td>{moment(userTicketOrder.createdAt).format("ddd Do MMM, YYYY | hh:mma")}</td>
                                             <td>
@@ -261,13 +263,13 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                     </table>
 
                     {
-                        UserTicketOrder.length == 0 && !isFetchingUserTicketOrders &&
+                        userTicketOrder.length == 0 && !isFetchingUserTicketOrders &&
                         <div className={styles.tableInfoUnavailable}>
                             <p>There is no data available</p>
                         </div>
                     }
                     {
-                        UserTicketOrder.length == 0 && isFetchingUserTicketOrders &&
+                        userTicketOrder.length == 0 && isFetchingUserTicketOrders &&
                         <div className={styles.tableLoader}>
                             <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />
                         </div>

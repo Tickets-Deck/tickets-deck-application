@@ -6,12 +6,13 @@ export class ApiRoutes {
    * The dev base url for the application
    */
   static BASE_URL_DEV: string = "http://localhost:9000/";
-//   static BASE_URL_DEV: string = "http://192.168.1.226:9000/";
+  //   static BASE_URL_DEV: string = "http://192.168.1.226:9000/";
 
   /**
    * The test base url for the application
    */
-  static BASE_URL_TEST: string = "https://ticketsdeck.netlify.app";
+  //   static BASE_URL_TEST: string = "https://ticketsdeck.netlify.app";
+  static BASE_URL_TEST: string = "https://beta.events.ticketsdeck.com";
 
   /**
    * The live base url for the application
@@ -37,6 +38,11 @@ export class ApiRoutes {
    * The route to Users endpoint
    */
   static Users: string = "api/users";
+
+  /**
+   * The route to VerifyUserEmail endpoint
+   */
+  static VerifyUserEmail: string = "api/users/verify";
 
   /**
    * The route to UploadUserProfilePhoto endpoint
@@ -69,7 +75,53 @@ export class ApiRoutes {
   static Payment: string = "api/events/tickets/payment";
 
   /**
+   * The route to Tickets endpoint
+   */
+  static Tickets: string = "api/events/tickets";
+
+  /**
    * The route to Dashboard endpoint
    */
   static Dashboard: string = "api/users/dashboard";
+
+  /**
+   * The route to Follows endpoint
+   */
+  static Follows: string = "api/users/follows";
+
+  /**
+   * The route to Customer Enquiries endpoint
+   */
+  static CustomerEnquiries: string = "api/customer-enquiries";
+
+  /**
+   * The route to User Recent Transactions endpoint
+   */
+  static UserRecentTransactions: string = "api/users/recent-transactions";
+
+  /**
+   * The route to Like Event endpoint
+   */
+  static LikeEvent: string = "api/events/like";
+
+  /**
+   * The route to Request User Password Reset Link endpoint
+   */
+  static UserPasswordResetLink: string =
+    "api/users/password/request-reset-link";
+
+  /**
+   * The route to User Password Reset endpoint
+   */
+  static UserPasswordReset: string = "api/users/password/reset";
+
+  /**
+   * The route to User Password Change endpoint
+   */
+  static UserPasswordChange: string = "api/users/password/change";
+
+  /**
+   * The route to User Wallet Balance endpoint
+   */
+  static UserWalletBalance: string = "api/users/wallet-balance";
 }

@@ -1,34 +1,107 @@
-import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { validateRequestMethod } from "../../services/reusable-services/requestMethodValidator";
+import { ApplicationError } from "@/app/constants/applicationError";
+import { StatusCodes } from "@/app/models/IStatusCodes";
+import {
+  createTicket,
+  deleteTicket,
+  fetchEventTickets,
+  updateTicket,
+} from "../../services/ticket/ticketService";
+import { customNextResponseError } from "../../utils/customNextResponseError";
 
 export async function GET(req: NextRequest) {
-  if (req.method === "GET") {
-    // Get the search params from the request url
-    const searchParams = new URLSearchParams(req.url.split("?")[1]);
+  // validate request method
+  await validateRequestMethod(req, "GET");
 
-    // Get the eventId from the search params
-    const specifiedEventId = searchParams.get("eventId");
+  try {
+    // Call the function to fetch all tickets for an event
+    const operation = await fetchEventTickets(req);
 
-    // If a specifiedEventId is provided, fetch all tickets under the event with that eventId
-    if (specifiedEventId) {
-      const event = await prisma.events.findFirst({
-        where: {
-          eventId: specifiedEventId,
-        },
-        include: {
-            tickets: true,
-        },
-      });
-
-      // If event is not found, return 404
-      if (!event) {
-        return NextResponse.json(
-          { error: "Event with specified Event ID not found" },
-          { status: 404 }
-        );
-      }
-
-      return NextResponse.json(event, { status: 200 });
+    // If operation fails, return the error
+    if (operation.error) {
+      return customNextResponseError(operation);
     }
+
+    // Return the response
+    return NextResponse.json(operation.data, { status: StatusCodes.Success });
+  } catch {
+    // Return an error if the operation fails
+    return NextResponse.json(
+      { error: ApplicationError.FailedToSubscribeToNewsletter.Text },
+      { status: StatusCodes.InternalServerError }
+    );
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  // validate request method
+  await validateRequestMethod(req, "PUT");
+
+  try {
+    // Call the function to update a ticket
+    const operation = await updateTicket(req);
+
+    // If operation fails, return the error
+    if (operation.error) {
+      return customNextResponseError(operation);
+    }
+
+    // Return the response
+    return NextResponse.json(operation.data, { status: StatusCodes.Success });
+  } catch {
+    // Return an error if the operation fails
+    return NextResponse.json(
+      { error: ApplicationError.FailedToSubscribeToNewsletter.Text },
+      { status: StatusCodes.InternalServerError }
+    );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  // validate request method
+  await validateRequestMethod(req, "POST");
+
+  try {
+    // Call the function to create a ticket
+    const operation = await createTicket(req);
+
+    // If operation fails, return the error
+    if (operation.error) {
+      return customNextResponseError(operation);
+    }
+
+    // Return the response
+    return NextResponse.json(operation, { status: StatusCodes.Created });
+  } catch {
+    // Return an error if the operation fails
+    return NextResponse.json(
+      { error: ApplicationError.FailedToSubscribeToNewsletter.Text },
+      { status: StatusCodes.InternalServerError }
+    );
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  // validate request method
+  await validateRequestMethod(req, "DELETE");
+
+  try {
+    // Call the function to delete a ticket
+    const operation = await deleteTicket(req);
+
+    // If operation fails, return the error
+    if (operation.error) {
+      return customNextResponseError(operation);
+    }
+
+    // Return the response
+    return NextResponse.json(operation, { status: StatusCodes.Success });
+  } catch(error) {
+    // Return an error if the operation fails
+    return NextResponse.json(
+      { error: ApplicationError.InternalServerError.Text },
+      { status: StatusCodes.InternalServerError }
+    );
   }
 }

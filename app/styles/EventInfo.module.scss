@@ -4,19 +4,19 @@
 @mixin button {
     @include primary-button;
     border-radius: 2.5rem;
-    background-color: $white;
-    color: $black;
+    background-color: var(--white);
+    color: var(--black);
     font-weight: $fontWeight-500;
     font-size: $font-size-18;
 }
 
 
-.mainSection {
+.mainSection, .mainSectionLightTheme {
     display: flex;
     align-items: center;
     border-radius: 1.5rem;
     padding: 1.5rem;
-    background-color: $container-grey;
+    background-color: var(--container-grey);
     gap: 1rem;
     position: relative;
     min-height: 320px;
@@ -70,8 +70,8 @@
         right: 1.5rem;
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
-        color: $white;
-        background-color: $primary-color;
+        color: var(--white);
+        background-color: var(--primary-color);
     }
     .eventDetails {
         display: flex;
@@ -103,7 +103,7 @@
                 // font-family: Mona-Sans-Wide, 'sans-serif';
             }
             .datePosted {
-                color: $purple-grey;
+                color: var(--purple-grey);
                 font-size: $font-size-16 - 0.25rem;
             }
             .publisherInfo {
@@ -133,7 +133,7 @@
                 }
                 &__name {
                     font-size: $font-size-16;
-                    color: $white;
+                    color: var(--white);
                     font-weight: $fontWeight-500;
                     @include midSizeMobilePhone {
                         font-size: $font-size-16 - 0.125rem;
@@ -147,17 +147,17 @@
                 h4 {
                     font-size: $font-size-16;
                     font-weight: $fontWeight-500;
-                    color: $white;
+                    color: var(--white);
                 }
             }
             .location {
                 width: 100%;
                 p {
                     font-size: $font-size-16 - 0.125rem;
-                    color: $white;
+                    color: var(--white);
                 }
                 button {
-                    color: $purple-grey;
+                    color: var(--purple-grey);
                     text-decoration: underline;
                     background-color: transparent;
                     border: none;
@@ -177,25 +177,25 @@
                 }
                 .priceArea {
                     span {
-                        color: $purple-grey;
+                        color: var(--purple-grey);
                         font-size: $font-size-16 - 0.125rem;
                     }
                     h2 {
                         font-weight: $fontWeight-600;
                     }
                 }
-                button {
+                .rePurchaseBtn, button {
                     @include button();
                     @include midSizeMobilePhone {
                         font-size: $font-size-16 - 0.125rem;
                     }
                 }
                 .reportEvent {
-                    background-color: $failed-color;
-                    color: $white;
+                    background-color: var(--failed-color);
+                    color: var(--white);
                     &:hover {
                         background-color: darken($failed-color, 10%);
-                        color: $white;
+                        color: var(--white);
                     }
                 }
             }
@@ -236,10 +236,70 @@
     }
 }
 
+// This shows for order page
 .opMainSection {
     flex-direction: column;
     width: 100%;
     .eventImage {
         width: 100%;
     }
+}
+
+.mainSectionLightTheme {
+    background-color: var(--dark-grey-3);
+    .tag {
+        color: var(--black);
+    }
+    .eventDetails {
+        .title {
+            color: var(--white);
+        }
+        .datePosted {
+            color: var(--purple-grey);
+        }
+        .publisherInfo {
+            &:hover {
+                opacity: 1;
+            }
+            &__name {
+                color: var(--black);
+            }
+        }
+        .dateTime {
+            color: var(--white);
+        }
+        .location {
+            p {
+                color: var(--black);
+            }
+            button {
+                color: var(--purple-grey);
+            }
+        }
+        .priceArea {
+            span {
+                color: var(--purple-grey);
+            }
+        }
+        .rePurchaseBtn, button {
+            color: var(--black);
+        }
+        .reportEvent {
+            background-color: var(--failed-color);
+            color: var(--white);
+            &:hover {
+                background-color: darken($failed-color, 10%);
+                color: var(--white);
+            }
+        }
+    }
+    // .actionButtons, .actionButtonsForOrderPage {
+    //     .actionButton {
+    //         border: 2px solid #000;
+    //         background-color: var(--black);
+    //         svg {
+    //             fill: var(--white);
+    //         }
+    //     }
+    // }
 }

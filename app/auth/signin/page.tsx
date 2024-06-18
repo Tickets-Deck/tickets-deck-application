@@ -1,4 +1,4 @@
-import Login from "@/app/components/authForms/login";
+import Login from "@/app/components/authPages/LoginPage";
 import { ReactElement, FunctionComponent } from "react";
 
 interface SignInProps {

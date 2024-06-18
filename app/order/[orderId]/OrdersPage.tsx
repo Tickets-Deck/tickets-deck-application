@@ -10,19 +10,21 @@ import { useFetchOrderInformationById } from "@/app/api/apiClient";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { UserTicketOrder } from "@/app/models/IUserTicketOrder";
 import moment from "moment";
+import { RootState } from "@/app/redux/store";
+import { useSelector } from "react-redux";
 
 interface OrdersPageProps {
     orderId: string
+    hostUrl: string | undefined
 }
 
-const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId }): ReactElement => {
+const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): ReactElement => {
 
     const fetchOrderInformationById = useFetchOrderInformationById();
-    const { data: session, status } = useSession();
-    const router = useRouter();
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const [isFetchingOrderInformation, setIsFetchingOrderInformation] = useState(true);
-    const [orderInformation, setOrderInformation] = useState<UserTicketOrder | null>(null); 
+    const [orderInformation, setOrderInformation] = useState<UserTicketOrder | null>(null);
 
     /**
      * Function to fetch order information
@@ -31,12 +33,10 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId }): ReactEleme
 
         await fetchOrderInformationById(orderId)
             .then((response) => {
-                setOrderInformation(response.data.data);
-                console.log("Response: ", response);
+                setOrderInformation(response.data);
             })
             .catch((error) => {
                 setOrderInformation(null);
-                console.error(error);
             })
             .finally(() => {
                 // Fetch order information
@@ -44,118 +44,9 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId }): ReactEleme
             })
     };
 
-    // const eventInfo: EventResponse = {
-    //     id: "3a96fa65-380b-4d83-bfcf-ce3fbd1d267c",
-    //     eventId: "UNP68K",
-    //     publisherId: "b8d9774c-d9e6-4f21-bdac-bc18bd09df39",
-    //     title: "Food Fest 2.0",
-    //     description: "This is a description of food fest 2.0 now",
-    //     locationId: null,
-    //     venue: "7, Jumbo street, beside chrisland school",
-    //     date: "2024-03-23T23:00:00.000Z",
-    //     time: "8pm",
-    //     category: "Food Festivals",
-    //     visibility: "PUBLIC",
-    //     mainImageUrl:
-    //         "https://res.cloudinary.com/dvxqk1487/image/upload/v1710199089/event_images/bjejgsdsyvj9n9wiq9vz.jpg",
-    //     currency: "NGN",
-    //     purchaseStartDate: "2024-03-14T23:00:00.000Z",
-    //     purchaseEndDate: "2024-03-19T23:00:00.000Z",
-    //     allowedGuestType: "Everyone",
-    //     bookmarksCount: 0,
-    //     favoritesCount: 0,
-    //     bookmarks: [],
-    //     favorites: [],
-    //     ticketsPurchasedCount: 1,
-    //     ticketsPurchased: [],
-    //     createdAt: "2024-03-11T23:18:09.065Z",
-    //     updatedAt: "2024-03-11T23:25:09.126Z",
-    //     user: {
-    //         id: "b8d9774c-d9e6-4f21-bdac-bc18bd09df39",
-    //         email: "simlexafol@gmail.com",
-    //         //   emailVerified: false,
-    //         firstName: "Similoluwa",
-    //         lastName: "Afolabi",
-    //         username: "",
-    //         profilePhoto:
-    //             "https://lh3.googleusercontent.com/a/ACg8ocKi5I4HXVCPgUCE1yMxl4NPci6RYaRFSVtHwyyHIefNlMU=s96-c",
-    //         events: [],
-    //         bookmarks: [],
-    //         favorites: [],
-    //         ticketsPurchased: [],
-    //         profilePhotoId: "",
-    //         coverPhoto: "",
-    //         coverPhotoId: "",
-    //         phone: "",
-    //         password: "google-signup-no-password",
-    //         occupation: "",
-    //         bio: "",
-    //         facebookUrl: "",
-    //         twitterUrl: "",
-    //         instagramUrl: "",
-    //         linkedinUrl: "",
-    //         followersCount: 0,
-    //         followingCount: 0,
-    //         eventsCount: 2,
-    //         bookmarksCount: 0,
-    //         favoritesCount: 0,
-    //         isVerified: false,
-    //         isBlocked: false,
-    //         isSuspended: false,
-    //         isDeleted: false,
-    //         isSuperAdmin: false,
-    //         isSubscribed: false,
-    //         isNewsletterSubscribed: false,
-    //         ticketsBought: 1,
-    //         ticketsSold: 2,
-    //         totalRevenue: 10400,
-    //         createdAt: new Date("2024-03-11T06:59:26.888Z"),
-    //         updatedAt: new Date("2024-03-12T14:36:40.833Z"),
-    //     },
-    //     tickets: [
-    //         {
-    //             id: "118f85b2-5c04-4e75-84f1-7cf87d634b45",
-    //             eventId: "3a96fa65-380b-4d83-bfcf-ce3fbd1d267c",
-    //             name: "Regular",
-    //             price: 2400,
-    //             quantity: 20,
-    //             remainingTickets: 19,
-    //             numberOfUsers: 1,
-    //             description: "",
-    //             ticketsPurchased: [],
-    //             ticketsPurchasedCount: 1,
-    //             createdAt: "2024-03-11T23:18:09.065Z",
-    //             updatedAt: "2024-03-11T23:25:09.161Z",
-    //         },
-    //         {
-    //             id: "808a5b20-f5bb-40dc-93b2-b30883440c17",
-    //             eventId: "3a96fa65-380b-4d83-bfcf-ce3fbd1d267c",
-    //             name: "Duo Pack",
-    //             price: 3500,
-    //             quantity: 35,
-    //             remainingTickets: 34,
-    //             numberOfUsers: 2,
-    //             description: "",
-    //             ticketsPurchased: [],
-    //             ticketsPurchasedCount: 1,
-    //             createdAt: "2024-03-11T23:18:09.065Z",
-    //             updatedAt: "2024-03-11T23:25:09.161Z",
-    //         },
-    //     ],
-    //     images: [],
-    //     tags: ["Food", "Fest"],
-    //     location: null,
-    // };
-
     useEffect(() => {
         handleFetchOrderInformation();
-    }, [])
-
-    // useEffect(() => {
-    //     if (status === 'unauthenticated') {
-    //         router.push('/auth/signin');
-    //     }
-    // }, [status])
+    }, []);
 
     return (
         <main className={styles.orderspage}>
@@ -169,7 +60,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId }): ReactEleme
                     <p>Please wait while we fetch your ticket order information.</p>
                 </div>
             }
-            
+
             {
                 !isFetchingOrderInformation && !orderInformation &&
                 <div className={styles.loaderAreaContainer}>
@@ -192,18 +83,24 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId }): ReactEleme
                     <div className={styles.orderInformationContainer}>
                         <div className={styles.eventContainer}>
                             <EventMainInfo
+                                appTheme={appTheme}
                                 eventInfo={orderInformation?.event as EventResponse}
                                 forOrdersPage
                                 hideStatusTag
+                                hostUrl={hostUrl}
                             />
                         </div>
                         <div className={styles.ticketsContainer}>
+                            <h2>Tickets</h2>
+                            <p>Primary email: {orderInformation?.contactEmail}</p>
                             <div className={styles.tickets}>
                                 {
                                     orderInformation?.orderedTickets.map((orderedTickets, index) => (
                                         <div className={styles.ticket} key={index}>
                                             <h3>{orderedTickets.ticket.name}</h3>
-                                            <p>{orderedTickets.associatedEmail}</p>
+                                            <p style={orderedTickets.associatedEmail ? {} : { fontSize: "14px", fontStyle: "italic", opacity: 0.5 }}>
+                                                {orderedTickets.associatedEmail ?? "Sent to primary email"}
+                                            </p>
                                             <button><DownloadIcon /></button>
                                         </div>
                                     ))

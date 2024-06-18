@@ -1,4 +1,4 @@
-import SignupPage from "@/app/components/authForms/signup";
+import SignupPage from "@/app/components/authPages/SignupPage";
 import { FunctionComponent, ReactElement } from "react";
 
 interface SignUpProps {

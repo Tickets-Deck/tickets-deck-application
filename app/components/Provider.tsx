@@ -2,16 +2,15 @@
 
 import { configureStore } from '@reduxjs/toolkit'
 import { SessionProvider } from 'next-auth/react'
-import userReducer, { updateUserCredentials } from '@/app/redux/features/user/userSlice'
-import { Provider, useDispatch } from "react-redux";
-import { Session } from 'next-auth';
-import { useFetchUserInformation } from '../api/apiClient';
-import { catchError } from '../constants/catchError';
-import { useEffect } from 'react';
+import userReducer from '@/app/redux/features/user/userSlice'
+import themeReducer from '@/app/redux/features/theme/themeSlice'
+import { Provider } from "react-redux";
+import { AppProvider } from '../context/ApplicationContext'
 
 export const store = configureStore({
     reducer: {
         userCredentials: userReducer,
+        theme: themeReducer,
     },
 })
 
@@ -21,9 +20,11 @@ type Props = {
 
 export const GlobalProvider = ({ children }: Props) => {
 
-    return <Provider store={store}>
-        <SessionProvider>
-            {children}
-        </SessionProvider>
-    </Provider>
+    return <SessionProvider>
+        <AppProvider>
+            <Provider store={store}>
+                {children}
+            </Provider>
+        </AppProvider>
+    </SessionProvider>
 }

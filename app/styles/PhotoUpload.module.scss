@@ -10,6 +10,15 @@
     align-items: center;
     gap: 1.5rem;
     min-width: 21.875rem;
+    @include tablet {
+        // width: 320px;
+        width: 100%;
+        min-width: 100%;
+    }
+    // @include smallmobilePhone {
+    //     width: 350px;
+    //     min-width: 350px;
+    // }
 
     .topArea {
         display: flex;

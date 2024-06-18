@@ -1,13 +1,19 @@
 import Link from "next/link";
-import { FunctionComponent, ReactElement, useContext, Dispatch, SetStateAction } from "react";
-import { DeleteIcon, HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
+import { FunctionComponent, ReactElement, useContext, Dispatch, SetStateAction, useState } from "react";
+import { DeleteIcon, EditIcon, HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
 import Image from "next/image";
-import images from "../../../public/images";
 import styles from "../../styles/EventCard.module.scss";
 import moment from "moment";
 import { ToastContext } from "../../extensions/toast";
 import { EventResponse } from "@/app/models/IEvents";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
+import { useRouter } from "next/navigation";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { RootState } from "@/app/redux/store";
+import { useSelector } from "react-redux";
+import { Theme } from "@/app/enums/Theme";
+import { motion } from "framer-motion";
+import EventLikeButton from "../custom/EventLikeButton";
 
 interface EventCardProps {
     event: EventResponse
@@ -22,10 +28,15 @@ const EventCard: FunctionComponent<EventCardProps> = (
     { event, mobileAndActionButtonDismiss, consoleDisplay, gridDisplay,
         setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
 
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
+
+    const { push } = useRouter();
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
     const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+
+    const [isEventLiked, setIsEventLiked] = useState(false);
 
     const toasthandler = useContext(ToastContext);
 
@@ -74,11 +85,11 @@ const EventCard: FunctionComponent<EventCardProps> = (
     }
 
     return (
-        <div className={`${styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
+        <div className={`${appTheme == Theme.Light ? styles.eventLightTheme : styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
             {/* <div className={styles.backgroundImage}>
                 <Image src={images.ticketbg} alt='Ticket background' />
             </div> */}
-            <span className={styles.event__tag}>Latest</span>
+            {/* <span className={styles.event__tag}>Latest</span> */}
             <div className={styles.event__image}>
                 <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
                     <Image src={event.mainImageUrl} alt='Event flyer' fill />
@@ -104,17 +115,38 @@ const EventCard: FunctionComponent<EventCardProps> = (
                 {(!mobileAndActionButtonDismiss || consoleDisplay) &&
                     <div className={styles.eventInfo__rhs}>
                         <div className={styles.actions}>
-                            <button className={styles.actions__like}><LikeIcon /></button>
+                            {/* <button className={styles.actions__like} onClick={() => setIsEventLiked(!isEventLiked)}>
+                                <motion.span
+                                    style={{ width: "100%", height: "100%", display: "grid", placeItems: "center" }}
+                                    whileTap={{ scale: 3 }}
+                                    transition={{ duration: 0.5 }}>
+                                    <LikeIcon isLiked={isEventLiked} />
+                                </motion.span>
+                            </button> */}
+                            <EventLikeButton eventInfo={event} forEventCard />
                             <button
                                 className={styles.actions__share}
-                                onClick={() => shareEvent(`${window.location.origin + "/event/" + event.id}`)}>
+                                onClick={() => shareEvent(`${window.location.origin + ApplicationRoutes.GeneralEvent + event.id}`)}>
                                 <ShareIcon />
                             </button>
                         </div>
-                        <p className={styles.restriction}>{event.allowedGuestType}</p>
+                        <p className={styles.restriction}>
+                            {event.allowedGuestType}
+                        </p>
                     </div>}
             </div>
             <div className={styles.actionBtnContainer}>
+                {
+                    consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
+                    <Link href={`/app/event/edit/${event.id}`} className={styles.noStyle}>
+                        <button className={styles.editBtn}>
+                            <EditIcon />
+                        </button>
+                    </Link>
+                }
+                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
+                    <button>View details</button>
+                </Link>
                 {
                     consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
                     <button
@@ -126,9 +158,6 @@ const EventCard: FunctionComponent<EventCardProps> = (
                         <DeleteIcon />
                     </button>
                 }
-                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
-                    <button>View details</button>
-                </Link>
             </div>
         </div>
     );

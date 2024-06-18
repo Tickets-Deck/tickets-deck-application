@@ -24,7 +24,7 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
         <div className={styles.rhs}>
             <div className={styles.eventImageContainer}>
                 <div className={styles.eventImage}>
-                    <Image src={eventInfo?.mainImageUrl as string} fill alt="Flyer" />
+                    {eventInfo?.mainImageUrl && <Image src={eventInfo.mainImageUrl as string} fill alt="Flyer" sizes="auto" />}
                 </div>
                 <div className={styles.eventDetails}>
                     <h3>{eventInfo?.title}</h3>

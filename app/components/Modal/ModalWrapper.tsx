@@ -14,7 +14,7 @@ const ModalWrapper: FunctionComponent<ModalWrapperProps> = ({ visibility, setVis
 
     const modalContainerRef = useRef<HTMLDivElement>(null);
 
-    useRemoveHtmlElementFromDOM(modalContainerRef, visibility, 600, "flex");
+    useRemoveHtmlElementFromDOM(modalContainerRef, visibility, 350, "flex");
 
     return (
         <div className={visibility ? modalStyle.modalParent : modalStyle.modalParentInvisible} ref={modalContainerRef}>

@@ -12,20 +12,24 @@ datasource db {
 }
 
 model Users {
-    id             String  @id @default(uuid())
-    email          String  @unique
-    emailVerified  Boolean @default(false)
-    firstName      String
-    lastName       String
-    username       String? @unique
-    profilePhoto   String?
-    profilePhotoId String?
-    coverPhoto     String?
-    coverPhotoId   String?
-    phone          String?
-    password       String
-    occupation     String?
-    bio            String?
+    id                       String    @id @default(uuid())
+    email                    String    @unique
+    emailVerified            Boolean   @default(false)
+    firstName                String
+    lastName                 String
+    username                 String?   @unique
+    profilePhoto             String?
+    profilePhotoId           String?
+    coverPhoto               String?
+    coverPhotoId             String?
+    phone                    String?
+    password                 String
+    occupation               String?
+    bio                      String?
+    verificationToken        String?
+    verificationTokenExpiry  DateTime?
+    passwordResetToken       String?
+    passwordResetTokenExpiry DateTime?
 
     facebookUrl  String?
     twitterUrl   String?
@@ -55,10 +59,11 @@ model Users {
     ticketsSold   Int            @default(0)
     totalRevenue  Decimal        @default(0)
 
-    createdAt DateTime?  @default(now())
-    updatedAt DateTime?  @updatedAt
-    events    Events[]
-    Payment   Payments[]
+    createdAt        DateTime?          @default(now())
+    updatedAt        DateTime?          @updatedAt
+    events           Events[]
+    payments         Payments[]
+    recentActivities RecentActivities[]
 
     @@map("Users")
 }
@@ -307,4 +312,38 @@ model TagsForEvents {
 
     @@id([eventId, tagId])
     @@map("TagsForEvents")
+}
+
+model RecentActivities {
+    id        String    @id @default(uuid())
+    user      Users     @relation(fields: [userId], references: [id])
+    userId    String
+    activity  String
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+
+    @@map("RecentActivities")
+}
+
+model CouponCodes {
+    id         String    @id @default(uuid())
+    code       String    @unique
+    discount   Decimal
+    validUntil DateTime
+    createdAt  DateTime? @default(now())
+    updatedAt  DateTime? @updatedAt
+
+    @@map("CouponCodes")
+}
+
+model CustomerEnquiries {
+    id        String    @id @default(uuid())
+    name      String
+    email     String
+    subject   String
+    message   String
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @updatedAt
+
+    @@map("CustomerEnquiries")
 }

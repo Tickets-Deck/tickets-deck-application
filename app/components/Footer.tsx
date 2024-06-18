@@ -1,28 +1,29 @@
 "use client"
-import { FunctionComponent, MouseEvent, ReactElement, useContext, useEffect, useState } from 'react';
+import { FunctionComponent, ReactElement } from 'react';
 import styles from '../styles/Footer.module.scss';
 import Link from 'next/link';
 import images from '../../public/images';
 import Image from 'next/image';
-import { FacebookIcon, InstagramIcon, LinkedInIcon, TwitterIcon } from './SVGs/SVGicons';
-import { useCreateNewsletterSubscriber } from '../api/apiClient';
-import { ToastContext } from '../extensions/toast';
-import { emailRegex } from '../constants/emailRegex';
-import ComponentLoader from './Loader/ComponentLoader';
+import { InstagramIcon, TwitterIcon } from './SVGs/SVGicons';
 import SubscriptionFormSection from './Footer/SubscriptionFormSection';
 import { useSession } from 'next-auth/react';
+import { ApplicationRoutes } from '../constants/applicationRoutes';
+import { Theme } from '../enums/Theme';
+import { RootState } from '../redux/store';
+import { useSelector } from 'react-redux';
 
 interface FooterProps {
 
 }
 
 const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
+    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const { data: session } = useSession();
     const user = session?.user;
 
     return (
-        <section className={styles.footerContainer}>
+        <section className={appTheme == Theme.Light ? styles.footerContainerLightTheme : styles.footerContainer}>
             <div className={styles.lhs}>
                 <div className={styles.lhs__logoArea}>
                     <div className={styles.logoImage}>
@@ -37,10 +38,10 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                     {/* <Link href='https://www.facebook.com/ticketsdeck0' target="_blank">
                         <span><FacebookIcon /></span>
                     </Link> */}
-                    <Link href='https://twitter.com/theticketsdeck?t=iEC9AjmBaJxk7go7TEXgXQ&s=09' target="_blank">
+                    <Link href='https://x.com/ticketsdeck_e' target="_blank">
                         <span><TwitterIcon /></span>
                     </Link>
-                    <Link href='https://www.instagram.com/theticketsdeck/' target="_blank">
+                    <Link href='https://www.instagram.com/ticketsdeck_e' target="_blank">
                         <span><InstagramIcon /></span>
                     </Link>
                     {/* <Link href='https://www.linkedin.com/company/theticketsdeck/?viewAsMember=true' target="_blank">
@@ -52,10 +53,10 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                 <div className={`${styles.content} ${styles.content1}`}>
                     <h4>Plan Events</h4>
                     <div className={styles.content__links}>
-                        <Link href={user ? "/app/event/create" : "/api/auth/signin"}>
+                        <Link href={user ? ApplicationRoutes.CreateEvent : ApplicationRoutes.SignIn}>
                             <li>Create Events</li>
                         </Link>
-                        <Link href="/events">
+                        <Link href={ApplicationRoutes.GeneralEvents}>
                             <li>Buy Tickets</li>
                         </Link>
                         {/* <li>Online Events</li> */}
@@ -64,8 +65,12 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                 <div className={`${styles.content} ${styles.content2}`}>
                     <h4>Company</h4>
                     <div className={styles.content__links}>
-                        <li>About Us</li>
-                        <li>Contact Us</li>
+                        <Link href={ApplicationRoutes.About}>
+                            <li>About Us</li>
+                        </Link>
+                        <Link href={ApplicationRoutes.Contact}>
+                            <li>Contact Us</li>
+                        </Link>
                         {/* <li>Help Center</li>
                     <li>Privacy</li>
                     <li>Terms</li>

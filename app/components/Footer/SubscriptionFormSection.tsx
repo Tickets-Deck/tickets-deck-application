@@ -86,6 +86,7 @@ const SubscriptionFormSection: FunctionComponent<SubscriptionFormSectionProps> =
                 <input type='text'
                     name='email'
                     placeholder="Enter your email address"
+                    autoComplete="off"
                     value={email}
                     onChange={e => {
                         setEmail(e.target.value)

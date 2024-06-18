@@ -5,11 +5,11 @@
     @include sectionPadding;
     padding-top: 4.5rem;
     padding-bottom: 4.5rem;
-    background-color: $dark-grey;
+    background-color: var(--dark-grey);
     display: flex;
     align-items: flex-start;
     position: relative;
-    color: $white;
+    color: var(--white);
 
     @include bigMobilePhone {
         flex-direction: column;
@@ -72,7 +72,7 @@
                 border-radius: 6px;
                 opacity: 0.8;
                 font-size: $font-size-16 - 0.125rem;
-                color: $white;
+                color: var(--white);
                 white-space: nowrap;
                 &:hover {
                     background-color: rgba($white, 0.1);
@@ -130,7 +130,7 @@
         min-width: 2.5rem;
         min-height: 2.5rem;
         border-radius: 100%;
-        background-color: $primary-color;
+        background-color: var(--primary-color);
         z-index: 2;
         cursor: pointer;
         &:nth-of-type(2) {

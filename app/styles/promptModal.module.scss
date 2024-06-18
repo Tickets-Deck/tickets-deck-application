@@ -1,0 +1,89 @@
+@import "./variables";
+@import "./reusables";
+
+.promptModal {
+    width: 21.875rem;
+    max-width: 21.875rem;
+    padding: 1.5rem;
+    border-radius: 20px;
+    background-color: $container-grey;
+    background: linear-gradient(180deg, $container-grey-20 0%, $container-grey 100%);
+    @include bigMobilePhone {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .topAreaSection {
+        display: flex;
+        justify-self: space-between;
+        align-items: flex-start;
+
+        .topArea {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            // border-bottom: .0625rem solid rgba($color: $white, $alpha: 0.4);
+
+            h3 {
+                font-size: 1rem;
+                font-weight: $fontWeight-400;
+                margin-bottom: 0.25rem;
+            }
+            p {
+                font-size: 0.8rem;
+                font-weight: $fontWeight-300;
+                color: $grey;
+                opacity: 0.8;
+                text-decoration: none;
+            }
+        }
+        .closeIcon {
+            @include closeIcon($white);
+        }
+    }
+    .content {
+        margin-top: 1rem;
+        h4 {
+            font-size: $font-size-16 - 0.125rem;
+            font-weight: $fontWeight-400;
+            margin-bottom: 0.25rem;
+        }
+        p,
+        li {
+            font-size: $font-size-16 - 0.25rem;
+            font-weight: $fontWeight-300;
+            line-height: 20px;
+            color: $grey;
+            opacity: 0.8;
+            text-decoration: none;
+            span {
+                color: $primary-color-sub;
+            }
+        }
+        a {
+            color: $primary-color-sub;
+            text-decoration: underline;
+        }
+        ul {
+            padding-left: 10px;
+        }
+    }
+    .actionButton {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
+        gap: 0.5rem;
+        button,
+        a {
+            @include tertiary-button;
+            padding: 8px 16px;
+            &:nth-child(2) {
+                background-color: $failed-color;
+                color: $white;
+                &:hover {
+                    background-color: darken($color: $failed-color, $amount: 10%);
+                }
+            }
+        }
+    }
+}

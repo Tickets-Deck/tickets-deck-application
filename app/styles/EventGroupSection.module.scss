@@ -23,7 +23,7 @@
     @include sectionPadding;
     padding-top: 4.5rem;
     padding-bottom: 4.5rem;
-    background-color: $dark-grey;
+    background-color: var(--dark-grey);
     display: flex;
     align-items: flex-start;
     position: relative;
@@ -90,7 +90,7 @@
                 border-radius: 6px;
                 opacity: 0.8;
                 font-size: $font-size-16 - 0.125rem;
-                color: $white;
+                color: var(--white);
                 &:hover {
                     background-color: rgba($white, 0.1);
                     opacity: 1;
@@ -141,8 +141,8 @@
             //     &__tag {
             //         z-index: 2;
             //         border-end-start-radius: 8px;
-            //         background-color: $primary-color;
-            //         color: $white;
+            //         background-color: var(--primary-color);
+            //         color: var(--white);
             //         width: fit-content;
             //         position: absolute;
             //         top: 0;
@@ -198,12 +198,12 @@
             //                 &__date,
             //                 &__time {
             //                     font-size: $font-size-16 - 0.125rem;
-            //                     color: $white;
+            //                     color: var(--white);
             //                 }
             //                 &__dot {
             //                     width: 0.188rem;
             //                     height: 0.188rem;
-            //                     background-color: $white;
+            //                     background-color: var(--white);
             //                     border-radius: 100%;
             //                     display: block;
             //                 }
@@ -256,7 +256,7 @@
             //                     background-color: transparent;
             //                     cursor: pointer;
             //                     &:hover {
-            //                         background-color: rgba($color: $white, $alpha: 0.2);
+            //                         background-color: rgba($color: var(--white, $alpha: 0.2));
             //                     }
             //                     svg {
             //                         width: 0.8rem;
@@ -272,7 +272,7 @@
             //             }
             //             .restriction {
             //                 font-size: $font-size-16 - 0.25rem;
-            //                 color: $grey-3;
+            //                 color: var(--grey-3);
             //             }
             //         }
             //     }
@@ -282,20 +282,26 @@
             //         width: 100%;
             //         justify-content: center;
             //         &:hover {
-            //             background-color: $white;
+            //             background-color: var(--white);
             //             button {
-            //                 color: $primary-color;
+            //                 color: var(--primary-color);
             //             }
             //         }
             //         & > button {
             //             cursor: pointer;
             //             background-color: transparent;
-            //             color: $white;
+            //             color: var(--white);
             //             border: none;
             //             outline: none;
             //         }
             //     }
             // }
+        }
+
+        .eventsLoader {
+            min-height: 50vh;
+            display: grid;
+            place-items: center;
         }
     }
 
@@ -308,14 +314,19 @@
     padding-left: 1.5rem;
     padding-right: 1.5rem;
     padding-top: 1.25rem;
-    padding-bottom: 4.5rem;
+    padding-bottom: 0.5rem; 
     height: 100%;
+    // border: 1px solid #fff;
 
     .eventsContainer {
         min-height: 50vh;
         display: flex;
         flex-direction: column;
-        padding-top: 2.5rem;
+        // padding-top: 2.5rem;
+        padding-right: 0.5rem;
+        height: 100%;
+        overflow-y: auto;
+        scrollbar-width: thin;
 
         .noEvents {
             @include noEvents();
