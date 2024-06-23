@@ -214,12 +214,27 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                                     setEventTickets={setEventTickets}
                                     totalPrice={totalPrice}
                                     setTicketDeliveryModalIsVisible={setTicketDeliveryModalIsVisible}
+                                    setTicketsSelectionContainerIsVisible={setTicketsSelectionContainerIsVisible}
                                 />
                             }
                             {ticketsSelectionContainerIsVisible && (!eventTickets || eventTickets?.length == 0) &&
                                 <TicketsFetchErrorContainer />
                             }
                         </div>
+                        {
+                            !ticketsSelectionContainerIsVisible &&
+                            <>
+                                <div className="mt-8 px-5">
+                                    <h3 className='text-2xl font-medium text-gray-400 mb-2'>More details about event</h3>
+                                    <p
+                                        className={`'text-sm text-gray-200' ${styles.eventDescription}`}
+                                        dangerouslySetInnerHTML={{ __html: eventInfo.description }} />
+                                </div>
+                                {/* <div className="mt-8 px-5">
+                                    <h3 className='text-2xl font-medium text-gray-400 mb-2'>Event Highlights</h3>
+                                </div> */}
+                            </>
+                        }
                     </section> :
                     <SkeletonEventInfo />
                 }
