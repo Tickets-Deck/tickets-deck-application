@@ -1,3 +1,4 @@
+"use client"
 import { EventRequest } from "@/app/models/IEvents";
 import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useState } from "react";
 import ReactQuill from "react-quill";
