@@ -1,5 +1,5 @@
 import { ToastContext } from "../../extensions/toast";
-import { FunctionComponent, ReactElement, useState, useContext, Dispatch, SetStateAction, useEffect, ChangeEvent } from "react";
+import { FunctionComponent, ReactElement, useState, useContext, Dispatch, SetStateAction, useEffect, ChangeEvent, useMemo } from "react";
 import styles from "../../styles/TicketDelivery.module.scss";
 import ModalWrapper from "./ModalWrapper";
 import { CheckIcon, CloseIcon } from "../SVGs/SVGicons";
@@ -47,23 +47,9 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
     const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
-    // useEffect(() => {
-    //     console.log(eventTickets);
-    // }, [eventTickets]);
-
     const userInfo = useSelector((state: RootState) => state.userCredentials.userInfo);
 
-    // useEffect(() => {
-    //     alert("user profile information" + JSON.stringify(userProfileInformation));
-    // }, [userProfileInformation]);
-    // useEffect(() => {
-    //     alert("user info" + JSON.stringify(userInfo));
-    // }, [userInfo]);
-
-    // console.log("🚀 ~ userInfo:", userInfo)
-
     const [ticketPricings, setTicketPricings] = useState<RetrievedITicketPricing[]>([]);
-    // const [ticketsTotalPrice, setTicketsTotalPrice] = useState<number>(0);
     const [emailVerificationPromptIsVisible, setEmailVerificationPromptIsVisible] = useState(false);
 
     const [isValidating, setIsValidating] = useState(false);
@@ -90,25 +76,26 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
 
         // Initialize selected tickets
         const selectedTickets: RetrievedITicketPricing[] = [];
-
         // Initialize email index
         let emailIndex = 1;
-
         // Initialize total price
         let totalPrice = 0;
 
-        // Map through the event tickets
-        eventTickets?.forEach((ticket) => {
-            // If the ticket is selected and the selected tickets are more than 0
-            if (ticket.isSelected && ticket.selectedTickets > 0) {
-                // Map through using the count
-                for (let i = 0; i < ticket.selectedTickets; i++) {
-                    // Update the total price
-                    totalPrice += ticket.price;
+        // If there are no event tickets, stop the execution
+        if (!eventTickets) {
+            return;
+        }
 
-                    // Update the array
+        // For each ticket, if it is selected, add it to the selected tickets
+        for (const ticket of eventTickets) {
+            if (ticket.isSelected && ticket.selectedTickets > 0) {
+
+                const ticketPrice = ticket.price * ticket.selectedTickets;
+                totalPrice += ticketPrice;
+
+                for (let i = 0; i < ticket.selectedTickets; i++) {
                     selectedTickets.push({
-                        emailId: emailIndex++,
+                        emailId: emailIndex,
                         ticketId: ticket.id,
                         ticketType: ticket.name,
                         selectedTickets: ticket.selectedTickets,
@@ -116,16 +103,13 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                             currency: eventInfo?.currency || 'NGN',
                             total: ticket.price.toString(),
                         },
-                        hasEmail: false
+                        hasEmail: primaryEmail || userEmailIsPrimaryEmail ? true : false,
                     });
+                    emailIndex++;
                 }
-
-                // Reset the email index
-                emailIndex = 1;
             }
-        })
+        }
 
-        // Update the state after the iteration is complete
         setTicketPricings(selectedTickets);
     };
 
@@ -154,19 +138,45 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         }
     };
 
+    /**
+     * Function to get the formatted form value
+     * @param ticketPricing is the ticket pricing object
+     * @returns the formatted form value
+     */
+    const formattedFormValue = (ticketPricing: RetrievedITicketPricing): string =>
+        formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)];
+
     function validateFields() {
-        ticketPricings.map((ticketPricing) => {
-            // console.log(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]?.length > 0);
-            // console.log(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]);
-            if (ticketPricing.hasEmail && formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]?.length > 0) {
-                setShowErrorMessages(false);
-            } else {
+
+        // Find the ticket pricing with an email
+        ticketPricings.find((ticketPricing) => ticketPricing.hasEmail);
+
+        // Validate the fields
+        for (const ticketPricing of ticketPricings) {
+            const formattedValue = formattedFormValue(ticketPricing);
+
+            // If the formatted value is empty, skip the iteration
+            if (!formattedValue) {
+                continue;
+            }
+
+            // If the formatted value is not an email...
+            if (formattedValue.length > 0 && !emailRegex.test(formattedValue)) {
+                ticketPricing.hasEmail = false;
                 setShowErrorMessages(true);
             }
-        });
-    };
+        }
 
-    // console.log("ticketPricings: ", ticketPricings);
+        // If all fields are valid...
+        const allFieldsAreValid = ticketPricings.every(ticketPricing => formattedFormValue(ticketPricing) && formattedFormValue(ticketPricing).length > 0 ? emailRegex.test(formattedFormValue(ticketPricing)) : true);
+
+        if (allFieldsAreValid) {
+            // Hide error messages
+            setShowErrorMessages(false);
+        }
+
+        return allFieldsAreValid;
+    };
 
     /**
      * Function to handle ticket order creation
@@ -174,18 +184,21 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     async function handleTicketOrderCreation() {
 
         // Validate the fields
-        validateFields();
+        if (!validateFields()) {
+            return;
+        }
 
         const collatedTicketOrderRequests: SingleTicketOrderRequest[] = ticketPricings.map((ticketPricing) => {
-            // console.log(ticketPricing.ticketType, ticketPricing.emailId);
 
             return {
                 ticketId: ticketPricing.ticketId,
                 price: parseInt(ticketPricing.price.total),
-                associatedEmail: formValues[`${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`],
+                associatedEmail: formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)],
                 contactEmail: primaryEmail ?? (userEmailIsPrimaryEmail ? userInfo?.email as string : ""),
             }
         });
+        
+        // console.log("🚀 ~ constcollatedTicketOrderRequests:", collatedTicketOrderRequests);
 
         const ticketOrder: TicketOrderRequest = {
             eventId: eventInfo?.eventId as string,
@@ -196,14 +209,16 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         };
 
         if (ticketOrder.contactEmail === undefined || ticketOrder.contactEmail.length < 1) {
+            // setShow 
             toast.error("Please select a primary email address to continue.");
             return;
         }
 
-        // Check for the email verification status if the user is logged in.
-        if (userInfo && !userInfo.emailVerified) {
-            // toast.error("Please verify your email address to continue.");
-            setEmailVerificationPromptIsVisible(true);
+        // If the user's email is not verified, show the email verification prompt
+        if (userInfo && userInfo.emailVerified === false) {
+            if (!emailVerificationPromptIsVisible) {
+                setEmailVerificationPromptIsVisible(true);
+            }
             return;
         }
 
@@ -211,19 +226,23 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             // Start processing order
             setIsProcessingOrder(true);
 
-            // If the total price is zero, only create the ticket order
+            // Create the ticket order
+            const response = await createTicketOrder(ticketOrder);
+
+            // If the total price is zero, route to the order page
             if (totalPrice === 0) {
-                const response = await createTicketOrder(ticketOrder);
-
-                // console.log("Ticket order response: ", response);
-
-                // Stop processing order
-                setIsProcessingOrder(false);
 
                 if (response) {
+                    // Stop processing order
+                    setIsProcessingOrder(false);
+
+                    // Show success message
                     toast.success("Order successfully processed. You will receive your tickets shortly.");
+
+                    // Hide the modal
                     setVisibility(false);
 
+                    // Route to the order page
                     if (response.data.id) {
                         window.location.href = `${window.location.origin}/order/${response.data.id}`
                     }
@@ -231,24 +250,20 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                 return;
             }
 
-            const response = await createTicketOrder(ticketOrder);
-
-            // console.log("Ticket order response: ", response);
-
+            // If we get here, it means the total price is not zero
             if (response) {
+                // Initialize payment
                 const paymentInit = await initializePaystackPayment({ ticketOrderId: response.data.id, callbackUrl: `${window.location.origin}/verify-payment` });
 
-                // console.log({ paymentInit });
-
                 if (paymentInit) {
+                    // Route to the payment authorization URL
                     window.location.href = paymentInit.data.authorization_url;
                 }
             }
-        } catch (error) {
+        }
+        catch (error) {
             // Stop processing order
             setIsProcessingOrder(false);
-            // Log the error
-            // console.log("Error creating ticket order: ", error);
             // Show error message
             toast.error("An error occurred while processing your order. Please try again.");
         }
@@ -283,8 +298,13 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
      * Function to unset primary email
      * @param email is the selected email
      */
-    function unsetPrimaryEmail() {
+    function resetPrimaryEmail() {
+        // Unset the primary email
         setPrimaryEmail(undefined);
+        // If userinfo is available, set the user email as primary email
+        if (userInfo) {
+            setUserEmailIsPrimaryEmail(true);
+        }
     };
 
     /**
@@ -299,39 +319,28 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         // Set the flag indicating if type is checkbox
         const isCheck = e.target.type === 'checkbox';
 
-        ticketPricings?.forEach((ticketPricing) => {
+        // Using the name, find the corresponding ticketPricing
+        const ticketPricing = ticketPricings.find((ticketPricing) => ticketPricing.emailId == getTicketEmailIdFromName(name));
 
-            // If the ticket pricing email is the current primary email...
-            if (primaryEmail == formValues[`${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`]) {
-                unsetPrimaryEmail();
-            }
+        // If the ticket pricing is not found, stop the execution  
+        if (!ticketPricing) {
+            return;
+        }
 
-            // If a ticket pricing was changed...
-            if (name !== `${ticketPricing.ticketType.replace(/\s+/g, '_').toLowerCase()}${ticketPricing.selectedTickets > 1 ? ticketPricing.emailId : ''}`) {
-                return;
-            }
+        // If the ticket pricing email is the current primary email...
+        if (primaryEmail == value) {
+            resetPrimaryEmail();
+        }
 
-            if (value.length == 0) {
-                // Update the form value
-                setFormValues({ ...formValues, [name]: isCheck ? checked : value });
-                // Update the ticket pricing hasEmail property
-                ticketPricing.hasEmail = false;
-                return;
-            }
-            if (value.length > 0 && !emailRegex.test(value)) {
-                ticketPricing.hasEmail = false;
-                // Update the form value
-                setFormValues({ ...formValues, [name]: isCheck ? checked : value });
-                return;
-            }
-            if (value.length > 0 && emailRegex.test(value)) {
-                ticketPricing.hasEmail = true;
-                // Update the form value
-                setFormValues({ ...formValues, [name]: isCheck ? checked : value });
-                return;
-            }
-        });
+        // // If the field is empty...
+        // if (value.length == 0) {
+        //     setFormValues({ ...formValues, [name]: isCheck ? checked : value });
+        //     return;
+        // } 
+        ticketPricing.hasEmail = true;
 
+        // Update the form value
+        setFormValues({ ...formValues, [name]: isCheck ? checked : value });
     };
 
     const validCoupons = ['SMARTFUS34', 'DE2CCERO03', 'LKJNDUipl3', 'uIMLP34NpY', 'Simlex'];
@@ -365,7 +374,16 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
      * @returns the formatted string
      */
     function getInputName(ticketType: string, selectedTickets: number, emailId: number) {
-        return `${ticketType.replace(/\s+/g, '_').toLowerCase()}${selectedTickets > 1 ? emailId : ''}`
+        return `${ticketType.replace(/\s+/g, '_').toLowerCase()}${emailId}`
+    };
+
+    /**
+     * Function to get the selected ticket's email id from the ticket's name
+     * @param name is the name of the ticket
+     * @returns the email id of the ticket
+     */
+    function getTicketEmailIdFromName(name: string): number {
+        return Number(name.split(/(\d+)/).filter(Boolean)[1]);
     }
 
     useEffect(() => {
@@ -381,36 +399,16 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             getSelectedTickets();
         }
     }, [eventTickets, visibility]);
-
-    // useEffect(() => {
-    //     ticketPricings.map((ticketPricing) => {
-    //         console.log(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]);
-    //         console.log(primaryEmail);
-
-    //         if (primaryEmail == formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]) {
-    //             console.log(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]?.length)
-    //             if (formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]?.length == 0) {
-    //                 console.log('value changed!');
-    //                 unsetPrimaryEmail()
-    //             }
-    //         }
-    //     })
-    // }, [formValues, ticketPricings]);
-
+    
     useEffect(() => {
-        ticketPricings.map((ticketPricing) => {
-            const previousEmail = formValues[`${ticketPricing.ticketType}${ticketPricing.emailId}`];
-            // console.log({ previousEmail });
-            // console.log(formValues[`${ticketPricing.ticketType}${ticketPricing.ticketId}`]);
-            // console.log({ primaryEmail });
+        // Find the ticket pricing which is the primary email
+        const selectedPrimaryEmail = ticketPricings.find((ticketPricing) => ticketPricing.hasEmail && formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)] === primaryEmail);
 
-            if (previousEmail !== undefined && previousEmail === primaryEmail) {
-                if (previousEmail.length === 0 || '') {
-                    console.log('Email value changed!');
-                    unsetPrimaryEmail();
-                }
-            }
-        })
+        // If the selected primary email is not found, reset the primary email
+        if (!selectedPrimaryEmail) {
+            resetPrimaryEmail();
+        }
+
     }, [formValues, ticketPricings, primaryEmail]);
 
     useEffect(() => {
@@ -419,7 +417,9 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         } else if (userInfo) {
             setUserEmailIsPrimaryEmail(true);
         }
-    }, [primaryEmail])
+    }, [primaryEmail]);
+
+    useMemo(() => userEmailIsPrimaryEmail && setPrimaryEmail(undefined), [userEmailIsPrimaryEmail]);
 
     return (
         <>
@@ -467,15 +467,20 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                                     {primaryEmail && primaryEmail == formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)] &&
                                                         <div className={styles.selectedEmail}>
                                                             <button>Selected as primary email</button>
-                                                            <span onClick={unsetPrimaryEmail}>Remove</span>
+                                                            <span onClick={resetPrimaryEmail}>Remove</span>
                                                         </div>}
-                                                    {!primaryEmail && <button onClick={() => updatePrimaryEmail(formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)])}>
-                                                        Set as primary email
-                                                    </button>}
+                                                    {
+                                                        !primaryEmail &&
+                                                        <button onClick={() => updatePrimaryEmail(formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)])}>
+                                                            Set as primary email
+                                                        </button>
+                                                    }
                                                 </div>
-                                                {!primaryEmail && <>
-                                                    {showErrorMessages && !ticketPricing.hasEmail && <span className={styles.errorMsg}>Input correct email</span>}
-                                                </>}
+                                                {
+                                                    (!primaryEmail || !userEmailIsPrimaryEmail) && <>
+                                                        {showErrorMessages && !ticketPricing.hasEmail && <span className={styles.errorMsg}>Input correct email</span>}
+                                                    </>
+                                                }
                                             </div>
                                         )
                                     }
@@ -571,13 +576,13 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                             {primaryEmail && primaryEmail == formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)] &&
                                                 <div className={styles.selectedEmail}>
                                                     <button>Selected as primary email</button>
-                                                    <span onClick={unsetPrimaryEmail}>Remove</span>
+                                                    <span onClick={resetPrimaryEmail}>Remove</span>
                                                 </div>}
                                             {!primaryEmail && <button onClick={() => updatePrimaryEmail(formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)])}>
                                                 Set as primary email
                                             </button>}
                                         </div>
-                                        {!primaryEmail && <>
+                                        {(!primaryEmail || !userEmailIsPrimaryEmail) && <>
                                             {showErrorMessages && !ticketPricing.hasEmail && <span className={styles.errorMsg}>Input correct email</span>}
                                         </>}
                                     </div>
