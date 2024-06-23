@@ -130,8 +130,12 @@ export async function createEvent(req: NextRequest) {
             data: updatedTickets,
           },
         },
-        purchaseStartDate: request.purchaseStartDate,
-        purchaseEndDate: request.purchaseEndDate,
+        purchaseStartDate: request.purchaseStartDate ?? new Date(),
+        purchaseEndDate: request.purchaseEndDate ?? request.date,
+      },
+      include: {
+        user: true,
+        tickets: true,
       },
     });
 
@@ -591,6 +595,13 @@ export async function deleteEvent(req: NextRequest) {
 
   // Delete the event's main image from cloudinary
   await cloudinary.v2.uploader.destroy(event.mainImageId);
+
+  // Delete all relating tickets
+  await prisma.tickets.deleteMany({
+    where: {
+      eventId: specifiedId,
+    },
+  });
 
   await prisma.events.delete({
     where: {
