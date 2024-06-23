@@ -292,7 +292,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                         </div>
                     </div>
                 </form>
-                <ImagesDisplay />
+                {/* <ImagesDisplay /> */}
             </div>
         </div>
     );
