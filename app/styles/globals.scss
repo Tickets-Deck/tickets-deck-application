@@ -10,7 +10,7 @@ html[data-theme="light"] {
     --white: #000000;
     --black: #ffffff;
     --grey: #f8f8f8; /* Lighter grey for background */
-    --dark-grey: #F2F2F2; /* Lighter dark grey */
+    --dark-grey: #f2f2f2; /* Lighter dark grey */
     --dark-grey-2: #eeeeee; /* Lighter dark grey 2 */
     --dark-grey-3: #ebebeb;
 
@@ -24,7 +24,7 @@ html[data-theme="light"] {
     --secondary-color: #fee755;
     --grey-bg: #f8f8f8; /* Lighter grey for background */
     --grey-3: #555555; /* Darker grey 3 for better readability */
-    
+
     --success-color: #00c940;
     --failed-color: #dc143c;
     --warning-color: #d3b809;
@@ -40,7 +40,7 @@ html[data-theme="dark"] {
     --grey: #f2f2f2;
     --dark-grey: #111111;
     --dark-grey-2: #222222;
-    --dark-grey-3: #3E3D44;
+    --dark-grey-3: #3e3d44;
 
     --container-grey: #313131;
     --text-grey: #717171;
@@ -143,7 +143,8 @@ img {
     object-fit: contain;
 }
 
-input, textarea {
+input,
+textarea {
     @include tablet {
         font-size: $font-size-16 !important;
     }
@@ -297,11 +298,80 @@ button {
 }
 .ms-TextField-fieldGroup,
 .fieldGroup-106 {
-    background: transparent;
+    background: transparent !important;
+}
+.fieldGroup-106 {
+    background: transparent !important;
 }
 .readOnlyTextField-116 {
-    color: $white;
+    color: $white !important;
 }
 .textField-105 {
     transform: translateY(3px);
+}
+
+// ================== Custom Quill styles ==================
+.ql-toolbar.ql-snow {
+    border: none !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: $white !important;
+    border-start-start-radius: 10px;
+    border-start-end-radius: 10px;
+}
+
+.ql-container.ql-snow {
+    border: none !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: $white !important;
+    border-end-start-radius: 10px;
+    border-end-end-radius: 10px;
+}
+.ql-editor {
+    color: $white !important;
+    padding: 1rem;
+    min-height: 10rem;
+    max-height: 20rem;
+    overflow-y: auto;
+}
+.ql-editor .ql-blank, .ql-editor.ql-blank::before {
+    color: $white !important;
+}
+
+.ql-formats {
+    .ql-active {
+        color: $white !important;
+        opacity: 0.5;
+    }
+    // .ql-header .ql-picker .ql-expanded {
+    //     color: red !important;
+    // }
+    .ql-picker-label {
+        color: red !important;
+        &::before {
+            color: $white !important;
+        }
+    }
+    .ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-label {
+        border-color: none !important;
+    }
+    .ql-snow .ql-picker.ql-expanded .ql-picker-options {
+        border-radius: 10px;
+        padding: 4px 16px;
+    }
+
+    .ql-snow .ql-picker {
+        color: $white !important;
+    }
+    svg path,
+    line,
+    polygon,
+    rect,
+    circle,
+    polyline,
+    g {
+        stroke: #fff !important;
+    }
+    .ql-fill {
+        color: $white !important;
+    }
 }

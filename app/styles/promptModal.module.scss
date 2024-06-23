@@ -55,7 +55,9 @@
             line-height: 20px;
             color: $grey;
             opacity: 0.8;
+            list-style: circle;
             text-decoration: none;
+            margin-bottom: 0.25rem;
             span {
                 color: $primary-color-sub;
             }

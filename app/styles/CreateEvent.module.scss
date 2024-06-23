@@ -453,6 +453,9 @@
                     display: flex;
                     flex-direction: column;
                     gap: 1.5rem;
+                    @include tablet {
+                        padding: 1rem;
+                    }
 
                     .ticketCardHeader {
                         display: flex;
@@ -462,6 +465,9 @@
                         h3 {
                             font-size: $font-size-20;
                             font-weight: $fontWeight-400;
+                            @include tablet {
+                                font-size: $font-size-16;
+                            }
                         }
                         span {
                             width: 2.5rem;
@@ -471,22 +477,45 @@
                             place-items: center;
                             background-color: $dark-grey;
                             cursor: pointer;
+                            @include tablet {
+                                min-width: 2rem;
+                                width: 2rem;
+                                min-height: 2rem;
+                                height: 2rem;
+                                svg {
+                                    width: 1rem;
+                                    height: 1rem;
+                                }
+                            }
                         }
                     }
                     .ticketCardBody {
                         display: flex;
+                        @include tablet {
+                            flex-direction: column;
+                            gap: .25rem;
+                            margin-top: auto;
+                        }
                         .info {
                             width: 100%;
                             display: flex;
                             flex-direction: column;
                             align-items: center;
                             gap: 0.35rem;
+                            @include tablet {
+                                align-items: flex-start;
+                                flex-direction: row;
+                                justify-content: space-between;
+                            }
 
                             &:first-child {
                                 align-items: flex-start;
                             }
                             &:last-child {
                                 align-items: flex-end;
+                                @include tablet {
+                                    align-items: flex-start;
+                                }
                             }
                             span {
                                 font-size: $font-size-16 - 0.125rem;
@@ -597,6 +626,11 @@
                         }
                         p {
                             font-size: $font-size-16;
+                            img {
+                                width: 200px;
+                                border-radius: 1rem;
+                                // margin-bottom: 0.5rem;
+                            }
                         }
                     }
                     .infoRow {
