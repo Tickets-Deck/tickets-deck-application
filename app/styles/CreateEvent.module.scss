@@ -91,6 +91,9 @@
             place-items: center;
             border-radius: 4px;
             cursor: pointer;
+            @include tablet {
+                min-height: 40px;
+            }
             &:hover {
                 background-color: rgba($color: $white, $alpha: 0.1);
             }
