@@ -46,10 +46,10 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     const dispatch = useDispatch();
 
-    const windowRes = useResponsiveness();
-    const isMobile = windowRes.width && windowRes.width < 768;
-    const onMobile = typeof (isMobile) == "boolean" && isMobile;
-    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+    // const windowRes = useResponsiveness();
+    // const isMobile = windowRes.width && windowRes.width < 768;
+    // const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    // const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     async function handleFetchUserInformation() {
         // console.log("Session on layout: ", session);
@@ -175,6 +175,25 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     return (
         <html lang="en" data-theme={selectedTheme == Theme.Light ? "light" : "dark"}>
+            {/* <meta name="description" content="Elevating event experiences with next-level ticketing and management solutions." />
+
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta name="image" content="https://res.cloudinary.com/doklhs4em/image/upload/v1711460397/External/bablo_meta_img.jpg" />
+
+            <meta property="og:url" content="https://bablohomes.co.uk/" />
+            <meta property="og:type" content="website" />
+            <meta property="og:title" content="Ticketsdeck Events | Unlocking best experiences, Easily." />
+            <meta property="og:description" content="Elevating event experiences with next-level ticketing and management solutions." />
+            <meta property="og:image" content="https://res.cloudinary.com/doklhs4em/image/upload/v1711460397/External/bablo_meta_img.jpg" />
+
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta property="twitter:domain" content="https://bablohomes.co.uk/" />
+            <meta property="twitter:url" content="https://bablohomes.co.uk/" />
+            <meta name="twitter:title" content="Ticketsdeck Events | Unlocking best experiences, Easily." />
+            <meta name="twitter:description" content="Elevating event experiences with next-level ticketing and management solutions." />
+            <meta name="twitter:image" content="https://res.cloudinary.com/doklhs4em/image/upload/v1711460397/External/bablo_meta_img.jpg" /> */}
+
             <body>
                 <NextTopLoader
                     color="#5419a7"
@@ -222,7 +241,6 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                                     setIsMobileSidebarOpen={setIsMobileSidebarOpen}
                                 />
                                 <div className="appLayout__body">
-                                    {/* {onDesktop && <Sidebar />} */}
                                     <Sidebar
                                         isMobileSidebarOpen={isMobileSidebarOpen}
                                         setIsMobileSidebarOpen={setIsMobileSidebarOpen}
