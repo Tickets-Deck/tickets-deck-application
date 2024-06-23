@@ -20,11 +20,13 @@ type Props = {
 
 export const GlobalProvider = ({ children }: Props) => {
 
-    return <SessionProvider>
-        <AppProvider>
-            <Provider store={store}>
-                {children}
-            </Provider>
-        </AppProvider>
-    </SessionProvider>
+    return (
+        <SessionProvider>
+            <AppProvider>
+                <Provider store={store}>
+                    {children}
+                </Provider>
+            </AppProvider>
+        </SessionProvider>
+    )
 }
