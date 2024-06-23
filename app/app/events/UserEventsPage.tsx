@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { EventResponse } from "@/app/models/IEvents";
 import DeletionConfirmationModal from "@/app/components/Modal/DeletionConfirmation";
 import { Session } from "next-auth";
+import { toast } from "sonner";
 
 interface UserEventsPageProps {
     session: Session | null
@@ -32,7 +33,7 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({ session }): Re
     const [isEventDeleted, setIsEventDeleted] = useState(false);
 
     async function handleFetchEventsByPublisherId() {
-        
+
         // Reset events
         setEvents(undefined);
 
@@ -72,6 +73,7 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({ session }): Re
             })
             .catch((error) => {
                 catchError(error);
+                toast.error("Failed to delete event. Please try again later.");
             })
             .finally(() => {
                 // Stop deleting event
