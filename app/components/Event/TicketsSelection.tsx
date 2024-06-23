@@ -2,6 +2,7 @@ import { FunctionComponent, ReactElement, useEffect, useState, Dispatch, SetStat
 import styles from "../../styles/EventDetails.module.scss";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import { Theme } from "@/app/enums/Theme";
+import { CloseIcon } from "../SVGs/SVGicons";
 
 interface TicketsSelectionContainerProps {
     appTheme: Theme | null
@@ -9,11 +10,12 @@ interface TicketsSelectionContainerProps {
     setEventTickets: Dispatch<SetStateAction<RetrievedTicketResponse[] | undefined>>
     totalPrice: number
     setTicketDeliveryModalIsVisible: Dispatch<SetStateAction<boolean>>
+    setTicketsSelectionContainerIsVisible: Dispatch<SetStateAction<boolean>>
 }
 
 const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProps> = (
-    { appTheme, eventTickets, setEventTickets, totalPrice, setTicketDeliveryModalIsVisible }): ReactElement => {
-
+    { appTheme, eventTickets, setEventTickets, totalPrice,
+        setTicketDeliveryModalIsVisible, setTicketsSelectionContainerIsVisible }): ReactElement => {
 
     const [totalSelectedTicketsCount, setTotalSelectedTicketsCount] = useState(0);
     const [userHasSelectedAtLeastOneTicket, setUserHasSelectedAtLeastOneTicket] = useState(false);
@@ -95,7 +97,7 @@ const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProp
                             </div>
                             <div className={styles.ticket__bottomArea}>
                                 <span onClick={() => { ticketType.selectedTickets > 0 && decrementTicket(ticketType) }}>-</span>
-                                <p>{ticketType.selectedTickets} ticket</p>
+                                <p>{ticketType.selectedTickets} {ticketType.selectedTickets > 1 ? "tickets" : "ticket"}</p>
                                 <span onClick={() => incrementTicket(ticketType)}>+</span>
                             </div>
                         </div>
@@ -110,11 +112,18 @@ const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProp
                         <h1>&#8358;{totalPrice?.toLocaleString()}</h1>
                     </div>
                 </div>
-                <button
-                    onClick={() => setTicketDeliveryModalIsVisible(true)}
-                    disabled={!userHasSelectedAtLeastOneTicket}>
-                    Purchase {totalSelectedTicketsCount > 1 ? 'tickets' : 'ticket'}
-                </button>
+                <div className={styles.right}>
+                    <button
+                        onClick={() => setTicketDeliveryModalIsVisible(true)}
+                        disabled={!userHasSelectedAtLeastOneTicket}>
+                        Purchase {totalSelectedTicketsCount > 1 ? 'tickets' : 'ticket'}
+                    </button>
+                    <button
+                        onClick={() => setTicketsSelectionContainerIsVisible(false)}
+                        className={styles.closeBtn}>
+                        <CloseIcon />
+                    </button>
+                </div>
             </div>
         </div>
     );
