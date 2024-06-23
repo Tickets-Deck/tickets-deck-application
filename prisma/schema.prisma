@@ -75,7 +75,7 @@ model Events {
     publisherId String
 
     title       String
-    description String
+    description String          @db.LongText()
     location    Locations?      @relation(fields: [locationId], references: [id])
     locationId  String?
     venue       String?
