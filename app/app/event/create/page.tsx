@@ -3,7 +3,7 @@ import React, { FunctionComponent, ReactElement, useState, FormEvent, useEffect 
 import styles from '../../../styles/CreateEvent.module.scss';
 import CreateEventProgressBar from "../../../components/shared/CreateEventProgressBar";
 import { CloseIcon } from "@/app/components/SVGs/SVGicons";
-import { EventRequest } from "@/app/models/IEvents";
+import { EventRequest, EventResponse } from "@/app/models/IEvents";
 import { EventVisibility } from "@/app/enums/IEventVisibility";
 import BasicInformationForm from "@/app/components/Event/Create/BasicInformationForm";
 import { ValidationStatus } from "@/app/enums/BasicInfoFormValidationStatus";
@@ -16,6 +16,8 @@ import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
+import { StorageKeys } from "@/app/constants/storageKeys";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 interface CreateEventProps {
 
@@ -73,7 +75,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                 setImageValidationMessage({ message: "Please upload an image", status: DefaultFormResponseStatus.Failed });
                 break;
             case EventCreationStage.TicketDetails:
-                if(eventRequest?.tickets?.length === 0) {
+                if (eventRequest?.tickets?.length === 0) {
                     setTicketValidationMessage({ message: "Please add at least one ticket", status: DefaultFormResponseStatus.Failed });
                     break;
                 }
@@ -96,7 +98,13 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
         setEventRequest({ ...eventRequest as EventRequest, tags: tags });
     };
 
-    // console.log("User ID: ", session?.user.id);
+    function persistNewlyCreatedEvent(event: EventResponse) {
+        // persist the newly created event to session storage
+        const newlyCreatedEvent = JSON.stringify(event);
+
+        // Save the event to session storage
+        sessionStorage.setItem(StorageKeys.NewlyCreatedEvent, newlyCreatedEvent);
+    }
 
     async function handleEventCreation() {
 
@@ -114,17 +122,25 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
         // Start loader
         setIsCreatingEvent(true);
 
+        // console.log("🚀 ~ handleEventCreation ~ eventRequest:", eventRequest)
+
         // Create the event
         await createEvent({ ...eventRequest as EventRequest })
             .then((response) => {
                 // Update created event state
                 setIsEventCreated(true);
+
                 // log response
                 // console.log(response);
+
+                // Persist the newly created event
+                persistNewlyCreatedEvent(response.data);
+
                 // Clear the event request
                 // setEventRequest(undefined);
+
                 // Redirect to the event page
-                push(`/app/event/${response.data.id}`);
+                push(`${ApplicationRoutes.Event}/${response.data.id}`);
             })
             .catch((error) => {
                 // log error
@@ -191,7 +207,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                 {eventCreationStage === EventCreationStage.Confirmation &&
                     <ConfirmationSection
                         eventRequest={eventRequest}
-                        setEventRequest={setEventRequest} 
+                        setEventRequest={setEventRequest}
                         isEventCreated={isEventCreated}
                         mainImageUrl={mainImageUrl}
                         setEventCreationStage={setEventCreationStage}
