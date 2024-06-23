@@ -1,7 +1,9 @@
 "use client"
 import { EventRequest } from "@/app/models/IEvents";
+import dynamic from "next/dynamic";
 import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useState } from "react";
-import ReactQuill from "react-quill";
+// import ReactQuill from "react-quill";
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 interface EventDescriptionEditorProps {
     eventRequest: EventRequest | undefined
