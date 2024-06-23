@@ -273,7 +273,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
                             }}
                             onKeyUp={(e) => {
                                 if (Number(e.currentTarget.value) > 0 && Number(e.currentTarget.value) < 1000) {
-                                    setTicketPriceErrorMsg({ message: "Ticket price cannot be more than 1,000", status: DefaultFormResponseStatus.Failed });
+                                    setTicketPriceErrorMsg({ message: "Ticket price can either be 0 or greater than 1,000", status: DefaultFormResponseStatus.Failed });
                                 }
                             }}
                             onKeyDown={(e) => {
