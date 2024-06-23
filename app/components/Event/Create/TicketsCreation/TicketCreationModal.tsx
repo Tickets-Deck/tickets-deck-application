@@ -67,9 +67,9 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
      */
     function validateForm() {
 
-        if (ticketFormRequest && ticketFormRequest.name && ticketFormRequest.price && ticketFormRequest.quantity && ticketFormRequest.numberOfUsers) {
+        if (ticketFormRequest && ticketFormRequest.name && ticketFormRequest.price && (ticketFormRequest.price == 0 || ticketFormRequest.price > 1000) && ticketFormRequest.quantity && ticketFormRequest.numberOfUsers) {
             return true;
-        }
+        } 
         else {
             console.log(ticketFormRequest)
 
@@ -272,13 +272,16 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
                                 onFormValueChange(e, setTicketPriceErrorMsg);
                             }}
                             onKeyUp={(e) => {
-                                if (Number(e.currentTarget.value) > 0 && Number(e.currentTarget.value) < 1000) {
+                                const value = Number(e.currentTarget.value);
+                                if (value > 0 && value < 1000) {
                                     setTicketPriceErrorMsg({ message: "Ticket price can either be 0 or greater than 1,000", status: DefaultFormResponseStatus.Failed });
+                                } else {
+                                    setTicketPriceErrorMsg(undefined);
                                 }
                             }}
                             onKeyDown={(e) => {
                                 // If . was pressed, prevent it
-                                if (e.key == ".") {
+                                if (e.key === ".") {
                                     e.preventDefault();
                                 }
                             }}
