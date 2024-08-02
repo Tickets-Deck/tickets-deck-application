@@ -98,6 +98,11 @@ export class ApplicationRoutes {
   static readonly Event = "/app/event";
 
   /**
+   * The route to user favourite events page
+   */
+  static readonly FavouriteEvents = "/app/favourite-events";
+
+  /**
    * The route to the user event tickets page
    */
   static readonly EventTickets = "/app/tickets";
