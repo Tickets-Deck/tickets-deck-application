@@ -1,18 +1,16 @@
 import Link from "next/link";
 import { FunctionComponent, ReactElement, useContext, Dispatch, SetStateAction, useState } from "react";
-import { DeleteIcon, EditIcon, HorizontalLineIcon, LikeIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
+import { DeleteIcon, EditIcon, LocationPinIcon, ShareIcon } from "../SVGs/SVGicons";
 import Image from "next/image";
 import styles from "../../styles/EventCard.module.scss";
 import moment from "moment";
 import { ToastContext } from "../../extensions/toast";
 import { EventResponse } from "@/app/models/IEvents";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
-import { useRouter } from "next/navigation";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { RootState } from "@/app/redux/store";
 import { useSelector } from "react-redux";
 import { Theme } from "@/app/enums/Theme";
-import { motion } from "framer-motion";
 import EventLikeButton from "../custom/EventLikeButton";
 
 interface EventCardProps {
@@ -27,18 +25,23 @@ interface EventCardProps {
 const EventCard: FunctionComponent<EventCardProps> = (
     { event, mobileAndActionButtonDismiss, consoleDisplay, gridDisplay,
         setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
+    // console.log("🚀 ~ event:", event)
 
     const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
-    const { push } = useRouter();
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
     const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
+    // const [eventBlurDataImg, setEventBlurDataImg] = useState<string>("");
+    // console.log("🚀 ~ eventBlurDataImg:", eventBlurDataImg)
+
     const [isEventLiked, setIsEventLiked] = useState(false);
 
     const toasthandler = useContext(ToastContext);
+
+    // const blurDataUrl = async (imageUrl: string) => await dynamicBlurDataUrl(imageUrl);
 
     function shareEvent(eventUrl: string) {
         // const eventURL = window.location.href;
@@ -83,6 +86,17 @@ const EventCard: FunctionComponent<EventCardProps> = (
             console.log("Web Share API not supported");
         }
     }
+ 
+    // useEffect(() => {
+    //     const modifiedData = async () => {
+    //         const dataWithBlurHash = await dynamicBlurDataUrl(event.mainImageUrl);
+    //         console.log("🚀 ~ modifiedData ~ dataWithBlurHash:", dataWithBlurHash)
+    //         // Update the state
+    //         setEventBlurDataImg(dataWithBlurHash);
+    //     };
+
+    //     modifiedData();
+    // }, [event]);
 
     return (
         <div className={`${appTheme == Theme.Light ? styles.eventLightTheme : styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
@@ -92,7 +106,14 @@ const EventCard: FunctionComponent<EventCardProps> = (
             {/* <span className={styles.event__tag}>Latest</span> */}
             <div className={styles.event__image}>
                 <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
-                    <Image src={event.mainImageUrl} alt='Event flyer' fill />
+                    <Image
+                        src={event.mainImageUrl}
+                        alt='Event flyer'
+                        fill
+                        // priority
+                        // placeholder={"blur"}
+                        // blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOsa2yqBwAFCAICLICSyQAAAABJRU5ErkJggg=="}
+                    />
                 </Link>
             </div>
             {/* <span className={styles.hLine}>
