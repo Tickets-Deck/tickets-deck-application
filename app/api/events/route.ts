@@ -1,8 +1,4 @@
-import { EventRequest } from "@/app/models/IEvents";
-import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import cloudinary from "cloudinary";
-import { deserializeEventVisibility } from "@/app/constants/serializer";
 import { validateRequestMethod } from "../services/reusable-services/requestMethodValidator";
 import {
   createEvent,
