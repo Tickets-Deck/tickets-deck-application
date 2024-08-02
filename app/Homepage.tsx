@@ -9,12 +9,13 @@ import { useFetchEvents } from "./api/apiClient";
 import { EventResponse } from "./models/IEvents";
 import { StorageKeys } from "./constants/storageKeys";
 import BetaTestModal from "./components/Modal/BetaTestModal";
+import { ImageWithPlaceholder } from "./models/IImage";
 
 interface HomepageProps {
-
+    imageWithPlaceholder: ImageWithPlaceholder[]
 }
 
-const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
+const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): ReactElement => {
 
     const fetchEvents = useFetchEvents();
 
@@ -101,6 +102,7 @@ const Homepage: FunctionComponent<HomepageProps> = (): ReactElement => {
                 <HeroSection
                     isFetchingEvents={isFetchingEvents}
                     events={events}
+                    imageWithPlaceholder={imageWithPlaceholder}
                 />
                 <FeaturedEvents
                     isFetchingEvents={isFetchingEvents}
