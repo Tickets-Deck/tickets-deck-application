@@ -17,7 +17,6 @@ import { useDispatch } from 'react-redux';
 import { updateUserCredentials } from '../redux/features/user/userSlice';
 import { catchError } from '../constants/catchError';
 import { Toaster } from "sonner";
-import useResponsiveness from '../hooks/useResponsiveness';
 import { useSession } from 'next-auth/react';
 import { Theme } from '../enums/Theme';
 import NextTopLoader from 'nextjs-toploader';
@@ -87,6 +86,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     const isAppPage = pathname.includes('/app');
     const isEventsPage = pathname == '/app/events';
+    const isFavoritesPage = pathname == '/app/favourite-events';
     const isViewEventPage = pathname.startsWith('/app/event') && !pathname.includes('/create');
 
 
@@ -174,94 +174,73 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     };
 
     return (
-        <html lang="en" data-theme={selectedTheme == Theme.Light ? "light" : "dark"}>
-            {/* <meta name="description" content="Elevating event experiences with next-level ticketing and management solutions." />
+        <>
+            <NextTopLoader
+                color="#5419a7"
+                initialPosition={0.08}
+                crawlSpeed={200}
+                height={3}
+                crawl={true}
+                showSpinner={true}
+                easing="ease"
+                speed={200}
+                shadow="0 0 10px #f1fa9e,0 0 5px #ceb0fa"
+            />
+            <UserLoginPrompt
+                visibility={isUserLoginPromptVisible}
+                setVisibility={toggleUserLoginPrompt}
+            />
 
-            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <meta name="image" content="https://res.cloudinary.com/doklhs4em/image/upload/v1711460397/External/bablo_meta_img.jpg" />
-
-            <meta property="og:url" content="https://bablohomes.co.uk/" />
-            <meta property="og:type" content="website" />
-            <meta property="og:title" content="Ticketsdeck Events | Unlocking best experiences, Easily." />
-            <meta property="og:description" content="Elevating event experiences with next-level ticketing and management solutions." />
-            <meta property="og:image" content="https://res.cloudinary.com/doklhs4em/image/upload/v1711460397/External/bablo_meta_img.jpg" />
-
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta property="twitter:domain" content="https://bablohomes.co.uk/" />
-            <meta property="twitter:url" content="https://bablohomes.co.uk/" />
-            <meta name="twitter:title" content="Ticketsdeck Events | Unlocking best experiences, Easily." />
-            <meta name="twitter:description" content="Elevating event experiences with next-level ticketing and management solutions." />
-            <meta name="twitter:image" content="https://res.cloudinary.com/doklhs4em/image/upload/v1711460397/External/bablo_meta_img.jpg" /> */}
-
-            <body>
-                <NextTopLoader
-                    color="#5419a7"
-                    initialPosition={0.08}
-                    crawlSpeed={200}
-                    height={3}
-                    crawl={true}
-                    showSpinner={true}
-                    easing="ease"
-                    speed={200}
-                    shadow="0 0 10px #f1fa9e,0 0 5px #ceb0fa"
-                />
-                <UserLoginPrompt
-                    visibility={isUserLoginPromptVisible}
-                    setVisibility={toggleUserLoginPrompt}
-                />
-
-                {
-                    !loaderIsVisible &&
-                    <ToastContext.Provider value={{ toastOptions, logSuccess, logInfo, logWarning, logError, closeToast }}>
-                        <Toaster
-                            position="top-center"
-                            richColors
-                            closeButton
-                            toastOptions={{
-                                duration: 3000,
-                                unstyled: false,
-                            }}
-                        />
-                        {
-                            !isAppPage && <>
-                                <Navbar
-                                    setSelectedTheme={setSelectedTheme}
-                                    session={session}
-                                />
-                                {children}
-                                <Footer />
-                            </>
-                        }
-                        {
-                            isAppPage &&
-                            <div className="appLayout">
-                                <Topbar
+            {
+                !loaderIsVisible &&
+                <ToastContext.Provider value={{ toastOptions, logSuccess, logInfo, logWarning, logError, closeToast }}>
+                    <Toaster
+                        position="top-center"
+                        richColors
+                        closeButton
+                        toastOptions={{
+                            duration: 3000,
+                            unstyled: false,
+                        }}
+                    />
+                    {
+                        !isAppPage && <>
+                            <Navbar
+                                setSelectedTheme={setSelectedTheme}
+                                session={session}
+                            />
+                            {children}
+                            <Footer />
+                        </>
+                    }
+                    {
+                        isAppPage &&
+                        <div className="appLayout">
+                            <Topbar
+                                isMobileSidebarOpen={isMobileSidebarOpen}
+                                setIsMobileSidebarOpen={setIsMobileSidebarOpen}
+                            />
+                            <div className="appLayout__body">
+                                <Sidebar
                                     isMobileSidebarOpen={isMobileSidebarOpen}
                                     setIsMobileSidebarOpen={setIsMobileSidebarOpen}
                                 />
-                                <div className="appLayout__body">
-                                    <Sidebar
-                                        isMobileSidebarOpen={isMobileSidebarOpen}
-                                        setIsMobileSidebarOpen={setIsMobileSidebarOpen}
-                                    />
-                                    <div className="innerBody" style={(isEventsPage || isViewEventPage) ? { padding: 0 } : {}}>
-                                        {children}
-                                    </div>
+                                <div className="innerBody" style={(isEventsPage || isFavoritesPage || isViewEventPage) ? { padding: 0 } : {}}>
+                                    {children}
                                 </div>
                             </div>
-                        }
-                    </ToastContext.Provider>
-                }
-                {
-                    loaderIsVisible && <div className="splashScreen">
-                        <div className="image">
-                            <Image src={images.logoWhite} priority alt='logo' />
                         </div>
+                    }
+                </ToastContext.Provider>
+            }
+            {
+                loaderIsVisible && <div className="splashScreen">
+                    <div className="image">
+                        <Image src={images.logoWhite} priority alt='logo' />
                     </div>
-                }
-            </body>
-        </html>
+                </div>
+            }
+        </>
     )
 }
 
