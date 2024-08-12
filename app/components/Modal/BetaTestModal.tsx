@@ -18,7 +18,7 @@ const BetaTestModal: FunctionComponent<BetaTestModalProps> = ({ visibility, setV
         )
     }
     return (
-        <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
+        <ModalWrapper visibility={false} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
             <div className={styles.promptModal}>
                 <div className={styles.topAreaSection}>
                     <div className={styles.topArea}>
