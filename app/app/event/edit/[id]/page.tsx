@@ -20,6 +20,7 @@ import ComponentLoader from '@/app/components/Loader/ComponentLoader';
 import TicketCreationModal from '@/app/components/Event/Create/TicketsCreation/TicketCreationModal';
 import DeletionConfirmationModal from '@/app/components/Modal/DeletionConfirmation';
 import { toast } from "sonner";
+import EventDescriptionEditor from '@/app/components/Editor/EventDescription';
 
 interface EventDetailsProps {
     params: { id: string }
@@ -82,47 +83,6 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
             // Set the state
             setState(false);
         }
-    };
-
-    function addTagToFormRequest() {
-        // If tag is empty...
-        if (!tag || tag.trim() === '') {
-            return;
-        };
-
-        // If tag already exists...
-        if (eventRequest?.tags?.includes(tag)) {
-            return;
-        };
-
-        // If we have existing tags...
-        if (eventRequest?.tags?.length) {
-            // Add the tag to the form request
-            setEventRequest({ ...eventRequest as EventRequest, tags: [...eventRequest?.tags as string[], tag] });
-            // Clear error 
-            setTagErrorMsg(false);
-            // Clear the tag input
-            setTag('');
-            return;
-        } else {
-            // Add the tag to the form request
-            setEventRequest({ ...eventRequest as EventRequest, tags: [tag] });
-            // Clear error 
-            setTagErrorMsg(false);
-            // Clear the tag input
-            setTag('');
-            return;
-        }
-    };
-
-    function removeTagFromFormRequest(selectedTag: string) {
-        // Write code to remove tag from form request 
-        const tags = eventRequest?.tags?.filter(tag => tag !== selectedTag);
-        if (!tags) {
-            setEventRequest({ ...eventRequest as EventRequest, tags: [] });
-            return;
-        };
-        setEventRequest({ ...eventRequest as EventRequest, tags: tags });
     };
 
     /**
@@ -305,13 +265,12 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                 selectedTickets: 0
             }));
             setEventTicketTypes(updatedTicketTypes);
-            console.log(eventTicketTypes);
         }
     }, [eventInfo]);
 
     // useEffect(() => {
     //     if (eventInfo) {
-    //         setEventRequest({...eventRequest as EventRequest, tags: eventInfo.tags })
+    //         setEventRequest({ ...eventRequest as EventRequest, description: eventInfo.description });
     //     }
     // }, [eventInfo]);
 
@@ -457,13 +416,18 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                             </div>
 
                             <div className={styles.formField}>
-                                <label htmlFor="description">Description</label>
-                                <textarea
+                                <label htmlFor="description">Description</label> 
+                                <EventDescriptionEditor
+                                    description={eventRequest?.description ?? eventInfo?.description} 
+                                    setEventRequest={setEventRequest}
+                                />
+                                {/* <textarea
+                                    // dangerouslySetInnerHTML={{ __html: eventRequest?.description ?? eventInfo.description }}
                                     name="description"
                                     value={eventRequest?.description ?? eventInfo?.description}
                                     placeholder="Event Description"
                                     onChange={(e) => onFormValueChange(e, setDescriptionErrorMsg)}
-                                />
+                                /> */}
                                 {descriptionErrorMsg && <span className={styles.errorMsg}>Please enter event description</span>}
                             </div>
                             <div className={styles.formRow}>
