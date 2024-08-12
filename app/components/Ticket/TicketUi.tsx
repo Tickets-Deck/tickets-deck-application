@@ -42,7 +42,7 @@ const TicketUi: FunctionComponent<TicketUiProps> = ({ ticketInfo }): ReactElemen
                         {/* <p>Order code: BY45CZ</p> */}
                     </div>
                 </div>
-                <p className={styles.order}>Order #BY45CZ</p>
+                <p className={styles.order}>Order #{ticketInfo.orderId}</p>
             </div>
         </div>
     );
