@@ -53,7 +53,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
     }, [eventRequest?.tickets]);
 
     useEffect(() => {
-        if(!isTicketCreationModalVisible) {
+        if (!isTicketCreationModalVisible) {
             setIsEditingTicket(false);
             setSelectedTicketIndex(undefined);
         }
@@ -122,7 +122,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
             {ticketValidationMessage && <span className={styles.errorMsg} style={{ textAlign: 'center' }}>{ticketValidationMessage.message}</span>}
 
             <button type="button" onClick={() => setIsTicketCreationModalVisible(true)}>Create Ticket</button>
-
+            <br />
             {
                 eventRequest?.tickets && eventRequest?.tickets.length > 0 &&
                 <div className={styles.formContainer}>

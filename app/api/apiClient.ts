@@ -366,6 +366,14 @@ export function useFetchEventLikeStatus() {
   return fetchEventLikeStatus;
 }
 
+export function useFetchUserFavoriteEvents() {
+  async function fetchUserFavoriteEvents(userId: string) {
+    return API.get(`${ApiRoutes.UserFavoriteEvents}?userId=${userId}`);
+  }
+
+  return fetchUserFavoriteEvents;
+}
+
 export function useLikeEvent() {
   async function likeEvent(userId: string, eventId: string, action: string) {
     return API.post(

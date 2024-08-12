@@ -23,6 +23,11 @@ export class StorageKeys {
   static readonly Events = "Events";
 
   /**
+   * Key for the newly created event
+   */
+  static readonly NewlyCreatedEvent = "NewlyCreatedEvent";
+
+  /**
    * Key for the beta test modal viewed
    */
   static readonly BetaTestModalViewed = "BetaTestModalViewed";

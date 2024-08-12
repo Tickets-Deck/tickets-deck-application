@@ -225,7 +225,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                         </div>
                     </form>
                 </div>
-                <ImagesDisplay />
+                {/* <ImagesDisplay /> */}
             </div>
         </div>
     );

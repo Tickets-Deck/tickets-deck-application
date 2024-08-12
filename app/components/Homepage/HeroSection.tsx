@@ -15,13 +15,19 @@ import { RootState } from '@/app/redux/store';
 import { useSelector } from 'react-redux';
 import { Theme } from '@/app/enums/Theme';
 import EmailVerificationPrompt from '../Modal/EmailVerificationPrompt';
+import { getPlaceholderImage } from '@/app/services/DynamicBlurDataUrl';
 
 interface HeroSectionProps {
     events: EventResponse[]
     isFetchingEvents: boolean
+
+    imageWithPlaceholder: {
+        src: string;
+        placeholder: string;
+    }[]
 }
 
-const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEvents }): ReactElement => {
+const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEvents, imageWithPlaceholder }): ReactElement => {
     const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const { data: session } = useSession();
@@ -78,11 +84,32 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEv
         return () => clearInterval(intervalId);
     }, [imageList.length]);
 
+    // const imageWithPlaceholder = Promise.all(
+    //     imageList.map(async (eachImage) => {
+    //         const imageWithPlaceholder = await getPlaceholderImage(eachImage.img)
+    //         return imageWithPlaceholder
+    //     }),
+    // )
+
+    // const imageWithPlaceholder = await Promise.all(
+    //     imageList.map(async (eachImage) => {
+    //         const imageWithPlaceholder = await getPlaceholderImage(eachImage.img)
+    //         return imageWithPlaceholder;
+    //     }),
+    // )
+
     return (
         <>
             <section className={appTheme == Theme.Light ? styles.heroSectionLightTheme : styles.heroSection}>
                 <div className={styles.backgroundImage}>
-                    <Image src={imageList[heroSectionImgIndex].img} alt='People in event' fill />
+                    <Image
+                        src={imageWithPlaceholder[heroSectionImgIndex].src}
+                        alt='People in event'
+                        fill
+                        priority
+                        placeholder={"blur"}
+                        blurDataURL={imageWithPlaceholder[heroSectionImgIndex].placeholder}
+                    />
                 </div>
                 <div className={styles.heroSection__lhs}>
                     <div className={styles.textContents}>

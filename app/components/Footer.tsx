@@ -32,7 +32,9 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                     <p className={styles.name}>Ticketsdeck Events</p>
                 </div>
                 <div className={styles.lhs__info}>
-                    <p>Our goal is to provide a global self-service ticketing platform for live experiences that allows anyone to create, share, find and attend events that fuel their passions and enrich their lives.</p>
+                    <p>Our goal is to provide a global self-service ticketing platform 
+                        for live experiences that allows anyone to create, share, find and 
+                        attend events that fuel their passion and enrich their lives.</p>
                 </div>
                 <div className={styles.lhs__socials}>
                     {/* <Link href='https://www.facebook.com/ticketsdeck0' target="_blank">

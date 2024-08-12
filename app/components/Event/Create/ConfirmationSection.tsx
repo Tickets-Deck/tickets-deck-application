@@ -100,7 +100,7 @@ const ConfirmationSection: FunctionComponent<ConfirmationSectionProps> = (
                         </div>
                         <div className={styles.info}>
                             <span>Description</span>
-                            <p>{eventRequest?.description}</p>
+                            <p dangerouslySetInnerHTML={{ __html: eventRequest?.description as string }} />
                         </div>
                         <div className={styles.info}>
                             <span>Category</span>

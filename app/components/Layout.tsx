@@ -17,7 +17,6 @@ import { useDispatch } from 'react-redux';
 import { updateUserCredentials } from '../redux/features/user/userSlice';
 import { catchError } from '../constants/catchError';
 import { Toaster } from "sonner";
-import useResponsiveness from '../hooks/useResponsiveness';
 import { useSession } from 'next-auth/react';
 import { Theme } from '../enums/Theme';
 import NextTopLoader from 'nextjs-toploader';
@@ -46,10 +45,10 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     const dispatch = useDispatch();
 
-    const windowRes = useResponsiveness();
-    const isMobile = windowRes.width && windowRes.width < 768;
-    const onMobile = typeof (isMobile) == "boolean" && isMobile;
-    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+    // const windowRes = useResponsiveness();
+    // const isMobile = windowRes.width && windowRes.width < 768;
+    // const onMobile = typeof (isMobile) == "boolean" && isMobile;
+    // const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     async function handleFetchUserInformation() {
         // console.log("Session on layout: ", session);
@@ -87,6 +86,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     const isAppPage = pathname.includes('/app');
     const isEventsPage = pathname == '/app/events';
+    const isFavoritesPage = pathname == '/app/favourite-events';
     const isViewEventPage = pathname.startsWith('/app/event') && !pathname.includes('/create');
 
 
@@ -174,76 +174,73 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     };
 
     return (
-        <html lang="en" data-theme={selectedTheme == Theme.Light ? "light" : "dark"}>
-            <body>
-                <NextTopLoader
-                    color="#5419a7"
-                    initialPosition={0.08}
-                    crawlSpeed={200}
-                    height={3}
-                    crawl={true}
-                    showSpinner={true}
-                    easing="ease"
-                    speed={200}
-                    shadow="0 0 10px #f1fa9e,0 0 5px #ceb0fa"
-                />
-                <UserLoginPrompt
-                    visibility={isUserLoginPromptVisible}
-                    setVisibility={toggleUserLoginPrompt}
-                />
+        <>
+            <NextTopLoader
+                color="#5419a7"
+                initialPosition={0.08}
+                crawlSpeed={200}
+                height={3}
+                crawl={true}
+                showSpinner={true}
+                easing="ease"
+                speed={200}
+                shadow="0 0 10px #f1fa9e,0 0 5px #ceb0fa"
+            />
+            <UserLoginPrompt
+                visibility={isUserLoginPromptVisible}
+                setVisibility={toggleUserLoginPrompt}
+            />
 
-                {
-                    !loaderIsVisible &&
-                    <ToastContext.Provider value={{ toastOptions, logSuccess, logInfo, logWarning, logError, closeToast }}>
-                        <Toaster
-                            position="top-center"
-                            richColors
-                            closeButton
-                            toastOptions={{
-                                duration: 3000,
-                                unstyled: false,
-                            }}
-                        />
-                        {
-                            !isAppPage && <>
-                                <Navbar
-                                    setSelectedTheme={setSelectedTheme}
-                                    session={session}
-                                />
-                                {children}
-                                <Footer />
-                            </>
-                        }
-                        {
-                            isAppPage &&
-                            <div className="appLayout">
-                                <Topbar
+            {
+                !loaderIsVisible &&
+                <ToastContext.Provider value={{ toastOptions, logSuccess, logInfo, logWarning, logError, closeToast }}>
+                    <Toaster
+                        position="top-center"
+                        richColors
+                        closeButton
+                        toastOptions={{
+                            duration: 3000,
+                            unstyled: false,
+                        }}
+                    />
+                    {
+                        !isAppPage && <>
+                            <Navbar
+                                setSelectedTheme={setSelectedTheme}
+                                session={session}
+                            />
+                            {children}
+                            <Footer />
+                        </>
+                    }
+                    {
+                        isAppPage &&
+                        <div className="appLayout">
+                            <Topbar
+                                isMobileSidebarOpen={isMobileSidebarOpen}
+                                setIsMobileSidebarOpen={setIsMobileSidebarOpen}
+                            />
+                            <div className="appLayout__body">
+                                <Sidebar
                                     isMobileSidebarOpen={isMobileSidebarOpen}
                                     setIsMobileSidebarOpen={setIsMobileSidebarOpen}
                                 />
-                                <div className="appLayout__body">
-                                    {/* {onDesktop && <Sidebar />} */}
-                                    <Sidebar
-                                        isMobileSidebarOpen={isMobileSidebarOpen}
-                                        setIsMobileSidebarOpen={setIsMobileSidebarOpen}
-                                    />
-                                    <div className="innerBody" style={(isEventsPage || isViewEventPage) ? { padding: 0 } : {}}>
-                                        {children}
-                                    </div>
+                                <div className="innerBody" style={(isEventsPage || isFavoritesPage || isViewEventPage) ? { padding: 0 } : {}}>
+                                    {children}
                                 </div>
                             </div>
-                        }
-                    </ToastContext.Provider>
-                }
-                {
-                    loaderIsVisible && <div className="splashScreen">
-                        <div className="image">
-                            <Image src={images.logoWhite} priority alt='logo' />
                         </div>
+                    }
+                </ToastContext.Provider>
+            }
+            {
+                loaderIsVisible && <div className="splashScreen">
+                    <div className="image">
+                        <Image src={images.logoWhite} priority alt='logo' />
                     </div>
-                }
-            </body>
-        </html>
+                </div>
+            }
+        </>
     )
 }
 

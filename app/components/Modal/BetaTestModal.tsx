@@ -29,7 +29,7 @@ const BetaTestModal: FunctionComponent<BetaTestModalProps> = ({ visibility, setV
                                     </p>
                                     <p>
                                         If you would like to report a bug or have any feedback,
-                                        please click&nbsp;<Link href={ApplicationRoutes.Contact}>here</Link> to contact us.
+                                        please <Link href={ApplicationRoutes.Contact}>contact us</Link>.
                                     </p>
                                 </div> :
                                 <div className={styles.content}>

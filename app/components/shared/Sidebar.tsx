@@ -30,6 +30,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({ isMobileSidebarOpen, setIsMo
     const currentPageIsEditEvent = pathname.startsWith(ApplicationRoutes.EditEvent);
     const currentPageIsProfile = pathname.includes(ApplicationRoutes.Profile);
     const currentPageIsWallet = pathname.includes(ApplicationRoutes.Wallet);
+    const currentPageIsFavorites = pathname.includes(ApplicationRoutes.FavouriteEvents);
 
     function closeSidebar() {
         if (isMobileSidebarOpen) {
@@ -69,12 +70,18 @@ const Sidebar: FunctionComponent<SidebarProps> = ({ isMobileSidebarOpen, setIsMo
                         onClick={() => setEventsSubLinksIsOpen(!eventsSubLinksIsOpen)}>
                         <EventIcon /> Events <span className={eventsSubLinksIsOpen ? styles.active : ''}><CaretRightIcon /></span>
                     </li>
-                    <div className={`${styles.subLinks} ${eventsSubLinksIsOpen ? styles.subLinkContainerIsOpen : ''}`} style={{ '--multiplicant-value': `${2.1}` } as CSSProperties}>
+                    <div className={`${styles.subLinks} ${eventsSubLinksIsOpen ? styles.subLinkContainerIsOpen : ''}`} style={{ '--multiplicant-value': `${3.1}` } as CSSProperties}>
 
                         <ReusableLink
                             route={ApplicationRoutes.Events}
                             currentPageChecker={currentPageIsEvents}
                             text="My Events"
+                            icon={<EventIcon />}
+                        />
+                        <ReusableLink
+                            route={ApplicationRoutes.FavouriteEvents}
+                            currentPageChecker={currentPageIsFavorites}
+                            text="My Favorites"
                             icon={<EventIcon />}
                         />
                         <ReusableLink

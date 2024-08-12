@@ -1,8 +1,4 @@
-import { EventRequest } from "@/app/models/IEvents";
-import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import cloudinary from "cloudinary";
-import { deserializeEventVisibility } from "@/app/constants/serializer";
 import { validateRequestMethod } from "../services/reusable-services/requestMethodValidator";
 import {
   createEvent,
@@ -103,7 +99,8 @@ export async function DELETE(req: NextRequest) {
 
     // Return the response
     return NextResponse.json(operation, { status: StatusCodes.Success });
-  } catch {
+  } catch(error) {
+    // console.log("🚀 ~ DELETE ~ error:", error)
     // Return an error if the operation fails
     return NextResponse.json(
       { error: ApplicationError.InternalServerError.Text },

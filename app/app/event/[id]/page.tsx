@@ -16,6 +16,7 @@ import { EventResponse } from '@/app/models/IEvents';
 import { useFetchEventById } from '@/app/api/apiClient';
 import { catchError } from '@/app/constants/catchError';
 import useResponsiveness from '@/app/hooks/useResponsiveness';
+import { StorageKeys } from '@/app/constants/storageKeys';
 
 interface EventDetailsProps {
     params: { id: string }
@@ -144,17 +145,44 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
         setEventTicketTypes(updatedTicketsCount);
     }
 
+    function retrieveNewlyCreatedEvent() {
+        // Fetch the newly created event from  session storage
+        const event = sessionStorage.getItem(StorageKeys.NewlyCreatedEvent);
+
+        // Parse the event from string to object
+        const newEvent = JSON.parse(event!);
+
+        // Return the new event
+        return newEvent;
+    }
+
     async function handleFetchEventInfo() {
-        console.log('Fetching event info...');
+        // console.log('Fetching event info...');
 
         // Set running flag
         setLoader(true);
 
+        // Retrieve the event info
+        const retrievedEvent = retrieveNewlyCreatedEvent();
+
+        // Check if the ID of the retrieved event is the same as the ID in the URL
+        if (retrievedEvent && retrievedEvent.id == id) {
+            // Update the event results
+            setEventInfo(retrievedEvent);
+
+            // Unset running flag
+            setLoader(false);
+
+            // Stop execution
+            return;
+        }
+
+        // If we get here, it means the event is not the newly created event
         await fetchEventInfo(id)
             .then((response) => {
 
                 // Log the result
-                console.log('Result:', response.data);
+                // console.log('Result:', response.data);
 
                 // Set the event results
                 let _eventInfo = response.data;
@@ -328,7 +356,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                                 </div>
                                                 <div className={styles.ticket__bottomArea}>
                                                     <span onClick={() => { ticketType.selectedTickets > 0 && decrementTicket(ticketType) }}>-</span>
-                                                    <p>{ticketType.selectedTickets} ticket</p>
+                                                    <p>{ticketType.selectedTickets} {ticketType.selectedTickets > 1 ? "tickets" : "ticket"}</p>
                                                     <span onClick={() => incrementTicket(ticketType)}>+</span>
                                                 </div>
                                             </div>

@@ -124,4 +124,9 @@ export class ApiRoutes {
    * The route to User Wallet Balance endpoint
    */
   static UserWalletBalance: string = "api/users/wallet-balance";
+
+  /**
+   * The route to User Favorite Events endpoint
+   */
+  static UserFavoriteEvents: string = "api/events/favourites";
 }

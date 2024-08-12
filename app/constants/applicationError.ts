@@ -181,6 +181,14 @@ export class ApplicationError extends BaseApplicationError {
     Code: "USER_1017",
   };
 
+  /**
+   * The error message for ~ Failed to fetch user favourite events
+   */
+  static FailedToFetchUserFavouriteEvents: IApplicationError = {
+    Text: "Failed to fetch user favourite events",
+    Code: "USER_1018",
+  };
+
   //#endregion
 
   //#region Email Errors

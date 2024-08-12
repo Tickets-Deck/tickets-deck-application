@@ -130,8 +130,12 @@ export async function createEvent(req: NextRequest) {
             data: updatedTickets,
           },
         },
-        purchaseStartDate: request.purchaseStartDate,
-        purchaseEndDate: request.purchaseEndDate,
+        purchaseStartDate: request.purchaseStartDate ?? new Date(),
+        purchaseEndDate: request.purchaseEndDate ?? request.date,
+      },
+      include: {
+        user: true,
+        tickets: true,
       },
     });
 
@@ -592,6 +596,13 @@ export async function deleteEvent(req: NextRequest) {
   // Delete the event's main image from cloudinary
   await cloudinary.v2.uploader.destroy(event.mainImageId);
 
+  // Delete all relating tickets
+  await prisma.tickets.deleteMany({
+    where: {
+      eventId: specifiedId,
+    },
+  });
+
   await prisma.events.delete({
     where: {
       id: specifiedId,
@@ -784,4 +795,58 @@ export async function fetchEventLikeStatus(req: NextRequest) {
 
   // Return the like status
   return { data: { userLikedEvent } };
+}
+
+export async function fetchFavouriteEvents(req: NextRequest) {
+  // Get the search params from the request url
+  const searchParams = new URLSearchParams(req.url.split("?")[1]);
+
+  // Get the userId from the search params
+  const userId = searchParams.get("userId");
+
+  // If a userId is not provided, return 400
+  if (!userId) {
+    return {
+      error: ApplicationError.UserIdIsRequired.Text,
+      errorCode: ApplicationError.UserIdIsRequired.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // Find the user with the provided userId
+  const user = await prisma.users.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  // If user is not found, return 404
+  if (!user) {
+    return {
+      error: ApplicationError.UserWithIdNotFound.Text,
+      errorCode: ApplicationError.UserWithIdNotFound.Code,
+      statusCode: StatusCodes.NotFound,
+    };
+  }
+
+  // Find the events liked by the user
+  const likedEvents = await prisma.favorites.findMany({
+    where: {
+      userId: user.id,
+    },
+    include: {
+      event: true,
+    },
+  });
+
+  // If no event is found, return 404
+  if (!likedEvents || likedEvents.length === 0) {
+    return { data: [] };
+  }
+
+  // Structure the liked events
+  const retrievedLikedEvents = likedEvents.map((likedEvent) => likedEvent.event);
+
+  // Return the liked events
+  return { data: retrievedLikedEvents };
 }

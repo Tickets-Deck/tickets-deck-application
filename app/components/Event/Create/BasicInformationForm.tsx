@@ -8,6 +8,7 @@ import { categories } from '@/app/constants/eventCategories';
 import { EventVisibility } from '@/app/enums/IEventVisibility';
 import { ValidationStatus } from '@/app/enums/BasicInfoFormValidationStatus';
 import { EventCreationStage } from '@/app/enums/EventCreationStage';
+import EventDescriptionEditor from '../../Editor/EventDescription';
 
 
 interface BasicInformationFormProps {
@@ -21,6 +22,8 @@ interface BasicInformationFormProps {
 const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
     { eventRequest, setEventRequest, validationStage, setEventCreationStage, setValidationStage }): ReactElement => {
 
+    //#region States
+
     const [categoryDropdownIsVisible, setCategoryDropdownIsVisible] = useState(false);
     const [tag, setTag] = useState<string>();
 
@@ -30,6 +33,10 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
     const [timeErrorMsg, setTimeErrorMsg] = useState<boolean>();
     const [descriptionErrorMsg, setDescriptionErrorMsg] = useState<boolean>();
     const [tagErrorMsg, setTagErrorMsg] = useState<boolean>();
+
+    //#endregion
+
+    //#region Functions
 
     function onFormValueChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>, setState?: Dispatch<SetStateAction<boolean | undefined>>) {
 
@@ -122,8 +129,16 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
         }
     };
 
+    //#endregion
+
+    //#region Refs
+
     const eventDateRef = useRef(null);
     const categoryDropdownRef = useRef(null);
+
+    //#endregion
+
+    //#region Effects & other hooks
 
     useOuterClick(categoryDropdownRef, () => setCategoryDropdownIsVisible(false));
 
@@ -143,6 +158,8 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
     // useEffect(() => {
     //     console.log(validationStage)
     // }, [validationStage])
+
+    //#endregion
 
     return (
         <div className={styles.formContainer}>
@@ -239,13 +256,21 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
             </div>
             <span></span>
             <div className={styles.rhs}>
-                <div className={styles.formField}>
+                {/* <div className={styles.formField}>
                     <label htmlFor="description">Description</label>
                     <textarea
                         name="description"
                         value={eventRequest?.description}
                         placeholder="Event Description"
                         onChange={(e) => onFormValueChange(e, setDescriptionErrorMsg)}
+                    />
+                    {descriptionErrorMsg && <span className={styles.errorMsg}>Please enter event description</span>}
+                </div> */}
+                <div className={styles.formField}>
+                    <label htmlFor="description">Description</label>
+                    <EventDescriptionEditor
+                        eventRequest={eventRequest}
+                        setEventRequest={setEventRequest}
                     />
                     {descriptionErrorMsg && <span className={styles.errorMsg}>Please enter event description</span>}
                 </div>
