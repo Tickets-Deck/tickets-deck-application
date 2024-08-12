@@ -4,6 +4,7 @@ import { newsletterSubscriptionTemplate } from "./templates/newsletterSubscripti
 import { accountCreationTemplate } from "./templates/accountCreation";
 import { ticketOrderTemplate } from "./templates/ticketOrder";
 import { verifyEmailTemplate } from "./templates/verifyAccount";
+import { htmlToPlainText } from "@/utils/convertHtmlToText";
 
 type Mail = {
   to: string;
@@ -99,10 +100,14 @@ export function compileTicketOrderTemplate(eventInfo: {
   orderPageUrl: string;
 }) {
   const template = handlebars.compile(ticketOrderTemplate);
+
+  // convert event description html content to text
+  const updatedEventDescription = htmlToPlainText(eventInfo.description);
+
   const htmlBody = template({
     eventTitle: eventInfo.title,
     eventImage: eventInfo.image,
-    eventDescription: eventInfo.description,
+    eventDescription: updatedEventDescription,
     eventLocation: eventInfo.venue,
     eventDate: eventInfo.date,
     eventTime: eventInfo.time,
