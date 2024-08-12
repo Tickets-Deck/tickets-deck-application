@@ -6,11 +6,11 @@ import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useState } f
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 interface EventDescriptionEditorProps {
-    eventRequest: EventRequest | undefined
+    description: string | undefined
     setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
 }
 
-const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = ({ eventRequest, setEventRequest }): ReactElement => {
+const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = ({ description, setEventRequest }): ReactElement => {
     const myColors = [
         "#8133f1",
         "#ceb0fa",
@@ -50,7 +50,12 @@ const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = (
     ];
 
     const handleProcedureContentChange = (content: any) => {
-        setEventRequest({ ...eventRequest as EventRequest, description: content });
+        setEventRequest((prev) => {
+            return {
+                ...prev!,
+                description: content
+            }
+        });
     };
 
     return (
@@ -60,7 +65,7 @@ const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = (
                 theme="snow"
                 modules={modules}
                 formats={formats}
-                value={eventRequest?.description}
+                value={description}
                 onChange={handleProcedureContentChange}
                 placeholder="Start by typing here..."
             />
