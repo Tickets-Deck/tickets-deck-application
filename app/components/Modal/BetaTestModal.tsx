@@ -12,6 +12,11 @@ interface BetaTestModalProps {
 }
 
 const BetaTestModal: FunctionComponent<BetaTestModalProps> = ({ visibility, setVisibility, forGeneralMessage }): ReactElement => {
+    if (process.env.PUBLIC_NEXTAUTH_URL == "https://events.ticketsdeck.com") {
+        return (
+            <></>
+        )
+    }
     return (
         <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
             <div className={styles.promptModal}>
