@@ -269,7 +269,7 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                 <div className={styles.formField}>
                     <label htmlFor="description">Description</label>
                     <EventDescriptionEditor
-                        eventRequest={eventRequest}
+                        description={eventRequest?.description ?? ''}
                         setEventRequest={setEventRequest}
                     />
                     {descriptionErrorMsg && <span className={styles.errorMsg}>Please enter event description</span>}
