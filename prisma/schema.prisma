@@ -11,6 +11,17 @@ datasource db {
     // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+model AdminUsers {
+    id            String  @id @default(uuid())
+    email         String  @unique
+    username      String?
+    password      String
+    firstName     String
+    lastName      String
+    emailVerified Boolean
+    profilePhoto  String
+}
+
 model Users {
     id                       String    @id @default(uuid())
     email                    String    @unique
