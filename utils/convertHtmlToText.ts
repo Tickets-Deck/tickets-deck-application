@@ -5,7 +5,7 @@ export function htmlToPlainText(html: string) {
     
     // Replace img tags with their alt text or a placeholder
     $('img').each(function() {
-        const altText = $(this).attr('alt') || '[Image]';
+        const altText = $(this).attr('alt') || '';
         $(this).replaceWith(altText);
     });
 
