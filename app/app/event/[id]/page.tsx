@@ -17,6 +17,8 @@ import { useFetchEventById } from '@/app/api/apiClient';
 import { catchError } from '@/app/constants/catchError';
 import useResponsiveness from '@/app/hooks/useResponsiveness';
 import { StorageKeys } from '@/app/constants/storageKeys';
+import { ApplicationRoutes } from '@/app/constants/applicationRoutes';
+import { toast } from "sonner";
 
 interface EventDetailsProps {
     params: { id: string }
@@ -67,35 +69,17 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     }, [eventTicketTypes]);
 
     function shareEvent() {
-        const eventURL = window.location.href;
-        // const tempInput = document.createElement("input");
-        // document.body.appendChild(tempInput);
-        // tempInput.value = eventURL;
-        // tempInput.select();
-        // document.execCommand("copy");
-        // document.body.removeChild(tempInput);
-        try {
-            navigator.clipboard.writeText(eventURL);
-            // alert("Event link copied to clipboard!");
-            toasthandler?.logSuccess('Event link copied.', `The link to ${eventInfo?.title} has been copied.`)
-        } catch (error) {
-            console.error("Copying to clipboard failed:", error);
-        }
-    }
-    function shareEventMobile() {
-        const eventURL = window.location.href;
-        if (navigator.share) {
-            navigator.share({
-                title: "Check out this event!",
-                text: "I found this amazing event. You should check it out!",
-                url: `${window.location.pathname}/event/${id}`
+        const eventUrl = `${window.location.origin + ApplicationRoutes.GeneralEvent + eventInfo?.id}`;
+
+        navigator.clipboard.writeText(`${eventInfo?.title} - Ticketsdeck Events: ${eventUrl}`)
+            .then(() => {
+                toast.success(`The link to ${eventInfo?.title} has been copied.`);
             })
-                .then(() => console.log("Shared successfully"))
-                .catch(error => console.log("Sharing failed:", error));
-        } else {
-            console.log("Web Share API not supported");
-        }
+            .catch((error) => {
+                toast.error('Failed to copy event link. Please try again.');
+            });
     }
+    
     function addEventToGoogleCalender() {
         if (!eventInfo) {
             return;
@@ -320,19 +304,8 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                         <HeartIcon />
                                     </div>
                                 </Tooltip>
-                                {/* {
-                                    onDesktop &&
-                                    <Tooltip tooltipText='Share event'>
-                                        <div className={styles.actionButton} style={{ backgroundColor: '#D5542A' }} onClick={() => shareEvent()}>
-                                            <ShareIcon />
-                                        </div>
-                                    </Tooltip>
-                                }
-                                {
-                                    onMobile &&
-                                } */}
                                 <Tooltip tooltipText='Share event'>
-                                    <div className={styles.actionButton} style={{ backgroundColor: '#D5542A' }} onClick={() => shareEventMobile()}>
+                                    <div className={styles.actionButton} style={{ backgroundColor: '#D5542A' }} onClick={() => shareEvent()}>
                                         <ShareIcon />
                                     </div>
                                 </Tooltip>

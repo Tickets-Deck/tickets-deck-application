@@ -12,6 +12,7 @@ import { RootState } from "@/app/redux/store";
 import { useSelector } from "react-redux";
 import { Theme } from "@/app/enums/Theme";
 import EventLikeButton from "../custom/EventLikeButton";
+import { toast } from "sonner";
 
 interface EventCardProps {
     event: EventResponse
@@ -25,17 +26,8 @@ interface EventCardProps {
 const EventCard: FunctionComponent<EventCardProps> = (
     { event, mobileAndActionButtonDismiss, consoleDisplay, gridDisplay,
         setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
-    // console.log("🚀 ~ event:", event)
 
     const appTheme = useSelector((state: RootState) => state.theme.appTheme);
-
-    const windowRes = useResponsiveness();
-    const isMobile = windowRes.width && windowRes.width < 768;
-    const onMobile = typeof (isMobile) == "boolean" && isMobile;
-    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
-
-    // const [eventBlurDataImg, setEventBlurDataImg] = useState<string>("");
-    // console.log("🚀 ~ eventBlurDataImg:", eventBlurDataImg)
 
     const [isEventLiked, setIsEventLiked] = useState(false);
 
@@ -44,59 +36,14 @@ const EventCard: FunctionComponent<EventCardProps> = (
     // const blurDataUrl = async (imageUrl: string) => await dynamicBlurDataUrl(imageUrl);
 
     function shareEvent(eventUrl: string) {
-        // const eventURL = window.location.href;
-        // If we are using a mobile device
-        if (onMobile) {
-            if (navigator.share) {
-                navigator.share({
-                    title: "Check out this event!",
-                    text: "I found this amazing event. You should check it out!",
-                    url: eventUrl
-                })
-                    .then(() => console.log("Shared successfully"))
-                    .catch(error => console.log("Sharing failed:", error));
-            } else {
-                navigator.clipboard.writeText(eventUrl);
-                toasthandler?.logSuccess('Event link copied.', `The link to ${event.title} has been copied.`)
-                console.log("Web Share API not supported");
-            }
-        }
-        if (onDesktop) {
-            try {
-                navigator.clipboard.writeText(eventUrl);
-                toasthandler?.logSuccess('Event link copied.', `The link to ${event.title} has been copied.`)
-                console.log("Link copied successfully")
-            } catch (error) {
-                console.error("Copying to clipboard failed:", error);
-            }
-
-        }
-    }
-    function shareEventMobile(eventUrl: string) {
-        // const eventURL = window.location.href;
-        if (navigator.share) {
-            navigator.share({
-                title: "Check out this event!",
-                text: "I found this amazing event. You should check it out!",
-                url: eventUrl
+        navigator.clipboard.writeText(`${event.title} - Ticketsdeck Events: ${eventUrl}`)
+            .then(() => {
+                toast.success(`The link to ${event.title} has been copied.`);
             })
-                .then(() => console.log("Shared successfully"))
-                .catch(error => console.log("Sharing failed:", error));
-        } else {
-            console.log("Web Share API not supported");
-        }
+            .catch((error) => {
+                toast.error('Failed to copy event link. Please try again.');
+            });
     }
- 
-    // useEffect(() => {
-    //     const modifiedData = async () => {
-    //         const dataWithBlurHash = await dynamicBlurDataUrl(event.mainImageUrl);
-    //         console.log("🚀 ~ modifiedData ~ dataWithBlurHash:", dataWithBlurHash)
-    //         // Update the state
-    //         setEventBlurDataImg(dataWithBlurHash);
-    //     };
-
-    //     modifiedData();
-    // }, [event]);
 
     return (
         <div className={`${appTheme == Theme.Light ? styles.eventLightTheme : styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>

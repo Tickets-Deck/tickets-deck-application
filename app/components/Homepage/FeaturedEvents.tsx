@@ -24,46 +24,7 @@ interface FeaturedEventsProps {
 
 const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage, events, isFetchingEvents }): ReactElement => {
 
-    const toasthandler = useContext(ToastContext);
-    // const [events, setEvents] = useState<EventResponse[]>([]);
-    // const [isFetchingEvents, setIsFetchingEvents] = useState(true);
     const [retrievedFeaturedEvents, setRetrievedFeaturedEvents] = useState<EventResponse[]>();
-
-    const windowRes = useResponsiveness();
-    const isMobile = windowRes.width && windowRes.width < 768;
-    const onMobile = typeof (isMobile) == "boolean" && isMobile;
-    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
-
-    function shareEvent(eventInfo: EventResponse) {
-        const eventURL = window.location.href;
-        // const tempInput = document.createElement("input");
-        // document.body.appendChild(tempInput);
-        // tempInput.value = eventURL;
-        // tempInput.select();
-        // document.execCommand("copy");
-        // document.body.removeChild(tempInput);
-        try {
-            navigator.clipboard.writeText(eventURL);
-            // alert("Event link copied to clipboard!");
-            toasthandler?.logSuccess('Event link copied.', `The link to ${eventInfo.title} has been copied.`)
-        } catch (error) {
-            console.error("Copying to clipboard failed:", error);
-        }
-    };
-    function shareEventMobile() {
-        const eventURL = window.location.href;
-        if (navigator.share) {
-            navigator.share({
-                title: "Check out this event!",
-                text: "I found this amazing event. You should check it out!",
-                url: eventURL
-            })
-                .then(() => console.log("Shared successfully"))
-                .catch(error => console.log("Sharing failed:", error));
-        } else {
-            console.log("Web Share API not supported");
-        }
-    };
 
     function persistFeaturedEvents() {
         if (events.length > 0 && !sessionStorage.getItem(StorageKeys.FeaturedEvents)) {
@@ -81,15 +42,6 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
 
         setRetrievedFeaturedEvents(events.slice(0, 3));
     }
-
-    // Use usememo hook to persist the featured events in session storage and only update when events change
-    // useMemo(() => {
-    //     persistFeaturedEvents();
-    // }, [events]);
-
-    // useEffect(() => {
-    //     retrieveFeaturedEvents();
-    // }, []);
 
     return (
         <section className={styles.featuredEvents}>

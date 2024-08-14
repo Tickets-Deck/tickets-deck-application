@@ -16,6 +16,8 @@ import { useSession } from "next-auth/react";
 import { useFetchEventLikeStatus, useLikeEvent } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
 import EventLikeButton from "../custom/EventLikeButton";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { toast } from "sonner";
 
 interface EventMainInfoProps {
     appTheme: Theme | null
@@ -44,36 +46,46 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
 
     const [isEventLiked, setIsEventLiked] = useState(false);
 
-    function shareEvent() {
-        const eventURL = window.location.href;
-        // const tempInput = document.createElement("input");
-        // document.body.appendChild(tempInput);
-        // tempInput.value = eventURL;
-        // tempInput.select();
-        // document.execCommand("copy");
-        // document.body.removeChild(tempInput);
-        try {
-            navigator.clipboard.writeText(eventURL);
-            // alert("Event link copied to clipboard!");
-            // toasthandler?.logSuccess('Event link copied.', `The link to ${eventInfo?.title} has been copied.`)
-        } catch (error) {
-            console.error("Copying to clipboard failed:", error);
-        }
-    };
-    function shareEventMobile() {
-        // const eventURL = window.location.href;
-        if (navigator.share) {
-            navigator.share({
-                // title: "Check out this event!",
-                title: `${eventInfo?.title} - Ticketsdeck Events`,
-                text: "I found this amazing event. You should check it out!",
-                url: `${window.location.pathname}/event/${eventInfo.id}`
+    // function shareEvent(eventUrl: string) {
+    //     // const eventURL = window.location.href;
+    //     // If we are using a mobile device
+    //     if (onMobile) {
+    //         if (navigator.share) {
+    //             navigator.share({
+    //                 title: "Check out this event!",
+    //                 text: "I found this amazing event. You should check it out!",
+    //                 url: eventUrl
+    //             })
+    //                 .then(() => console.log("Shared successfully"))
+    //                 .catch(error => console.log("Sharing failed:", error));
+    //         } else {
+    //             navigator.clipboard.writeText(eventUrl);
+    //             toasthandler?.logSuccess('Event link copied.', `The link to ${event.title} has been copied.`)
+    //             console.log("Web Share API not supported");
+    //         }
+    //     }
+    //     if (onDesktop) {
+    //         try {
+    //             navigator.clipboard.writeText(eventUrl);
+    //             toasthandler?.logSuccess('Event link copied.', `The link to ${event.title} has been copied.`)
+    //             console.log("Link copied successfully")
+    //         } catch (error) {
+    //             console.error("Copying to clipboard failed:", error);
+    //         }
+
+    //     }
+    // }
+
+    async function shareEvent() {
+        const eventUrl = `${window.location.origin + ApplicationRoutes.GeneralEvent + eventInfo.id}`;
+
+        navigator.clipboard.writeText(`${eventInfo?.title} - Ticketsdeck Events: ${eventUrl}`)
+            .then(() => {
+                toast.success(`The link to ${eventInfo?.title} has been copied.`);
             })
-                .then(() => console.log("Shared successfully"))
-                .catch(error => console.log("Sharing failed:", error));
-        } else {
-            console.log("Web Share API not supported");
-        }
+            .catch((error) => {
+                toast.error('Failed to copy event link. Please try again.');
+            });
     };
 
     async function handleUpdateUserFavouriteEvents(eventId: string, action: string = EventFavoriteAction.Like) {
@@ -208,7 +220,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                             className={styles.actionButton}
                             style={{ backgroundColor: '#D5542A' }}
                             onClick={() => {
-                                shareEventMobile()
+                                shareEvent()
                             }}>
                             <ShareIcon />
                         </div>
