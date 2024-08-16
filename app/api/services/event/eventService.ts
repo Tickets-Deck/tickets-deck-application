@@ -850,3 +850,34 @@ export async function fetchFavouriteEvents(req: NextRequest) {
   // Return the liked events
   return { data: retrievedLikedEvents };
 }
+
+
+export async function fetchFeaturedEvents(req: NextRequest) {
+  
+    // Else, Fetch all events
+    const eventResponse = await prisma.events.findMany({
+      // Show only public events that are not yet over (both event date and end date for tickets purchase)
+      where: {
+        visibility: "PUBLIC",
+        OR: [
+          {
+            date: {
+              gte: new Date(),
+            },
+          },
+          {
+            purchaseEndDate: {
+              gte: new Date(),
+            },
+          },
+        ],
+      },
+      orderBy: {
+        date: "asc",
+      },
+      take: 3,
+    });
+  
+    // Return all events
+    return { data: eventResponse };
+  }
