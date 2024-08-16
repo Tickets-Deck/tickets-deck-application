@@ -20,7 +20,7 @@ import {
 } from "../models/IPassword";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_TEST,
+  baseURL: ApiRoutes.BASE_URL_DEV,
 });
 
 export function useCreateNewsletterSubscriber() {
@@ -47,6 +47,14 @@ export function useFetchEvents() {
   }
 
   return fetchEvents;
+}
+
+export function useFetchFeaturedEvents() {
+  async function fetchFeaturedEvents() {
+    return API.get(ApiRoutes.FeaturedEvents);
+  }
+
+  return fetchFeaturedEvents;
 }
 
 export function useFetchEventById() {
