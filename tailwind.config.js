@@ -7,6 +7,10 @@ module.exports = {
     ],
     theme: {
         extend: {
+            fontFamily: {
+              MonaSans: ['"Mona-Sans"', "sans-serif"],
+              MonaSansWide: ['"Mona-Sans-Wide"', "sans-serif"],
+            },
             colors: {
                 "grey": "#f2f2f2",
                 "dark-grey": "#111111",
