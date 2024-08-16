@@ -31,9 +31,9 @@ const PrimaryEmailConfirmationModal: FunctionComponent<PrimaryEmailConfirmationM
                         You haven't specified a primary email address yet.
                         Do you want <span className="text-purple-200">{email}</span> to be your primary email address?
                     </p>
-                    <span className="text-sm text-white/40">
+                    {/* <span className="text-sm text-white/40">
                         Note that the primary email address is the email address that will get all tickets
-                    </span>
+                    </span> */}
                 </div>
                 <div className="flex justify-end mt-4 gap-2">
                     <button
