@@ -129,4 +129,9 @@ export class ApiRoutes {
    * The route to User Favorite Events endpoint
    */
   static UserFavoriteEvents: string = "api/events/favourites";
+
+  /**
+   * The route to Featured Events endpoint
+   */
+  static FeaturedEvents: string = "api/events/featured";
 }
