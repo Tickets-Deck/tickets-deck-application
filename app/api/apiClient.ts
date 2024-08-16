@@ -20,7 +20,7 @@ import {
 } from "../models/IPassword";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_DEV,
+  baseURL: ApiRoutes.BASE_URL_TEST,
 });
 
 export function useCreateNewsletterSubscriber() {
