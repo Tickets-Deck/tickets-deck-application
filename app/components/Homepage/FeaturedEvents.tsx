@@ -18,30 +18,31 @@ import { StorageKeys } from '@/app/constants/storageKeys';
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean
-    events: EventResponse[]
+    featuredEvents: EventResponse[]
     isFetchingEvents: boolean
 }
 
-const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage, events, isFetchingEvents }): ReactElement => {
+const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage, featuredEvents, isFetchingEvents }): ReactElement => {
+console.log("🚀 ~ featuredEvents:", featuredEvents)
 
-    const [retrievedFeaturedEvents, setRetrievedFeaturedEvents] = useState<EventResponse[]>();
+    // const [retrievedFeaturedEvents, setRetrievedFeaturedEvents] = useState<EventResponse[]>();
 
-    function persistFeaturedEvents() {
-        if (events.length > 0 && !sessionStorage.getItem(StorageKeys.FeaturedEvents)) {
-            sessionStorage.setItem(StorageKeys.FeaturedEvents, JSON.stringify(events.slice(0, 3)));
-        }
-    }
+    // function persistFeaturedEvents() {
+    //     if (events.length > 0 && !sessionStorage.getItem(StorageKeys.FeaturedEvents)) {
+    //         sessionStorage.setItem(StorageKeys.FeaturedEvents, JSON.stringify(events.slice(0, 3)));
+    //     }
+    // }
 
-    function retrieveFeaturedEvents() {
-        const _featuredEvents = sessionStorage.getItem(StorageKeys.FeaturedEvents);
+    // function retrieveFeaturedEvents() {
+    //     const _featuredEvents = sessionStorage.getItem(StorageKeys.FeaturedEvents);
 
-        if (_featuredEvents && _featuredEvents.length > 0) {
-            setRetrievedFeaturedEvents(JSON.parse(_featuredEvents));
-            return;
-        }
+    //     if (_featuredEvents && _featuredEvents.length > 0) {
+    //         setRetrievedFeaturedEvents(JSON.parse(_featuredEvents));
+    //         return;
+    //     }
 
-        setRetrievedFeaturedEvents(events.slice(0, 3));
-    }
+    //     setRetrievedFeaturedEvents(events.slice(0, 3));
+    // }
 
     return (
         <section className={styles.featuredEvents}>
@@ -71,10 +72,10 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
             </div>
             <div className={styles.eventsContainer}>
                 {
-                    !isFetchingEvents && events.length > 0 &&
+                    !isFetchingEvents && featuredEvents.length > 0 &&
                     <div className={styles.eventsContainerCarousel}>
                         {
-                            events.slice(0, 3).map((event, index) =>
+                            featuredEvents.slice(0, 3).map((event, index) =>
                                 <EventCard event={event} key={index} />
                             )
                         }
@@ -89,7 +90,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
                     </>
                 }
                 {
-                    !isFetchingEvents && events.length == 0 &&
+                    !isFetchingEvents && featuredEvents.length == 0 &&
                     <div className={styles.noEvents}>
                         <br />
                         <br />
@@ -98,7 +99,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
                 }
             </div>
 
-            {!isNotHomepage && !isFetchingEvents && events.length > 0 &&
+            {!isNotHomepage && !isFetchingEvents && featuredEvents.length > 0 &&
                 <Link href={ApplicationRoutes.GeneralEvents}>
                     See all events
                 </Link>
