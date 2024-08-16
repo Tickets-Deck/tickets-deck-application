@@ -5,7 +5,7 @@ import FeaturedEvents from "./components/Homepage/FeaturedEvents";
 import Services from "./components/Homepage/Services";
 import styles from './styles/Home.module.scss';
 import CreateEvent from "./components/Homepage/CreateEvent";
-import { useFetchEvents } from "./api/apiClient";
+import { useFetchEvents, useFetchFeaturedEvents } from "./api/apiClient";
 import { EventResponse } from "./models/IEvents";
 import { StorageKeys } from "./constants/storageKeys";
 import BetaTestModal from "./components/Modal/BetaTestModal";
@@ -17,7 +17,7 @@ interface HomepageProps {
 
 const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): ReactElement => {
 
-    const fetchEvents = useFetchEvents();
+    const fetchFeaturedEvents = useFetchFeaturedEvents();
 
     const [events, setEvents] = useState<EventResponse[]>([]);
     const [isFetchingEvents, setIsFetchingEvents] = useState(true);
@@ -35,7 +35,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): R
     //     return retrievedEvents;
     // }
 
-    async function handleFetchEvents() {
+    async function handleFetchFeaturedEvents() {
         // Start loader
         setIsFetchingEvents(true);
 
@@ -50,7 +50,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): R
         // }
 
         // Fetch events
-        await fetchEvents()
+        await fetchFeaturedEvents()
             .then((response) => {
                 if (response) {
                     // console.log(response.data);
@@ -71,29 +71,29 @@ const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): R
     };
 
     useEffect(() => {
-        handleFetchEvents();
+        handleFetchFeaturedEvents();
     }, []);
 
     // Show beta test modal after 5 seconds, and only once
-    useEffect(() => {
-        // Check if beta test modal has been viewed
-        const viewed = localStorage.getItem(StorageKeys.BetaTestModalViewed);
+    // useEffect(() => {
+    //     // Check if beta test modal has been viewed
+    //     const viewed = localStorage.getItem(StorageKeys.BetaTestModalViewed);
 
-        // If it has been viewed, stop execution
-        if (viewed) {
-            return;
-        }
+    //     // If it has been viewed, stop execution
+    //     if (viewed) {
+    //         return;
+    //     }
 
-        // Show beta test modal after 5 seconds
-        const timer = setTimeout(() => {
-            setShowBetaTestModal(true);
+    //     // Show beta test modal after 5 seconds
+    //     const timer = setTimeout(() => {
+    //         setShowBetaTestModal(true);
 
-            // Save to local storage
-            localStorage.setItem(StorageKeys.BetaTestModalViewed, 'true');
-        }, 5000);
+    //         // Save to local storage
+    //         localStorage.setItem(StorageKeys.BetaTestModalViewed, 'true');
+    //     }, 5000);
 
-        return () => clearTimeout(timer);
-    }, []);
+    //     return () => clearTimeout(timer);
+    // }, []);
 
     return (
         <>
@@ -106,7 +106,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): R
                 />
                 <FeaturedEvents
                     isFetchingEvents={isFetchingEvents}
-                    events={events}
+                    featuredEvents={events}
                 />
                 <Services />
                 <CreateEvent />
