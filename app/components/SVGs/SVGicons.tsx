@@ -469,10 +469,10 @@ export function VerifiedIcon({ width, height }: any) {
     )
 };
 
-export function CloseIcon({ width, height }: any) {
+export function CloseIcon({ width, height, stroke }: any) {
     return (
         <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4.6665 5.16602L11.3332 11.8327M4.6665 11.8327L11.3332 5.16602" stroke="#D5133A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4.6665 5.16602L11.3332 11.8327M4.6665 11.8327L11.3332 5.16602" stroke={stroke ?? "#D5133A"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     )
 };
