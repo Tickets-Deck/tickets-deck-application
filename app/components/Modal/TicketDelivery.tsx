@@ -20,6 +20,7 @@ import MobileOrderSummarySection from "../TicketDelivery/MobileOrderSummarySecti
 import ComponentLoader from "../Loader/ComponentLoader";
 import EmailVerificationPrompt from "./EmailVerificationPrompt";
 import { Theme } from "@/app/enums/Theme";
+import PrimaryEmailConfirmationModal from "./PrimaryEmailConfirmationModal";
 
 interface TicketDeliveryProps {
     appTheme: Theme | null
@@ -51,6 +52,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
 
     const [ticketPricings, setTicketPricings] = useState<RetrievedITicketPricing[]>([]);
     const [emailVerificationPromptIsVisible, setEmailVerificationPromptIsVisible] = useState(false);
+    const [suggestPrimaryEmailModal, setSuggestPrimaryEmailModal] = useState(false);
+    const [autoTriggerTicketOrderCreation, setAutoTriggerTicketOrderCreation] = useState(false);
 
     const [isValidating, setIsValidating] = useState(false);
     const [canCodeBeValidated, setCanCodeBeValidated] = useState(false);
@@ -197,20 +200,18 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                 contactEmail: primaryEmail ?? (userEmailIsPrimaryEmail ? userInfo?.email as string : ""),
             }
         });
-        
-        // console.log("🚀 ~ constcollatedTicketOrderRequests:", collatedTicketOrderRequests);
 
         const ticketOrder: TicketOrderRequest = {
             eventId: eventInfo?.eventId as string,
             tickets: collatedTicketOrderRequests,
-            // contactEmail: primaryEmail ?? userInfo?.email as string,
             contactEmail: primaryEmail ?? (userEmailIsPrimaryEmail ? userInfo?.email as string : ""),
             userId: userInfo?.id as string,
         };
 
         if (ticketOrder.contactEmail === undefined || ticketOrder.contactEmail.length < 1) {
+            setSuggestPrimaryEmailModal(true);
             // setShow 
-            toast.error("Please select a primary email address to continue.");
+            // toast.error("Please select a primary email address to continue.");
             return;
         }
 
@@ -292,6 +293,15 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             setPrimaryEmail(email);
             return;
         }
+    };
+
+    /**
+     * Function to set the primary email based on suggestion and trigger order creation
+     */
+    function suggestedPrimaryEmailAndCreateOrder(email: string) {
+        setPrimaryEmail(email);
+        setAutoTriggerTicketOrderCreation(true);
+        setSuggestPrimaryEmailModal(false);
     };
 
     /**
@@ -399,7 +409,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             getSelectedTickets();
         }
     }, [eventTickets, visibility]);
-    
+
     useEffect(() => {
         // Find the ticket pricing which is the primary email
         const selectedPrimaryEmail = ticketPricings.find((ticketPricing) => ticketPricing.hasEmail && formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)] === primaryEmail);
@@ -420,6 +430,14 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     }, [primaryEmail]);
 
     useMemo(() => userEmailIsPrimaryEmail && setPrimaryEmail(undefined), [userEmailIsPrimaryEmail]);
+
+    // run the ticket order creation function when the autoTriggerTicketOrderCreation state is set to true
+    useEffect(() => {
+        if (autoTriggerTicketOrderCreation) {
+            handleTicketOrderCreation();
+            setAutoTriggerTicketOrderCreation(false);
+        }
+    }, [autoTriggerTicketOrderCreation]);
 
     return (
         <>
@@ -642,6 +660,12 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                     userName={userInfo?.firstName as string}
                 />
             }
+            <PrimaryEmailConfirmationModal
+                visibility={suggestPrimaryEmailModal}
+                setVisibility={setSuggestPrimaryEmailModal}
+                email={ticketPricings[0]?.hasEmail ? formValues[getInputName(ticketPricings[0].ticketType, ticketPricings[0].selectedTickets, ticketPricings[0].emailId)] : ''}
+                suggestedPrimaryEmailAndCreateOrder={suggestedPrimaryEmailAndCreateOrder}
+            />
         </>
     );
 }
