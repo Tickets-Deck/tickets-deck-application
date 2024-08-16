@@ -62,35 +62,19 @@ export async function fetchUserTickets(req: NextRequest) {
         },
       },
       include: {
-        ticket: true,
+        ticket: {
+          include: {
+            event: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    let orderedTicketsWithEvent = [];
-
-    // Fetch the information for the ticket of each ordered ticket
-    for (let i = 0; i < orderedTickets.length; i++) {
-      const ticket = await prisma.tickets.findFirst({
-        where: {
-          id: orderedTickets[i].ticketId,
-        },
-        include: {
-          event: true,
-        },
-      });
-
-      // Replace the ticket object with the ticket information
-      orderedTicketsWithEvent.push({
-        ...orderedTickets[i],
-        ticket: ticket,
-      });
-    }
-
     // Return all ordered tickets of the user
-    return { data: orderedTicketsWithEvent };
+    return { data: orderedTickets };
   }
 
   // If the category provided is "sold"
@@ -109,11 +93,55 @@ export async function fetchUserTickets(req: NextRequest) {
     });
 
     // Fetch all ordered tickets of every ticket order of each event of the user
-    const soldTickets = await prisma.orderedTickets.findMany({
+    // const soldTickets = await prisma.orderedTickets.findMany({
+    //   where: {
+    //     ticket: {
+    //       eventId: {
+    //         in: events.map((event) => event.id),
+    //       },
+    //     },
+    //   },
+    //   orderBy: {
+    //     createdAt: "desc",
+    //   },
+    // });
+
+    // let soldTicketsWithEvent = [];
+
+    // // Fetch the information for the ticket of each ordered ticket
+    // for (let i = 0; i < soldTickets.length; i++) {
+    //   const ticket = await prisma.tickets.findFirst({
+    //     where: {
+    //       id: soldTickets[i].ticketId,
+    //     },
+    //     include: {
+    //       event: true,
+    //     },
+    //   });
+
+    //   // Replace the ticket object with the ticket information
+    //   soldTicketsWithEvent.push({
+    //     ...soldTickets[i],
+    //     ticket: ticket,
+    //   });
+    // }
+
+    // Extract all ticket IDs from the fetched events
+    const eventTicketIds = events.flatMap((event) =>
+      event.tickets.map((ticket) => ticket.id)
+    );
+
+    // Fetch all sold tickets and their corresponding tickets with events in a single query
+    const soldTicketsWithEvent = await prisma.orderedTickets.findMany({
       where: {
+        ticketId: {
+          in: eventTicketIds,
+        },
+      },
+      include: {
         ticket: {
-          eventId: {
-            in: events.map((event) => event.id),
+          include: {
+            event: true,
           },
         },
       },
@@ -121,26 +149,6 @@ export async function fetchUserTickets(req: NextRequest) {
         createdAt: "desc",
       },
     });
-
-    let soldTicketsWithEvent = [];
-
-    // Fetch the information for the ticket of each ordered ticket
-    for (let i = 0; i < soldTickets.length; i++) {
-      const ticket = await prisma.tickets.findFirst({
-        where: {
-          id: soldTickets[i].ticketId,
-        },
-        include: {
-          event: true,
-        },
-      });
-
-      // Replace the ticket object with the ticket information
-      soldTicketsWithEvent.push({
-        ...soldTickets[i],
-        ticket: ticket,
-      });
-    }
 
     // Return all sold tickets of the user
     return { data: soldTicketsWithEvent };
