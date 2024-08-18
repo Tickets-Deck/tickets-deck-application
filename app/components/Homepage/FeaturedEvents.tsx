@@ -23,7 +23,6 @@ interface FeaturedEventsProps {
 }
 
 const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage, featuredEvents, isFetchingEvents }): ReactElement => {
-console.log("🚀 ~ featuredEvents:", featuredEvents)
 
     // const [retrievedFeaturedEvents, setRetrievedFeaturedEvents] = useState<EventResponse[]>();
 
