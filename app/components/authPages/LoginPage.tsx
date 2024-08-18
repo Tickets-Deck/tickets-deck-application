@@ -100,7 +100,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                 // console.log("login response: ", response);
 
                 // If we have an error
-                if (response?.error && !response.error.includes("prisma.users.findUnique" || "Authentication failed")) {
+                if (response?.error && !response.error.includes("prisma.users.findUnique" || "Authentication failed" || "prisma" || "database server")) {
                     setMessage(response.error);
                     // Close loader
                     setIsLoading(false);
