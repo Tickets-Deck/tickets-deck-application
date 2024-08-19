@@ -21,6 +21,7 @@ import TicketCreationModal from '@/app/components/Event/Create/TicketsCreation/T
 import DeletionConfirmationModal from '@/app/components/Modal/DeletionConfirmation';
 import { toast } from "sonner";
 import EventDescriptionEditor from '@/app/components/Editor/EventDescription';
+import { formattedDateForApi } from '@/utils/dateformatter';
 
 interface EventDetailsProps {
     params: { id: string }
@@ -373,7 +374,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                             value={eventRequest?.date ?? new Date(eventInfo?.date as string)}
                                             onSelectDate={(date) => {
                                                 // Set the form value
-                                                setEventRequest({ ...eventRequest as EventRequest, date: date as Date });
+                                                setEventRequest({ ...eventRequest as EventRequest, date: formattedDateForApi(date as Date) });
                                                 // Close error message
                                                 setDateErrorMsg(false);
                                             }}

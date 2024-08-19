@@ -9,6 +9,7 @@ import { EventVisibility } from '@/app/enums/IEventVisibility';
 import { ValidationStatus } from '@/app/enums/BasicInfoFormValidationStatus';
 import { EventCreationStage } from '@/app/enums/EventCreationStage';
 import EventDescriptionEditor from '../../Editor/EventDescription';
+import { formattedDateForApi } from '@/utils/dateformatter';
 
 
 interface BasicInformationFormProps {
@@ -212,7 +213,7 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                                 value={eventRequest?.date}
                                 onSelectDate={(date) => {
                                     // Set the form value
-                                    setEventRequest({ ...eventRequest as EventRequest, date: date as Date });
+                                    setEventRequest({ ...eventRequest as EventRequest, date: formattedDateForApi(date as Date) });
                                     // Close error message
                                     setDateErrorMsg(false);
                                 }}
