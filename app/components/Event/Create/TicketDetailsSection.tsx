@@ -8,6 +8,7 @@ import ModalWrapper from "../../Modal/ModalWrapper";
 import ComponentLoader from "../../Loader/ComponentLoader";
 import TicketCreationModal from "./TicketsCreation/TicketCreationModal";
 import { FormFieldResponse } from "@/app/models/IFormField";
+import { formattedDateForApi } from "@/utils/dateformatter";
 
 
 interface TicketDetailsSectionProps {
@@ -153,7 +154,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
                                         value={eventRequest?.purchaseStartDate}
                                         onSelectDate={(date) => {
                                             // Set the form value
-                                            setEventRequest({ ...eventRequest as EventRequest, purchaseStartDate: date as Date });
+                                            setEventRequest({ ...eventRequest as EventRequest, purchaseStartDate: formattedDateForApi(date as Date) });
                                             // Close error message
                                             // setDateErrorMsg(false);
                                         }}
@@ -206,7 +207,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
                                         value={eventRequest?.purchaseEndDate}
                                         onSelectDate={(date) => {
                                             // Set the form value
-                                            setEventRequest({ ...eventRequest as EventRequest, purchaseEndDate: date as Date });
+                                            setEventRequest({ ...eventRequest as EventRequest, purchaseEndDate: formattedDateForApi(date as Date) });
                                             // Close error message
                                             // setDateErrorMsg(false);
                                         }}
