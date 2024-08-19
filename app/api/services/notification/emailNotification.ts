@@ -11,11 +11,6 @@ export async function processEmailNotification(
   // Get ticker order ID from metadata
   const ticketOrderId = paymentResult.data.metadata.ticketOrderId;
 
-  //   console.log("🚀 ~ ticketOrderId:", ticketOrderId);
-  //   console.log("🚀 ~ paymentResult gotten:", paymentResult);
-
-  //   console.log(ticketOrderId);
-
   // Get the ticket order from the ticket order ID
   const ticketOrder = await prisma.ticketOrders.findUnique({
     where: {
@@ -23,6 +18,7 @@ export async function processEmailNotification(
     },
     include: {
       event: true,
+      tickets: true
     },
   });
 
@@ -32,16 +28,8 @@ export async function processEmailNotification(
     );
   }
 
-  //   const qrImageUrl = await generateQRCode(ticketOrder.contactEmail);
-  // console.log("QR image gotten: ", qrImageUrl);
-
   // Get each ordered ticket from the ticket order ID
-  const orderedTickets = await prisma.orderedTickets.findMany({
-    where: {
-      orderId: ticketOrder.orderId,
-    },
-  });
-//   console.log("🚀 ~ orderedTickets:", orderedTickets);
+  const orderedTickets = ticketOrder.tickets;
 
   // Check if we have only one ordered ticket, and if the associated email for the ordered ticket is the same as the contact email
   // If this is the case, we can send one email to the contact email
@@ -69,12 +57,12 @@ export async function processEmailNotification(
         ticketOrderId: ticketOrder.orderId,
         orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
       }),
-    //   attachments: [
-    //     {
-    //       filename: "qr-code.png",
-    //       content: await generateQRCode(ticketOrder.contactEmail),
-    //     },
-    //   ],
+      //   attachments: [
+      //     {
+      //       filename: "qr-code.png",
+      //       content: await generateQRCode(ticketOrder.contactEmail),
+      //     },
+      //   ],
     });
 
     return;
