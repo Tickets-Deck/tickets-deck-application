@@ -73,6 +73,12 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                         <Link href={ApplicationRoutes.Contact}>
                             <li>Contact Us</li>
                         </Link>
+                        <Link href={ApplicationRoutes.TermsOfUse}>
+                            <li>Terms Of Use</li>
+                        </Link>
+                        <Link href={ApplicationRoutes.PrivacyPolicy}>
+                            <li>Privacy Policy</li>
+                        </Link>
                         {/* <li>Help Center</li>
                     <li>Privacy</li>
                     <li>Terms</li>
