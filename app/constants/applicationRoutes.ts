@@ -116,4 +116,14 @@ export class ApplicationRoutes {
    * The route to the edit event page
    */
   static readonly EditEvent = "/app/event/edit";
+
+  /**
+   * The route to the terms of use page
+   */
+  static readonly TermsOfUse = "/terms-of-use";
+
+  /**
+   * The route to the privacy policy page
+   */
+  static readonly PrivacyPolicy = "/privacy-policy";
 }
