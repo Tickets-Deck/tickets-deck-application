@@ -410,7 +410,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                     {dateErrorMsg && <span className={styles.errorMsg}>Please enter event date</span>}
                                 </div>
                                 <div className={styles.formField}>
-                                    <label htmlFor="time">Time (Selected: {eventRequest?.time})</label>
+                                    <label htmlFor="time">Time (Selected: {eventRequest?.time ?? eventInfo?.time})</label>
                                     <TimePicker
                                         placeholder="Start Time"
                                         useHour12
