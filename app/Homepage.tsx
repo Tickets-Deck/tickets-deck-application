@@ -36,19 +36,6 @@ const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): R
     // }
 
     async function handleFetchFeaturedEvents() {
-        // Start loader
-        setIsFetchingEvents(true);
-
-        // Check if events are in session storage
-        // if (retrieveEventsFromDb()) {
-        //     // Update events state
-        //     setEvents(retrieveEventsFromDb());
-        //     // Stop loader
-        //     setIsFetchingEvents(false);
-        //     // Stop function execution
-        //     return;
-        // }
-
         // Fetch events
         await fetchFeaturedEvents()
             .then((response) => {
