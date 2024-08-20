@@ -75,7 +75,11 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
                     <div className={styles.eventsContainerCarousel}>
                         {
                             featuredEvents.slice(0, 3).map((event, index) =>
-                                <EventCard event={event} key={index} />
+                                <EventCard
+                                    event={event}
+                                    key={index}
+                                    forFeaturedEvents
+                                />
                             )
                         }
                     </div>
