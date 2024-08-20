@@ -10,7 +10,7 @@ import { EventRequest, EventResponse } from '@/app/models/IEvents';
 import { useDeleteTicketById, useFetchEventById, useUpdateEventById } from '@/app/api/apiClient';
 import { catchError } from '@/app/constants/catchError';
 import useResponsiveness from '@/app/hooks/useResponsiveness';
-import { DatePicker } from '@fluentui/react';
+import { DatePicker, IComboBox, TimePicker } from '@fluentui/react';
 import useOuterClick from '@/app/hooks/useOuterClick';
 import { categories } from '@/app/constants/eventCategories';
 import { EventVisibility } from '@/app/enums/IEventVisibility';
@@ -22,6 +22,8 @@ import DeletionConfirmationModal from '@/app/components/Modal/DeletionConfirmati
 import { toast } from "sonner";
 import EventDescriptionEditor from '@/app/components/Editor/EventDescription';
 import { formattedDateForApi } from '@/utils/dateformatter';
+import { timePickerStyles } from '@/app/styles/timePicker';
+import moment from 'moment';
 
 interface EventDetailsProps {
     params: { id: string }
@@ -44,7 +46,9 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     const id = params.id;
 
     const [eventRequest, setEventRequest] = useState<EventRequest>();
+    console.log("🚀 ~ eventRequest:", eventRequest)
     const [eventInfo, setEventInfo] = useState<EventResponse>();
+    console.log("🚀 ~ eventInfo:", eventInfo)
     const [eventTicketTypes, setEventTicketTypes] = useState<RetrievedTicketResponse[]>();
 
     const [mainImageFile, setMainImageFile] = useState<File>();
@@ -70,6 +74,8 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     const [selectedTicket, setSelectedTicket] = useState<TicketResponse>();
     const [isDeleteTicketConfirmationModalVisible, setIsDeleteTicketConfirmationModalVisible] = useState(false);
     const [isDeletingTicket, setIsDeletingTicket] = useState(false);
+
+    const basicDateAnchor = new Date('January 1, 2024 12:00:00');
 
     function onFormValueChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>, setState?: Dispatch<SetStateAction<boolean | undefined>>) {
 
@@ -404,22 +410,42 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                     {dateErrorMsg && <span className={styles.errorMsg}>Please enter event date</span>}
                                 </div>
                                 <div className={styles.formField}>
-                                    <label htmlFor="time">Time</label>
-                                    <input
+                                    <label htmlFor="time">Time (Selected: {eventRequest?.time})</label>
+                                    <TimePicker
+                                        placeholder="Start Time"
+                                        useHour12
+                                        allowFreeform
+                                        autoComplete="on"
+                                        // value={new Date('02:30 PM')} 
+                                        // value={new Date(eventRequest?.time as string) ?? new Date(eventInfo?.time as string)}
+                                        value={eventRequest ? new Date(eventRequest.time) : undefined}
+                                        onChange={(e: React.FormEvent<IComboBox>, time: Date | null | undefined) => {
+                                            if (time) {
+                                                // const convertedTime = time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true }).replace('PM', 'pm').replace('AM', 'am').replace(' ', '');
+                                                const convertedTime = moment(time).format('hh:mma');
+                                                setEventRequest({ ...eventRequest as EventRequest, time: convertedTime });
+                                                setTimeErrorMsg(false);
+                                            }
+                                        }}
+                                        dateAnchor={basicDateAnchor}
+                                        styles={timePickerStyles}
+                                        // errorMessage='Please enter a valid time'
+                                    />
+                                    {/* <input
                                         type="text"
                                         name="time"
                                         value={eventRequest?.time ?? eventInfo?.time}
                                         placeholder="Event Time e.g 8pm"
                                         onChange={(e) => onFormValueChange(e, setTimeErrorMsg)}
-                                    />
+                                    /> */}
                                     {timeErrorMsg && <span className={styles.errorMsg}>Please enter event time</span>}
                                 </div>
                             </div>
 
                             <div className={styles.formField}>
-                                <label htmlFor="description">Description</label> 
+                                <label htmlFor="description">Description</label>
                                 <EventDescriptionEditor
-                                    description={eventRequest?.description ?? eventInfo?.description} 
+                                    description={eventRequest?.description ?? eventInfo?.description}
                                     setEventRequest={setEventRequest}
                                 />
                                 {/* <textarea
