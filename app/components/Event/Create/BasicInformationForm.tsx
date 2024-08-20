@@ -1,8 +1,8 @@
-import { FunctionComponent, ReactElement, Dispatch, SetStateAction, ChangeEvent, useState, useRef, useEffect } from 'react';
+import { FunctionComponent, ReactElement, Dispatch, SetStateAction, ChangeEvent, useState, useRef, useEffect, useCallback } from 'react';
 import styles from '../../../styles/CreateEvent.module.scss';
 import { EventRequest } from '@/app/models/IEvents';
 import { AddIcon, CalenderIcon } from '../../SVGs/SVGicons';
-import { DatePicker } from '@fluentui/react';
+import { DatePicker, IComboBox } from '@fluentui/react';
 import useOuterClick from '@/app/hooks/useOuterClick';
 import { categories } from '@/app/constants/eventCategories';
 import { EventVisibility } from '@/app/enums/IEventVisibility';
@@ -10,6 +10,9 @@ import { ValidationStatus } from '@/app/enums/BasicInfoFormValidationStatus';
 import { EventCreationStage } from '@/app/enums/EventCreationStage';
 import EventDescriptionEditor from '../../Editor/EventDescription';
 import { formattedDateForApi } from '@/utils/dateformatter';
+import { IComboBoxStyles, TimePicker } from "@fluentui/react";
+import moment from 'moment';
+import { timePickerStyles } from '@/app/styles/timePicker';
 
 
 interface BasicInformationFormProps {
@@ -27,6 +30,7 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
 
     const [categoryDropdownIsVisible, setCategoryDropdownIsVisible] = useState(false);
     const [tag, setTag] = useState<string>();
+    const [startTimeString, setStartTimeString] = useState<string>('');
 
     const [titleErrorMsg, setTitleErrorMsg] = useState<boolean>();
     const [venueErrorMsg, setVenueErrorMsg] = useState<boolean>();
@@ -34,6 +38,8 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
     const [timeErrorMsg, setTimeErrorMsg] = useState<boolean>();
     const [descriptionErrorMsg, setDescriptionErrorMsg] = useState<boolean>();
     const [tagErrorMsg, setTagErrorMsg] = useState<boolean>();
+
+    const basicDateAnchor = new Date('January 1, 2024 12:00:00');
 
     //#endregion
 
@@ -130,6 +136,13 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
         }
     };
 
+    // const onStartTimeChange = useCallback((time: Date | null | undefined) => {
+    //     if (time) {
+    //         setStartTimeString(time.toLocaleTimeString());
+    //         handleInputChange(index, 'startTime', time.toLocaleTimeString());
+    //     }
+    // }, [handleInputChange, index]);
+
     //#endregion
 
     //#region Refs
@@ -154,13 +167,7 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
             // Proceed to image upload 
             setEventCreationStage(EventCreationStage.ImageUpload);
         }
-    }, [validationStage])
-
-    // useEffect(() => {
-    //     console.log(validationStage)
-    // }, [validationStage])
-
-    //#endregion
+    }, [validationStage]);
 
     return (
         <div className={styles.formContainer}>
@@ -244,12 +251,30 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                     </div>
                     <div className={styles.formField}>
                         <label htmlFor="time">Time</label>
-                        <input
+                        {/* <input
                             type="text"
                             name="time"
                             value={eventRequest?.time}
                             placeholder="Event Time e.g 8pm"
                             onChange={(e) => onFormValueChange(e, setTimeErrorMsg)}
+                        /> */}
+                        <TimePicker
+                            placeholder="Start Time"
+                            useHour12
+                            allowFreeform
+                            autoComplete="on"
+                            value={eventRequest ? new Date(eventRequest.time) : undefined}
+                            onChange={(e: React.FormEvent<IComboBox>, time: Date | null | undefined) => {
+                                if (time) {
+                                    // const convertedTime = time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true }).replace('PM', 'pm').replace('AM', 'am').replace(' ', '');
+                                    const convertedTime = moment(time).format('hh:mma');
+                                    setEventRequest({ ...eventRequest as EventRequest, time: convertedTime });
+                                    setTimeErrorMsg(false);
+                                }
+                            }}
+                            dateAnchor={basicDateAnchor}
+                            styles={timePickerStyles}
+                            errorMessage='Please enter a valid time'
                         />
                         {timeErrorMsg && <span className={styles.errorMsg}>Please enter event time</span>}
                     </div>
