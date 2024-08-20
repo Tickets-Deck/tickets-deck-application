@@ -298,6 +298,9 @@ export async function fetchEvents(req: NextRequest) {
       where: {
         publisherId: specifiedPublisherId,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     // If event is not found, return 404
@@ -845,39 +848,48 @@ export async function fetchFavouriteEvents(req: NextRequest) {
   }
 
   // Structure the liked events
-  const retrievedLikedEvents = likedEvents.map((likedEvent) => likedEvent.event);
+  const retrievedLikedEvents = likedEvents.map(
+    (likedEvent) => likedEvent.event
+  );
 
   // Return the liked events
   return { data: retrievedLikedEvents };
 }
 
-
 export async function fetchFeaturedEvents(req: NextRequest) {
-  
-    // Else, Fetch all events
-    const eventResponse = await prisma.events.findMany({
-      // Show only public events that are not yet over (both event date and end date for tickets purchase)
-      where: {
-        visibility: "PUBLIC",
-        OR: [
-          {
-            date: {
-              gte: new Date(),
-            },
+  // Else, Fetch all events
+  const eventResponse = await prisma.events.findMany({
+    // Show only public events that are not yet over (both event date and end date for tickets purchase)
+    where: {
+      visibility: "PUBLIC",
+      OR: [
+        {
+          date: {
+            gte: new Date(),
           },
-          {
-            purchaseEndDate: {
-              gte: new Date(),
-            },
+        },
+        {
+          purchaseEndDate: {
+            gte: new Date(),
           },
-        ],
-      },
-      orderBy: {
-        date: "asc",
-      },
-      take: 3,
-    });
-  
-    // Return all events
-    return { data: eventResponse };
-  }
+        },
+      ],
+    },
+    orderBy: {
+      date: "asc",
+    },
+    take: 3,
+    select: {
+      id: true,
+      eventId: true,
+      mainImageUrl: true,
+      title: true,
+      date: true,
+      time: true,
+      venue: true,
+    },
+  });
+
+  // Return all events
+  return { data: eventResponse };
+}
