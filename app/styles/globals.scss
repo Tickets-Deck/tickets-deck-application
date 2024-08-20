@@ -310,6 +310,68 @@ button {
     transform: translateY(3px);
 }
 
+// ================== Custom Timepicker styles ==================
+
+.ms-CalendarDay-dayIsToday {
+    background-color: #8133f1 !important;
+}
+
+:focus-visible {
+    outline: none;
+}
+
+.css-119 {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #fff;
+}
+// .css-119 {
+//   border-radius: 8px;
+//   //   border: 1px solid #B1883D;
+// }
+
+.ms-ComboBox-container > div, .ms-ComboBox .css-162, #ComboBox21wrapper, #ComboBox10264wrapper, #ComboBox10572wrapper {
+    border: none;
+    outline: none;
+    &::after, &::before {
+        border: none !important;
+        outline: none !important;
+    }
+}
+
+.ms-ComboBox-container {
+    border: none;
+    outline: none;
+}
+.css-178 .ms-ComboBox-Input,.css-135 .ms-ComboBox-Input {
+    color: #fff !important; 
+}
+.css-178:hover .ms-ComboBox-Input:hover,.css-135:hover .ms-ComboBox-Input:hover, .css-119 {
+    color: #fff !important; 
+}
+.css-179 {
+    border: none;
+    outline: none;
+}
+
+.ms-Button .ms-Button--icon .ms-ComboBox-CaretDown-button .root-127 {
+    border: 1px solid #fff !important;
+    background-color: #fff !important;
+}
+
+// timepicker btn 
+.root-127 {
+    left: 0;
+    width: 100%;
+    outline: none;
+    border: none;
+    &:hover, &:focus {
+        background-color: transparent;
+        color: #fff;
+    }
+}
+
 // ================== Custom Quill styles ==================
 .ql-toolbar.ql-snow {
     border: none !important;
@@ -333,7 +395,8 @@ button {
     max-height: 20rem;
     overflow-y: auto;
 }
-.ql-editor .ql-blank, .ql-editor.ql-blank::before {
+.ql-editor .ql-blank,
+.ql-editor.ql-blank::before {
     color: $white !important;
 }
 
