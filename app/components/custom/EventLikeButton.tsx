@@ -15,9 +15,11 @@ interface EventLikeButtonProps {
     eventInfo: EventResponse
     forEventCard?: boolean
     forEventInfo?: boolean
+    skipFetch?: boolean
 }
 
-const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({ eventInfo, forEventCard, forEventInfo }): ReactElement => {
+const EventLikeButton: FunctionComponent<EventLikeButtonProps> = (
+    { eventInfo, forEventCard, forEventInfo, skipFetch }): ReactElement => {
 
     const { data: session } = useSession();
     const likeEvent = useLikeEvent();
@@ -66,10 +68,10 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({ eventInfo, f
 
     // Use useEffect to fetch the event's like status when the component mounts
     useEffect(() => {
-        if (session) {
+        if (session && !skipFetch) {
             handleFetchEventLikeStatus(eventInfo.id);
         }
-    }, [session]);
+    }, [session, skipFetch]);
 
     return (
         <>
