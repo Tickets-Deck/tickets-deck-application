@@ -21,11 +21,12 @@ interface EventCardProps {
     gridDisplay?: boolean
     setIsDeleteConfirmationModalVisible?: Dispatch<SetStateAction<boolean>>
     setSelectedEvent?: Dispatch<SetStateAction<EventResponse | undefined>>
+    forFeaturedEvents?: boolean
 }
 
 const EventCard: FunctionComponent<EventCardProps> = (
     { event, mobileAndActionButtonDismiss, consoleDisplay, gridDisplay,
-        setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
+        setIsDeleteConfirmationModalVisible, setSelectedEvent, forFeaturedEvents }): ReactElement => {
 
     const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
@@ -57,9 +58,9 @@ const EventCard: FunctionComponent<EventCardProps> = (
                         src={event.mainImageUrl}
                         alt='Event flyer'
                         fill
-                        // priority
-                        // placeholder={"blur"}
-                        // blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOsa2yqBwAFCAICLICSyQAAAABJRU5ErkJggg=="}
+                    // priority
+                    // placeholder={"blur"}
+                    // blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOsa2yqBwAFCAICLICSyQAAAABJRU5ErkJggg=="}
                     />
                 </Link>
             </div>
@@ -91,7 +92,11 @@ const EventCard: FunctionComponent<EventCardProps> = (
                                     <LikeIcon isLiked={isEventLiked} />
                                 </motion.span>
                             </button> */}
-                            <EventLikeButton eventInfo={event} forEventCard />
+                            <EventLikeButton
+                                eventInfo={event}
+                                forEventCard
+                                skipFetch={forFeaturedEvents}
+                            />
                             <button
                                 className={styles.actions__share}
                                 onClick={() => shareEvent(`${window.location.origin + ApplicationRoutes.GeneralEvent + event.id}`)}>
