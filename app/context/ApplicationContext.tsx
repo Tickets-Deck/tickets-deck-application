@@ -1,8 +1,9 @@
-import { FunctionComponent, ReactNode, createContext, useState } from "react";
+import { FunctionComponent, ReactNode, createContext, useEffect, useState } from "react";
 import { UserCredentialsResponse } from "../models/IUser";
-import { useFetchUserInformation } from "../api/apiClient";
+import { useFetchBankList, useFetchUserInformation } from "../api/apiClient";
 import { catchError } from "../constants/catchError";
 import { useSession } from "next-auth/react";
+import { Bank } from "../models/IBankAccount";
 
 
 // Define the type for the context data
@@ -13,6 +14,7 @@ export type ApplicationContextData = {
     displayToast: (message: string, type: "success" | "error" | "info" | "warning") => void;
     isUserLoginPromptVisible: boolean;
     toggleUserLoginPrompt: () => void;
+    bankList: Bank[];
 };
 
 // Create a context with the specified data type
@@ -26,11 +28,14 @@ type AppProviderProps = {
 const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
 
     const fetchUserInformation = useFetchUserInformation();
+    const fetchBankList = useFetchBankList();
+
     const { data: session } = useSession();
 
     // Define state for customer data
     const [userProfileInformation, setUserProfileInformation] = useState<UserCredentialsResponse | null>(null);
     const [isFetchingUserProfileInformation, setIsFetchingUserProfileInformation] = useState(false);
+    const [bankList, setBankList] = useState<Bank[]>([]);
 
     // Define state for displaying login prompt
     const [showUserLoginPrompt, setShowUserLoginPrompt] = useState(false);
@@ -75,6 +80,21 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
             })
 
     };
+    
+    async function handleFetchBankList() {
+
+        await fetchBankList()
+            .then((response) => {
+                setBankList(response.data);
+            })
+            .catch((error) => {
+                catchError(error);
+            })
+    };
+    
+    useEffect(() => {
+        handleFetchBankList();
+    }, []);
 
     // Define the values you want to share
     const sharedData: ApplicationContextData = {
@@ -83,7 +103,8 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
         fetchUserProfileInformation: handleFetchUserInformation,
         displayToast,
         isUserLoginPromptVisible: showUserLoginPrompt,
-        toggleUserLoginPrompt: () => setShowUserLoginPrompt(!showUserLoginPrompt)
+        toggleUserLoginPrompt: () => setShowUserLoginPrompt(!showUserLoginPrompt),
+        bankList
     };
 
     return (
