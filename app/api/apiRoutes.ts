@@ -134,4 +134,19 @@ export class ApiRoutes {
    * The route to Featured Events endpoint
    */
   static FeaturedEvents: string = "api/events/featured";
+
+  /**
+   * The route to Fetch all Banks endpoint
+   */
+  static FetchAllBanks: string = "api/paystack/banks";
+
+  /**
+   * The route to Fetch Bank Details endpoint
+   */
+  static FetchBankDetails: string = "api/paystack/validate-bank-account";
+
+  /**
+   * The route to User Bank Account endpoint
+   */
+  static UserBankAccount: string = "api/users/bank-account";
 }
