@@ -3,12 +3,12 @@ import { ReactElement, FunctionComponent, useContext, useState, useEffect } from
 import styles from "../../styles/ProfilePage.module.scss"
 import { ToastContext } from "@/app/extensions/toast";
 import { ProfilePageTab } from "@/app/enums/ProfilePageTab";
-import { useFetchUserInformation, useUpdateUserInformation } from "@/app/api/apiClient";
+import { useFetchUserBankAccount, useFetchUserInformation, useUpdateUserInformation } from "@/app/api/apiClient";
 import { useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
 import { useRouter } from "next/navigation";
 import { UserCredentialsResponse, UserCredentialsUpdateRequest } from "@/app/models/IUser";
-import { EditIcon } from "@/app/components/SVGs/SVGicons";
+import { AddIcon, EditIcon } from "@/app/components/SVGs/SVGicons";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import PhotoUpload from "@/app/components/Modal/PhotoUpload";
 import UserAvatarContainer from "@/app/components/ProfilePage/UserAvatarContainer";
@@ -20,6 +20,9 @@ import { useDispatch } from "react-redux";
 import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
+import BankInformation from "@/app/components/ProfilePage/BankInformation";
+import BankAccountCreationModal from "@/app/components/Modal/BankAccountCreationModal";
+import { BankAccount } from "@/app/models/IBankAccount";
 
 interface ProfilePageProps {
 
@@ -29,6 +32,8 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
 
     const { data: session, update, status } = useSession();
     const fetchUserInformation = useFetchUserInformation();
+    const fetchUserBankAccount = useFetchUserBankAccount();
+
     const toastHandler = useContext(ToastContext);
     const { push, prefetch } = useRouter();
     const updateUserInformation = useUpdateUserInformation();
@@ -39,12 +44,14 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
     const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     const [isUpdatingUserInformation, setIsUpdatingUserInformation] = useState(false);
-    const [currentTab, setCurrentTab] = useState(ProfilePageTab.AccountSettings);
+    const [currentTab, setCurrentTab] = useState(ProfilePageTab.BasicInformation);
     const [isFormFieldsEditable, setIsFormFieldsEditable] = useState(false);
     const [userInformation, setUserInformation] = useState<UserCredentialsResponse>();
+    const [userBankAccounts, setUserBankAccounts] = useState<BankAccount[]>();
     const [retrievedUserInformation, setRetrievedUserInformation] = useState<UserCredentialsResponse>();
     const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(true);
     const [isPhotoUploadModalVisible, setIsPhotoUploadModalVisible] = useState(false);
+    const [isBankAccountModalVisible, setIsBankAccountModalVisible] = useState(false);
 
     const [emailErrorMsg, setEmailErrorMsg] = useState(false);
     const [triggerInfoUpdate, setTriggerInfoUpdate] = useState(false);
@@ -124,7 +131,17 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                 catchError(error);
                 setIsUpdatingUserInformation(false);
             })
-    }
+    };
+
+    async function handleFetchUserBankAccount() {
+        await fetchUserBankAccount(userInformation?.id as string)
+            .then((response) => {
+                setUserBankAccounts(response.data);
+            })
+            .catch((error) => {
+                catchError(error);
+            })
+    };
 
     useEffect(() => {
         if (session && !userInformation) {
@@ -140,6 +157,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
 
     useEffect(() => {
         setRetrievedUserInformation(userInformation);
+        handleFetchUserBankAccount();
     }, [userInformation]);
 
     useEffect(() => {
@@ -171,6 +189,11 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                         userInformation={userInformation}
                         handleFetchUserInformation={handleFetchUserInformation}
                     />
+                    <BankAccountCreationModal
+                        visibility={isBankAccountModalVisible}
+                        setVisibility={setIsBankAccountModalVisible}
+                    />
+
                     <div className={styles.profilePage__body}>
                         <div className={styles.profileInfo}>
                             <div className={styles.basicInfoSection}>
@@ -210,14 +233,29 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                         </div>
                         <div className={styles.mainProfileInfo}>
                             <div className={styles.optionSelectionContainer}>
-                                <span className={currentTab === ProfilePageTab.AccountSettings ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.AccountSettings)}>Account Settings</span>
-                                <span className={currentTab === ProfilePageTab.IdentityVerification ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.IdentityVerification)}>Identity Verification</span>
+                                <span className={currentTab === ProfilePageTab.BasicInformation ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.BasicInformation)}>Basic Information</span>
+                                {/* <span className={currentTab === ProfilePageTab.IdentityVerification ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.IdentityVerification)}>Identity Verification</span> */}
                                 <span className={currentTab === ProfilePageTab.BankInformation ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.BankInformation)}>Bank Information</span>
-                                {onDesktop && <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}><EditIcon /> Edit Profile</button>}
+                                {
+                                    onDesktop &&
+                                    !isFormFieldsEditable &&
+                                    currentTab === ProfilePageTab.BasicInformation &&
+                                    <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}>
+                                        <EditIcon /> Edit Profile
+                                    </button>
+                                }
+                                {
+                                    onDesktop &&
+                                    !userBankAccounts &&
+                                    currentTab === ProfilePageTab.BankInformation &&
+                                    <button className={styles.editButton} onClick={() => setIsBankAccountModalVisible(true)}>
+                                        <AddIcon /> Add Bank Account
+                                    </button>
+                                }
                             </div>
                             <div className={styles.settingsFormContainer}>
                                 {
-                                    currentTab === ProfilePageTab.AccountSettings &&
+                                    currentTab === ProfilePageTab.BasicInformation &&
                                     <AccountSettingsFormContainer
                                         userInformation={userInformation}
                                         retrievedUserInformation={retrievedUserInformation}
@@ -227,6 +265,14 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                         setTriggerInfoUpdate={setTriggerInfoUpdate}
                                     />
                                 }
+                                {
+                                    currentTab === ProfilePageTab.BankInformation &&
+                                    <BankInformation
+                                        userBankAccounts={userBankAccounts}
+                                    />
+                                }
+
+
                                 {
                                     isFormFieldsEditable &&
                                     <div className={styles.actionButtonContainer}>
@@ -244,7 +290,14 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                         </button>
                                     </div>
                                 }
-                                {isMobile && !isFormFieldsEditable && currentTab === ProfilePageTab.AccountSettings && <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}><EditIcon /> Edit Profile</button>}
+                                {
+                                    isMobile &&
+                                    !isFormFieldsEditable &&
+                                    currentTab === ProfilePageTab.BasicInformation &&
+                                    <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}>
+                                        <EditIcon /> Edit Profile
+                                    </button>
+                                }
                             </div>
                         </div>
                     </div>
