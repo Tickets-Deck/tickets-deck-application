@@ -75,6 +75,7 @@ model Users {
     events           Events[]
     payments         Payments[]
     recentActivities RecentActivities[]
+    bankAccounts     BankAccounts[]
 
     @@map("Users")
 }
@@ -358,4 +359,16 @@ model CustomerEnquiries {
     updatedAt DateTime? @updatedAt
 
     @@map("CustomerEnquiries")
+}
+
+model BankAccounts {
+    accountId     String    @id @default(uuid())
+    accountHolder Users     @relation(fields: [accountId], references: [id]) 
+    bankName      String
+    accountName   String
+    accountNumber String
+    createdAt     DateTime? @default(now())
+    updatedAt     DateTime? @updatedAt
+
+    @@map("BankAccounts")
 }
