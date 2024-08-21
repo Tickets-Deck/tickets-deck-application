@@ -18,6 +18,7 @@ import {
   PasswordResetLinkRequest,
   PasswordResetRequest,
 } from "../models/IPassword";
+import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL_DEV,
@@ -414,4 +415,41 @@ export function useFetchUserWalletBalance() {
   }
 
   return fetchUserWalletBalance;
+}
+
+export function useFetchBankList() {
+  async function fetchBankList() {
+    return API.get(ApiRoutes.FetchAllBanks);
+  }
+
+  return fetchBankList;
+}
+
+export function useFetchBankDetails() {
+  async function fetchBankDetails({
+    accountNumber,
+    bankCode,
+  }: BankAccountDetailsRequest) {
+    return API.get(
+      `${ApiRoutes.FetchBankDetails}?accountNumber=${accountNumber}&bankCode=${bankCode}`
+    );
+  }
+
+  return fetchBankDetails;
+}
+
+export function useCreateUserBankAccount() {
+  async function createUserBankAccount(userId: string, data: BankAccount) {
+    return API.post(`${ApiRoutes.UserBankAccount}?userId=${userId}`, data);
+  }
+
+  return createUserBankAccount;
+}
+
+export function useFetchUserBankAccount() {
+  async function fetchUserBankAccount(userId: string) {
+    return API.get(`${ApiRoutes.UserBankAccount}?userId=${userId}`);
+  }
+
+  return fetchUserBankAccount;
 }
