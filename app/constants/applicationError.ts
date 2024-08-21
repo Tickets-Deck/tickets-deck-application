@@ -586,4 +586,48 @@ export class ApplicationError extends BaseApplicationError {
   };
 
   //#endregion
+
+  //#region Bank Errors
+
+  /**
+   * The error message for ~ Error getting bank list
+   */
+  static BankListError: IApplicationError = {
+    Text: "Error getting bank list",
+    Code: "BANK_1000",
+  };
+
+  /**
+   * The error message for ~ Error validating bank details
+   */
+  static BankDetailsError: IApplicationError = {
+    Text: "Error validating bank details",
+    Code: "BANK_1001",
+  };
+
+  /**
+   * The error message for ~ Failed to fetch banks
+   */
+  static FailedToFetchBanks: IApplicationError = {
+    Text: "Failed to fetch banks",
+    Code: "BANK_1002",
+  };
+
+  /**
+   * The error message for ~ Failed to fetch user bank accounts
+   */
+  static FailedToFetchUserBankAccounts: IApplicationError = {
+    Text: "Failed to fetch user bank accounts",
+    Code: "BANK_1003",
+  };
+
+  /**
+   * The error message for ~ Failed to create user bank account
+   */
+  static FailedToCreateUserBankAccount: IApplicationError = {
+    Text: "Failed to create user bank account",
+    Code: "BANK_1004",
+  };
+
+  //#endregion
 }
