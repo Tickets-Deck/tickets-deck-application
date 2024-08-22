@@ -48,8 +48,12 @@ const ComponentLoader: FunctionComponent<ComponentLoaderProps> = (
 export default ComponentLoader;
 
 
+//******************************************************************************************************************** */
+//******************************************NEW LOADER COMPONENTS BELOW*********************************************** */
+//******************************************************************************************************************** */
 
-type ButtonLoaderProps = {
+
+type ComponentLoaderV2Props = {
 
     /**
      * The optional classnames to be added
@@ -57,12 +61,34 @@ type ButtonLoaderProps = {
     className?: string
 }
 
-export const ButtonLoader: FunctionComponent<ButtonLoaderProps> = (
+type FullPageLoaderProps = ComponentLoaderV2Props & {
+    containerClassName?: string
+}
+
+export const ComponentLoaderV2: FunctionComponent<ComponentLoaderV2Props> = (
     { className }): ReactElement => {
 
     return (
-        <div className='absolute w-full h-full top-0 left-0 bg-primary grid place-items-center pointer-events-none'>
+        <div className={`w-16 h-16 border-4 border-primary-colbg-primary-color border-t-transparent border-solid rounded-full animate-spin ${className}`} />
+    );
+}
+
+export const ButtonLoader: FunctionComponent<ComponentLoaderV2Props> = (
+    { className }): ReactElement => {
+
+    return (
+        <div className='absolute w-full h-full top-0 left-0 bg-primary-color grid place-items-center pointer-events-none'>
             <div className={`w-6 h-6 border-4 border-white border-t-transparent border-solid rounded-full animate-spin ${className}`} />
+        </div>
+    );
+}
+
+export const FullPageLoader: FunctionComponent<FullPageLoaderProps> = (
+    { className, containerClassName }): ReactElement => {
+
+    return (
+        <div className={`h-52 w-full grid place-items-center ${containerClassName}`}>
+            <div className={`w-12 h-12 border-4 border-primary-colbg-primary-color border-t-transparent border-solid rounded-full animate-spin ${className}`} />
         </div>
     );
 }
