@@ -44,12 +44,15 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
     const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
     const [isUpdatingUserInformation, setIsUpdatingUserInformation] = useState(false);
+    const [isFetchingUserBankAccounts, setIsFetchingUserBankAccounts] = useState(true);
+    const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(true);
+
     const [currentTab, setCurrentTab] = useState(ProfilePageTab.BasicInformation);
     const [isFormFieldsEditable, setIsFormFieldsEditable] = useState(false);
     const [userInformation, setUserInformation] = useState<UserCredentialsResponse>();
     const [userBankAccounts, setUserBankAccounts] = useState<BankAccount[]>();
     const [retrievedUserInformation, setRetrievedUserInformation] = useState<UserCredentialsResponse>();
-    const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(true);
+
     const [isPhotoUploadModalVisible, setIsPhotoUploadModalVisible] = useState(false);
     const [isBankAccountModalVisible, setIsBankAccountModalVisible] = useState(false);
 
@@ -134,12 +137,19 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
     };
 
     async function handleFetchUserBankAccount() {
+        // Show loading indicator
+        setIsFetchingUserBankAccounts(true);
+
+        // Fetch user bank accounts
         await fetchUserBankAccount(userInformation?.id as string)
             .then((response) => {
                 setUserBankAccounts(response.data);
             })
             .catch((error) => {
                 catchError(error);
+            })
+            .finally(() => {
+                setIsFetchingUserBankAccounts(false);
             })
     };
 
@@ -192,6 +202,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                     <BankAccountCreationModal
                         visibility={isBankAccountModalVisible}
                         setVisibility={setIsBankAccountModalVisible}
+                        handleFetchUserBankAccount={handleFetchUserBankAccount}
                     />
 
                     <div className={styles.profilePage__body}>
@@ -246,7 +257,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                 }
                                 {
                                     onDesktop &&
-                                    !userBankAccounts &&
+                                    (!userBankAccounts || userBankAccounts?.length == 0) &&
                                     currentTab === ProfilePageTab.BankInformation &&
                                     <button className={styles.editButton} onClick={() => setIsBankAccountModalVisible(true)}>
                                         <AddIcon /> Add Bank Account
@@ -269,6 +280,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                     currentTab === ProfilePageTab.BankInformation &&
                                     <BankInformation
                                         userBankAccounts={userBankAccounts}
+                                        isFetchingUserBankAccounts={isFetchingUserBankAccounts}
                                     />
                                 }
 
@@ -296,6 +308,15 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                     currentTab === ProfilePageTab.BasicInformation &&
                                     <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}>
                                         <EditIcon /> Edit Profile
+                                    </button>
+                                }
+                                {
+                                    isMobile &&
+                                    (!userBankAccounts || userBankAccounts?.length == 0) &&
+                                    !isFormFieldsEditable &&
+                                    currentTab === ProfilePageTab.BankInformation &&
+                                    <button className={styles.editButton} onClick={() => { setIsBankAccountModalVisible(true) }}>
+                                        <AddIcon /> Add Bank Account
                                     </button>
                                 }
                             </div>
