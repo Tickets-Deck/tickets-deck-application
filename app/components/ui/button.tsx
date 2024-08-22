@@ -5,10 +5,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     btnIcon?: React.ReactElement;
     minBtn?: boolean;
     isLoading?: boolean;
+    btnLoaderClassname?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, type, btnIcon, minBtn, isLoading, ...props }, ref) => {
+    ({ className, type, btnIcon, minBtn, isLoading, btnLoaderClassname, ...props }, ref) => {
         return (
             <button
                 type={type} 
@@ -17,7 +18,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 {...props}
             >
                 {btnIcon && <span>{btnIcon}</span>}
-                {isLoading && <ButtonLoader />}
+                {isLoading && <ButtonLoader className={btnLoaderClassname} />}
                 {props.children}
             </button>
         );
