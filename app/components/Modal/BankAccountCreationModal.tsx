@@ -12,10 +12,11 @@ import Button from "../ui/button";
 interface BankAccountCreationModalProps {
     visibility: boolean
     setVisibility: Dispatch<SetStateAction<boolean>>
+    handleFetchUserBankAccount: () => Promise<void>
 }
 
 const BankAccountCreationModal: FunctionComponent<BankAccountCreationModalProps> = (
-    { visibility, setVisibility }): ReactElement => {
+    { visibility, setVisibility, handleFetchUserBankAccount }): ReactElement => {
 
     const { data: session, update, status } = useSession();
 
@@ -71,7 +72,8 @@ const BankAccountCreationModal: FunctionComponent<BankAccountCreationModalProps>
 
         // Call API to create bank account
         await createBankAccount(session?.user.id as string, data)
-            .then((response) => {
+            .then(async (response) => {
+                await handleFetchUserBankAccount();
                 setVisibility(false);
             })
             .catch((error) => {
@@ -230,6 +232,7 @@ const BankAccountCreationModal: FunctionComponent<BankAccountCreationModalProps>
                         disabled={!verifiedAccount || !selectedBank || isCreatingBankAccount}
                         isLoading={isCreatingBankAccount}
                         className="!text-sm !bg-white !text-black/80 !px-4 !py-2"
+                        // btnLoaderClassname="!bg-dark-grey"
                         onClick={(e) => handleCreateBankAccount(e)}>
                         Add Bank Account
                     </Button>
