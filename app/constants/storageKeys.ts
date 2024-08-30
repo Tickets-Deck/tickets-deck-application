@@ -31,4 +31,9 @@ export class StorageKeys {
    * Key for the beta test modal viewed
    */
   static readonly BetaTestModalViewed = "BetaTestModalViewed";
+
+  /**
+   * Key for the list of banks
+   */
+  static readonly BankLists = "BankLists";
 }

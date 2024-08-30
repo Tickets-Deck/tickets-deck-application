@@ -4,6 +4,7 @@ import { useFetchBankList, useFetchUserInformation } from "../api/apiClient";
 import { catchError } from "../constants/catchError";
 import { useSession } from "next-auth/react";
 import { Bank } from "../models/IBankAccount";
+import { StorageKeys } from "../constants/storageKeys";
 
 
 // Define the type for the context data
@@ -80,20 +81,34 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
             })
 
     };
-    
+
     async function handleFetchBankList() {
 
+        // Retrieve the bank list from Storage
+        const bankListFromStorage = localStorage.getItem(StorageKeys.BankLists);
+
+        // If the bank list is in storage, set it to the state
+        if (bankListFromStorage && bankListFromStorage !== null && bankListFromStorage.length > 0) {
+            setBankList(JSON.parse(bankListFromStorage));
+            return;
+        }
+
+        // Fetch the bank list
         await fetchBankList()
             .then((response) => {
+                // save the bank list to local storage
+                localStorage.setItem(StorageKeys.BankLists, JSON.stringify(response.data));
                 setBankList(response.data);
             })
             .catch((error) => {
                 catchError(error);
             })
     };
-    
+
     useEffect(() => {
-        handleFetchBankList();
+        if (bankList.length === 0) {
+            handleFetchBankList();
+        }
     }, []);
 
     // Define the values you want to share
