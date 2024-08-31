@@ -162,33 +162,38 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                         </Link>
                     </div>
                     {
-                        forOrdersPage ?
-                            <div className={styles.bottomArea}>
-                                <Link href={`${hostUrl}/event/${eventInfo.id}`} className={styles.rePurchaseBtn}>
-                                    Buy again
-                                </Link>
-                                {/* <button className={styles.reportEvent} disabled>Report event</button> */}
-                            </div>
+                        eventInfo.purchaseEndDate && new Date(eventInfo.purchaseEndDate) > new Date() ?
+                            forOrdersPage ?
+                                <div className={styles.bottomArea}>
+                                    <Link href={`${hostUrl}/event/${eventInfo.id}`} className={styles.rePurchaseBtn}>
+                                        Buy again
+                                    </Link>
+                                    {/* <button className={styles.reportEvent} disabled>Report event</button> */}
+                                </div>
+                                :
+                                <div className={styles.bottomArea}>
+                                    {eventInfo && eventInfo?.tickets == null ?
+                                        <>
+                                            <div className={styles.priceArea}>
+                                                <span>Ticket price:</span>
+                                                {/* <h2>&#8358;{eventInfo?.ticketPrice.amount.toLocaleString()}</h2> */}
+                                            </div>
+                                            <button>Purchase your ticket(s)</button>
+                                        </>
+                                        :
+                                        <ScrollLink
+                                            to="optionalSection"
+                                            smooth={true}
+                                            duration={200}
+                                            offset={-100}
+                                            onClick={() => setTicketsSelectionContainerIsVisible && setTicketsSelectionContainerIsVisible(true)}>
+                                            <button>Get available tickets</button>
+                                        </ScrollLink>
+                                    }
+                                </div>
                             :
-                            <div className={styles.bottomArea}>
-                                {eventInfo && eventInfo?.tickets == null ?
-                                    <>
-                                        <div className={styles.priceArea}>
-                                            <span>Ticket price:</span>
-                                            {/* <h2>&#8358;{eventInfo?.ticketPrice.amount.toLocaleString()}</h2> */}
-                                        </div>
-                                        <button>Purchase your ticket(s)</button>
-                                    </>
-                                    :
-                                    <ScrollLink
-                                        to="optionalSection"
-                                        smooth={true}
-                                        duration={200}
-                                        offset={-100}
-                                        onClick={() => setTicketsSelectionContainerIsVisible && setTicketsSelectionContainerIsVisible(true)}>
-                                        <button>Get available tickets</button>
-                                    </ScrollLink>
-                                }
+                            <div className="flex flex-row mt-3 bg-yellow-300/10 border-[1.5px] border-yellow-300/80 p-2 px-4 rounded-lg w-fit">
+                                <p>Sale has ended</p>
                             </div>
                     }
                 </div>
