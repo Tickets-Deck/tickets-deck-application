@@ -183,20 +183,45 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                 totalPrice={totalPrice}
             />
             <div className={styles.eventDetailsPage}>
-                <section className={styles.heroSection}>
-                    <div className={styles.video}>
-                        <video
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            src="https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4" />
-                    </div>
-                    <div className={styles.textContents}>
-                        <span>Time to grab those tickets! <span className={styles.img}><Image src={images.woman_dancing} alt='Woman dancing' /></span></span>
-                        <h2>Event Information</h2>
-                    </div>
-                </section>
+                {
+                    eventInfo?.purchaseEndDate && new Date(eventInfo?.purchaseEndDate) < new Date() ?
+                        <section className={styles.heroSection}>
+                            <div className={styles.video}>
+                                <video
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    onLoadStart={(e) => e.currentTarget.playbackRate = 0.05}
+                                    onLoadedData={(e) => e.currentTarget.playbackRate = 0.05}
+                                    onPlay={(e) => e.currentTarget.playbackRate = 0.05}
+                                    src="https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4" />
+                            </div>
+                            <div className={styles.textContents}><span>
+                                Ouch! Seems like you missed this event.
+                                <span className={styles.img}><Image src={images.sad_face} alt='Sad face' /></span>
+                            </span>
+                                <h2>Event Information</h2>
+                            </div>
+                        </section> :
+                        <section className={styles.heroSection}>
+                            <div className={styles.video}>
+                                <video
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    src="https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4" />
+                            </div>
+                            <div className={styles.textContents}>
+                                <span>
+                                    Time to grab those tickets!
+                                    <span className={styles.img}><Image src={images.woman_dancing} alt='Woman dancing' /></span>
+                                </span>
+                                <h2>Event Information</h2>
+                            </div>
+                        </section>
+                }
 
                 {eventInfo ?
                     <section className={styles.eventInfoContainer}>
