@@ -353,7 +353,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         setFormValues({ ...formValues, [name]: isCheck ? checked : value });
     };
 
-    const validCoupons = ['SMARTFUS34', 'DE2CCERO03', 'LKJNDUipl3', 'uIMLP34NpY', 'Simlex'];
+    const validCoupons = [''];
 
     function checkCoupon() {
         if (couponCodeValue === undefined || couponCodeValue.length < 1) {
