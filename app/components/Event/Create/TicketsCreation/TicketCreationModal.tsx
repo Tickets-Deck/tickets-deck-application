@@ -346,8 +346,8 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
                                 onFormValueChange(e, setTicketQuantityErrorMsg);
                             }}
                             onKeyUp={(e) => {
-                                if (Number(ticketFormRequest?.quantity) < 1 && e.currentTarget.value != "") {
-                                    setTicketQuantityErrorMsg({ message: "The minimum number of tickets is 1", status: DefaultFormResponseStatus.Failed });
+                                if (Number(ticketFormRequest?.quantity) < 0 && e.currentTarget.value != "") {
+                                    setTicketQuantityErrorMsg({ message: "The minimum number of available tickets cannot be less than 0", status: DefaultFormResponseStatus.Failed });
                                 }
                             }}
                             onKeyDown={(e) => {
