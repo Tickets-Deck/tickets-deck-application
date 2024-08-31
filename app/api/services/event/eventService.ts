@@ -876,7 +876,7 @@ export async function fetchFeaturedEvents(req: NextRequest) {
       ],
     },
     orderBy: {
-      date: "asc",
+        createdAt: "asc",
     },
     take: 3,
     select: {
