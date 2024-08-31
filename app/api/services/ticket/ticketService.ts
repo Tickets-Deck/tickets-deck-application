@@ -246,7 +246,7 @@ export async function updateTicket(req: NextRequest) {
       price: request.price || existingTicket.price,
       numberOfUsers: request.numberOfUsers || existingTicket.numberOfUsers,
       quantity: request.quantity || existingTicket.quantity,
-      remainingTickets: request.quantity || existingTicket.remainingTickets,
+      remainingTickets: request.quantity == 0 ? 0 : request.quantity || existingTicket.remainingTickets,
       description: request.description || existingTicket.description,
     },
   });
