@@ -79,7 +79,6 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({ isNotHomepage,
                                     event={event}
                                     key={index}
                                     forFeaturedEvents
-                                    isSoldOut={event.title == 'Beach Party Alert'}
                                 />
                             )
                         }

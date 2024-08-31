@@ -227,7 +227,7 @@
                 }
             }
         }
-        .editBtn, .soldBtn {
+        .editBtn {
             background-color: var(--white);
             height: 100%;
             &:hover {
@@ -257,14 +257,6 @@
                 border: none;
                 outline: none;
             }
-        }
-        .soldBtn {
-            background-color: var(--failed-color);
-            pointer-events: none;
-            cursor: pointer;
-            color: var(--white);
-            border: none;
-            outline: none;
         }
     }
 }

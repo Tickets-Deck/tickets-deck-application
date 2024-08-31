@@ -205,7 +205,6 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                             eventInfo={eventInfo}
                             setTicketsSelectionContainerIsVisible={setTicketsSelectionContainerIsVisible}
                             addEventToGoogleCalender={addEventToGoogleCalender}
-                            isSoldOut={eventInfo.title == 'Beach Party Alert'}
                         />
                         <div className={styles.optionalSection} id='optionalSection'>
                             {ticketsSelectionContainerIsVisible && eventTickets && eventTickets.length > 0 &&
