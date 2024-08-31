@@ -22,11 +22,12 @@ interface EventCardProps {
     setIsDeleteConfirmationModalVisible?: Dispatch<SetStateAction<boolean>>
     setSelectedEvent?: Dispatch<SetStateAction<EventResponse | undefined>>
     forFeaturedEvents?: boolean
+    isSoldOut?: boolean
 }
 
 const EventCard: FunctionComponent<EventCardProps> = (
     { event, mobileAndActionButtonDismiss, consoleDisplay, gridDisplay,
-        setIsDeleteConfirmationModalVisible, setSelectedEvent, forFeaturedEvents }): ReactElement => {
+        setIsDeleteConfirmationModalVisible, setSelectedEvent, forFeaturedEvents, isSoldOut }): ReactElement => {
 
     const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
@@ -51,18 +52,26 @@ const EventCard: FunctionComponent<EventCardProps> = (
             {/* <div className={styles.backgroundImage}>
                 <Image src={images.ticketbg} alt='Ticket background' />
             </div> */}
-            {/* <span className={styles.event__tag}>Latest</span> */}
+            {/* <span className={styles.event__tag__sold}>Sold Out</span> */}
             <div className={styles.event__image}>
-                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
-                    <Image
-                        src={event.mainImageUrl}
-                        alt='Event flyer'
-                        fill
-                    // priority
-                    // placeholder={"blur"}
-                    // blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOsa2yqBwAFCAICLICSyQAAAABJRU5ErkJggg=="}
-                    />
-                </Link>
+                {
+                    isSoldOut ?
+                        <Image
+                            src={event.mainImageUrl}
+                            alt='Event flyer'
+                            fill
+                        // priority
+                        // placeholder={"blur"}
+                        // blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOsa2yqBwAFCAICLICSyQAAAABJRU5ErkJggg=="}
+                        /> :
+                        <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
+                            <Image
+                                src={event.mainImageUrl}
+                                alt='Event flyer'
+                                fill
+                            />
+                        </Link>
+                }
             </div>
             {/* <span className={styles.hLine}>
                 <HorizontalLineIcon />
@@ -117,9 +126,15 @@ const EventCard: FunctionComponent<EventCardProps> = (
                         </button>
                     </Link>
                 }
-                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
-                    <button>View details</button>
-                </Link>
+                {
+                    isSoldOut ?
+                        <Link href="#" className=" pointer-events-none !bg-failed-color">
+                            <button className=" bg-failed-color">Sold Out</button>
+                        </Link> :
+                        <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
+                            <button>View details</button>
+                        </Link>
+                }
                 {
                     consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
                     <button
@@ -132,7 +147,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
                     </button>
                 }
             </div>
-        </div>
+        </div >
     );
 }
 

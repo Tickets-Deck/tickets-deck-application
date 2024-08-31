@@ -66,6 +66,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                                 consoleDisplay={consoleDisplay}
                                 setIsDeleteConfirmationModalVisible={setIsDeleteConfirmationModalVisible}
                                 setSelectedEvent={setSelectedEvent}
+                                isSoldOut={event.title == 'Beach Party Alert'}
                             />
                         )
                     }

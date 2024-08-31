@@ -27,11 +27,12 @@ interface EventMainInfoProps {
     forOrdersPage?: boolean
     hideStatusTag?: boolean
     hostUrl?: string
+    isSoldOut?: boolean
 }
 
 const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     { appTheme, eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
-        forOrdersPage, hideStatusTag, hostUrl }): ReactElement => {
+        forOrdersPage, hideStatusTag, hostUrl, isSoldOut }): ReactElement => {
 
     const { data: session } = useSession();
     const likeEvent = useLikeEvent();
@@ -162,33 +163,38 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                         </Link>
                     </div>
                     {
-                        forOrdersPage ?
-                            <div className={styles.bottomArea}>
-                                <Link href={`${hostUrl}/event/${eventInfo.id}`} className={styles.rePurchaseBtn}>
-                                    Buy again
-                                </Link>
-                                {/* <button className={styles.reportEvent} disabled>Report event</button> */}
-                            </div>
+                        !isSoldOut ?
+                            forOrdersPage ?
+                                <div className={styles.bottomArea}>
+                                    <Link href={`${hostUrl}/event/${eventInfo.id}`} className={styles.rePurchaseBtn}>
+                                        Buy again
+                                    </Link>
+                                    {/* <button className={styles.reportEvent} disabled>Report event</button> */}
+                                </div>
+                                :
+                                <div className={styles.bottomArea}>
+                                    {eventInfo && eventInfo?.tickets == null ?
+                                        <>
+                                            <div className={styles.priceArea}>
+                                                <span>Ticket price:</span>
+                                                {/* <h2>&#8358;{eventInfo?.ticketPrice.amount.toLocaleString()}</h2> */}
+                                            </div>
+                                            <button>Purchase your ticket(s)</button>
+                                        </>
+                                        :
+                                        <ScrollLink
+                                            to="optionalSection"
+                                            smooth={true}
+                                            duration={200}
+                                            offset={-100}
+                                            onClick={() => setTicketsSelectionContainerIsVisible && setTicketsSelectionContainerIsVisible(true)}>
+                                            <button>Get available tickets</button>
+                                        </ScrollLink>
+                                    }
+                                </div>
                             :
                             <div className={styles.bottomArea}>
-                                {eventInfo && eventInfo?.tickets == null ?
-                                    <>
-                                        <div className={styles.priceArea}>
-                                            <span>Ticket price:</span>
-                                            {/* <h2>&#8358;{eventInfo?.ticketPrice.amount.toLocaleString()}</h2> */}
-                                        </div>
-                                        <button>Purchase your ticket(s)</button>
-                                    </>
-                                    :
-                                    <ScrollLink
-                                        to="optionalSection"
-                                        smooth={true}
-                                        duration={200}
-                                        offset={-100}
-                                        onClick={() => setTicketsSelectionContainerIsVisible && setTicketsSelectionContainerIsVisible(true)}>
-                                        <button>Get available tickets</button>
-                                    </ScrollLink>
-                                }
+                                <button className="!bg-failed-color pointer-events-none !text-white">Sold Out!</button>
                             </div>
                     }
                 </div>
