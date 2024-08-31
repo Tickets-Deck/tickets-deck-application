@@ -84,8 +84,13 @@ const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProp
             </div>
             <div className={styles.ticketsContainer}>
                 {eventTickets?.map((ticketType, index) => {
+
+                    const ticketIsSoldOut = ticketType.remainingTickets === 0;
+                    // border: 0.2rem solid rgba($color: $primary-color-sub-50, $alpha: 0.2);
                     return (
-                        <div className={`${styles.ticket} ${ticketType.selectedTickets > 0 ? styles.active : ''}`} key={index}>
+                        <div
+                            className={`flex flex-col gap-2 bg-primary-color-sub-50/10 p-5 rounded-lg border-2 border-solid border-transparent ${ticketIsSoldOut ? "border-failed-color/0 pointer-events-none" : ""} ${ticketType.selectedTickets > 0 ? 'border-primary-color-sub-50/20' : ''}`}
+                            key={index}>
                             <div className={styles.ticket__topArea}>
                                 <p>{ticketType.name}</p>
                                 <h4>
@@ -95,11 +100,18 @@ const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProp
                                     }
                                 </h4>
                             </div>
-                            <div className={styles.ticket__bottomArea}>
-                                <span onClick={() => { ticketType.selectedTickets > 0 && decrementTicket(ticketType) }}>-</span>
-                                <p>{ticketType.selectedTickets} {ticketType.selectedTickets > 1 ? "tickets" : "ticket"}</p>
-                                <span onClick={() => incrementTicket(ticketType)}>+</span>
-                            </div>
+                            {
+                                ticketIsSoldOut ?
+                                    <div className="bg-white rounded-md h-[30px] grid place-items-center mt-auto">
+                                        <p className="text-sm text-failed-color">Sold Out!</p>
+                                    </div>
+                                    :
+                                    <div className={styles.ticket__bottomArea}>
+                                        <span onClick={() => { ticketType.selectedTickets > 0 && decrementTicket(ticketType) }}>-</span>
+                                        <p>{ticketType.selectedTickets} {ticketType.selectedTickets > 1 ? "tickets" : "ticket"}</p>
+                                        <span onClick={() => incrementTicket(ticketType)}>+</span>
+                                    </div>
+                            }
                         </div>
                     )
                 })}
