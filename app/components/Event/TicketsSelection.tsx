@@ -3,6 +3,8 @@ import styles from "../../styles/EventDetails.module.scss";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import { Theme } from "@/app/enums/Theme";
 import { CloseIcon } from "../SVGs/SVGicons";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
 
 interface TicketsSelectionContainerProps {
     appTheme: Theme | null
@@ -11,14 +13,17 @@ interface TicketsSelectionContainerProps {
     totalPrice: number
     setTicketDeliveryModalIsVisible: Dispatch<SetStateAction<boolean>>
     setTicketsSelectionContainerIsVisible: Dispatch<SetStateAction<boolean>>
+    setContactDetailsModalIsVisible: Dispatch<SetStateAction<boolean>>
 }
 
 const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProps> = (
-    { appTheme, eventTickets, setEventTickets, totalPrice,
+    { appTheme, eventTickets, setEventTickets, totalPrice, setContactDetailsModalIsVisible,
         setTicketDeliveryModalIsVisible, setTicketsSelectionContainerIsVisible }): ReactElement => {
 
     const [totalSelectedTicketsCount, setTotalSelectedTicketsCount] = useState(0);
     const [userHasSelectedAtLeastOneTicket, setUserHasSelectedAtLeastOneTicket] = useState(false);
+
+    const userInfo = useSelector((state: RootState) => state.userCredentials.userInfo);
 
 
     function incrementTicket(selectedTicketType: RetrievedTicketResponse) {
@@ -89,7 +94,7 @@ const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProp
                     // border: 0.2rem solid rgba($color: $primary-color-sub-50, $alpha: 0.2);
                     return (
                         <div
-                            className={`flex flex-col gap-2 bg-primary-color-sub-50/10 p-5 rounded-lg border-2 border-solid border-transparent ${ticketIsSoldOut ? "border-failed-color/0 pointer-events-none" : ""} ${ticketType.selectedTickets > 0 ? 'border-primary-color-sub-50/20' : ''}`}
+                            className={`flex flex-col gap-2 bg-primary-color-sub-50/10 p-5 rounded-lg border-2 border-solid border-transparent ${ticketIsSoldOut ? "border-failed-color/0 pointer-events-none" : ""} ${ticketType.selectedTickets > 0 ? 'border-primary-color-sub-50/30' : ''}`}
                             key={index}>
                             <div className={styles.ticket__topArea}>
                                 <p>{ticketType.name}</p>
@@ -126,7 +131,13 @@ const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProp
                 </div>
                 <div className={styles.right}>
                     <button
-                        onClick={() => setTicketDeliveryModalIsVisible(true)}
+                        onClick={() => {
+                            if (!userInfo) {
+                                setContactDetailsModalIsVisible(true);
+                                return;
+                            }
+                            setTicketDeliveryModalIsVisible(true)
+                        }}
                         disabled={!userHasSelectedAtLeastOneTicket}>
                         Purchase {totalSelectedTicketsCount > 1 ? 'tickets' : 'ticket'}
                     </button>
