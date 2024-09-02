@@ -124,6 +124,9 @@ export async function initializeOrder(req: NextRequest) {
       quantity: request.tickets.length,
       totalPrice: totalPrice,
       contactEmail: request.contactEmail,
+      contactFirstName: request.contactFirstName ?? null,
+      contactLastName: request.contactLastName ?? null,
+      contactNumber: request.contactPhone ?? null,
       // Generate order ID here
       orderId: "T" + Math.random().toString(36).substr(2, 9).toUpperCase(),
       orderStatus: totalPrice > 0 ? OrderStatus.Pending : OrderStatus.Confirmed,
