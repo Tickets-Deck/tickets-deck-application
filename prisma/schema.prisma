@@ -171,21 +171,23 @@ model OrderedTickets {
 /// The payments field in TicketOrders is annotated with @relation("TicketOrderPayments") to specify the relationship name.
 /// Each ticket order can have multiple associated payments allowing you to track payment transactions for each order efficiently, so the relationship is defined as a one-to-many relationship.
 model TicketOrders {
-    id         String           @id @default(uuid())
-    user       Users?           @relation(fields: [userId], references: [id])
-    userId     String?
-    event      Events           @relation(fields: [eventId], references: [id])
-    eventId    String
-    tickets    OrderedTickets[]
-    quantity   Int
-    totalPrice Decimal
-
-    contactEmail  String
-    orderId       String        @unique @default(uuid())
-    orderStatus   OrderStatus
-    paymentStatus PaymentStatus
-    paymentId     String?
-    payments      Payments[]    @relation("TicketOrderPayments")
+    id               String           @id @default(uuid())
+    user             Users?           @relation(fields: [userId], references: [id])
+    userId           String?
+    event            Events           @relation(fields: [eventId], references: [id])
+    eventId          String
+    quantity         Int
+    tickets          OrderedTickets[]
+    totalPrice       Decimal
+    contactEmail     String
+    contactNumber    String?
+    contactFirstName String?
+    contactLastName  String?
+    orderId          String           @unique @default(uuid())
+    orderStatus      OrderStatus
+    paymentStatus    PaymentStatus
+    paymentId        String?
+    payments         Payments[]       @relation("TicketOrderPayments")
 
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
@@ -363,7 +365,7 @@ model CustomerEnquiries {
 
 model BankAccounts {
     accountId     String    @id @default(uuid())
-    accountHolder Users     @relation(fields: [accountId], references: [id]) 
+    accountHolder Users     @relation(fields: [accountId], references: [id])
     bankName      String
     accountName   String
     accountNumber String
