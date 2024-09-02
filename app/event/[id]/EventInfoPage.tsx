@@ -18,6 +18,8 @@ import useResponsiveness from '../../hooks/useResponsiveness';
 import EventMainInfo from '@/app/components/Event/EventInfo';
 import { RootState } from '@/app/redux/store';
 import { useSelector } from 'react-redux';
+import ContactDetailsModal from '@/app/components/Modal/ContactDetailsModal';
+import { CustomerContactDetails } from '@/app/models/IUser';
 
 interface EventDetailsPageProps {
     params: { id: string }
@@ -28,11 +30,6 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
     const router = useRouter();
     const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
-    const windowRes = useResponsiveness();
-    const isMobile = windowRes.width && windowRes.width < 768;
-    const onMobile = typeof (isMobile) == "boolean" && isMobile;
-    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
-
     const id = params.id;
 
     const fetchEventInfo = useFetchEventById();
@@ -40,12 +37,14 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
 
     const [eventInfo, setEventInfo] = useState<EventResponse>();
     const [eventTickets, setEventTickets] = useState<RetrievedTicketResponse[]>();
+    const [contactDetails, setContactDetails] = useState<CustomerContactDetails>();
 
     const [loader, setLoader] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
     const [ticketsSelectionContainerIsVisible, setTicketsSelectionContainerIsVisible] = useState(false);
 
     const [ticketDeliveryModalIsVisible, setTicketDeliveryModalIsVisible] = useState(false);
+    const [contactDetailsModalIsVisible, setContactDetailsModalIsVisible] = useState(false);
 
     const eventLocation = eventInfo?.location?.address + ' ' + eventInfo?.location?.city + ', ' + eventInfo?.location?.state + ', ' + eventInfo?.location?.country;
 
@@ -174,6 +173,13 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
 
     return (
         <>
+            <ContactDetailsModal
+                visibility={contactDetailsModalIsVisible}
+                setVisibility={setContactDetailsModalIsVisible}
+                setTicketDeliveryModalIsVisible={setTicketDeliveryModalIsVisible}
+                setContactDetails={setContactDetails}
+                contactDetails={contactDetails}
+            />
             <TicketDelivery
                 appTheme={appTheme}
                 visibility={ticketDeliveryModalIsVisible}
@@ -181,6 +187,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                 eventTickets={eventTickets}
                 eventInfo={eventInfo}
                 totalPrice={totalPrice}
+                contactDetails={contactDetails}
             />
             <div className={styles.eventDetailsPage}>
                 {
@@ -238,6 +245,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                                     eventTickets={eventTickets}
                                     setEventTickets={setEventTickets}
                                     totalPrice={totalPrice}
+                                    setContactDetailsModalIsVisible={setContactDetailsModalIsVisible}
                                     setTicketDeliveryModalIsVisible={setTicketDeliveryModalIsVisible}
                                     setTicketsSelectionContainerIsVisible={setTicketsSelectionContainerIsVisible}
                                 />
