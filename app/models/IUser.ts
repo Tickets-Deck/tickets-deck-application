@@ -2,6 +2,12 @@ import { Bookmarks } from "./IBookmark";
 import { Favourites } from "./IFavourites";
 import { TicketPurchased } from "./ITicket";
 
+export type CustomerContactDetails = {
+    firstName: string;
+    lastName: string;
+    phone: string;
+};
+
 export type UserCredentialsRequest = {
   email: string;
   password: string;
