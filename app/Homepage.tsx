@@ -7,7 +7,6 @@ import styles from './styles/Home.module.scss';
 import CreateEvent from "./components/Homepage/CreateEvent";
 import { useFetchEvents, useFetchFeaturedEvents } from "./api/apiClient";
 import { EventResponse } from "./models/IEvents";
-import { StorageKeys } from "./constants/storageKeys";
 import BetaTestModal from "./components/Modal/BetaTestModal";
 import { ImageWithPlaceholder } from "./models/IImage";
 
@@ -18,8 +17,11 @@ interface HomepageProps {
 const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): ReactElement => {
 
     const fetchFeaturedEvents = useFetchFeaturedEvents();
+    const fetchEvents = useFetchEvents();
 
+    const [featuredEvents, setFeaturedEvents] = useState<EventResponse[]>([]);
     const [events, setEvents] = useState<EventResponse[]>([]);
+    const [isFetchingFeaturedEvents, setIsFetchingFeaturedEvents] = useState(true);
     const [isFetchingEvents, setIsFetchingEvents] = useState(true);
     const [showBetaTestModal, setShowBetaTestModal] = useState(false);
 
@@ -41,6 +43,28 @@ const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): R
             .then((response) => {
                 if (response) {
                     // console.log(response.data);
+                    setFeaturedEvents(response.data);
+
+                    // Save events to session storage
+                    // sessionStorage.setItem(StorageKeys.Events, JSON.stringify(response.data));
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                // toasthandler?.logError('Error', 'An error occurred while fetching events.');
+            })
+            .finally(() => {
+                // Stop loader
+                setIsFetchingFeaturedEvents(false);
+            });
+    };
+
+    async function handleFetchEvents() {
+        // Fetch events
+        await fetchEvents()
+            .then((response) => {
+                if (response) {
+                    // console.log(response.data);
                     setEvents(response.data);
 
                     // Save events to session storage
@@ -59,6 +83,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): R
 
     useEffect(() => {
         handleFetchFeaturedEvents();
+        handleFetchEvents();
     }, []);
 
     // Show beta test modal after 5 seconds, and only once
@@ -92,8 +117,8 @@ const Homepage: FunctionComponent<HomepageProps> = ({ imageWithPlaceholder }): R
                     imageWithPlaceholder={imageWithPlaceholder}
                 />
                 <FeaturedEvents
-                    isFetchingEvents={isFetchingEvents}
-                    featuredEvents={events}
+                    isFetchingEvents={isFetchingFeaturedEvents}
+                    featuredEvents={featuredEvents}
                 />
                 <Services />
                 <CreateEvent />
