@@ -1,4 +1,3 @@
-import { ToastContext } from "../../extensions/toast";
 import { FunctionComponent, ReactElement, useState, useContext, Dispatch, SetStateAction, useEffect, ChangeEvent, useMemo } from "react";
 import styles from "../../styles/TicketDelivery.module.scss";
 import ModalWrapper from "./ModalWrapper";
@@ -21,6 +20,7 @@ import ComponentLoader from "../Loader/ComponentLoader";
 import EmailVerificationPrompt from "./EmailVerificationPrompt";
 import { Theme } from "@/app/enums/Theme";
 import PrimaryEmailConfirmationModal from "./PrimaryEmailConfirmationModal";
+import { CustomerContactDetails } from "@/app/models/IUser";
 
 interface TicketDeliveryProps {
     appTheme: Theme | null
@@ -29,6 +29,7 @@ interface TicketDeliveryProps {
     eventTickets: RetrievedTicketResponse[] | undefined
     eventInfo: EventResponse | undefined
     totalPrice: number
+    contactDetails: CustomerContactDetails | undefined
 }
 
 enum ValidationStatus {
@@ -38,7 +39,8 @@ enum ValidationStatus {
 }
 
 const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
-    { appTheme, visibility, setVisibility, eventTickets, eventInfo, totalPrice }): ReactElement => {
+    { appTheme, visibility, setVisibility, eventTickets,
+        eventInfo, totalPrice, contactDetails }): ReactElement => {
 
     const createTicketOrder = useCreateTicketOrder();
     const initializePaystackPayment = useInitializePaystackPayment();
@@ -53,6 +55,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     const [ticketPricings, setTicketPricings] = useState<RetrievedITicketPricing[]>([]);
     const [emailVerificationPromptIsVisible, setEmailVerificationPromptIsVisible] = useState(false);
     const [suggestPrimaryEmailModal, setSuggestPrimaryEmailModal] = useState(false);
+    const [suggestedPrimaryEmail, setSuggestedPrimaryEmail] = useState<string>('');
     const [autoTriggerTicketOrderCreation, setAutoTriggerTicketOrderCreation] = useState(false);
 
     const [isValidating, setIsValidating] = useState(false);
@@ -106,7 +109,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                             currency: eventInfo?.currency || 'NGN',
                             total: ticket.price.toString(),
                         },
-                        hasEmail: primaryEmail || userEmailIsPrimaryEmail ? true : false,
+                        hasEmail: userInfo ? primaryEmail || userEmailIsPrimaryEmail ? true : false : false,
                     });
                     emailIndex++;
                 }
@@ -201,17 +204,30 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             }
         });
 
+        // if the user is not logged in, and has not filled in any email, show the suggest primary email modal
+        if (!userInfo && collatedTicketOrderRequests.every(ticketOrder => !ticketOrder.associatedEmail)) {
+            toast.error("Please input an email address for at least one ticket.");
+            return;
+        }
+
+        // if we get here, it means the user is logged in, and has not filled in any email or the user is not logged in, and has filled in at least one email
+
         const ticketOrder: TicketOrderRequest = {
             eventId: eventInfo?.eventId as string,
             tickets: collatedTicketOrderRequests,
             contactEmail: primaryEmail ?? (userEmailIsPrimaryEmail ? userInfo?.email as string : ""),
             userId: userInfo?.id as string,
+            contactFirstName: contactDetails?.firstName,
+            contactLastName: contactDetails?.lastName,
+            contactPhone: contactDetails?.phone
         };
 
+        // if the contact email is not filled in...
         if (ticketOrder.contactEmail === undefined || ticketOrder.contactEmail.length < 1) {
+            // get the first ticket order with an email
+            const firstTicketOrderWithEmail = collatedTicketOrderRequests.find(ticketOrder => ticketOrder.associatedEmail);
+            setSuggestedPrimaryEmail(firstTicketOrderWithEmail?.associatedEmail as string);
             setSuggestPrimaryEmailModal(true);
-            // setShow 
-            // toast.error("Please select a primary email address to continue.");
             return;
         }
 
@@ -250,6 +266,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                 }
                 return;
             }
+
+            // at this point, we will update the ticket order 
 
             // If we get here, it means the total price is not zero
             if (response) {
@@ -663,7 +681,13 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             <PrimaryEmailConfirmationModal
                 visibility={suggestPrimaryEmailModal}
                 setVisibility={setSuggestPrimaryEmailModal}
-                email={ticketPricings[0]?.hasEmail ? formValues[getInputName(ticketPricings[0].ticketType, ticketPricings[0].selectedTickets, ticketPricings[0].emailId)] : ''}
+                // email={ticketPricings[0]?.hasEmail ? formValues[getInputName(ticketPricings[0].ticketType, ticketPricings[0].selectedTickets, ticketPricings[0].emailId)] : ''}
+                // email={
+                //     formValues[getInputName(ticketPricings.find((ticketPricing) => ticketPricing.hasEmail)?.ticketType as string, 
+                //         ticketPricings.find((ticketPricing) => ticketPricing.hasEmail)?.selectedTickets as number, 
+                //         ticketPricings.find((ticketPricing) => ticketPricing.hasEmail)?.emailId as number)]
+                // }
+                email={suggestedPrimaryEmail}
                 suggestedPrimaryEmailAndCreateOrder={suggestedPrimaryEmailAndCreateOrder}
             />
         </>
