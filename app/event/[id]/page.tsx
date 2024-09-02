@@ -30,6 +30,7 @@ export async function generateMetadata(
 
     return {
         title: event.title,
+        description: 'Come unlock your best experiences with Ticketsdeck Events!',
         openGraph: {
             images: [event.mainImageUrl, ...previousImages],
         },
