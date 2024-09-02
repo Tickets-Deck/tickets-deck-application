@@ -13,6 +13,9 @@ export interface TicketOrderRequest {
   eventId: string;
   tickets: SingleTicketOrderRequest[];
   contactEmail: string;
+  contactPhone?: string;
+  contactFirstName?: string;
+  contactLastName?: string;
 }
 
 //#region Responses
