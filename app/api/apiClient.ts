@@ -453,3 +453,11 @@ export function useFetchUserBankAccount() {
 
   return fetchUserBankAccount;
 }
+
+export function useFetchTransactionFee() {
+    async function fetchTransactionFee() {
+        return API.get(ApiRoutes.TransactionFee);
+    }
+    
+    return fetchTransactionFee;
+}
