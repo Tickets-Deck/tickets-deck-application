@@ -21,9 +21,15 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
     { eventTickets, totalPrice, setVisibility,
         handleTicketOrderCreation, isProcessingOrder, eventInfo }): ReactElement => {
 
-    const { transactionFeePercentage } = useContext(ApplicationContext) as ApplicationContextData;
+    const { transactionFees } = useContext(ApplicationContext) as ApplicationContextData;
 
-    const fees = transactionFeePercentage ? (totalPrice * transactionFeePercentage) / 100 : 0;
+    const eventTransactionFee = transactionFees?.find((transactionFee) => transactionFee.events.find((event) => event.title == eventInfo?.title));
+    const generalTransactionFee = transactionFees?.find((transactionFee) => transactionFee.events.length == 0);
+
+    const transactionFeePercentage = parseInt(eventTransactionFee?.percentage as string) || parseInt(generalTransactionFee?.percentage as string) || 0;
+    const flatFee = parseInt(eventTransactionFee?.flatFee as string) || parseInt(generalTransactionFee?.flatFee as string) || 0; 
+
+    const fees = (transactionFeePercentage ? (totalPrice * transactionFeePercentage) / 100 : 0) + (flatFee || 0);
     const totalAmountPayable = totalPrice + fees;
 
     return (
