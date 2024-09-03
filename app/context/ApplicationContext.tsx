@@ -1,10 +1,11 @@
 import { FunctionComponent, ReactNode, createContext, useEffect, useState } from "react";
 import { UserCredentialsResponse } from "../models/IUser";
-import { useFetchBankList, useFetchUserInformation } from "../api/apiClient";
+import { useFetchBankList, useFetchTransactionFee, useFetchUserInformation } from "../api/apiClient";
 import { catchError } from "../constants/catchError";
 import { useSession } from "next-auth/react";
 import { Bank } from "../models/IBankAccount";
 import { StorageKeys } from "../constants/storageKeys";
+import { TransactionFeeResponse } from "../models/ITransactionFee";
 
 
 // Define the type for the context data
@@ -16,7 +17,7 @@ export type ApplicationContextData = {
     isUserLoginPromptVisible: boolean;
     toggleUserLoginPrompt: () => void;
     bankList: Bank[];
-    transactionFeePercentage?: number;
+    transactionFees: TransactionFeeResponse[] | undefined;
 };
 
 // Create a context with the specified data type
@@ -31,6 +32,7 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
 
     const fetchUserInformation = useFetchUserInformation();
     const fetchBankList = useFetchBankList();
+    const fetchTransactionFee = useFetchTransactionFee();
 
     const { data: session } = useSession();
 
@@ -44,7 +46,7 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
     // Define state for displaying login prompt
     const [showUserLoginPrompt, setShowUserLoginPrompt] = useState(false);
 
-    const [transactionFeePercentage, setTransactionFeePercentage] = useState<number>();
+    const [transactionFees, setTransactionFees] = useState<TransactionFeeResponse[]>();
 
     // Define function to display toast
     const displayToast = (message: string, type: "success" | "error" | "info" | "warning") => {
@@ -114,24 +116,25 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
      * Function to fetch transaction fee percentage
      */
     async function handleFetchTransactionFee() {
-        // await fetchTransactionFee()
-        //     .then((response) => {
-        //         setTransactionFeePercentage(response.data.transactionFee);
-        //     })
-        //     .catch((error) => {
-        //         catchError(error);
-        //     })
-        setTransactionFeePercentage(5.5);
+        await fetchTransactionFee()
+            .then((response) => {
+                setTransactionFees(response.data);
+            })
+            .catch((error) => {
+                catchError(error);
+            })
     }
 
     useEffect(() => {
         if (bankList.length === 0) {
             handleFetchBankList();
         }
-        if (!transactionFeePercentage) {
+    }, []);
+    useEffect(() => {
+        if (!transactionFees) {
             handleFetchTransactionFee();
         }
-    }, []);
+    }, [transactionFees]);
 
     // Define the values you want to share
     const sharedData: ApplicationContextData = {
@@ -142,7 +145,7 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
         isUserLoginPromptVisible: showUserLoginPrompt,
         toggleUserLoginPrompt: () => setShowUserLoginPrompt(!showUserLoginPrompt),
         bankList,
-        transactionFeePercentage
+        transactionFees
     };
 
     return (
