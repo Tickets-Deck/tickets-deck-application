@@ -5,6 +5,8 @@ import { StatusCodes } from "@/app/models/IStatusCodes";
 import { customNextResponseError } from "../utils/customNextResponseError";
 import { fetchAllTransactionFees } from "../services/transaction-fee/feeService";
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(req: NextRequest) {
   // validate request method
   await validateRequestMethod(req, "GET");
