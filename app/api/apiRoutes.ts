@@ -149,4 +149,9 @@ export class ApiRoutes {
    * The route to User Bank Account endpoint
    */
   static UserBankAccount: string = "api/users/bank-account";
+
+  /**
+   * The route to Transaction Fee endpoint
+   */
+  static TransactionFee: string = "api/transaction-fees";
 }
