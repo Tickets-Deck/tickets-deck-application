@@ -11,7 +11,7 @@ datasource db {
     // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model TransactionFee {
+model TransactionFees {
     id         String    @id @default(uuid())
     percentage Decimal
     flatFee    Decimal
@@ -125,7 +125,7 @@ model Events {
     ticketOrdersCount Int             @default(0)
     TicketOrders      TicketOrders[]
     IsFeatured        Boolean         @default(false)
-    transactionFee    TransactionFee? @relation(fields: [transactionFeeId], references: [id])
+    transactionFee    TransactionFees? @relation(fields: [transactionFeeId], references: [id])
     transactionFeeId  String?
 
     createdAt DateTime? @default(now())
