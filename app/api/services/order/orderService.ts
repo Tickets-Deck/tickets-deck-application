@@ -100,11 +100,15 @@ export async function initializeOrder(req: NextRequest) {
     };
   }
 
+  //* Retrieve the transaction fee from DB
+
   // Get the total price of the tickets
-  const totalPrice = request.tickets.reduce(
+  const preTotalPrice = request.tickets.reduce(
     (accumulator, ticket) => accumulator + ticket.price,
     0
   );
+
+  const totalPrice = (preTotalPrice * 5.5) / 100 + preTotalPrice;
 
   // Create the order
   const ticketOrder = await prisma.ticketOrders.create({
@@ -331,7 +335,7 @@ export async function processFreeOrder(paymentResult: Paystack.Response) {
           publisherId: true,
         },
       });
-      
+
       // If the event publisher exists, update the ticketSold count of the event publisher
       if (eventPublisher) {
         // Update the ticketSold count of the event publisher
