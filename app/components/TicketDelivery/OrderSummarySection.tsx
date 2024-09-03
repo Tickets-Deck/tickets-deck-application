@@ -1,11 +1,12 @@
 import images from "@/public/images";
 import Image from "next/image";
 import styles from "../../styles/TicketDelivery.module.scss";
-import { FunctionComponent, ReactElement, Dispatch, SetStateAction } from "react";
+import { FunctionComponent, ReactElement, Dispatch, SetStateAction, useContext } from "react";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { EventResponse } from "@/app/models/IEvents";
 import moment from "moment";
+import { ApplicationContext, ApplicationContextData } from "@/app/context/ApplicationContext";
 
 interface OrderSummarySectionProps {
     eventTickets: RetrievedTicketResponse[] | undefined
@@ -19,6 +20,11 @@ interface OrderSummarySectionProps {
 const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
     { eventTickets, totalPrice, setVisibility,
         handleTicketOrderCreation, isProcessingOrder, eventInfo }): ReactElement => {
+
+    const { transactionFeePercentage } = useContext(ApplicationContext) as ApplicationContextData;
+
+    const fees = transactionFeePercentage ? (totalPrice * transactionFeePercentage) / 100 : 0;
+    const totalAmountPayable = totalPrice + fees;
 
     return (
         <div className={styles.rhs}>
@@ -60,12 +66,16 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
                     <span className={styles.value}>&#8358;{(totalPrice)?.toLocaleString()}</span>
                 </div>
                 <div className={styles.summaryInfo__subs}>
+                    <span>Fees</span>
+                    <span className={styles.value}>&#8358;{(fees)?.toLocaleString()}</span>
+                </div>
+                <div className={styles.summaryInfo__subs}>
                     <span>Discount (0% off)</span>
                     <span className={styles.value}>-&nbsp;&#8358;{(0).toLocaleString()}</span>
                 </div>
                 <div className={styles.summaryInfo__subs}>
                     <span>Total</span>
-                    <span className={styles.value}>&#8358;{(totalPrice)?.toLocaleString()}</span>
+                    <span className={styles.value}>&#8358;{(totalAmountPayable)?.toLocaleString()}</span>
                 </div>
             </div>
             <div className={styles.actionButtons}>
