@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import cloudinary from "cloudinary";
 import { deserializeEventVisibility } from "@/app/constants/serializer";
+import { EventVisibility } from "@/app/enums/IEventVisibility";
 
 export async function createEvent(req: NextRequest) {
   // Get the request body
@@ -861,22 +862,16 @@ export async function fetchFeaturedEvents(req: NextRequest) {
   const eventResponse = await prisma.events.findMany({
     // Show only public events that are not yet over (both event date and end date for tickets purchase)
     where: {
-      visibility: "PUBLIC",
-      OR: [
-        {
-          date: {
-            gte: new Date(),
-          },
-        },
-        {
-          purchaseEndDate: {
-            gte: new Date(),
-          },
-        },
-      ],
+      visibility: EventVisibility.PUBLIC,
+      date: {
+        gte: new Date(),
+      },
+      purchaseEndDate: {
+        gte: new Date(),
+      },
     },
     orderBy: {
-        date: "asc",
+      date: "asc",
     },
     take: 3,
     select: {
