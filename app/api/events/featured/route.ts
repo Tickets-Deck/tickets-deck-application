@@ -5,7 +5,7 @@ import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { fetchFeaturedEvents } from "../../services/event/eventService";
 
-export const dynamic = 'force-dynamic'
+// export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
   // validate request method
