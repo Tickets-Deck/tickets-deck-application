@@ -597,6 +597,14 @@ export class ApplicationError extends BaseApplicationError {
     Code: "EVENT_1005",
   };
 
+  /**
+   * The error message for ~ Failed to fetch events
+   */
+  static FailedToFetchEvents: IApplicationError = {
+    Text: "Failed to fetch events",
+    Code: "EVENT_1006",
+  };
+
   //#endregion
 
   //#region Payment Errors
@@ -747,6 +755,74 @@ export class ApplicationError extends BaseApplicationError {
   static FailedToDeleteTransactionFee: IApplicationError = {
     Text: "Failed to delete transaction fee",
     Code: "TRANSACTION_FEE_1003",
+  };
+
+  //#endregion
+
+  //#region Coupon Code Errors
+
+  /**
+   * The error message for ~ Coupon code already exists
+   */
+  static CouponCodeAlreadyExists: IApplicationError = {
+    Text: "Coupon code already exists",
+    Code: "COUPON_CODE_1000",
+  };
+
+  /**
+   * The error message for ~ Invalid coupon discount
+   */
+  static InvalidCouponDiscount: IApplicationError = {
+    Text: "Invalid coupon discount",
+    Code: "COUPON_CODE_1001",
+  };
+
+  /**
+   * The error message for ~ Failed to fetch coupon codes
+   */
+  static FailedToFetchCouponCodes: IApplicationError = {
+    Text: "Failed to fetch coupon codes",
+    Code: "COUPON_CODE_1002",
+  };
+
+  /**
+   * The error message for ~ Failed to create coupon code
+   */
+  static FailedToCreateCouponCode: IApplicationError = {
+    Text: "Failed to create coupon code",
+    Code: "COUPON_CODE_1003",
+  };
+
+  /**
+   * The error message for ~ Invalid coupon valid until
+   */
+  static InvalidCouponExpirationDate: IApplicationError = {
+    Text: "Invalid coupon expiration date",
+    Code: "COUPON_CODE_1004",
+  };
+
+  /**
+   * The error message for ~ Coupon code is too long
+   */
+  static CouponCodeTooLong: IApplicationError = {
+    Text: "Coupon code is too long. Maximum length is 6 characters.",
+    Code: "COUPON_CODE_1005",
+  };
+
+  /**
+   * The error message for ~ Coupon code not found
+   */
+  static CouponCodeNotFound: IApplicationError = {
+    Text: "Coupon code not found",
+    Code: "COUPON_CODE_1006",
+  };
+
+  /**
+   * The error message for ~ Failed to delete coupon code
+   */
+  static FailedToDeleteCouponCode: IApplicationError = {
+    Text: "Failed to delete coupon code",
+    Code: "COUPON_CODE_1007",
   };
 
   //#endregion
