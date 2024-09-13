@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import "react-quill/dist/quill.snow.css";
 import './styles/globals.scss'
@@ -13,9 +13,14 @@ import { initializeIcons, loadTheme } from '@fluentui/react';
 const Layout = dynamic(() => import('./components/Layout'), { ssr: false })
 
 export const metadata: Metadata = {
+    manifest: "/manifest.json",
     title: 'Ticketsdeck Events',
-    description: 'Unlocking best experiences, easily.'
+    description: 'Unlocking best experiences, easily.',
 }
+
+export const viewport: Viewport = {
+    themeColor: "#111",
+};
 
 // Load fluent UI icons
 loadTheme({
