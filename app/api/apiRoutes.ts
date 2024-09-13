@@ -154,4 +154,9 @@ export class ApiRoutes {
    * The route to Transaction Fee endpoint
    */
   static TransactionFee: string = "api/transaction-fees";
+
+    /**
+     * The route to Verify Coupon Code endpoint
+     */
+    static VerifyCouponCode: string = "api/verify-coupon";
 }
