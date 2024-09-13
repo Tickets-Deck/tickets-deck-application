@@ -9,7 +9,7 @@ import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import { EventResponse } from "@/app/models/IEvents";
 import OrderSummarySection from "../TicketDelivery/OrderSummarySection";
 import useResponsiveness from "../../hooks/useResponsiveness";
-import { useCreateTicketOrder, useInitializePaystackPayment } from "@/app/api/apiClient";
+import { useCreateTicketOrder, useInitializePaystackPayment, useVerifyCouponCode } from "@/app/api/apiClient";
 import { SingleTicketOrderRequest, TicketOrderRequest } from "@/app/models/ITicketOrder";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
@@ -21,6 +21,8 @@ import EmailVerificationPrompt from "./EmailVerificationPrompt";
 import { Theme } from "@/app/enums/Theme";
 import PrimaryEmailConfirmationModal from "./PrimaryEmailConfirmationModal";
 import { CustomerContactDetails } from "@/app/models/IUser";
+import { CouponDetails } from "@/app/models/ICoupon";
+import { ApplicationError } from "@/app/constants/applicationError";
 
 interface TicketDeliveryProps {
     appTheme: Theme | null
@@ -44,6 +46,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
 
     const createTicketOrder = useCreateTicketOrder();
     const initializePaystackPayment = useInitializePaystackPayment();
+    const verifyCoupon = useVerifyCouponCode();
 
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
@@ -62,6 +65,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     const [canCodeBeValidated, setCanCodeBeValidated] = useState(false);
     const [codeValidationStatus, setCodeValidationStatus] = useState<ValidationStatus>(ValidationStatus.NotInitiated);
     const [couponCodeValue, setCouponCodeValue] = useState<string>();
+    const [couponDetails, setCouponDetails] = useState<CouponDetails>();
 
     const [orderSummaryVisible, setOrderSummaryVisible] = useState(false);
 
@@ -219,7 +223,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             userId: userInfo?.id as string,
             contactFirstName: contactDetails?.firstName,
             contactLastName: contactDetails?.lastName,
-            contactPhone: contactDetails?.phone
+            contactPhone: contactDetails?.phone,
+            couponCode: couponCodeValue,
         };
 
         // if the contact email is not filled in...
@@ -280,9 +285,19 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                 }
             }
         }
-        catch (error) {
+        catch (error: any) {
             // Stop processing order
             setIsProcessingOrder(false);
+            if (error?.response) {
+                if (error.response.data.errorCode == ApplicationError.InvalidCouponExpirationDate.Code) {
+                    toast.error("This coupon code has expired. Please get a new code, and try again");
+                    return;
+                }
+                if (error.response.data.errorCode == ApplicationError.InvalidCouponDiscount.Code) {
+                    toast.error("Invalid coupon code. Please confirm code, and try again");
+                    return;
+                }
+            }
             // Show error message
             toast.error("An error occurred while processing your order. Please try again.");
         }
@@ -371,28 +386,37 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         setFormValues({ ...formValues, [name]: isCheck ? checked : value });
     };
 
-    const validCoupons = [''];
+    async function handleCheckCoupon() {
+        // show loader
+        setIsValidating(true);
 
-    function checkCoupon() {
-        if (couponCodeValue === undefined || couponCodeValue.length < 1) {
-            return;
-        }
+        // reset coupon details
+        setCouponDetails(undefined);
 
-        if (couponCodeValue?.length > 4) {
-            setIsValidating(true);
-
-            setTimeout(() => {
-                // if (validCoupons.find((anyCouponCode) => anyCouponCode == couponCodeValue)) {
-                if (validCoupons.includes(couponCodeValue as string)) {
-                    setCodeValidationStatus(ValidationStatus.Valid);
-                    setIsValidating(false);
+        // check coupon code
+        await verifyCoupon(eventInfo?.eventId as string, couponCodeValue as string)
+            .then((response) => {
+                if (response.data) {
+                    setCouponDetails(response.data);
+                    // setCodeValidationStatus(ValidationStatus.Valid);
+                    toast.success("Coupon code applied successfully");
                 } else {
-                    setCodeValidationStatus(ValidationStatus.Invalid);
-                    setIsValidating(false);
+                    // setCodeValidationStatus(ValidationStatus.Invalid);
+                    toast.error("Invalid coupon code. Please confirm code, and try again");
                 }
-            }, 3000);
-        }
-    };
+            })
+            .catch((error) => {
+                if (error.response.data.errorCode == ApplicationError.InvalidCouponExpirationDate.Code) {
+                    toast.error("This coupon code has expired. Please get a new code, and try again");
+                    return;
+                }
+                // setCodeValidationStatus(ValidationStatus.Invalid);
+                toast.error("Invalid coupon code. Please confirm code, and try again");
+            })
+            .finally(() => {
+                setIsValidating(false);
+            });
+    }
 
     /**
      * Function to get the email input's name for each selected ticket
@@ -528,14 +552,16 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                             <input
                                                 tabIndex={1}
                                                 type="text"
+                                                name="couponCode"
                                                 id="coupon"
                                                 value={couponCodeValue}
                                                 maxLength={10}
                                                 onChange={(e) => {
                                                     setCouponCodeValue(e.target.value.trim())
+                                                    setCouponDetails(undefined)
                                                     setCodeValidationStatus(ValidationStatus.NotInitiated)
                                                 }} placeholder="Enter coupon code" />
-                                            <button className={canCodeBeValidated ? styles.active : ''} style={isValidating ? { opacity: 0.5, pointerEvents: 'none', backgroundColor: '#111111' } : {}} onClick={() => checkCoupon()}>{isValidating ? 'Checking...' : 'Apply'}</button>
+                                            <button className={canCodeBeValidated ? styles.active : ''} style={isValidating ? { opacity: 0.5, pointerEvents: 'none', backgroundColor: '#111111' } : {}} onClick={() => handleCheckCoupon()}>{isValidating ? 'Checking...' : 'Apply'}</button>
                                         </div>
                                         {codeValidationStatus === ValidationStatus.Valid && <span id={styles.valid}><CheckIcon /> Valid code</span>}
                                         {codeValidationStatus === ValidationStatus.Invalid && <span id={styles.invalid}><CloseIcon /> Invalid code. Please verify code, and try again</span>}
@@ -556,6 +582,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                 handleTicketOrderCreation={handleTicketOrderCreation}
                                 isProcessingOrder={isProcessingOrder}
                                 eventInfo={eventInfo}
+                                couponDetails={couponDetails}
                             />
                         </div>
                     </ModalWrapper>
@@ -631,13 +658,15 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                         <input
                                             type="text"
                                             id="coupon"
+                                            name="couponCode"
                                             value={couponCodeValue}
                                             maxLength={10}
                                             onChange={(e) => {
                                                 setCouponCodeValue(e.target.value.trim())
+                                                setCouponDetails(undefined)
                                                 setCodeValidationStatus(ValidationStatus.NotInitiated)
                                             }} placeholder="Enter coupon code" />
-                                        <button className={canCodeBeValidated ? styles.active : ''} style={isValidating ? { opacity: 0.5, pointerEvents: 'none', backgroundColor: '#111111' } : {}} onClick={() => checkCoupon()}>{isValidating ? 'Checking...' : 'Apply'}</button>
+                                        <button className={canCodeBeValidated ? styles.active : ''} style={isValidating ? { opacity: 0.5, pointerEvents: 'none', backgroundColor: '#111111' } : {}} onClick={() => handleCheckCoupon()}>{isValidating ? 'Checking...' : 'Apply'}</button>
                                     </div>
                                     {codeValidationStatus === ValidationStatus.Valid && <span id={styles.valid}><CheckIcon /> Valid code</span>}
                                     {codeValidationStatus === ValidationStatus.Invalid && <span id={styles.invalid}><CloseIcon /> Invalid code. Please verify code, and try again</span>}
@@ -655,6 +684,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                     eventInfo={eventInfo}
                                     eventTickets={eventTickets}
                                     totalPrice={totalPrice}
+                                    couponDetails={couponDetails}
                                 />
                             }
                             <div className={styles.actionButtons}>
