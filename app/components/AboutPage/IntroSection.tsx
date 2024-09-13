@@ -33,6 +33,7 @@ const IntroSection: FunctionComponent<IntroSectionProps> = ({ appTheme }): React
                     loop
                     muted
                     playsInline
+                    className="w-full h-full object-cover scale-110"
                     src="https://res.cloudinary.com/dvxqk1487/video/upload/v1717209808/videos/crowd_video_yrahfy.mp4"
                 />
                 <div className={styles.image}>
