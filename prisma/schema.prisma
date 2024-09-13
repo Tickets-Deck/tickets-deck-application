@@ -118,15 +118,16 @@ model Events {
     purchaseEndDate   DateTime
     allowedGuestType  String    @default("Everyone")
 
-    bookmarksCount    Int             @default(0)
-    favoritesCount    Int             @default(0)
+    bookmarksCount    Int              @default(0)
+    favoritesCount    Int              @default(0)
     bookmarks         Bookmarks[]
     favorites         Favorites[]
-    ticketOrdersCount Int             @default(0)
-    TicketOrders      TicketOrders[]
-    IsFeatured        Boolean         @default(false)
+    ticketOrdersCount Int              @default(0)
+    ticketOrders      TicketOrders[]
+    IsFeatured        Boolean          @default(false)
     transactionFee    TransactionFees? @relation(fields: [transactionFeeId], references: [id])
     transactionFeeId  String?
+    couponCodes        CouponCodes[]
 
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
@@ -357,7 +358,9 @@ model CouponCodes {
     id         String    @id @default(uuid())
     code       String    @unique
     discount   Decimal
+    maxUsage   Int       @default(10)
     validUntil DateTime
+    events     Events[]
     createdAt  DateTime? @default(now())
     updatedAt  DateTime? @updatedAt
 
