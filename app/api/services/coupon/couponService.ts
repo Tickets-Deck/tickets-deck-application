@@ -35,7 +35,7 @@ export async function verifyCouponCode(eventId: string, couponCode: string) {
   // check if the coupon code exists, still has maximum uses, and is not expired
   const coupon = await prisma.couponCodes.findFirst({
     where: {
-      code: couponCode.match(/^[0-9A-Z]+$/g)?.join(""),
+      code: couponCode.toLocaleUpperCase(),
       events: {
         some: {
           eventId: eventId,
