@@ -8,6 +8,7 @@ import { handleSuccessfulPayment } from "../payment/paymentService";
 import { processEmailNotification } from "../notification/emailNotification";
 import Paystack from "paystack";
 import { PaymentResultData } from "@/app/models/IPaymentResultData";
+import { verifyCouponCode } from "../coupon/couponService";
 
 export async function fetchOrderInformation(req: NextRequest) {
   // Get the search params from the request url
@@ -100,7 +101,24 @@ export async function initializeOrder(req: NextRequest) {
     };
   }
 
-  //* Retrieve the transaction fee from DB
+  // Retrieve the transaction fee from DB
+  const eventTransactionFee = await prisma.transactionFees.findFirst({
+    where: {
+      events: {
+        some: {
+          eventId: request.eventId,
+        },
+      },
+    },
+  });
+
+  const generalTransactionFee = await prisma.transactionFees.findFirst({
+    where: {
+      events: {
+        none: {},
+      },
+    },
+  });
 
   // Get the total price of the tickets
   const preTotalPrice = request.tickets.reduce(
@@ -108,7 +126,49 @@ export async function initializeOrder(req: NextRequest) {
     0
   );
 
-  const totalPrice = (preTotalPrice * 5.5) / 100 + preTotalPrice;
+  // declare coupon code discount
+  let couponDiscount = 0;
+
+  // if a coupon code is provided, verify the coupon code
+  if (request.couponCode) {
+    const verifiedCoupon = await verifyCouponCode(
+      request.eventId,
+      request.couponCode
+    );
+
+    if (verifiedCoupon.data) {
+      couponDiscount = Number(verifiedCoupon.data.discount);
+    } else {
+        return {
+            error: verifiedCoupon.error,
+            errorCode: verifiedCoupon.errorCode,
+            statusCode: StatusCodes.BadRequest,
+        };
+    }
+
+    // reduce the max usage of the coupon code
+    await prisma.couponCodes.update({
+      where: {
+        code: request.couponCode,
+      },
+      data: {
+        maxUsage: {
+          decrement: 1,
+        },
+      },
+    });
+  }
+
+  const transactionFeePercentage =
+    eventTransactionFee?.percentage ?? generalTransactionFee?.percentage ?? 0;
+  const flatFee =
+    eventTransactionFee?.flatFee ?? generalTransactionFee?.flatFee ?? 0;
+
+  const totalPrice =
+    (preTotalPrice * Number(transactionFeePercentage)) / 100 +
+    preTotalPrice +
+    Number(flatFee) -
+    (preTotalPrice * couponDiscount) / 100;
 
   // Create the order
   const ticketOrder = await prisma.ticketOrders.create({
