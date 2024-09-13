@@ -7,6 +7,7 @@ import ComponentLoader from "../Loader/ComponentLoader";
 import { EventResponse } from "@/app/models/IEvents";
 import moment from "moment";
 import { ApplicationContext, ApplicationContextData } from "@/app/context/ApplicationContext";
+import { CouponDetails } from "@/app/models/ICoupon";
 
 interface OrderSummarySectionProps {
     eventTickets: RetrievedTicketResponse[] | undefined
@@ -15,10 +16,11 @@ interface OrderSummarySectionProps {
     handleTicketOrderCreation(): Promise<void>
     isProcessingOrder: boolean
     eventInfo: EventResponse | undefined
+    couponDetails: CouponDetails | undefined
 }
 
 const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
-    { eventTickets, totalPrice, setVisibility,
+    { eventTickets, totalPrice, setVisibility, couponDetails,
         handleTicketOrderCreation, isProcessingOrder, eventInfo }): ReactElement => {
 
     const { transactionFees } = useContext(ApplicationContext) as ApplicationContextData;
@@ -26,11 +28,11 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
     const eventTransactionFee = transactionFees?.find((transactionFee) => transactionFee.events.find((event) => event.title == eventInfo?.title));
     const generalTransactionFee = transactionFees?.find((transactionFee) => transactionFee.events.length == 0);
 
-    const transactionFeePercentage = parseInt(eventTransactionFee?.percentage as string) || parseInt(generalTransactionFee?.percentage as string) || 0;
-    const flatFee = parseInt(eventTransactionFee?.flatFee as string) || parseInt(generalTransactionFee?.flatFee as string) || 0; 
+    const transactionFeePercentage = Number(eventTransactionFee?.percentage as string) || Number(generalTransactionFee?.percentage as string) || 0;
+    const flatFee = Number(eventTransactionFee?.flatFee as string) || Number(generalTransactionFee?.flatFee as string) || 0; 
 
     const fees = (transactionFeePercentage ? (totalPrice * transactionFeePercentage) / 100 : 0) + (flatFee || 0);
-    const totalAmountPayable = totalPrice + fees;
+    const totalAmountPayable = totalPrice + fees - (couponDetails?.discount ? (totalPrice * Number(couponDetails.discount)) / 100 : 0);
 
     return (
         <div className={styles.rhs}>
@@ -72,12 +74,12 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
                     <span className={styles.value}>&#8358;{(totalPrice)?.toLocaleString()}</span>
                 </div>
                 <div className={styles.summaryInfo__subs}>
-                    <span>Fees</span>
-                    <span className={styles.value}>&#8358;{(fees)?.toLocaleString()}</span>
+                    <span>Discount ({couponDetails?.discount ?? 0}% off)</span>
+                    <span className={styles.value}>-&nbsp;&#8358;{((totalPrice * Number(couponDetails?.discount ?? 0)) / 100).toLocaleString()}</span>
                 </div>
                 <div className={styles.summaryInfo__subs}>
-                    <span>Discount (0% off)</span>
-                    <span className={styles.value}>-&nbsp;&#8358;{(0).toLocaleString()}</span>
+                    <span>Fees</span>
+                    <span className={styles.value}>&#8358;{(fees)?.toLocaleString()}</span>
                 </div>
                 <div className={styles.summaryInfo__subs}>
                     <span>Total</span>
