@@ -461,3 +461,15 @@ export function useFetchTransactionFee() {
     
     return fetchTransactionFee;
 }
+
+export function useVerifyCouponCode() {
+    async function verifyCouponCode(eventId: string, couponCode: string) {
+        return API.get(
+            `${ApiRoutes.VerifyCouponCode}?eventId=${eventId}&couponCode=${couponCode}`
+        );
+    }
+
+    return verifyCouponCode;
+}
+
+// export  
