@@ -67,7 +67,7 @@ const MobileOrderSummarySection: FunctionComponent<MobileOrderSummarySectionProp
                 </div>
                 <div className={styles.summaryInfo__subs}>
                     <span>Total</span>
-                    <span className={styles.value}>&#8358;{(totalPrice)?.toLocaleString()}</span>
+                    <span className={styles.value}>&#8358;{(totalAmountPayable)?.toLocaleString()}</span>
                 </div>
             </div>
         </>
