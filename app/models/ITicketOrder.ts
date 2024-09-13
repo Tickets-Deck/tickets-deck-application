@@ -16,6 +16,7 @@ export interface TicketOrderRequest {
   contactPhone?: string;
   contactFirstName?: string;
   contactLastName?: string;
+  couponCode?: string;
 }
 
 //#region Responses
