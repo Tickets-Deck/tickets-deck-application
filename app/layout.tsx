@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
 import "react-quill/dist/quill.snow.css";
 import './styles/globals.scss'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/auth'
-// import Layout from './components/Layout'
 import dynamic from 'next/dynamic';
 import GlobalProvider from './components/Provider';
 import Head from 'next/head';
