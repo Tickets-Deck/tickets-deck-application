@@ -52,7 +52,8 @@
         "socket.io": "^4.7.5",
         "socket.io-client": "^4.7.5",
         "sonner": "^1.4.3",
-        "uuid": "^9.0.1"
+        "uuid": "^9.0.1",
+        "webpack": "^5.94.0"
     },
     "devDependencies": {
         "@prisma/client": "^5.18.0",
