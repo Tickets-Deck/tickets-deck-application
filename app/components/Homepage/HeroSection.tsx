@@ -106,6 +106,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({ events, isFetchingEv
                         src={imageWithPlaceholder[heroSectionImgIndex].src}
                         alt='People in event'
                         fill
+                        sizes='100vw'
                         priority
                         placeholder={"blur"}
                         blurDataURL={imageWithPlaceholder[heroSectionImgIndex].placeholder}
