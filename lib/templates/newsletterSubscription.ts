@@ -70,9 +70,9 @@ a[x-apple-data-detectors] {
                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                      <tr>
                       <td align="left" class="es-m-txt-c" style="padding:0;Margin:0;font-size:0px">
-                        <a target="_blank" href="https://ticketsdeck.netlify.app" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#3B8026;font-size:14px">
-                            <img src="https://ecqehch.stripocdn.email/content/guids/CABINET_6e6319abae3cda9440564f09b17d845e79f3612cdc02bd3c863444f15ee31c22/images/logo_white.png" alt="Logo" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" title="Logo" width="87" height="40">
-                        </a>
+                      <a target="_blank" href="https://events.ticketsdeck.com" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#3B8026;font-size:14px">
+                      <img src="https://res.cloudinary.com/dvxqk1487/image/upload/v1723533838/logo/etd-logo_gq8p9t.png" alt="Logo" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" title="Logo" width="40" height="40">
+                  </a>
                     </td>
                      </tr>
                    </table></td>
@@ -162,7 +162,7 @@ a[x-apple-data-detectors] {
 	</v:roundrect></a>
 <![endif]--><!--[if !mso]><!-- -->
 <span class="msohide es-button-border" style="border-style:solid;border-color:#2CB543;background:#8133f1;border-width:0px;display:inline-block;border-radius:30px;width:auto;mso-hide:all">
-    <a href="https://ticketsdeck.netlify.app/events" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:18px;display:inline-block;background:#8133f1;border-radius:30px;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;padding:10px 20px 10px 20px;mso-padding-alt:0;mso-border-alt:10px solid #8133F1">
+    <a href="https://events.ticketsdeck.com/events" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:18px;display:inline-block;background:#8133f1;border-radius:30px;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-weight:normal;font-style:normal;line-height:22px;width:auto;text-align:center;padding:10px 20px 10px 20px;mso-padding-alt:0;mso-border-alt:10px solid #8133F1">
         Explore Events
     </a>
 </span>

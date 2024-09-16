@@ -11,7 +11,6 @@ export class ApiRoutes {
   /**
    * The test base url for the application
    */
-  //   static BASE_URL_TEST: string = "https://ticketsdeck.netlify.app";
   static BASE_URL_TEST: string = "https://beta.events.ticketsdeck.com";
 
   /**
