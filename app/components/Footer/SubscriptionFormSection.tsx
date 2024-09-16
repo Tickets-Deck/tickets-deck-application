@@ -4,6 +4,7 @@ import { useCreateNewsletterSubscriber } from "@/app/api/apiClient";
 import { ToastContext } from "@/app/extensions/toast";
 import { emailRegex } from "@/app/constants/emailRegex";
 import ComponentLoader from "../Loader/ComponentLoader";
+import { ApplicationError } from "@/app/constants/applicationError";
 
 
 interface SubscriptionFormSectionProps {
@@ -54,6 +55,12 @@ const SubscriptionFormSection: FunctionComponent<SubscriptionFormSectionProps> =
             })
             .catch((error) => {
                 console.log(error);
+                if(error.response) {
+                    if(error.response.data.errorCode == ApplicationError.UserWithEmailAlreadyExists.Code) {
+                        setEmailMsg({ value: 'You have already subscribed to our mailing list.', status: SubscriptionMsgStatus.Error });
+                    }
+                    return;
+                } 
                 switch (error.response?.data.error) { 
                     case "Email is not valid":
                         setEmailMsg({ value: 'Please input a valid email', status: SubscriptionMsgStatus.Error });
