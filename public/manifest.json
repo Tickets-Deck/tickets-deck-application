@@ -5,6 +5,21 @@
     "description": "Global self-service event ticketing platform",
     "icons": [
       {
+        "src": "./etd_logo_16.png",
+        "sizes": "16x16",
+        "type": "image/png"
+      },
+      {
+        "src": "./etd_logo_32.png",
+        "sizes": "32x32",
+        "type": "image/png"
+      },
+      {
+        "src": "./etd_logo_48.png",
+        "sizes": "48x48",
+        "type": "image/png"
+      },
+      {
         "src": "./etd_logo_72.png",
         "sizes": "72x72",
         "type": "image/png"
