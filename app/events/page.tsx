@@ -80,6 +80,17 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
                 subText="Dear superstar, below is a list of all events available at the moment."
                 isFetchingEvents={isFetchingEvents}
             />
+
+            {
+                events.some(event => new Date(event.date) < new Date()) &&
+                <EventsGroup
+                    eventsData={events}
+                    title="Past Events"
+                    subText="Browse through our collection of past events."
+                    isFetchingEvents={isFetchingEvents}
+                    forPastEvents
+                />
+            }
         </div>
     );
 }
