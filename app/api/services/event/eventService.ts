@@ -376,18 +376,18 @@ export async function fetchEvents(req: NextRequest) {
     // Show only public events that are not yet over (both event date and end date for tickets purchase)
     where: {
       visibility: "PUBLIC",
-      OR: [
-        {
-          date: {
-            gte: new Date(),
-          },
-        },
-        {
-          purchaseEndDate: {
-            gte: new Date(),
-          },
-        },
-      ],
+    //   OR: [
+    //     {
+    //       date: {
+    //         gte: new Date(),
+    //       },
+    //     },
+    //     {
+    //       purchaseEndDate: {
+    //         gte: new Date(),
+    //       },
+    //     },
+    //   ],
     },
     orderBy: {
       date: "asc",
