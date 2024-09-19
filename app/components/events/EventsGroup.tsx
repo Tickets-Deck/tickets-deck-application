@@ -19,11 +19,12 @@ interface EventsGroupProps {
     isFetchingEvents?: boolean
     setIsDeleteConfirmationModalVisible?: Dispatch<SetStateAction<boolean>>
     setSelectedEvent?: Dispatch<SetStateAction<EventResponse | undefined>>
+    forPastEvents?: boolean
 }
 
 const EventsGroup: FunctionComponent<EventsGroupProps> = (
     { title, subText, eventsData, consoleDisplay, isFetchingEvents,
-        setIsDeleteConfirmationModalVisible, setSelectedEvent }): ReactElement => {
+        setIsDeleteConfirmationModalVisible, setSelectedEvent, forPastEvents }): ReactElement => {
 
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
@@ -57,7 +58,9 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
             <div className={styles.eventsContainer}>
                 <div className={styles.eventsContainerCarousel}>
                     {
-                        !isFetchingEvents && (eventsData && eventsData?.length > 0) && eventsData.map((event, index) =>
+                        !isFetchingEvents &&
+                        (eventsData && eventsData?.length > 0) &&
+                        eventsData.filter(event => forPastEvents ? new Date(event.date) < new Date() : new Date(event.date) >= new Date()).map((event, index) =>
                             <EventCard
                                 event={event}
                                 mobileAndActionButtonDismiss
