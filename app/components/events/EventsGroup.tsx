@@ -33,7 +33,6 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
 
     const { push } = useRouter();
 
-
     return (
         <section className={consoleDisplay ? styles.allUserEvents : styles.allEvents}>
             <div className={styles.topArea}>
@@ -60,7 +59,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = (
                     {
                         !isFetchingEvents &&
                         (eventsData && eventsData?.length > 0) &&
-                        eventsData.filter(event => forPastEvents ? new Date(event.date) < new Date() : new Date(event.date) >= new Date()).map((event, index) =>
+                        eventsData.filter(event => consoleDisplay ? event : forPastEvents ? new Date(event.date) < new Date() : new Date(event.date) >= new Date()).map((event, index) =>
                             <EventCard
                                 event={event}
                                 mobileAndActionButtonDismiss
