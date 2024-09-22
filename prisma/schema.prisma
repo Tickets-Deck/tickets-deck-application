@@ -11,6 +11,33 @@ datasource db {
     // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+enum EventVisibility {
+    PUBLIC
+    PRIVATE
+
+    @@map("EventVisibility")
+}
+
+enum OrderStatus {
+    Pending          @map("1")
+    PaymentInitiated @map("2")
+    Confirmed        @map("3")
+    Cancelled        @map("4")
+}
+
+enum PaymentStatus {
+    Pending @map("1")
+    Paid    @map("2")
+    Failed  @map("3")
+}
+
+enum PaymentServiceProvider {
+    Paystack     @map("1")
+    Flutterwave  @map("2")
+    Cash         @map("3")
+    BankTransfer @map("4")
+}
+
 model TransactionFees {
     id         String    @id @default(uuid())
     percentage Decimal
@@ -124,10 +151,11 @@ model Events {
     favorites         Favorites[]
     ticketOrdersCount Int              @default(0)
     ticketOrders      TicketOrders[]
-    IsFeatured        Boolean          @default(false)
+    isFeatured        Boolean          @default(false)
+    isArchived        Boolean          @default(false)
     transactionFee    TransactionFees? @relation(fields: [transactionFeeId], references: [id])
     transactionFeeId  String?
-    couponCodes        CouponCodes[]
+    couponCodes       CouponCodes[]
 
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
@@ -173,6 +201,8 @@ model OrderedTickets {
     price           Decimal
     orderStatus     OrderStatus
     paymentId       String?
+    checkedIn       Boolean      @default(false)
+    checkedInTime   DateTime?
     createdAt       DateTime?    @default(now())
     updatedAt       DateTime?    @updatedAt
 
@@ -268,33 +298,6 @@ model Locations {
     @@map("Locations")
 }
 
-enum EventVisibility {
-    PUBLIC
-    PRIVATE
-
-    @@map("EventVisibility")
-}
-
-enum OrderStatus {
-    Pending          @map("1")
-    PaymentInitiated @map("2")
-    Confirmed        @map("3")
-    Cancelled        @map("4")
-}
-
-enum PaymentStatus {
-    Pending @map("1")
-    Paid    @map("2")
-    Failed  @map("3")
-}
-
-enum PaymentServiceProvider {
-    Paystack     @map("1")
-    Flutterwave  @map("2")
-    Cash         @map("3")
-    BankTransfer @map("4")
-}
-
 model EventImages {
     id       String @id @default(uuid())
     imageUrl String
@@ -316,7 +319,7 @@ model Tickets {
     numberOfUsers     Int
     description       String?
     ticketOrdersCount Int              @default(0)
-    TicketOrders      OrderedTickets[]
+    ticketOrders      OrderedTickets[]
     createdAt         DateTime?        @default(now())
     updatedAt         DateTime?        @updatedAt
 
