@@ -34,6 +34,11 @@ export class ApiRoutes {
   static Orders: string = "api/events/orders";
 
   /**
+   * The route to Check-in an order
+   */
+  static CheckInTicketOrder: string = "api/events/check-in";
+
+  /**
    * The route to Users endpoint
    */
   static Users: string = "api/users";
@@ -154,8 +159,8 @@ export class ApiRoutes {
    */
   static TransactionFee: string = "api/transaction-fees";
 
-    /**
-     * The route to Verify Coupon Code endpoint
-     */
-    static VerifyCouponCode: string = "api/verify-coupon";
+  /**
+   * The route to Verify Coupon Code endpoint
+   */
+  static VerifyCouponCode: string = "api/verify-coupon";
 }
