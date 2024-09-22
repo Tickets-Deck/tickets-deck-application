@@ -32,8 +32,6 @@ export enum TicketTab {
 
 const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
 
-    // const router = useRouter();
-
     const fetchUserTicketOrders = useFetchUserTicketOrders();
     const params = useSearchParams();
     const tab = params.get('t');
@@ -41,7 +39,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
     const userInfo = useSelector((state: RootState) => state.userCredentials.userInfo);
     const [selectedTicketTab, setSelectedTicketTab] = useState<TicketTab>(tab == "0" ? TicketTab.Bought : TicketTab.Sold);
     const [isFetchingUserTicketOrders, setIsFetchingUserTicketOrders] = useState(true);
-    const [userTicketOrder, setUserTicketOrders] = useState<UserTicketOrder[]>([]);
+    const [userTicketOrders, setUserTicketOrders] = useState<UserTicketOrder[]>([]);
 
     // const [selectedTicketOrder, setSelectedTicketOrder] = useState<UserTicketOrder>();
     const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] = useState<TicketPass>();
@@ -107,7 +105,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
         setSelectedTicketOrderInfo({
             ticketType: ticketOrder.ticket.name,
             eventInfo: ticketOrder.ticket.event,
-            qr: <QRCode value={ticketOrder?.contactEmail as string} />,
+            qr: <QRCode value={ticketOrder?.orderId as string} />,
             orderId: ticketOrder?.orderId as string
         });
     };
@@ -226,7 +224,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                             </tr>
 
                             {
-                                userTicketOrder.map((userTicketOrder, index) => {
+                                userTicketOrders.map((userTicketOrder, index) => {
                                     return (
                                         <tr key={index}>
                                             <td>{userTicketOrder.ticket.event.title}</td>
@@ -243,17 +241,22 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                                             </td>
                                             {
                                                 selectedTicketTab === TicketTab.Bought &&
-                                                <td className={styles.actionsDropdownContainer}>
-                                                    <button onClick={() => showTicketUi(userTicketOrder)}>View Info</button>
-                                                    <span
-                                                        onClick={() => {
-                                                            handleSelectPdfForDownload(userTicketOrder)
-                                                        }}
-                                                        style={isDownloadingPdf ? { opacity: 0.45, pointerEvents: 'none' } : {}}>
-                                                        <DownloadIcon />
-                                                        {/* {isDownloadingPdf && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />} */}
-                                                    </span>
-                                                </td>
+                                                <>
+                                                    {
+                                                        userTicketOrder.orderStatus === OrderStatus.Confirmed ?
+                                                        <td className={styles.actionsDropdownContainer}>
+                                                            <button onClick={() => showTicketUi(userTicketOrder)}>View Info</button>
+                                                            <span
+                                                                onClick={() => {
+                                                                    handleSelectPdfForDownload(userTicketOrder)
+                                                                }}
+                                                                style={isDownloadingPdf ? { opacity: 0.45, pointerEvents: 'none' } : {}}>
+                                                                <DownloadIcon />
+                                                                {/* {isDownloadingPdf && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />} */}
+                                                            </span>
+                                                        </td> : <td></td>
+                                                    }
+                                                </>
                                             }
                                         </tr>
                                     )
@@ -263,13 +266,13 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                     </table>
 
                     {
-                        userTicketOrder.length == 0 && !isFetchingUserTicketOrders &&
+                        userTicketOrders.length == 0 && !isFetchingUserTicketOrders &&
                         <div className={styles.tableInfoUnavailable}>
                             <p>There is no data available</p>
                         </div>
                     }
                     {
-                        userTicketOrder.length == 0 && isFetchingUserTicketOrders &&
+                        userTicketOrders.length == 0 && isFetchingUserTicketOrders &&
                         <div className={styles.tableLoader}>
                             <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />
                         </div>
