@@ -108,30 +108,39 @@ const EventCard: FunctionComponent<EventCardProps> = (
                         </p>
                     </div>}
             </div>
-            <div className={styles.actionBtnContainer}>
-                {
-                    consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
-                    <Link href={`/app/event/edit/${event.id}`} className={styles.noStyle}>
-                        <button className={styles.editBtn}>
-                            <EditIcon />
-                        </button>
+            {
+                consoleDisplay && new Date(event.date).getDate() == new Date().getDate() ?
+                    <Link
+                        href={ApplicationRoutes.CheckIn(event.id)}
+                        className="p-2 rounded-lg bg-white text-dark-grey w-full text-center">
+                        Check In
                     </Link>
-                }
-                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
-                    <button>View details</button>
-                </Link>
-                {
-                    consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
-                    <button
-                        className={styles.deleteBtn}
-                        onClick={() => {
-                            setSelectedEvent(event)
-                            setIsDeleteConfirmationModalVisible(true)
-                        }}>
-                        <DeleteIcon />
-                    </button>
-                }
-            </div>
+                    :
+                    <div className={styles.actionBtnContainer}>
+                        {
+                            consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
+                            <Link href={`${ApplicationRoutes.EditEvent}/${event.id}`} className={styles.noStyle}>
+                                <button className={styles.editBtn}>
+                                    <EditIcon />
+                                </button>
+                            </Link>
+                        }
+                        <Link href={consoleDisplay ? `${ApplicationRoutes.Event}/${event.id}` : `/event/${event.id}`}>
+                            <button>View details</button>
+                        </Link>
+                        {
+                            consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
+                            <button
+                                className={styles.deleteBtn}
+                                onClick={() => {
+                                    setSelectedEvent(event)
+                                    setIsDeleteConfirmationModalVisible(true)
+                                }}>
+                                <DeleteIcon />
+                            </button>
+                        }
+                    </div>
+            }
         </div>
     );
 }
