@@ -46,6 +46,33 @@ const EventCard: FunctionComponent<EventCardProps> = (
             });
     }
 
+    // const isEventNow = (eventDate: string, eventTime: string) => {
+    //     // Parse the event date (assuming it's in ISO format with "T00:00:00.000Z")
+    //     const eventDateObj = new Date(eventDate);
+
+    //     // Split the time into hours and minutes, converting the 12-hour format to 24-hour
+    //     const [time, modifier] = eventTime.split(/([APap][Mm])/); // Split by 'am' or 'pm'
+    //     let [hours, minutes] = time.split(':');
+    //     hours = parseInt(hours, 10);
+
+    //     // Adjust hours based on AM/PM
+    //     if (modifier.toLowerCase() === 'pm' && hours !== 12) {
+    //         hours += 12;
+    //     }
+    //     if (modifier.toLowerCase() === 'am' && hours === 12) {
+    //         hours = 0;
+    //     }
+
+    //     // Set the hours and minutes in the event date object
+    //     eventDateObj.setUTCHours(hours, minutes);
+
+    //     // Get the current date and time for comparison
+    //     const currentDateTime = new Date();
+
+    //     // Compare both date and time (down to milliseconds)
+    //     return eventDateObj.getTime() === currentDateTime.getTime();
+    // };
+
     return (
         <div className={`${appTheme == Theme.Light ? styles.eventLightTheme : styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
             {/* <div className={styles.backgroundImage}>
@@ -111,7 +138,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
             {
                 consoleDisplay && new Date(event.date).getDate() == new Date().getDate() ?
                     <Link
-                        href={ApplicationRoutes.CheckIn(event.id)}
+                        href={ApplicationRoutes.CheckIn(event.id, event.title.replace(/ /g, '-'))}
                         className="p-2 rounded-lg bg-white text-dark-grey w-full text-center">
                         Check In
                     </Link>
