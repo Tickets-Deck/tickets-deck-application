@@ -16,10 +16,10 @@ interface CheckInPageProps {
 const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
 
     const checkInTicketOrder = useCheckInTicketOrder();
-    const fetchEventById = useFetchEventById();
 
     const searchParams = useSearchParams();
     const eventId = searchParams.get('id');
+    const eventTitle = searchParams.get('name')?.replace(/-/g, ' ');
 
     const { data: session } = useSession();
     const user = session?.user;
@@ -146,8 +146,8 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
 
     return (
         <main className="px-4 py-8 min-h-screen">
-            <div className="mb-3">
-                <h2 className="text-2xl font-medium text-gray-300">Summer Pool Party Check In page</h2>
+            <div className="mb-5">
+                <h2 className="text-2xl font-medium text-gray-300">{eventTitle} Attendees Check-In</h2>
             </div>
             <div className="flex flex-col mb-5">
                 <p className="mb-1">Please scan attendee QR code to continue</p>
