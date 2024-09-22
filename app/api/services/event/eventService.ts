@@ -6,6 +6,7 @@ import { NextRequest } from "next/server";
 import cloudinary from "cloudinary";
 import { deserializeEventVisibility } from "@/app/constants/serializer";
 import { EventVisibility } from "@/app/enums/IEventVisibility";
+import { OrderStatus } from "@/app/enums/IOrderStatus";
 
 export async function createEvent(req: NextRequest) {
   // Get the request body
@@ -376,18 +377,18 @@ export async function fetchEvents(req: NextRequest) {
     // Show only public events that are not yet over (both event date and end date for tickets purchase)
     where: {
       visibility: "PUBLIC",
-    //   OR: [
-    //     {
-    //       date: {
-    //         gte: new Date(),
-    //       },
-    //     },
-    //     {
-    //       purchaseEndDate: {
-    //         gte: new Date(),
-    //       },
-    //     },
-    //   ],
+      //   OR: [
+      //     {
+      //       date: {
+      //         gte: new Date(),
+      //       },
+      //     },
+      //     {
+      //       purchaseEndDate: {
+      //         gte: new Date(),
+      //       },
+      //     },
+      //   ],
     },
     orderBy: {
       date: "asc",
@@ -887,4 +888,117 @@ export async function fetchFeaturedEvents(req: NextRequest) {
 
   // Return all events
   return { data: eventResponse };
+}
+
+export async function checkInAttendee(req: NextRequest) {
+  // Get the search params from the request url
+  const searchParams = new URLSearchParams(req.url.split("?")[1]);
+
+  // Get the ticketOrderId from the search params
+  const ticketOrderId = searchParams.get("ticketOrderId");
+
+  // Get the eventId from the search params
+  const eventId = searchParams.get("eventId");
+
+  // If a ticketOrderId or eventId is not provided, return 400
+  if (!ticketOrderId || !eventId) {
+    return {
+      error: ApplicationError.MissingRequiredParameters.Text,
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // check if the event has not ended
+  const event = await prisma.events.findUnique({
+    where: {
+      id: eventId,
+    },
+    select: {
+      // ticketOrders: true
+      date: true,
+    },
+  });
+
+  // check if date is today
+  if (new Date(event?.date as Date).getDate() !== new Date().getDate()) {
+    return {
+      error: "Event date isn't today",
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // check for the ticket order
+  const ticketOrder = await prisma.ticketOrders.findUnique({
+    where: {
+      orderId: ticketOrderId,
+    //   event: {
+    //     eventId
+    //   },
+    //   orderStatus: OrderStatus.Confirmed
+    },
+    select: {
+      tickets: {
+        include: {
+          ticket: true,
+        },
+      },
+    },
+  });
+
+  // if the ticket order was not found, return error
+  if (!ticketOrder) {
+    return {
+      error: ApplicationError.TicketOrderWithIdNotFound.Text,
+      errorCode: ApplicationError.TicketOrderWithIdNotFound.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  const orderedTickets = ticketOrder.tickets;
+
+  // check if every ordered ticket has been checked in
+  if (orderedTickets.every((orderedTicket) => orderedTicket.checkedIn)) {
+    return {
+      error: ApplicationError.TicketOrderHasBeenCheckedIn.Text,
+      errorCode: ApplicationError.TicketOrderHasBeenCheckedIn.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // if the ticket order has a single ticket, check user in
+  if (orderedTickets.length == 1) {
+    // check if this ticket order has not being checked-in before
+    // if (orderedTickets[0].checkedIn) {
+    //   return {
+    //     error: ApplicationError.TicketOrderHasBeenCheckedIn.Text,
+    //     errorCode: ApplicationError.TicketOrderHasBeenCheckedIn.Code,
+    //     statusCode: StatusCodes.BadRequest,
+    //   };
+    // }
+
+    // check in the attendee
+    const updatedOrderedTicket = await prisma.orderedTickets.update({
+      where: {
+        id: orderedTickets[0].id,
+      },
+      data: {
+        checkedIn: true,
+        checkedInTime: new Date(),
+      },
+    });
+
+    // return the response
+    return { message: "Attendee checked-in successfully", data: updatedOrderedTicket };
+  }
+
+  // if the ticket has multiple tickets, return the tickets so the organizer can verify which to check in
+  const _orderedTickets = orderedTickets.map((eachOrderedTicket) => {
+    ticket: eachOrderedTicket.ticket.name;
+    checkedIns: eachOrderedTicket.checkedIn;
+  });
+
+  // return the response
+  return { data: _orderedTickets };
 }
