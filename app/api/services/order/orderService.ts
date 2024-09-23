@@ -4,7 +4,6 @@ import { TicketOrderRequest } from "@/app/models/ITicketOrder";
 import { prisma } from "@/lib/prisma";
 import { OrderStatus, PaymentStatus } from "@prisma/client";
 import { NextRequest } from "next/server";
-import { handleSuccessfulPayment } from "../payment/paymentService";
 import { processEmailNotification } from "../notification/emailNotification";
 import Paystack from "paystack";
 import { PaymentResultData } from "@/app/models/IPaymentResultData";
