@@ -246,14 +246,13 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                                                         userTicketOrder.orderStatus === OrderStatus.Confirmed ?
                                                         <td className={styles.actionsDropdownContainer}>
                                                             <button onClick={() => showTicketUi(userTicketOrder)}>View Info</button>
-                                                            <span
+                                                            {/* <span
                                                                 onClick={() => {
                                                                     handleSelectPdfForDownload(userTicketOrder)
                                                                 }}
                                                                 style={isDownloadingPdf ? { opacity: 0.45, pointerEvents: 'none' } : {}}>
                                                                 <DownloadIcon />
-                                                                {/* {isDownloadingPdf && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />} */}
-                                                            </span>
+                                                            </span> */}
                                                         </td> : <td></td>
                                                     }
                                                 </>
