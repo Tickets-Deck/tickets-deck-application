@@ -15,7 +15,8 @@ import { processEmailNotification } from "../notification/emailNotification";
 
 // Function to handle successful payment result
 export async function handleSuccessfulPayment(
-  paymentResult: Paystack.Response
+  paymentResult: Paystack.Response,
+  baseUrl: string
 ) {
   try {
     const { data } = paymentResult;
@@ -56,8 +57,6 @@ export async function handleSuccessfulPayment(
         orderId: existingTicketOrder.orderId,
       },
     });
-
-    // console.log("orderedTickets", orderedTickets);
 
     const existingPayment = await prisma.payments.findFirst({
       where: {
@@ -201,6 +200,9 @@ export async function handleSuccessfulPayment(
         },
       });
     }
+
+    // Process the email notification to the user
+    await processEmailNotification(paymentResult, baseUrl);
 
     return { data: paymentResult.data };
   } catch (error) {
@@ -356,6 +358,7 @@ export async function processPayment(req: NextRequest) {
 }
 
 export async function verifyPayment(req: NextRequest) {
+    
   // Get the search params from the request url
   const searchParams = new URLSearchParams(req.url.split("?")[1]);
 
@@ -403,12 +406,7 @@ export async function verifyPayment(req: NextRequest) {
   // If the payment is successful...
   if (paymentResult.status === true) {
     // Process the payment result
-    await handleSuccessfulPayment(paymentResult);
-
-    // Process the email notification to the user
-    await processEmailNotification(paymentResult, baseUrl);
-
-    //   console.log("Payment result data: ", paymentResult.data);
+    await handleSuccessfulPayment(paymentResult, baseUrl);
 
     return { data: paymentResult.data };
   } else {
