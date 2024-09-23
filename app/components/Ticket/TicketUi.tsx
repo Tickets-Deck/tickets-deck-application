@@ -1,36 +1,37 @@
-import { FunctionComponent, LegacyRef, MouseEvent, ReactElement, RefObject, useRef } from "react";
+import { Dispatch, FunctionComponent, LegacyRef, MouseEvent, ReactElement, RefObject, SetStateAction, useRef } from "react";
 import styles from "@/app/styles/components/TicketUi.module.scss";
 import Image from "next/image";
 import { TicketPass } from "@/app/models/ITicketPass";
 import moment from "moment";
 // import domtoimage from 'dom-to-image';
-// import { saveAs } from 'file-saver';
+import { saveAs } from 'file-saver';
 import html2canvas from 'html2canvas';
 
 
 interface TicketUiProps {
     ticketInfo: TicketPass
+    setIsTicketVisible?: Dispatch<SetStateAction<boolean>>
 }
 
-const TicketUi: FunctionComponent<TicketUiProps> = ({ ticketInfo }): ReactElement => {
+const TicketUi: FunctionComponent<TicketUiProps> = ({ ticketInfo, setIsTicketVisible }): ReactElement => {
 
     const pdfRef = useRef<HTMLDivElement>(null);
 
     const captureTicketForDownload = async () => {
         if (pdfRef.current) {
-            console.log("Capturing 2 ...");
             try {
                 // Capture the div as a canvas
                 const canvas = await html2canvas(pdfRef.current);
                 const image = canvas.toDataURL('image/png');
+                saveAs(image, `${ticketInfo.eventInfo.title}-${ticketInfo.ticketType}` + '.png');
 
                 // Create an anchor element to download the image
-                const link = document.createElement('a');
-                link.href = image;
-                link.download = `${ticketInfo.eventInfo.title}-${ticketInfo.ticketType}` + '.png';
-                document.body.appendChild(link); // Append the link to the body
-                link.click(); // Trigger the download
-                document.body.removeChild(link); // Remove the link after download
+                // const link = document.createElement('a');
+                // link.href = image;
+                // link.download = `${ticketInfo.eventInfo.title}-${ticketInfo.ticketType}` + '.png';
+                // document.body.appendChild(link); // Append the link to the body
+                // link.click(); // Trigger the download
+                // document.body.removeChild(link); // Remove the link after download
             } catch (error) {
                 console.error('Error capturing or downloading the image:', error);
             }
@@ -39,7 +40,7 @@ const TicketUi: FunctionComponent<TicketUiProps> = ({ ticketInfo }): ReactElemen
 
     // const captureTicketForDownload = async (e: MouseEvent) => {
     //     e.preventDefault();
-        
+
     //     await domtoimage.toJpeg(pdfRef.current as Node)
     //         .then((dataUrl) => {
     //             console.log("dataUrl: ", dataUrl);
@@ -48,7 +49,7 @@ const TicketUi: FunctionComponent<TicketUiProps> = ({ ticketInfo }): ReactElemen
     // }
 
     return (
-        <>
+        <div className="flex flex-col">
             <div className={styles.ticketContainer} id="capture" ref={pdfRef}>
                 <div className={styles.topSection}>
                     <h3>{ticketInfo.eventInfo.title}</h3>
@@ -58,7 +59,6 @@ const TicketUi: FunctionComponent<TicketUiProps> = ({ ticketInfo }): ReactElemen
                 </div>
                 <div className="bg-primary-color text-white flex flex-col items-center justify-center py-2">
                     <h1 className="text-xl">{ticketInfo.ticketType}</h1>
-                    {/* <p>~ Simlex</p> */}
                 </div>
                 <div className={styles.eventInfo}>
                     <div className="flex flex-col md:flex-row items-center justify-between text-black mb-2">
@@ -90,13 +90,24 @@ const TicketUi: FunctionComponent<TicketUiProps> = ({ ticketInfo }): ReactElemen
                     <p className="text-base text-black text-center">Order #{ticketInfo.orderId}</p>
                 </div>
             </div>
-            <button
-                className="bg-primary-color text-white py-2 px-4 rounded-lg mt-2 mx-auto"
-                onClick={(e) => captureTicketForDownload()}
-            >
-                Download
-            </button>
-        </>
+            <div className="flex flex-row mx-auto mt-2 gap-3">
+                {
+                    setIsTicketVisible &&
+                    <button
+                        className="bg-white text-dark-grey py-2 px-4 rounded-full"
+                        onClick={() => setIsTicketVisible(false)}
+                    >
+                        Close
+                    </button>
+                }
+                <button
+                    className="bg-primary-color text-white py-2 px-4 rounded-full"
+                    onClick={(e) => captureTicketForDownload()}
+                >
+                    Download
+                </button>
+            </div>
+        </div>
     );
 }
 
