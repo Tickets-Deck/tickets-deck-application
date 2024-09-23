@@ -176,12 +176,16 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
 
     return (
         <>
-            <ModalWrapper visibility={isTicketVisible && (selectedTicketOrderInfo !== undefined)} setVisibility={setIsTicketVisible} styles={{ backgroundColor: '#fff', borderRadius: '24px', color: '#fff', width: "fit-content" }}>
+            <ModalWrapper 
+            visibility={isTicketVisible && (selectedTicketOrderInfo !== undefined)} 
+            setVisibility={setIsTicketVisible} 
+            styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content", overflowY: "auto", maxHeight: "100vh", paddingTop: "50px", paddingBottom: "50px" }}>
                 <div className={styles.ticketUIModal} ref={pdfRef}>
                     {
                         selectedTicketOrderInfo &&
                         <TicketUi
                             ticketInfo={selectedTicketOrderInfo}
+                            setIsTicketVisible={setIsTicketVisible}
                         />
                     }
                     {/* {
