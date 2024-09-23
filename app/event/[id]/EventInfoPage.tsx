@@ -80,7 +80,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
             .then((response) => {
 
                 // Log the result
-                console.log("Events: ", response.data);
+                // console.log("Events: ", response.data);
 
                 // Set the event results
                 let _eventInfo = response.data;
