@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "sonner"
 import { ApplicationError } from "@/app/constants/applicationError";
 import { FullPageLoader } from "@/app/components/Loader/ComponentLoader";
+import { MultipleTickets } from "@/app/models/ICheckIn";
 
 interface CheckInPageProps {
 
@@ -24,7 +25,7 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
     const { data: session } = useSession();
     const user = session?.user;
 
-    const [checkInErrorModal, setCheckInErrorModal] = useState(false);
+    const [multipleCheckInModalVisibility, setMultipleCheckInModalVisibility] = useState(false);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     const [scannedAccessCode, setScannedAccessCode] = useState<string | null>(null);
@@ -32,14 +33,22 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
     const [scanError, setScanError] = useState<string | null>(null);
     const [beginScan, setBeginScan] = useState(false);
     const [isCheckingIn, setIsCheckingIn] = useState(false);
+    
+    const [multipleTickets, setMultipleTickets] = useState<MultipleTickets[]>();
+    const [ticketOrderAccessCode, setTicketOrderAccessCode] = useState<string | null>(null);
 
     const handleAccessCodeValidation = async () => {
 
         setIsCheckingIn(true);
+        setTicketOrderAccessCode(scannedAccessCode);
 
         await checkInTicketOrder(scannedAccessCode as string, eventId as string)
             .then((response) => {
                 console.log("Check in response: ", response);
+                if (response.data) {
+                    setMultipleTickets(response.data);
+                    return;
+                }
                 toast.success("Check-in successful");
             })
             .catch((error) => {
@@ -54,6 +63,7 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
                         toast.error("This ticket order has been checked in.");
                         return;
                     }
+                    toast.error("An error occurred while checking in. Please try again.");
                 }
             })
             .finally(() => {
@@ -144,6 +154,18 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
         handleAccessCodeValidation();
     }, [scannedAccessCode, eventId]);
 
+    useEffect(() => {
+        if (multipleTickets) {
+            setMultipleCheckInModalVisibility(true);
+        }
+    }, [multipleTickets])
+
+    useEffect(() => { 
+        if (!multipleCheckInModalVisibility) {
+            setTicketOrderAccessCode(null);
+        }
+    }, [multipleCheckInModalVisibility])
+
     return (
         <main className="px-4 py-8 min-h-screen">
             <div className="mb-5">
@@ -209,9 +231,11 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
             }
 
             <CheckInModal
-                visibility={checkInErrorModal}
-                setVisibility={setCheckInErrorModal}
-                name={user?.name ?? user?.username}
+                visibility={multipleCheckInModalVisibility}
+                setVisibility={setMultipleCheckInModalVisibility}
+                multipleTickets={multipleTickets}
+                ticketOrderAccessCode={ticketOrderAccessCode}
+                eventId={eventId}
             />
         </main>
     );
