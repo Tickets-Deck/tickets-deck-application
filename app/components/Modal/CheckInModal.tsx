@@ -71,7 +71,7 @@ const CheckInModal: FunctionComponent<CheckInModalProps> = (
                                 <input
                                     type="checkbox"
                                     disabled={ticket.checkedIn}
-                                    className="absolute w-full h-full cursor-pointer top-0 left-0 m-auto appearance-none checked:bg-primary-color checked:rounded disabled:pointer-events-none"
+                                    className="absolute w-full h-full cursor-pointer top-0 left-0 m-auto appearance-none checked:bg-primary-color checked:rounded disabled:bg-primary-color disabled:pointer-events-none"
                                     onClick={() => {
                                         if (selectedTickets.includes(ticket.id)) {
                                             setSelectedTickets(selectedTickets.filter(selectedTicket => selectedTicket !== ticket.id));
