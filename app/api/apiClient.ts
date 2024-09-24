@@ -110,6 +110,16 @@ export function useCheckInTicketOrder() {
   return checkInTicketOrder;
 }
 
+export function useCheckInMultipleTicketOrders() {
+  async function checkInMultipleTicketOrders(ticketOrderId: string, eventId: string, orderIds: string[]) {
+    return API.post(
+      `${ApiRoutes.CheckInMultipleTicketOrder}?ticketOrderId=${ticketOrderId}&eventId=${eventId}`, { orderIds }
+    );
+  }
+
+  return checkInMultipleTicketOrders;
+}
+
 export function useUpdateEventById() {
   async function updateEventById(id: string, data: EventRequest) {
     return API.put(`${ApiRoutes.Events}?id=${id}`, data);
