@@ -39,6 +39,11 @@ export class ApiRoutes {
   static CheckInTicketOrder: string = "api/events/check-in";
 
   /**
+   * The route to Check-in multiple orders
+   */
+  static CheckInMultipleTicketOrder: string = "api/events/check-in/multiple";
+
+  /**
    * The route to Users endpoint
    */
   static Users: string = "api/users";
