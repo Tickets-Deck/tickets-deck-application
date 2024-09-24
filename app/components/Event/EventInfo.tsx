@@ -46,36 +46,6 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
 
     const [isEventLiked, setIsEventLiked] = useState(false);
 
-    // function shareEvent(eventUrl: string) {
-    //     // const eventURL = window.location.href;
-    //     // If we are using a mobile device
-    //     if (onMobile) {
-    //         if (navigator.share) {
-    //             navigator.share({
-    //                 title: "Check out this event!",
-    //                 text: "I found this amazing event. You should check it out!",
-    //                 url: eventUrl
-    //             })
-    //                 .then(() => console.log("Shared successfully"))
-    //                 .catch(error => console.log("Sharing failed:", error));
-    //         } else {
-    //             navigator.clipboard.writeText(eventUrl);
-    //             toasthandler?.logSuccess('Event link copied.', `The link to ${event.title} has been copied.`)
-    //             console.log("Web Share API not supported");
-    //         }
-    //     }
-    //     if (onDesktop) {
-    //         try {
-    //             navigator.clipboard.writeText(eventUrl);
-    //             toasthandler?.logSuccess('Event link copied.', `The link to ${event.title} has been copied.`)
-    //             console.log("Link copied successfully")
-    //         } catch (error) {
-    //             console.error("Copying to clipboard failed:", error);
-    //         }
-
-    //     }
-    // }
-
     async function shareEvent() {
         const eventUrl = `${window.location.origin + ApplicationRoutes.GeneralEvent + eventInfo.id}`;
 
@@ -172,23 +142,24 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                                 </div>
                                 :
                                 <div className={styles.bottomArea}>
-                                    {eventInfo && eventInfo?.tickets == null ?
-                                        <>
-                                            <div className={styles.priceArea}>
-                                                <span>Ticket price:</span>
-                                                {/* <h2>&#8358;{eventInfo?.ticketPrice.amount.toLocaleString()}</h2> */}
-                                            </div>
-                                            <button>Purchase your ticket(s)</button>
-                                        </>
-                                        :
-                                        <ScrollLink
-                                            to="optionalSection"
-                                            smooth={true}
-                                            duration={200}
-                                            offset={-100}
-                                            onClick={() => setTicketsSelectionContainerIsVisible && setTicketsSelectionContainerIsVisible(true)}>
-                                            <button>Get available tickets</button>
-                                        </ScrollLink>
+                                    {
+                                        eventInfo && eventInfo?.tickets == null ?
+                                            <>
+                                                {/* <div className={styles.priceArea}>
+                                                    <span>Ticket price:</span>
+                                                    <h2>&#8358;{eventInfo?.ticketPrice.amount.toLocaleString()}</h2>
+                                                </div> */}
+                                                {/* <button>Purchase your ticket(s)</button> */}
+                                            </>
+                                            :
+                                            <ScrollLink
+                                                to="optionalSection"
+                                                smooth={true}
+                                                duration={200}
+                                                offset={-100}
+                                                onClick={() => setTicketsSelectionContainerIsVisible && setTicketsSelectionContainerIsVisible(true)}>
+                                                <button>Get available tickets</button>
+                                            </ScrollLink>
                                     }
                                 </div>
                             :
