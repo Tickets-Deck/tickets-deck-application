@@ -153,7 +153,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
                             </Link>
                         }
                         <Link href={consoleDisplay ? `${ApplicationRoutes.Event}/${event.id}` : `/event/${event.id}`}>
-                            <button>View details</button>
+                            <button className="text-sm">View details</button>
                         </Link>
                         {
                             consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
