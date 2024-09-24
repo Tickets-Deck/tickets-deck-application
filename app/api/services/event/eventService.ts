@@ -525,6 +525,10 @@ export async function updateEvent(req: NextRequest) {
         mainImageUrl: cloudinaryRes?.secure_url ?? existingEvent.mainImageUrl,
         mainImageId: cloudinaryRes?.public_id ?? existingEvent.mainImageId,
         category: request.category ?? existingEvent.category,
+        purchaseStartDate:
+          request.purchaseStartDate ?? existingEvent.purchaseStartDate,
+        purchaseEndDate:
+          request.purchaseEndDate ?? existingEvent.purchaseEndDate,
         //   tags:
         //     request.tags && request.tags.length > 0
         //       ? {
@@ -544,8 +548,6 @@ export async function updateEvent(req: NextRequest) {
         visibility:
           deserializeEventVisibility(request.visibility) ??
           existingEvent.visibility,
-        //   purchaseStartDate: request.purchaseStartDate,
-        //   purchaseEndDate: request.purchaseEndDate,
       },
     });
 
@@ -933,10 +935,10 @@ export async function checkInAttendee(req: NextRequest) {
   const ticketOrder = await prisma.ticketOrders.findUnique({
     where: {
       orderId: ticketOrderId,
-    //   event: {
-    //     eventId
-    //   },
-    //   orderStatus: OrderStatus.Confirmed
+      event: {
+        id: eventId,
+      },
+      orderStatus: OrderStatus.Confirmed,
     },
     select: {
       tickets: {
@@ -944,6 +946,12 @@ export async function checkInAttendee(req: NextRequest) {
           ticket: true,
         },
       },
+      event: {
+        select: {
+          eventId: true,
+        },
+      },
+      orderStatus: true,
     },
   });
 
@@ -969,15 +977,6 @@ export async function checkInAttendee(req: NextRequest) {
 
   // if the ticket order has a single ticket, check user in
   if (orderedTickets.length == 1) {
-    // check if this ticket order has not being checked-in before
-    // if (orderedTickets[0].checkedIn) {
-    //   return {
-    //     error: ApplicationError.TicketOrderHasBeenCheckedIn.Text,
-    //     errorCode: ApplicationError.TicketOrderHasBeenCheckedIn.Code,
-    //     statusCode: StatusCodes.BadRequest,
-    //   };
-    // }
-
     // check in the attendee
     const updatedOrderedTicket = await prisma.orderedTickets.update({
       where: {
@@ -990,15 +989,152 @@ export async function checkInAttendee(req: NextRequest) {
     });
 
     // return the response
-    return { message: "Attendee checked-in successfully", data: updatedOrderedTicket };
+    return {
+      message: "Attendee checked-in successfully",
+      data: null,
+    };
   }
 
   // if the ticket has multiple tickets, return the tickets so the organizer can verify which to check in
-  const _orderedTickets = orderedTickets.map((eachOrderedTicket) => {
-    ticket: eachOrderedTicket.ticket.name;
-    checkedIns: eachOrderedTicket.checkedIn;
+  let _orderedTickets = orderedTickets.map((eachOrderedTicket) => {
+    return {
+      name: eachOrderedTicket.ticket.name,
+      checkedIn: eachOrderedTicket.checkedIn,
+      id: eachOrderedTicket.id,
+    };
   });
 
   // return the response
   return { data: _orderedTickets };
+}
+
+export async function checkInAttendees(req: NextRequest) {
+  // Get the search params from the request url
+  const searchParams = new URLSearchParams(req.url.split("?")[1]);
+
+  // Get the ticketOrderId from the search params
+  const ticketOrderId = searchParams.get("ticketOrderId");
+
+  // Get the eventId from the search params
+  const eventId = searchParams.get("eventId");
+
+  // Get the multipleOrderedTicketIds from the request body
+  const { orderIds } = (await req.json()) as {
+    orderIds: string[];
+  };
+
+  // if the multipleOrderedTicketIds is not provided, return 400
+  if (!orderIds) {
+    return {
+      error: ApplicationError.MissingRequiredParameters.Text,
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // If a ticketOrderId or eventId is not provided, return 400
+  if (!ticketOrderId || !eventId) {
+    return {
+      error: ApplicationError.MissingRequiredParameters.Text,
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // check if the event has not ended
+  const event = await prisma.events.findUnique({
+    where: {
+      id: eventId,
+    },
+    select: {
+      // ticketOrders: true
+      date: true,
+    },
+  });
+
+  // check if date is today
+  if (new Date(event?.date as Date).getDate() !== new Date().getDate()) {
+    return {
+      error: "Event date isn't today",
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // check for the ticket order
+  const ticketOrder = await prisma.ticketOrders.findUnique({
+    where: {
+      orderId: ticketOrderId,
+      event: {
+        id: eventId,
+      },
+      orderStatus: OrderStatus.Confirmed,
+    },
+    select: {
+      tickets: {
+        include: {
+          ticket: true,
+        },
+      },
+      event: {
+        select: {
+          eventId: true,
+        },
+      },
+      orderStatus: true,
+    },
+  });
+
+  // if the ticket order was not found, return error
+  if (!ticketOrder) {
+    return {
+      error: ApplicationError.TicketOrderWithIdNotFound.Text,
+      errorCode: ApplicationError.TicketOrderWithIdNotFound.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  const orderedTickets = ticketOrder.tickets;
+
+  // check if every ordered ticket has been checked in
+  if (orderedTickets.every((orderedTicket) => orderedTicket.checkedIn)) {
+    return {
+      error: ApplicationError.TicketOrderHasBeenCheckedIn.Text,
+      errorCode: ApplicationError.TicketOrderHasBeenCheckedIn.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // if the multipleOrderedTicketIds is provided, check in the multiple ticket(s)
+  // check if the orderedTickets include all the multipleOrderedTicketIds
+  if (
+    !orderIds.every((id) =>
+      orderedTickets.map((ticket) => ticket.id).includes(id)
+    )
+  ) {
+    return {
+      error: ApplicationError.MissingRequiredParameters.Text,
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // check in the multiple attendees
+  const updatedOrderedTickets = await prisma.orderedTickets.updateMany({
+    where: {
+      id: {
+        in: orderIds,
+      },
+    },
+    data: {
+      checkedIn: true,
+      checkedInTime: new Date(),
+    },
+  });
+
+  // return the response
+  return {
+    message: "Attendees checked-in successfully",
+    data: null,
+  };
 }
