@@ -14,12 +14,14 @@ interface TicketsSelectionContainerProps {
     setTicketDeliveryModalIsVisible: Dispatch<SetStateAction<boolean>>
     setTicketsSelectionContainerIsVisible: Dispatch<SetStateAction<boolean>>
     setContactDetailsModalIsVisible: Dispatch<SetStateAction<boolean>>
+    timeLeftTillPurchaseStarts: string | null
 }
 
 const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProps> = (
     { appTheme, eventTickets, setEventTickets, totalPrice, setContactDetailsModalIsVisible,
-        setTicketDeliveryModalIsVisible, setTicketsSelectionContainerIsVisible }): ReactElement => {
-
+        setTicketDeliveryModalIsVisible, setTicketsSelectionContainerIsVisible,
+        timeLeftTillPurchaseStarts }): ReactElement => {
+            
     const [totalSelectedTicketsCount, setTotalSelectedTicketsCount] = useState(0);
     const [userHasSelectedAtLeastOneTicket, setUserHasSelectedAtLeastOneTicket] = useState(false);
 
@@ -130,17 +132,23 @@ const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProp
                     </div>
                 </div>
                 <div className={styles.right}>
-                    <button
-                        onClick={() => {
-                            if (!userInfo) {
-                                setContactDetailsModalIsVisible(true);
-                                return;
-                            }
-                            setTicketDeliveryModalIsVisible(true)
-                        }}
-                        disabled={!userHasSelectedAtLeastOneTicket}>
-                        Purchase {totalSelectedTicketsCount > 1 ? 'tickets' : 'ticket'}
-                    </button>
+                    {
+                        timeLeftTillPurchaseStarts ?
+                            <div className="flex flex-row mt-0 bg-white/10 border-[1.5px] border-primary-color-sub/70 p-2 px-4 rounded-lg w-fit">
+                                <span>Purchase starts {timeLeftTillPurchaseStarts}</span>
+                            </div> :
+                            <button
+                                onClick={() => {
+                                    if (!userInfo) {
+                                        setContactDetailsModalIsVisible(true);
+                                        return;
+                                    }
+                                    setTicketDeliveryModalIsVisible(true)
+                                }}
+                                disabled={!userHasSelectedAtLeastOneTicket}>
+                                Purchase {totalSelectedTicketsCount > 1 ? 'tickets' : 'ticket'}
+                            </button>
+                    }
                     <button
                         onClick={() => setTicketsSelectionContainerIsVisible(false)}
                         className={styles.closeBtn}>
