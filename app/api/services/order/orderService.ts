@@ -138,11 +138,11 @@ export async function initializeOrder(req: NextRequest) {
     if (verifiedCoupon.data) {
       couponDiscount = Number(verifiedCoupon.data.discount);
     } else {
-        return {
-            error: verifiedCoupon.error,
-            errorCode: verifiedCoupon.errorCode,
-            statusCode: StatusCodes.BadRequest,
-        };
+      return {
+        error: verifiedCoupon.error,
+        errorCode: verifiedCoupon.errorCode,
+        statusCode: StatusCodes.BadRequest,
+      };
     }
 
     // reduce the max usage of the coupon code
@@ -163,11 +163,12 @@ export async function initializeOrder(req: NextRequest) {
   const flatFee =
     eventTransactionFee?.flatFee ?? generalTransactionFee?.flatFee ?? 0;
 
-  const totalPrice =
-    (preTotalPrice * Number(transactionFeePercentage)) / 100 +
-    preTotalPrice +
-    Number(flatFee) -
-    (preTotalPrice * couponDiscount) / 100;
+  const totalPrice = event.organizerPaysFee
+    ? preTotalPrice - (preTotalPrice * couponDiscount) / 100
+    : (preTotalPrice * Number(transactionFeePercentage)) / 100 +
+      preTotalPrice +
+      Number(flatFee) -
+      (preTotalPrice * couponDiscount) / 100;
 
   // Create the order
   const ticketOrder = await prisma.ticketOrders.create({
