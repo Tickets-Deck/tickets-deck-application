@@ -105,6 +105,7 @@ export async function createEvent(req: NextRequest) {
         date: request.date,
         time: request.time,
         category: request.category,
+        organizerPaysFee: request.organizerPaysFee,
         // Create tags if they are available in the request
         //   tags: {
         //     create: request.tags
@@ -191,6 +192,7 @@ export async function fetchEvents(req: NextRequest) {
     const event = await prisma.events.findFirst({
       where: {
         id: specifiedId,
+        isArchived: false,
       },
       include: {
         user: true,
@@ -245,6 +247,7 @@ export async function fetchEvents(req: NextRequest) {
     const event = await prisma.events.findFirst({
       where: {
         eventId: specifiedEventId,
+        isArchived: false,
       },
       include: {
         user: true,
@@ -299,6 +302,7 @@ export async function fetchEvents(req: NextRequest) {
     const eventResponse = await prisma.events.findMany({
       where: {
         publisherId: specifiedPublisherId,
+        // isArchived: false,
       },
       orderBy: {
         createdAt: "desc",
@@ -329,7 +333,6 @@ export async function fetchEvents(req: NextRequest) {
     }
 
     const tags = specifiedTags.split(",");
-    console.log("🚀 ~ fetchEvents ~ tags:", tags);
 
     const eventResponse = await prisma.events.findMany({
       where: {
@@ -344,6 +347,7 @@ export async function fetchEvents(req: NextRequest) {
         },
         AND: {
           visibility: "PUBLIC",
+          isArchived: false,
           date: {
             gte: new Date(),
           },
@@ -377,6 +381,7 @@ export async function fetchEvents(req: NextRequest) {
     // Show only public events that are not yet over (both event date and end date for tickets purchase)
     where: {
       visibility: "PUBLIC",
+      isArchived: false,
       //   OR: [
       //     {
       //       date: {
@@ -529,6 +534,8 @@ export async function updateEvent(req: NextRequest) {
           request.purchaseStartDate ?? existingEvent.purchaseStartDate,
         purchaseEndDate:
           request.purchaseEndDate ?? existingEvent.purchaseEndDate,
+        organizerPaysFee:
+          request.organizerPaysFee == null ? existingEvent.organizerPaysFee : request.organizerPaysFee,
         //   tags:
         //     request.tags && request.tags.length > 0
         //       ? {
@@ -602,6 +609,30 @@ export async function deleteEvent(req: NextRequest) {
 
   // Delete the event's main image from cloudinary
   await cloudinary.v2.uploader.destroy(event.mainImageId);
+
+  // Check if the event has any orders
+  const eventOrders = await prisma.ticketOrders.findMany({
+    where: {
+      event: {
+        id: specifiedId,
+      },
+    },
+  });
+
+  // If the event has orders, archive the event instead of deleting it
+  if (eventOrders.length > 0) {
+    await prisma.events.update({
+      where: {
+        id: specifiedId,
+      },
+      data: {
+        isArchived: true,
+      },
+    });
+
+    // Return success message
+    return { message: "Event archived successfully" };
+  }
 
   // Delete all relating tickets
   await prisma.tickets.deleteMany({
@@ -866,6 +897,7 @@ export async function fetchFeaturedEvents(req: NextRequest) {
     // Show only public events that are not yet over (both event date and end date for tickets purchase)
     where: {
       visibility: EventVisibility.PUBLIC,
+      isArchived: false,
       date: {
         gte: new Date(),
       },
