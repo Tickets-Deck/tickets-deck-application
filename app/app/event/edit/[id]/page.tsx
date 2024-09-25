@@ -690,6 +690,29 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                     }
                                 </div>
                             </div>
+                            <div>
+                                <span className="mb-1 text-sm">Who pays for fee?</span>
+                                <div className="flex flex-row items-center justify-start gap-2 w-fit">
+                                    <span
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setEventRequest({ ...eventRequest as EventRequest, organizerPaysFee: true });
+                                            setEventInfo({ ...eventInfo as EventResponse, organizerPaysFee: true });
+                                        }}
+                                        className={`!p-2 !px-4 rounded-full cursor-pointer ${eventInfo?.organizerPaysFee ? 'bg-white text-dark-grey' : '!bg-white/10 !text-white'}`}>
+                                        Organizer
+                                    </span>
+                                    <span
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setEventRequest({ ...eventRequest as EventRequest, organizerPaysFee: false });
+                                            setEventInfo({ ...eventInfo as EventResponse, organizerPaysFee: false });
+                                        }}
+                                        className={`!p-2 !px-4 rounded-full cursor-pointer ${eventInfo?.organizerPaysFee ? '!bg-white/10 !text-white' : 'bg-white text-dark-grey'}`}>
+                                        Customer
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
