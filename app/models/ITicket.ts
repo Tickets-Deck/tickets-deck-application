@@ -4,7 +4,8 @@ export type TicketRequest = {
   numberOfUsers: number;
   quantity: number;
   remainingTickets: number;
-  description: string
+  description: string;
+  visibility: boolean;
 };
 
 export type TicketResponse = TicketRequest & {
