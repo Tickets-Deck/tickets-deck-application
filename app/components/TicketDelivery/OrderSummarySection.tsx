@@ -29,10 +29,10 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
     const generalTransactionFee = transactionFees?.find((transactionFee) => transactionFee.events.length == 0);
 
     const transactionFeePercentage = Number(eventTransactionFee?.percentage as string) || Number(generalTransactionFee?.percentage as string) || 0;
-    const flatFee = Number(eventTransactionFee?.flatFee as string) || Number(generalTransactionFee?.flatFee as string) || 0; 
+    const flatFee = Number(eventTransactionFee?.flatFee as string) || Number(generalTransactionFee?.flatFee as string) || 0;
 
-    const fees = (transactionFeePercentage ? (totalPrice * transactionFeePercentage) / 100 : 0) + (flatFee || 0);
-    const totalAmountPayable = totalPrice + fees - (couponDetails?.discount ? (totalPrice * Number(couponDetails.discount)) / 100 : 0);
+    const fees = eventInfo?.organizerPaysFee ? 0 : (transactionFeePercentage ? (totalPrice * transactionFeePercentage) / 100 : 0) + (flatFee || 0);
+    const totalAmountPayable = eventInfo?.organizerPaysFee ? totalPrice - (couponDetails?.discount ? (totalPrice * Number(couponDetails.discount)) / 100 : 0) : totalPrice + fees - (couponDetails?.discount ? (totalPrice * Number(couponDetails.discount)) / 100 : 0);
 
     return (
         <div className={styles.rhs}>
