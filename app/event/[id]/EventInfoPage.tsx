@@ -25,6 +25,13 @@ interface EventDetailsPageProps {
     params: { id: string }
 }
 
+export interface TimeLeft {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+}
+
 
 const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }): ReactElement => {
     const router = useRouter();
@@ -48,6 +55,36 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
 
     const eventLocation = eventInfo?.location?.address + ' ' + eventInfo?.location?.city + ', ' + eventInfo?.location?.state + ', ' + eventInfo?.location?.country;
 
+    const isPurchaseStartDateInFuture = eventInfo ? new Date(eventInfo?.purchaseStartDate) > new Date() : false;
+    const [timeLeftTillPurchaseStarts, setTimeLeftTillPurchaseStarts] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (isPurchaseStartDateInFuture) {
+            // const interval = setInterval(() => {
+            //     const daysLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'days');
+            //     const hoursLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'hours');
+            //     const minutesLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'minutes');
+            //     const secondsLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'seconds');
+                
+            //     if (daysLeft > 0) {
+            //         setTimeLeftTillPurchaseStarts(`${daysLeft} days, ${hoursLeft} hrs, ${minutesLeft} mins, ${(secondsLeft / 1000) % 60} secs`);
+            //         return;
+            //     } 
+            //     if (hoursLeft > 0) {
+            //         setTimeLeftTillPurchaseStarts(`${hoursLeft} hrs, ${minutesLeft % 60} mins, ${(secondsLeft / 1000) % 60} secs`);
+            //         return;
+            //     }
+            //     // if (minutesLeft > 0) {
+            //     //     setTimeLeftTillPurchaseStarts(`${minutesLeft} mins, ${secondsLeft} secs`);
+            //     //     return;
+            //     // }
+            //     // setTimeLeftTillPurchaseStarts(`${secondsLeft} secs`);
+            // }, 1000);
+            
+            // return () => clearInterval(interval);
+            setTimeLeftTillPurchaseStarts(moment(eventInfo?.purchaseStartDate).fromNow());
+        }
+    }, [timeLeftTillPurchaseStarts, eventInfo]);
 
     // useEffect hook to set total price 
     useEffect(() => {
@@ -80,7 +117,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
             .then((response) => {
 
                 // Log the result
-                console.log("Events: ", response.data);
+                // console.log("Events: ", response.data);
 
                 // Set the event results
                 let _eventInfo = response.data;
@@ -248,6 +285,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                                     setContactDetailsModalIsVisible={setContactDetailsModalIsVisible}
                                     setTicketDeliveryModalIsVisible={setTicketDeliveryModalIsVisible}
                                     setTicketsSelectionContainerIsVisible={setTicketsSelectionContainerIsVisible}
+                                    timeLeftTillPurchaseStarts={timeLeftTillPurchaseStarts}
                                 />
                             }
                             {ticketsSelectionContainerIsVisible && (!eventTickets || eventTickets?.length == 0) &&

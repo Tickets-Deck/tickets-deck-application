@@ -46,6 +46,33 @@ const EventCard: FunctionComponent<EventCardProps> = (
             });
     }
 
+    // const isEventNow = (eventDate: string, eventTime: string) => {
+    //     // Parse the event date (assuming it's in ISO format with "T00:00:00.000Z")
+    //     const eventDateObj = new Date(eventDate);
+
+    //     // Split the time into hours and minutes, converting the 12-hour format to 24-hour
+    //     const [time, modifier] = eventTime.split(/([APap][Mm])/); // Split by 'am' or 'pm'
+    //     let [hours, minutes] = time.split(':');
+    //     hours = parseInt(hours, 10);
+
+    //     // Adjust hours based on AM/PM
+    //     if (modifier.toLowerCase() === 'pm' && hours !== 12) {
+    //         hours += 12;
+    //     }
+    //     if (modifier.toLowerCase() === 'am' && hours === 12) {
+    //         hours = 0;
+    //     }
+
+    //     // Set the hours and minutes in the event date object
+    //     eventDateObj.setUTCHours(hours, minutes);
+
+    //     // Get the current date and time for comparison
+    //     const currentDateTime = new Date();
+
+    //     // Compare both date and time (down to milliseconds)
+    //     return eventDateObj.getTime() === currentDateTime.getTime();
+    // };
+
     return (
         <div className={`${appTheme == Theme.Light ? styles.eventLightTheme : styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
             {/* <div className={styles.backgroundImage}>
@@ -53,16 +80,22 @@ const EventCard: FunctionComponent<EventCardProps> = (
             </div> */}
             {/* <span className={styles.event__tag}>Latest</span> */}
             <div className={styles.event__image}>
-                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
-                    <Image
-                        src={event.mainImageUrl}
-                        alt='Event flyer'
-                        fill
-                    // priority
-                    // placeholder={"blur"}
-                    // blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOsa2yqBwAFCAICLICSyQAAAABJRU5ErkJggg=="}
-                    />
-                </Link>
+                {
+                    event.isArchived ?
+                        <Image
+                            src={event.mainImageUrl}
+                            alt='Event flyer'
+                            fill
+                        />
+                        :
+                        <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
+                            <Image
+                                src={event.mainImageUrl}
+                                alt='Event flyer'
+                                fill
+                            />
+                        </Link>
+                }
             </div>
             {/* <span className={styles.hLine}>
                 <HorizontalLineIcon />
@@ -108,30 +141,43 @@ const EventCard: FunctionComponent<EventCardProps> = (
                         </p>
                     </div>}
             </div>
-            <div className={styles.actionBtnContainer}>
-                {
-                    consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
-                    <Link href={`/app/event/edit/${event.id}`} className={styles.noStyle}>
-                        <button className={styles.editBtn}>
-                            <EditIcon />
-                        </button>
+            {
+                consoleDisplay && new Date(event.date).getDate() == new Date().getDate() ?
+                    <Link
+                        href={ApplicationRoutes.CheckIn(event.id, event.title.replace(/ /g, '-'))}
+                        className="p-2 rounded-lg bg-white text-dark-grey w-full text-center">
+                        Check In
                     </Link>
-                }
-                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
-                    <button>View details</button>
-                </Link>
-                {
-                    consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
-                    <button
-                        className={styles.deleteBtn}
-                        onClick={() => {
-                            setSelectedEvent(event)
-                            setIsDeleteConfirmationModalVisible(true)
-                        }}>
-                        <DeleteIcon />
-                    </button>
-                }
-            </div>
+                    :
+                    <div className={styles.actionBtnContainer}>
+                        {
+                            consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent && !event.isArchived &&
+                            <Link href={`${ApplicationRoutes.EditEvent}/${event.id}`} className={styles.noStyle}>
+                                <button className={styles.editBtn}>
+                                    <EditIcon />
+                                </button>
+                            </Link>
+                        }
+                        {
+                            event.isArchived ?
+                                <button className="p-2 bg-dark-grey-2 text-white w-full rounded-md pointer-events-none">Deleted</button> :
+                                <Link href={consoleDisplay ? `${ApplicationRoutes.Event}/${event.id}` : `/event/${event.id}`}>
+                                    <button className="text-sm">View details</button>
+                                </Link>
+                        }
+                        {
+                            consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent && !event.isArchived &&
+                            <button
+                                className={styles.deleteBtn}
+                                onClick={() => {
+                                    setSelectedEvent(event)
+                                    setIsDeleteConfirmationModalVisible(true)
+                                }}>
+                                <DeleteIcon />
+                            </button>
+                        }
+                    </div>
+            }
         </div>
     );
 }

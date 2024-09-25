@@ -126,4 +126,9 @@ export class ApplicationRoutes {
    * The route to the privacy policy page
    */
   static readonly PrivacyPolicy = "/privacy-policy";
+
+  /**
+   * The route to the check in page
+   */
+  static readonly CheckIn = (eventId: string, name: string) => `/app/event/check-in?id=${eventId}&name=${name}`;
 }

@@ -6,6 +6,7 @@ import { NextRequest } from "next/server";
 import cloudinary from "cloudinary";
 import { deserializeEventVisibility } from "@/app/constants/serializer";
 import { EventVisibility } from "@/app/enums/IEventVisibility";
+import { OrderStatus } from "@/app/enums/IOrderStatus";
 
 export async function createEvent(req: NextRequest) {
   // Get the request body
@@ -104,6 +105,7 @@ export async function createEvent(req: NextRequest) {
         date: request.date,
         time: request.time,
         category: request.category,
+        organizerPaysFee: request.organizerPaysFee,
         // Create tags if they are available in the request
         //   tags: {
         //     create: request.tags
@@ -190,6 +192,7 @@ export async function fetchEvents(req: NextRequest) {
     const event = await prisma.events.findFirst({
       where: {
         id: specifiedId,
+        isArchived: false,
       },
       include: {
         user: true,
@@ -244,6 +247,7 @@ export async function fetchEvents(req: NextRequest) {
     const event = await prisma.events.findFirst({
       where: {
         eventId: specifiedEventId,
+        isArchived: false,
       },
       include: {
         user: true,
@@ -298,6 +302,7 @@ export async function fetchEvents(req: NextRequest) {
     const eventResponse = await prisma.events.findMany({
       where: {
         publisherId: specifiedPublisherId,
+        // isArchived: false,
       },
       orderBy: {
         createdAt: "desc",
@@ -328,7 +333,6 @@ export async function fetchEvents(req: NextRequest) {
     }
 
     const tags = specifiedTags.split(",");
-    console.log("🚀 ~ fetchEvents ~ tags:", tags);
 
     const eventResponse = await prisma.events.findMany({
       where: {
@@ -343,6 +347,7 @@ export async function fetchEvents(req: NextRequest) {
         },
         AND: {
           visibility: "PUBLIC",
+          isArchived: false,
           date: {
             gte: new Date(),
           },
@@ -376,18 +381,19 @@ export async function fetchEvents(req: NextRequest) {
     // Show only public events that are not yet over (both event date and end date for tickets purchase)
     where: {
       visibility: "PUBLIC",
-    //   OR: [
-    //     {
-    //       date: {
-    //         gte: new Date(),
-    //       },
-    //     },
-    //     {
-    //       purchaseEndDate: {
-    //         gte: new Date(),
-    //       },
-    //     },
-    //   ],
+      isArchived: false,
+      //   OR: [
+      //     {
+      //       date: {
+      //         gte: new Date(),
+      //       },
+      //     },
+      //     {
+      //       purchaseEndDate: {
+      //         gte: new Date(),
+      //       },
+      //     },
+      //   ],
     },
     orderBy: {
       date: "asc",
@@ -524,6 +530,12 @@ export async function updateEvent(req: NextRequest) {
         mainImageUrl: cloudinaryRes?.secure_url ?? existingEvent.mainImageUrl,
         mainImageId: cloudinaryRes?.public_id ?? existingEvent.mainImageId,
         category: request.category ?? existingEvent.category,
+        purchaseStartDate:
+          request.purchaseStartDate ?? existingEvent.purchaseStartDate,
+        purchaseEndDate:
+          request.purchaseEndDate ?? existingEvent.purchaseEndDate,
+        organizerPaysFee:
+          request.organizerPaysFee == null ? existingEvent.organizerPaysFee : request.organizerPaysFee,
         //   tags:
         //     request.tags && request.tags.length > 0
         //       ? {
@@ -543,8 +555,6 @@ export async function updateEvent(req: NextRequest) {
         visibility:
           deserializeEventVisibility(request.visibility) ??
           existingEvent.visibility,
-        //   purchaseStartDate: request.purchaseStartDate,
-        //   purchaseEndDate: request.purchaseEndDate,
       },
     });
 
@@ -599,6 +609,30 @@ export async function deleteEvent(req: NextRequest) {
 
   // Delete the event's main image from cloudinary
   await cloudinary.v2.uploader.destroy(event.mainImageId);
+
+  // Check if the event has any orders
+  const eventOrders = await prisma.ticketOrders.findMany({
+    where: {
+      event: {
+        id: specifiedId,
+      },
+    },
+  });
+
+  // If the event has orders, archive the event instead of deleting it
+  if (eventOrders.length > 0) {
+    await prisma.events.update({
+      where: {
+        id: specifiedId,
+      },
+      data: {
+        isArchived: true,
+      },
+    });
+
+    // Return success message
+    return { message: "Event archived successfully" };
+  }
 
   // Delete all relating tickets
   await prisma.tickets.deleteMany({
@@ -863,6 +897,7 @@ export async function fetchFeaturedEvents(req: NextRequest) {
     // Show only public events that are not yet over (both event date and end date for tickets purchase)
     where: {
       visibility: EventVisibility.PUBLIC,
+      isArchived: false,
       date: {
         gte: new Date(),
       },
@@ -887,4 +922,251 @@ export async function fetchFeaturedEvents(req: NextRequest) {
 
   // Return all events
   return { data: eventResponse };
+}
+
+export async function checkInAttendee(req: NextRequest) {
+  // Get the search params from the request url
+  const searchParams = new URLSearchParams(req.url.split("?")[1]);
+
+  // Get the ticketOrderId from the search params
+  const ticketOrderId = searchParams.get("ticketOrderId");
+
+  // Get the eventId from the search params
+  const eventId = searchParams.get("eventId");
+
+  // If a ticketOrderId or eventId is not provided, return 400
+  if (!ticketOrderId || !eventId) {
+    return {
+      error: ApplicationError.MissingRequiredParameters.Text,
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // check if the event has not ended
+  const event = await prisma.events.findUnique({
+    where: {
+      id: eventId,
+    },
+    select: {
+      // ticketOrders: true
+      date: true,
+    },
+  });
+
+  // check if date is today
+  if (new Date(event?.date as Date).getDate() !== new Date().getDate()) {
+    return {
+      error: "Event date isn't today",
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // check for the ticket order
+  const ticketOrder = await prisma.ticketOrders.findUnique({
+    where: {
+      orderId: ticketOrderId,
+      event: {
+        id: eventId,
+      },
+      orderStatus: OrderStatus.Confirmed,
+    },
+    select: {
+      tickets: {
+        include: {
+          ticket: true,
+        },
+      },
+      event: {
+        select: {
+          eventId: true,
+        },
+      },
+      orderStatus: true,
+    },
+  });
+
+  // if the ticket order was not found, return error
+  if (!ticketOrder) {
+    return {
+      error: ApplicationError.TicketOrderWithIdNotFound.Text,
+      errorCode: ApplicationError.TicketOrderWithIdNotFound.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  const orderedTickets = ticketOrder.tickets;
+
+  // check if every ordered ticket has been checked in
+  if (orderedTickets.every((orderedTicket) => orderedTicket.checkedIn)) {
+    return {
+      error: ApplicationError.TicketOrderHasBeenCheckedIn.Text,
+      errorCode: ApplicationError.TicketOrderHasBeenCheckedIn.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // if the ticket order has a single ticket, check user in
+  if (orderedTickets.length == 1) {
+    // check in the attendee
+    const updatedOrderedTicket = await prisma.orderedTickets.update({
+      where: {
+        id: orderedTickets[0].id,
+      },
+      data: {
+        checkedIn: true,
+        checkedInTime: new Date(),
+      },
+    });
+
+    // return the response
+    return {
+      message: "Attendee checked-in successfully",
+      data: null,
+    };
+  }
+
+  // if the ticket has multiple tickets, return the tickets so the organizer can verify which to check in
+  let _orderedTickets = orderedTickets.map((eachOrderedTicket) => {
+    return {
+      name: eachOrderedTicket.ticket.name,
+      checkedIn: eachOrderedTicket.checkedIn,
+      id: eachOrderedTicket.id,
+    };
+  });
+
+  // return the response
+  return { data: _orderedTickets };
+}
+
+export async function checkInAttendees(req: NextRequest) {
+  // Get the search params from the request url
+  const searchParams = new URLSearchParams(req.url.split("?")[1]);
+
+  // Get the ticketOrderId from the search params
+  const ticketOrderId = searchParams.get("ticketOrderId");
+
+  // Get the eventId from the search params
+  const eventId = searchParams.get("eventId");
+
+  // Get the multipleOrderedTicketIds from the request body
+  const { orderIds } = (await req.json()) as {
+    orderIds: string[];
+  };
+
+  // if the multipleOrderedTicketIds is not provided, return 400
+  if (!orderIds) {
+    return {
+      error: ApplicationError.MissingRequiredParameters.Text,
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // If a ticketOrderId or eventId is not provided, return 400
+  if (!ticketOrderId || !eventId) {
+    return {
+      error: ApplicationError.MissingRequiredParameters.Text,
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // check if the event has not ended
+  const event = await prisma.events.findUnique({
+    where: {
+      id: eventId,
+    },
+    select: {
+      // ticketOrders: true
+      date: true,
+    },
+  });
+
+  // check if date is today
+  if (new Date(event?.date as Date).getDate() !== new Date().getDate()) {
+    return {
+      error: "Event date isn't today",
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // check for the ticket order
+  const ticketOrder = await prisma.ticketOrders.findUnique({
+    where: {
+      orderId: ticketOrderId,
+      event: {
+        id: eventId,
+      },
+      orderStatus: OrderStatus.Confirmed,
+    },
+    select: {
+      tickets: {
+        include: {
+          ticket: true,
+        },
+      },
+      event: {
+        select: {
+          eventId: true,
+        },
+      },
+      orderStatus: true,
+    },
+  });
+
+  // if the ticket order was not found, return error
+  if (!ticketOrder) {
+    return {
+      error: ApplicationError.TicketOrderWithIdNotFound.Text,
+      errorCode: ApplicationError.TicketOrderWithIdNotFound.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  const orderedTickets = ticketOrder.tickets;
+
+  // check if every ordered ticket has been checked in
+  if (orderedTickets.every((orderedTicket) => orderedTicket.checkedIn)) {
+    return {
+      error: ApplicationError.TicketOrderHasBeenCheckedIn.Text,
+      errorCode: ApplicationError.TicketOrderHasBeenCheckedIn.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // if the multipleOrderedTicketIds is provided, check in the multiple ticket(s)
+  // check if the orderedTickets include all the multipleOrderedTicketIds
+  if (
+    !orderIds.every((id) =>
+      orderedTickets.map((ticket) => ticket.id).includes(id)
+    )
+  ) {
+    return {
+      error: ApplicationError.MissingRequiredParameters.Text,
+      errorCode: ApplicationError.MissingRequiredParameters.Code,
+      statusCode: StatusCodes.BadRequest,
+    };
+  }
+
+  // check in the multiple attendees
+  const updatedOrderedTickets = await prisma.orderedTickets.updateMany({
+    where: {
+      id: {
+        in: orderIds,
+      },
+    },
+    data: {
+      checkedIn: true,
+      checkedInTime: new Date(),
+    },
+  });
+
+  // return the response
+  return {
+    message: "Attendees checked-in successfully",
+    data: null,
+  };
 }

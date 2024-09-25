@@ -1,10 +1,10 @@
-import qr from "qrcode";
+import QRCode from "qrcode";
 import { createCanvas } from "canvas";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
 
-const QR_CODES_DIR = path.join(process.cwd(), "public", "qrcodes");
+// const QR_CODES_DIR = path.join(process.cwd(), "public", "qrcodes");
 
 // export const generateQRCodeImage = async (text: string): Promise<string> => {
 //   const id = uuidv4();
@@ -52,13 +52,14 @@ const QR_CODES_DIR = path.join(process.cwd(), "public", "qrcodes");
 //   }
 // };
 
-export async function generateQRCode(text: string): Promise<string> {
+export async function generateQRCode(text: string): Promise<Buffer> {
   try {
-    const qrDataURL = await qr.toDataURL(text);
-    console.log("🚀 ~ generateQRCode ~ qrDataURL:", qrDataURL)
+    // const qrDataURL = await QRCode.toDataURL(text);
+    const qrDataURL = await QRCode.toBuffer(text, { type: 'png' });
+    // console.log("🚀 ~ generateQRCode ~ qrDataURL:", qrDataURL)
     return qrDataURL;
   } catch (error) {
-    console.error("Error generating QR code:", error);
+    // console.error("Error generating QR code:", error);
     throw new Error("Failed to generate QR code");
   }
 }

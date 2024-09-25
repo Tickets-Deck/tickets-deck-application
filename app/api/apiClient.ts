@@ -100,6 +100,26 @@ export function useFetchEventsByTags() {
   return fetchEventsByPublisherId;
 }
 
+export function useCheckInTicketOrder() {
+  async function checkInTicketOrder(ticketOrderId: string, eventId: string) {
+    return API.post(
+      `${ApiRoutes.CheckInTicketOrder}?ticketOrderId=${ticketOrderId}&eventId=${eventId}`
+    );
+  }
+
+  return checkInTicketOrder;
+}
+
+export function useCheckInMultipleTicketOrders() {
+  async function checkInMultipleTicketOrders(ticketOrderId: string, eventId: string, orderIds: string[]) {
+    return API.post(
+      `${ApiRoutes.CheckInMultipleTicketOrder}?ticketOrderId=${ticketOrderId}&eventId=${eventId}`, { orderIds }
+    );
+  }
+
+  return checkInMultipleTicketOrders;
+}
+
 export function useUpdateEventById() {
   async function updateEventById(id: string, data: EventRequest) {
     return API.put(`${ApiRoutes.Events}?id=${id}`, data);
@@ -455,21 +475,21 @@ export function useFetchUserBankAccount() {
 }
 
 export function useFetchTransactionFee() {
-    async function fetchTransactionFee() {
-        return API.get(ApiRoutes.TransactionFee);
-    }
-    
-    return fetchTransactionFee;
+  async function fetchTransactionFee() {
+    return API.get(ApiRoutes.TransactionFee);
+  }
+
+  return fetchTransactionFee;
 }
 
 export function useVerifyCouponCode() {
-    async function verifyCouponCode(eventId: string, couponCode: string) {
-        return API.get(
-            `${ApiRoutes.VerifyCouponCode}?eventId=${eventId}&couponCode=${couponCode}`
-        );
-    }
+  async function verifyCouponCode(eventId: string, couponCode: string) {
+    return API.get(
+      `${ApiRoutes.VerifyCouponCode}?eventId=${eventId}&couponCode=${couponCode}`
+    );
+  }
 
-    return verifyCouponCode;
+  return verifyCouponCode;
 }
 
-// export  
+// export

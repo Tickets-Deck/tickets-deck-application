@@ -1,5 +1,5 @@
 import { FunctionComponent, ReactElement } from 'react';
-import LoaderStyle from '../../styles/Loader.module.scss';
+import LoaderStyle from './Loader.module.scss';
 
 interface FullPageLoaderProps {
     backgroundColor?: any;

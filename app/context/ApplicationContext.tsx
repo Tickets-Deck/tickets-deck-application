@@ -116,8 +116,12 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
      * Function to fetch transaction fee percentage
      */
     async function handleFetchTransactionFee() {
+        if (transactionFees) {
+            return;
+        }
         await fetchTransactionFee()
             .then((response) => {
+                // console.log("🚀 ~ .then fee ~ response:", response)
                 setTransactionFees(response.data);
             })
             .catch((error) => {

@@ -1,36 +1,9 @@
 import { OrderStatus } from "../enums/IOrderStatus";
 import { PaymentStatus } from "../enums/IPaymentStatus";
 import { EventResponse } from "./IEvents";
+import { UserTicketOrder } from "./ITicketOrder";
 
-interface UserTicketResponse {
-  id: string;
-  eventId: string;
-  name: string;
-  price: string;
-  quantity: number;
-  remainingTickets: number;
-  numberOfUsers: number;
-  description: string;
-  ticketOrdersCount: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface UserOrderedTicket {
-  id: string;
-  ticketId: string;
-  orderId: string;
-  associatedEmail: string;
-  contactEmail: string;
-  price: string;
-  orderStatus: string;
-  paymentId: string;
-  createdAt: string;
-  updatedAt: string;
-  ticket: UserTicketResponse;
-}
-
-export interface UserTicketOrder {
+export interface UserTicketOrderInfo {
   id: string;
   userId: string | null;
   eventId: string;
@@ -44,5 +17,5 @@ export interface UserTicketOrder {
   createdAt: string;
   updatedAt: string;
   event: EventResponse;
-  orderedTickets: UserOrderedTicket[];
+  orderedTickets: UserTicketOrder[];
 }

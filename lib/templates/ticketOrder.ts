@@ -164,7 +164,15 @@ a[x-apple-data-detectors] {
                             <br>
                             <br>
                         </p>
-                        <!--<h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-size:18x;font-style:normal;font-weight:normal;color:#2D033A">
+                        <!--<img 
+                                src="{{qrImage}}"
+                                alt="Logo" 
+                                style="display:block;object-fit: contain; width: 140px; height: 140px; border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" 
+                                title="Logo" 
+                                width="100" 
+                                height="100">
+
+                        <h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;font-size:18x;font-style:normal;font-weight:normal;color:#2D033A">
                             Other Information
                         </h3>
                         <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'Josefin Sans', helvetica, arial, sans-serif;line-height:21px;color:#38363A;font-size:14px">

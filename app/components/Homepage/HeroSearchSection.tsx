@@ -15,9 +15,9 @@ interface HeroSearchSectionProps {
     isFetchingEvents: boolean
 }
 
-const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({ events, isFetchingEvents }): ReactElement => {
+const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({ events: _events, isFetchingEvents }): ReactElement => {
 
-    // const events: EventResponse[] = [];
+    const events = _events.filter(event => new Date(event.date) >= new Date());
 
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;

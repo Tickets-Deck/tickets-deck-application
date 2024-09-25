@@ -386,6 +386,14 @@ export class ApplicationError extends BaseApplicationError {
   };
 
   /**
+   * The error message for ~ Ticket Order has been Checked In
+   */
+  static TicketOrderHasBeenCheckedIn: IApplicationError = {
+    Text: "Ticket order has been checked in",
+    Code: "TICKET_ORDER_1004",
+  };
+
+  /**
    * The error message for ~ Failed to fetch ticket orders
    */
   static FailedToFetchTicketOrders: IApplicationError = {
@@ -603,6 +611,22 @@ export class ApplicationError extends BaseApplicationError {
   static FailedToFetchEvents: IApplicationError = {
     Text: "Failed to fetch events",
     Code: "EVENT_1006",
+  };
+
+  /**
+   * The error message for ~ Event Date Is In The Past
+   */
+  static EventDateHasPassed: IApplicationError = {
+    Text: "Event date is in the past",
+    Code: "EVENT_1007",
+  };
+
+  /**
+   * The error message for ~ Event Date Is In The Future
+   */
+  static EventDateIsInFuture: IApplicationError = {
+    Text: "Event date is in the future",
+    Code: "EVENT_1008",
   };
 
   //#endregion

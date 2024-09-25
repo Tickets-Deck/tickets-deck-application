@@ -18,7 +18,7 @@ export async function processEmailNotification(
     },
     include: {
       event: true,
-      tickets: true
+      tickets: true,
     },
   });
 
@@ -27,6 +27,12 @@ export async function processEmailNotification(
       "Ticket order based on the provided ticket order ID could not be found"
     );
   }
+
+  // Generate the QR code as a buffer
+  const qrCodeBuffer = await generateQRCode(ticketOrder.orderId);
+
+  // Convert the buffer to a base64 string
+  const qrCodeBase64 = qrCodeBuffer.toString("base64");
 
   // Get each ordered ticket from the ticket order ID
   const orderedTickets = ticketOrder.tickets;
@@ -53,16 +59,17 @@ export async function processEmailNotification(
         venue: ticketOrder.event.venue as string,
         date: moment(ticketOrder.event.date).format("Do of MMM, YYYY"),
         time: ticketOrder.event.time as string,
-        qrImage: ticketOrder.orderId,
+        qrImage: qrCodeBase64,
         ticketOrderId: ticketOrder.orderId,
         orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
       }),
-      //   attachments: [
-      //     {
-      //       filename: "qr-code.png",
-      //       content: await generateQRCode(ticketOrder.contactEmail),
-      //     },
-      //   ],
+      attachments: [
+        {
+          filename: `${ticketOrder.event.title}` + ".png",
+          content: qrCodeBuffer,
+          // content: await generateQRCode(ticketOrder.orderId),
+        },
+      ],
     });
 
     return;
@@ -86,12 +93,12 @@ export async function processEmailNotification(
       ticketOrderId: ticketOrder.orderId,
       orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
     }),
-    // attachments: [
-    //   {
-    //     filename: "qr-code.png",
-    //     content: await generateQRCode(ticketOrder.contactEmail),
-    //   },
-    // ],
+    attachments: [
+      {
+        filename: `${ticketOrder.event.title}` + ".png",
+        content: qrCodeBuffer,
+      },
+    ],
   });
 
   // If we have more than one ticket, we can send an email to each associated email of the ticket order if it exists
@@ -116,6 +123,12 @@ export async function processEmailNotification(
         ticketOrderId: ticketOrder.orderId,
         orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
       }),
+      attachments: [
+        {
+          filename: `${ticketOrder.event.title}` + ".png",
+          content: qrCodeBuffer,
+        },
+      ],
     });
   }
 }

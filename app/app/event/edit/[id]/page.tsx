@@ -38,17 +38,10 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     const deleteTicketById = useDeleteTicketById();
     const updateEventById = useUpdateEventById();
 
-    const windowRes = useResponsiveness();
-    const isMobile = windowRes.width && windowRes.width < 768;
-    const onMobile = typeof (isMobile) == "boolean" && isMobile;
-    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
-
     const id = params.id;
 
     const [eventRequest, setEventRequest] = useState<EventRequest>();
-    console.log("🚀 ~ eventRequest:", eventRequest)
     const [eventInfo, setEventInfo] = useState<EventResponse>();
-    console.log("🚀 ~ eventInfo:", eventInfo)
     const [eventTicketTypes, setEventTicketTypes] = useState<RetrievedTicketResponse[]>();
 
     const [mainImageFile, setMainImageFile] = useState<File>();
@@ -216,7 +209,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     };
 
     async function handleUpdateEventById() {
-        // console.log({ eventRequest });
+        console.log({ eventRequest });
 
         // Set running flag
         setIsUpdatingEvent(true);
@@ -249,6 +242,8 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
 
     const eventDateRef = useRef(null);
     const categoryDropdownRef = useRef(null);
+    const purchaseStartDateRef = useRef(null);
+    const purchaseEndDateRef = useRef(null);
 
     useEffect(() => {
         // Clear previous info
@@ -274,12 +269,6 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
             setEventTicketTypes(updatedTicketTypes);
         }
     }, [eventInfo]);
-
-    // useEffect(() => {
-    //     if (eventInfo) {
-    //         setEventRequest({ ...eventRequest as EventRequest, description: eventInfo.description });
-    //     }
-    // }, [eventInfo]);
 
     useOuterClick(categoryDropdownRef, () => setCategoryDropdownIsVisible(false));
 
@@ -429,7 +418,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                         }}
                                         dateAnchor={basicDateAnchor}
                                         styles={timePickerStyles}
-                                        // errorMessage='Please enter a valid time'
+                                    // errorMessage='Please enter a valid time'
                                     />
                                     {/* <input
                                         type="text"
@@ -518,6 +507,112 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                     <option value={EventVisibility.PRIVATE}>Private - Visible to only people that have the link</option>
                                 </select>
                             </div>
+                            <div className={styles.formRow}>
+                                <div className={styles.formField}>
+                                    <label htmlFor="date">Purchase start date</label>
+                                    <div className={styles.inputFieldContainer} ref={purchaseStartDateRef}>
+                                        <CalenderIcon />
+                                        <DatePicker
+                                            style={{
+                                                backgroundColor: '#ed100'
+                                            }}
+                                            textField={{
+                                                style: {
+                                                    background: '#ed100'
+                                                },
+                                                borderless: true,
+                                            }}
+                                            calloutProps={{
+                                                gapSpace: 8,
+                                                target: purchaseStartDateRef
+                                            }}
+                                            placeholder="Purchase start date"
+                                            ariaLabel="Select a date"
+                                            minDate={new Date()}
+                                            maxDate={eventRequest?.date as Date ?? undefined}
+                                            value={eventRequest?.purchaseStartDate ?? new Date(eventInfo.purchaseStartDate as string)}
+                                            onSelectDate={(date) => {
+                                                // Set the form value
+                                                setEventRequest({ ...eventRequest as EventRequest, purchaseStartDate: formattedDateForApi(date as Date) });
+                                            }}
+                                            onKeyDown={(e) => {
+                                                // console.log('Key down...');
+
+                                                // If backward tab was pressed...
+                                                if (e.shiftKey && e.key === 'Tab') {
+                                                    // console.log("Backward tab pressed...");
+                                                }
+
+                                                // If forward was tab was pressed...
+                                                if (e.key === 'Tab') {
+                                                    // console.log("Forward tab pressed...");
+                                                    // If shit key was enabled...
+                                                    if (e.shiftKey)
+                                                        // Exit to aviod backward tab
+                                                        return;
+                                                    // console.log('Got here...');
+                                                }
+                                            }}
+                                            underlined={false}
+                                            showGoToToday={false}
+                                            isMonthPickerVisible={true}
+                                        />
+                                    </div>
+                                </div>
+                                <div className={styles.formField}>
+                                    <label htmlFor="date">Purchase date deadline</label>
+                                    <div className={styles.inputFieldContainer} ref={purchaseEndDateRef}>
+                                        <CalenderIcon />
+                                        <DatePicker
+                                            style={{
+                                                backgroundColor: '#ed100'
+                                            }}
+                                            textField={{
+                                                style: {
+                                                    background: '#ed100'
+                                                },
+                                                borderless: true,
+                                            }}
+                                            calloutProps={{
+                                                gapSpace: 8,
+                                                target: purchaseEndDateRef
+                                            }}
+                                            placeholder="Purchase end date"
+                                            ariaLabel="Select a date"
+                                            minDate={eventRequest?.purchaseStartDate as Date ?? new Date()}
+                                            maxDate={eventRequest?.date as Date ?? undefined}
+                                            value={eventRequest?.purchaseEndDate ?? new Date(eventInfo.purchaseEndDate as string)}
+                                            onSelectDate={(date) => {
+                                                // Set the form value
+                                                setEventRequest({ ...eventRequest as EventRequest, purchaseEndDate: formattedDateForApi(date as Date) });
+                                                // Close error message
+                                                // setDateErrorMsg(false);
+                                            }}
+                                            onKeyDown={(e) => {
+                                                // console.log('Key down...');
+
+                                                // If backward tab was pressed...
+                                                if (e.shiftKey && e.key === 'Tab') {
+                                                    // console.log("Backward tab pressed...");
+                                                }
+
+                                                // If forward was tab was pressed...
+                                                if (e.key === 'Tab') {
+                                                    // console.log("Forward tab pressed...");
+                                                    // If shit key was enabled...
+                                                    if (e.shiftKey)
+                                                        // Exit to aviod backward tab
+                                                        return;
+                                                    // console.log('Got here...');
+                                                }
+                                            }}
+                                            underlined={false}
+                                            showGoToToday={false}
+                                            isMonthPickerVisible={true}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
 
                             {/* <div className={styles.tagsSection}>
                                 <h4>Tags</h4>
@@ -593,6 +688,29 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                                             </div>
                                         ))
                                     }
+                                </div>
+                            </div>
+                            <div>
+                                <span className="mb-1 text-sm">Who pays for fee?</span>
+                                <div className="flex flex-row items-center justify-start gap-2 w-fit">
+                                    <span
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setEventRequest({ ...eventRequest as EventRequest, organizerPaysFee: true });
+                                            setEventInfo({ ...eventInfo as EventResponse, organizerPaysFee: true });
+                                        }}
+                                        className={`!p-2 !px-4 rounded-full cursor-pointer ${eventInfo?.organizerPaysFee ? 'bg-white text-dark-grey' : '!bg-white/10 !text-white'}`}>
+                                        Organizer
+                                    </span>
+                                    <span
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setEventRequest({ ...eventRequest as EventRequest, organizerPaysFee: false });
+                                            setEventInfo({ ...eventInfo as EventResponse, organizerPaysFee: false });
+                                        }}
+                                        className={`!p-2 !px-4 rounded-full cursor-pointer ${eventInfo?.organizerPaysFee ? '!bg-white/10 !text-white' : 'bg-white text-dark-grey'}`}>
+                                        Customer
+                                    </span>
                                 </div>
                             </div>
                         </div>
