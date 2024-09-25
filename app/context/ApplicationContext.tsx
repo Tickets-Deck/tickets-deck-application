@@ -121,7 +121,7 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
         }
         await fetchTransactionFee()
             .then((response) => {
-                console.log("🚀 ~ .then fee ~ response:", response)
+                // console.log("🚀 ~ .then fee ~ response:", response)
                 setTransactionFees(response.data);
             })
             .catch((error) => {
