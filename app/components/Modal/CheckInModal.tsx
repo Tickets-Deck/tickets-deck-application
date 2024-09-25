@@ -16,8 +16,6 @@ interface CheckInModalProps {
 
 const CheckInModal: FunctionComponent<CheckInModalProps> = (
     { visibility, setVisibility, multipleTickets, ticketOrderAccessCode, eventId }): ReactElement => {
-    console.log("🚀 ~ eventId:", eventId)
-    console.log("🚀 ~ ticketOrderAccessCode:", ticketOrderAccessCode)
 
     const checkInMultipleTicketOrders = useCheckInMultipleTicketOrders();
 
@@ -25,12 +23,15 @@ const CheckInModal: FunctionComponent<CheckInModalProps> = (
     const [isCheckingIn, setIsCheckingIn] = useState(false);
 
     const handleCheckInMultipleTicketOrders = async () => {
+        if (selectedTickets.length === 0) {
+            toast.error("Please select at least one ticket to check in");
+            return;
+        }
 
         setIsCheckingIn(true);
 
         await checkInMultipleTicketOrders(ticketOrderAccessCode as string, eventId as string, selectedTickets)
             .then((response) => {
-                console.log("Check in response: ", response);
                 toast.success(selectedTickets.length > 1 ? "Tickets checked in successfully" : "Ticket checked in successfully");
                 setSelectedTickets([]);
                 setVisibility(false);
