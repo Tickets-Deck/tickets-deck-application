@@ -29,6 +29,7 @@ export type EventRequest = {
 
   currency: string;
   tickets: TicketRequest[];
+  organizerPaysFee: boolean;
   purchaseStartDate: Date;
   purchaseEndDate: Date;
   allowedGuestType: string;
@@ -58,6 +59,7 @@ export type EventResponse = {
   images: [];
   tags: string[];
   location: Location | null;
+  isArchived: boolean;
 
   bookmarksCount: number;
   favoritesCount: number;
@@ -65,6 +67,7 @@ export type EventResponse = {
   favorites: Favourites[];
   ticketsPurchasedCount: number;
   ticketsPurchased: TicketPurchased[];
+  organizerPaysFee: boolean;
 };
 
 export enum EventFavoriteAction {
