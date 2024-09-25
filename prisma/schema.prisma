@@ -156,6 +156,7 @@ model Events {
     transactionFee    TransactionFees? @relation(fields: [transactionFeeId], references: [id])
     transactionFeeId  String?
     couponCodes       CouponCodes[]
+    organizerPaysFee  Boolean          @default(false)
 
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt
@@ -320,6 +321,7 @@ model Tickets {
     description       String?
     ticketOrdersCount Int              @default(0)
     ticketOrders      OrderedTickets[]
+    visibility        Boolean          @default(true)
     createdAt         DateTime?        @default(now())
     updatedAt         DateTime?        @updatedAt
 
