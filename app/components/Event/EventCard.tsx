@@ -80,16 +80,22 @@ const EventCard: FunctionComponent<EventCardProps> = (
             </div> */}
             {/* <span className={styles.event__tag}>Latest</span> */}
             <div className={styles.event__image}>
-                <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
-                    <Image
-                        src={event.mainImageUrl}
-                        alt='Event flyer'
-                        fill
-                    // priority
-                    // placeholder={"blur"}
-                    // blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOsa2yqBwAFCAICLICSyQAAAABJRU5ErkJggg=="}
-                    />
-                </Link>
+                {
+                    event.isArchived ?
+                        <Image
+                            src={event.mainImageUrl}
+                            alt='Event flyer'
+                            fill
+                        />
+                        :
+                        <Link href={consoleDisplay ? `/app/event/${event.id}` : `/event/${event.id}`}>
+                            <Image
+                                src={event.mainImageUrl}
+                                alt='Event flyer'
+                                fill
+                            />
+                        </Link>
+                }
             </div>
             {/* <span className={styles.hLine}>
                 <HorizontalLineIcon />
@@ -145,18 +151,22 @@ const EventCard: FunctionComponent<EventCardProps> = (
                     :
                     <div className={styles.actionBtnContainer}>
                         {
-                            consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
+                            consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent && !event.isArchived &&
                             <Link href={`${ApplicationRoutes.EditEvent}/${event.id}`} className={styles.noStyle}>
                                 <button className={styles.editBtn}>
                                     <EditIcon />
                                 </button>
                             </Link>
                         }
-                        <Link href={consoleDisplay ? `${ApplicationRoutes.Event}/${event.id}` : `/event/${event.id}`}>
-                            <button className="text-sm">View details</button>
-                        </Link>
                         {
-                            consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent &&
+                            event.isArchived ?
+                                <button className="p-2 bg-dark-grey-2 text-white w-full rounded-md pointer-events-none">Deleted</button> :
+                                <Link href={consoleDisplay ? `${ApplicationRoutes.Event}/${event.id}` : `/event/${event.id}`}>
+                                    <button className="text-sm">View details</button>
+                                </Link>
+                        }
+                        {
+                            consoleDisplay && setIsDeleteConfirmationModalVisible && setSelectedEvent && !event.isArchived &&
                             <button
                                 className={styles.deleteBtn}
                                 onClick={() => {
