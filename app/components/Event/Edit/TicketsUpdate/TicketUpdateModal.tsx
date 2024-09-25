@@ -2,7 +2,6 @@ import { useUpdateTicketInformationById } from "@/app/api/apiClient";
 import ModalWrapper from "@/app/components/Modal/ModalWrapper";
 import { CloseIcon } from "@/app/components/SVGs/SVGicons";
 import { catchError } from "@/app/constants/catchError";
-import { EventRequest, EventResponse } from "@/app/models/IEvents";
 import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
 import { TicketRequest, TicketResponse } from "@/app/models/ITicket";
 import styles from '@/app/styles/CreateEvent.module.scss';
@@ -304,6 +303,21 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = (
                             ticketDescriptionErrorMsg && ticketDescriptionErrorMsg.status == DefaultFormResponseStatus.Failed &&
                             <span className={styles.errorMsg}>{ticketDescriptionErrorMsg.message}</span>
                         }
+                    </div>
+                    <div>
+                        <span>Status</span>
+                        <div className="flex flex-row items-center justify-start gap-2 w-fit">
+                            <button
+                                onClick={() => setTicketFormRequest({ ...ticketFormRequest as TicketRequest, visibility: true })}
+                                className={!ticketFormRequest?.visibility ? '!bg-white/10 !text-white' : ''}>
+                                Active
+                            </button>
+                            <button
+                                onClick={() => setTicketFormRequest({ ...ticketFormRequest as TicketRequest, visibility: false })}
+                                className={ticketFormRequest?.visibility ? '!bg-white/10 !text-white' : ''}>
+                                Inactive
+                            </button>
+                        </div>
                     </div>
                     <button type="button" disabled={isUpdatingTicketInfo} onClick={() => handleUpdateTicketInformation()}>
                         {isUpdatingTicketInfo ? "Updating ticket" : "Update ticket"}
