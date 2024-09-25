@@ -248,6 +248,7 @@ export async function updateTicket(req: NextRequest) {
       quantity: request.quantity || existingTicket.quantity,
       remainingTickets: request.quantity == 0 ? 0 : request.quantity || existingTicket.remainingTickets,
       description: request.description || existingTicket.description,
+      visibility: request.visibility == null ? existingTicket.visibility : request.visibility
     },
   });
 
