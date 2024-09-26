@@ -1,7 +1,7 @@
 import images from "@/public/images";
 import Image from "next/image";
 import styles from "../../styles/TicketDelivery.module.scss";
-import { FunctionComponent, ReactElement, Dispatch, SetStateAction, useContext } from "react";
+import { FunctionComponent, ReactElement, Dispatch, SetStateAction, useContext, useEffect } from "react";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { EventResponse } from "@/app/models/IEvents";
@@ -17,10 +17,11 @@ interface OrderSummarySectionProps {
     isProcessingOrder: boolean
     eventInfo: EventResponse | undefined
     couponDetails: CouponDetails | undefined
+    setOrganizerAmount: Dispatch<SetStateAction<number | undefined>>
 }
 
 const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
-    { eventTickets, totalPrice, setVisibility, couponDetails,
+    { eventTickets, totalPrice, setVisibility, couponDetails, setOrganizerAmount,
         handleTicketOrderCreation, isProcessingOrder, eventInfo }): ReactElement => {
 
     const { transactionFees } = useContext(ApplicationContext) as ApplicationContextData;
@@ -31,8 +32,12 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
     const transactionFeePercentage = Number(eventTransactionFee?.percentage as string) || Number(generalTransactionFee?.percentage as string) || 0;
     const flatFee = Number(eventTransactionFee?.flatFee as string) || Number(generalTransactionFee?.flatFee as string) || 0;
 
-    const fees = eventInfo?.organizerPaysFee ? 0 : (transactionFeePercentage ? (totalPrice * transactionFeePercentage) / 100 : 0) + (flatFee || 0);
+    const fees = eventInfo?.organizerPaysFee || totalPrice == 0 ? 0 : (transactionFeePercentage ? (totalPrice * transactionFeePercentage) / 100 : 0) + (flatFee || 0);
     const totalAmountPayable = eventInfo?.organizerPaysFee ? totalPrice - (couponDetails?.discount ? (totalPrice * Number(couponDetails.discount)) / 100 : 0) : totalPrice + fees - (couponDetails?.discount ? (totalPrice * Number(couponDetails.discount)) / 100 : 0);
+
+    useEffect(() => {
+        setOrganizerAmount(fees == 0 ? totalAmountPayable : totalAmountPayable - fees);
+    }, [totalAmountPayable, fees]);
 
     return (
         <div className={styles.rhs}>
