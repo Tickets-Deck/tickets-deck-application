@@ -66,6 +66,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     const [codeValidationStatus, setCodeValidationStatus] = useState<ValidationStatus>(ValidationStatus.NotInitiated);
     const [couponCodeValue, setCouponCodeValue] = useState<string>();
     const [couponDetails, setCouponDetails] = useState<CouponDetails>();
+    const [organizerAmount, setOrganizerAmount] = useState<number>();
 
     const [orderSummaryVisible, setOrderSummaryVisible] = useState(false);
 
@@ -277,7 +278,12 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             // If we get here, it means the total price is not zero
             if (response) {
                 // Initialize payment
-                const paymentInit = await initializePaystackPayment({ ticketOrderId: response.data.id, callbackUrl: `${window.location.origin}/verify-payment` });
+                const paymentInit = await initializePaystackPayment(
+                    {
+                        ticketOrderId: response.data.id,
+                        callbackUrl: `${window.location.origin}/verify-payment`,
+                        organizerAmount: organizerAmount as number
+                    });
 
                 if (paymentInit) {
                     // Route to the payment authorization URL
@@ -582,6 +588,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                             isProcessingOrder={isProcessingOrder}
                             eventInfo={eventInfo}
                             couponDetails={couponDetails}
+                            setOrganizerAmount={setOrganizerAmount}
                         />
                     </div>
                 </ModalWrapper>
