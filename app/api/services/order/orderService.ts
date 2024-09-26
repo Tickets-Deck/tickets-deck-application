@@ -163,7 +163,7 @@ export async function initializeOrder(req: NextRequest) {
   const flatFee =
     eventTransactionFee?.flatFee ?? generalTransactionFee?.flatFee ?? 0;
 
-  const totalPrice = event.organizerPaysFee
+  const totalPrice = event.organizerPaysFee || preTotalPrice == 0
     ? preTotalPrice - (preTotalPrice * couponDiscount) / 100
     : (preTotalPrice * Number(transactionFeePercentage)) / 100 +
       preTotalPrice +
