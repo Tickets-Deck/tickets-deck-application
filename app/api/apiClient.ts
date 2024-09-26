@@ -21,7 +21,7 @@ import {
 import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_LIVE,
+  baseURL: ApiRoutes.BASE_URL_DEV,
 });
 
 export function useCreateNewsletterSubscriber() {
