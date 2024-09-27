@@ -31,6 +31,7 @@ export async function handleSuccessfulPayment(
     }: PaymentResultData = data;
 
     const ticketOrderId = metadata.ticketOrderId;
+    const organizerAmount = metadata.organizerAmount;
 
     const existingTicketOrder = await prisma.ticketOrders.findUnique({
       where: {
@@ -141,21 +142,6 @@ export async function handleSuccessfulPayment(
           },
         },
       }),
-      //   ...orderedTickets.map((ticket) =>
-      //     prisma.tickets.update({
-      //       where: {
-      //         id: ticket.ticketId,
-      //       },
-      //       data: {
-      //         ticketOrdersCount: {
-      //           increment: 1,
-      //         },
-      //         remainingTickets: {
-      //           decrement: 1,
-      //         },
-      //       },
-      //     })
-      //   ),
     ]);
 
     // If the user ID exists, update the number of tickets bought by the user
@@ -195,7 +181,7 @@ export async function handleSuccessfulPayment(
             increment: orderedTickets.length,
           },
           totalRevenue: {
-            increment: amountPaid,
+            increment: organizerAmount,
           },
         },
       });
@@ -223,6 +209,7 @@ export async function processPayment(req: NextRequest) {
 
   const ticketOrderId = request.ticketOrderId;
   const callbackUrl = request.callbackUrl;
+  const organizerAmount = request.organizerAmount;
 
   // Check if the ticketOrderId or callbackUrl is null
   if (ticketOrderId === null || callbackUrl === null) {
@@ -285,7 +272,8 @@ export async function processPayment(req: NextRequest) {
     email: existingTicketOrder.contactEmail,
     callback_url: callbackUrl,
     metadata: {
-      ticketOrderId: ticketOrderId,
+      ticketOrderId,
+      organizerAmount,
     },
   });
 
@@ -358,7 +346,6 @@ export async function processPayment(req: NextRequest) {
 }
 
 export async function verifyPayment(req: NextRequest) {
-    
   // Get the search params from the request url
   const searchParams = new URLSearchParams(req.url.split("?")[1]);
 
@@ -396,7 +383,6 @@ export async function verifyPayment(req: NextRequest) {
     process.env.PAYSTACK_SECRET_URL as string
   ).transaction.verify(trxref);
 
-  // console.log("payment result: ", paymentResult);
   const { headers } = req;
 
   const baseUrl = `${
