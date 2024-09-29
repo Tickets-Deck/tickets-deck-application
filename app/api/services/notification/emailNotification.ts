@@ -127,7 +127,7 @@ export async function processEmailNotification(
       time: ticketOrder.event.time as string,
       qrImage: ticketOrder.orderId,
       ticketOrderId: ticketOrder.orderId,
-      ticketType: ticketOrder.tickets.join(', '),
+      ticketType: ticketOrder.tickets.map(ticket => ticket.ticket.name).join(', '),
       orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
     }),
     attachments: [
