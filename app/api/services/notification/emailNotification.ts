@@ -127,7 +127,7 @@ export async function processEmailNotification(
       time: ticketOrder.event.time as string,
       qrImage: ticketOrder.orderId,
       ticketOrderId: ticketOrder.orderId,
-      ticketType: ticketOrder.tickets[0].ticket.name,
+      ticketType: ticketOrder.tickets.join(', '),
       orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
     }),
     attachments: [
@@ -141,12 +141,12 @@ export async function processEmailNotification(
   // If we have more than one ticket, we can send an email to each associated email of the ticket order if it exists
   for (const ticket of orderedTickets) {
     // If the associated email is the same as the contact email, or the associated email does not exist, we can skip sending an email to the associated email
-    if (!ticket.associatedEmail) {
-      continue;
-    }
+    // if (!ticket.associatedEmail) {
+    //   continue;
+    // }
 
     await sendMail({
-      to: ticket.associatedEmail,
+      to: ticket.associatedEmail ?? ticket.contactEmail,
       name: "Ticket Order",
       subject: ticketOrder.event.title,
       body: compileTicketOrderTemplate({
