@@ -432,7 +432,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
      * @returns the formatted string
      */
     function getInputName(ticketType: string, selectedTickets: number, emailId: number) {
-        return `${ticketType.replace(/\s+/g, '_').toLowerCase()}${emailId}`
+        return `${ticketType.replace(/\s+/g, '_').toLowerCase()}_${emailId}`
     };
 
     /**
@@ -441,7 +441,11 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
      * @returns the email id of the ticket
      */
     function getTicketEmailIdFromName(name: string): number {
-        return Number(name.split(/(\d+)/).filter(Boolean)[1]);
+        // return Number(name.split(/(\d+)/).filter(Boolean)[1]);
+
+        const numbers = name.match(/\d+/g); // Find all numbers in the string
+        const lastNumber = numbers ? numbers[numbers.length - 1] : null; // Get the last number
+        return Number(lastNumber);
     }
 
     useEffect(() => {
