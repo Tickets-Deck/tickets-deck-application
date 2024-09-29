@@ -33,6 +33,12 @@ export async function handleSuccessfulPayment(
     const ticketOrderId = metadata.ticketOrderId;
     const organizerAmount = metadata.organizerAmount;
 
+    if (status !== "success") {
+      throw new Error(
+        "Payment not successful"
+      );
+    }
+
     const existingTicketOrder = await prisma.ticketOrders.findUnique({
       where: {
         id: ticketOrderId,
@@ -84,8 +90,7 @@ export async function handleSuccessfulPayment(
           amountPaid,
           currency,
           paidAt: new Date(paid_at),
-          paymentStatus:
-            status === "success" ? PaymentStatus.Paid : PaymentStatus.Failed,
+          paymentStatus: PaymentStatus.Paid,
         },
       }),
 
@@ -388,6 +393,8 @@ export async function verifyPayment(req: NextRequest) {
   const baseUrl = `${
     headers.get("x-forwarded-proto") || "http"
   }://${headers.get("host")}`;
+  
+  console.log("PAYMENT RESULT: ", paymentResult);
 
   // If the payment is successful...
   if (paymentResult.status === true) {
