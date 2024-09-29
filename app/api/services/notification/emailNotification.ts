@@ -4,6 +4,33 @@ import { prisma } from "@/lib/prisma";
 import moment from "moment";
 import Paystack from "paystack";
 
+// function getEmailPayload() {
+//     return {
+//       to: email,
+//       name: "Ticket Order",
+//       subject: ticketOrder.event.title,
+//       body: compileTicketOrderTemplate({
+//         title: ticketOrder.event.title,
+//         image: ticketOrder.event.mainImageUrl,
+//         description: ticketOrder.event.description,
+//         venue: ticketOrder.event.venue as string,
+//         date: moment(ticketOrder.event.date).format("Do of MMM, YYYY"),
+//         time: ticketOrder.event.time as string,
+//         qrImage: qrCodeBase64,
+//         ticketOrderId: ticketOrder.orderId,
+//         ticketType: ticket.ticket.name,
+//         orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
+//       }),
+//       attachments: [
+//         {
+//           filename: `${ticketOrder.event.title}` + ".png",
+//           content: qrCodeBuffer,
+//         },
+//       ],
+//     };
+//   }
+  
+
 export async function processEmailNotification(
   paymentResult: Paystack.Response,
   baseUrl: string
@@ -18,7 +45,15 @@ export async function processEmailNotification(
     },
     include: {
       event: true,
-      tickets: true,
+      tickets: {
+        include: {
+            ticket: {
+                select: {
+                    name: true
+                }
+            }
+        }
+      },
     },
   });
 
@@ -61,6 +96,7 @@ export async function processEmailNotification(
         time: ticketOrder.event.time as string,
         qrImage: qrCodeBase64,
         ticketOrderId: ticketOrder.orderId,
+        ticketType: ticketOrder.tickets[0].ticket.name,
         orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
       }),
       attachments: [
@@ -91,6 +127,7 @@ export async function processEmailNotification(
       time: ticketOrder.event.time as string,
       qrImage: ticketOrder.orderId,
       ticketOrderId: ticketOrder.orderId,
+      ticketType: ticketOrder.tickets[0].ticket.name,
       orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
     }),
     attachments: [
@@ -121,6 +158,7 @@ export async function processEmailNotification(
         time: ticketOrder.event.time,
         qrImage: ticketOrder.orderId,
         ticketOrderId: ticketOrder.orderId,
+        ticketType: ticket.ticket.name,
         orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
       }),
       attachments: [
