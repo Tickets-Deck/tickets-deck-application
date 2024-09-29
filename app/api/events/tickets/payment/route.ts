@@ -19,6 +19,8 @@ import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { customNextResponseError } from "@/app/api/utils/customNextResponseError";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Function to initialize the payment
  * @param req is the request object
