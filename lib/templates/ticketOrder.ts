@@ -132,6 +132,11 @@ a[x-apple-data-detectors] {
                      </tr>
                    </table></td>
                  </tr>
+                 <tr>
+                    <td class="es-m-p0r" valign="top" align="center" style="padding:0;Margin:0;padding-top:20px;font-size: 28px">
+                        {{ticketType}}
+                    </td>
+                 </tr>
                </table></td>
              </tr>
              <tr>

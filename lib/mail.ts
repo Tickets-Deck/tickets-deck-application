@@ -97,6 +97,7 @@ export function compileTicketOrderTemplate(eventInfo: {
   time: string;
   qrImage: string;
   ticketOrderId: string;
+  ticketType: string;
   orderPageUrl: string;
 }) {
   const template = handlebars.compile(ticketOrderTemplate);
@@ -113,6 +114,7 @@ export function compileTicketOrderTemplate(eventInfo: {
     eventTime: eventInfo.time,
     qrImage: eventInfo.qrImage,
     ticketOrderId: eventInfo.ticketOrderId,
+    ticketType: eventInfo.ticketType,
     orderPageUrl: eventInfo.orderPageUrl,
   });
   //   const htmlBody = '<p>Here is your QR code:</p><img src="' + eventInfo.qrImage + '" alt="QR Code">';
