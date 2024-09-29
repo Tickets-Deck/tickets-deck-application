@@ -112,18 +112,18 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
                 }
 
                 {
-                    !isFetchingOrderInformation &&
+                    !isFetchingOrderInformation && orderInformation &&
                     <>
                         <div className={styles.topArea}>
                             {/* <span className={styles.closeIcon}><ArrowLeftIcon /></span> */}
                             {/* <h2>Order <span>#{orderInformation?.orderId}</span> on {moment(orderInformation?.createdAt).format("MMM D, YYYY")}</h2> */}
-                            <h2>Order <span>#{orderInformation?.orderId}</span></h2>
+                            <h2>Order <span>#{orderInformation.orderId}</span></h2>
                         </div>
                         <div className={styles.orderInformationContainer}>
                             <div className={styles.eventContainer}>
                                 <EventMainInfo
                                     appTheme={appTheme}
-                                    eventInfo={orderInformation?.event as EventResponse}
+                                    eventInfo={orderInformation.event}
                                     forOrdersPage
                                     hideStatusTag
                                     hostUrl={hostUrl}
@@ -131,10 +131,10 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
                             </div>
                             <div className={styles.ticketsContainer}>
                                 <h2>Tickets</h2>
-                                <p>Primary email: {orderInformation?.contactEmail}</p>
+                                <p>Primary email: {orderInformation.contactEmail}</p>
                                 <div className={styles.tickets}>
                                     {
-                                        orderInformation?.orderedTickets.map((orderedTicket, index) => (
+                                        orderInformation.orderedTickets.map((orderedTicket, index) => (
                                             <div className="flex flex-row items-center justify-between py-4 border-b-[1px] border-b-container-grey" key={index}>
                                                 <h3>{orderedTicket.ticket.name}</h3>
                                                 <p style={orderedTicket.associatedEmail ? {} : { fontSize: "14px", fontStyle: "italic", opacity: 0.5 }}>
