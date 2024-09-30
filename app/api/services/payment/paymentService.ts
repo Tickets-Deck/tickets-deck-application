@@ -202,6 +202,9 @@ export async function verifyPayment(req: NextRequest) {
     // Process the payment result
     await handleSuccessfulPayment(paymentResult, baseUrl);
 
+    // Process the email notification to the user
+    await processEmailNotification(paymentResult, baseUrl);
+
     return { data: paymentResult.data };
   } else {
     return {
@@ -383,9 +386,6 @@ export async function handleSuccessfulPayment(
     }
 
     console.log("Transaction end: ", new Date());
-
-    // Process the email notification to the user
-    await processEmailNotification(paymentResult, baseUrl);
 
     return { data: paymentResult.data };
   } catch (error) {
