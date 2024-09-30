@@ -350,40 +350,42 @@ export async function handleSuccessfulPayment(
       }),
     ]);
 
-    // If the user ID exists, update the number of tickets bought by the user
-    if (existingTicketOrder.userId) {
-      // Update the number of tickets bought by the user
-      await prisma.users.update({
-        where: {
-          id: existingTicketOrder.userId,
-        },
-        data: {
-          ticketsBought: {
-            increment: orderedTickets.length,
+    await prisma.$transaction(async (context) => {
+      // If the user ID exists, update the number of tickets bought by the user
+      if (existingTicketOrder.userId) {
+        // Update the number of tickets bought by the user
+        await context.users.update({
+          where: {
+            id: existingTicketOrder.userId,
           },
-        },
-      });
-    }
+          data: {
+            ticketsBought: {
+              increment: orderedTickets.length,
+            },
+          },
+        });
+      }
 
-    const eventPublisher = existingTicketOrder.event.publisherId;
+      const eventPublisher = existingTicketOrder.event.publisherId;
 
-    // If the event publisher exists, update the ticketSold count of the event publisher
-    if (eventPublisher) {
-      // Update the ticketSold count of the event publisher
-      await prisma.users.update({
-        where: {
-          id: eventPublisher,
-        },
-        data: {
-          ticketsSold: {
-            increment: orderedTickets.length,
+      // If the event publisher exists, update the ticketSold count of the event publisher
+      if (eventPublisher) {
+        // Update the ticketSold count of the event publisher
+        await context.users.update({
+          where: {
+            id: eventPublisher,
           },
-          totalRevenue: {
-            increment: organizerAmount,
+          data: {
+            ticketsSold: {
+              increment: orderedTickets.length,
+            },
+            totalRevenue: {
+              increment: organizerAmount,
+            },
           },
-        },
-      });
-    }
+        });
+      }
+    });
 
     console.log("Transaction end: ", new Date());
 
