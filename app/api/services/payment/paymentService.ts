@@ -238,11 +238,11 @@ export async function handleSuccessfulPayment(
       },
       include: {
         event: {
-            select: {
-                publisherId: true
-            }
-        }
-      }
+          select: {
+            publisherId: true,
+          },
+        },
+      },
     });
 
     if (!existingTicketOrder) {
@@ -276,117 +276,109 @@ export async function handleSuccessfulPayment(
     const amountPaid = amount / 100;
 
     // Begin transaction
-    await prisma.$transaction(
-      async (_context) => {
-        console.log("Transaction began: ", new Date());
+    console.log("Transaction began: ", new Date());
 
-        // Update the payment table
-        await _context.payments.update({
-          where: {
-            id: existingPayment.id,
-          },
-          data: {
-            amountPaid,
-            currency,
-            paidAt: new Date(paid_at),
-            paymentStatus: PaymentStatus.Paid,
-          },
-        });
-
-        // Update the order status, payment status of the order, and the payment ID
-        await _context.ticketOrders.update({
-          where: {
-            id: ticketOrderId,
-          },
-          data: {
-            orderStatus: OrderStatus.Confirmed,
-            paymentStatus: PaymentStatus.Paid,
-            paymentId: existingPayment.id,
-          },
-        });
-
-        // Update the number of ticket orders for the event
-        await _context.events.update({
-          where: {
-            id: existingTicketOrder.eventId,
-          },
-          data: {
-            ticketOrdersCount: {
-              increment: 1,
-            },
-          },
-        });
-
-        // Update the ordered ticket status and payment ID for each ordered ticket in the order
-        await _context.orderedTickets.updateMany({
-          where: {
-            orderId: existingTicketOrder.orderId,
-          },
-          data: {
-            orderStatus: OrderStatus.Confirmed,
-            paymentId: existingPayment.id,
-          },
-        });
-
-        // Update the ticket ordered count and remaining tickets for each ticket in the order
-        await _context.tickets.updateMany({
-          where: {
-            id: {
-              in: orderedTickets.map((orderedTicket) => orderedTicket.ticketId),
-            },
-          },
-          data: {
-            ticketOrdersCount: {
-              increment: 1,
-            },
-            remainingTickets: {
-              decrement: 1,
-            },
-          },
-        });
-
-        // If the user ID exists, update the number of tickets bought by the user
-        if (existingTicketOrder.userId) {
-          // Update the number of tickets bought by the user
-          await _context.users.update({
-            where: {
-              id: existingTicketOrder.userId,
-            },
-            data: {
-              ticketsBought: {
-                increment: orderedTickets.length,
-              },
-            },
-          });
-        }
-
-        const eventPublisher = existingTicketOrder.event.publisherId;
-
-        // If the event publisher exists, update the ticketSold count of the event publisher
-        if (eventPublisher) {
-          // Update the ticketSold count of the event publisher
-          await _context.users.update({
-            where: {
-              id: eventPublisher,
-            },
-            data: {
-              ticketsSold: {
-                increment: orderedTickets.length,
-              },
-              totalRevenue: {
-                increment: organizerAmount,
-              },
-            },
-          });
-        }
-
-        console.log("Transaction end: ", new Date());
+    // Update the payment table
+    await prisma.payments.update({
+      where: {
+        id: existingPayment.id,
       },
-      {
-        maxWait: 5000, // 5 seconds max wait to connect to prisma
-        timeout: 15000, // 15 seconds
-      }
-    );
+      data: {
+        amountPaid,
+        currency,
+        paidAt: new Date(paid_at),
+        paymentStatus: PaymentStatus.Paid,
+      },
+    });
+
+    // Update the order status, payment status of the order, and the payment ID
+    await prisma.ticketOrders.update({
+      where: {
+        id: ticketOrderId,
+      },
+      data: {
+        orderStatus: OrderStatus.Confirmed,
+        paymentStatus: PaymentStatus.Paid,
+        paymentId: existingPayment.id,
+      },
+    });
+
+    // Update the number of ticket orders for the event
+    await prisma.events.update({
+      where: {
+        id: existingTicketOrder.eventId,
+      },
+      data: {
+        ticketOrdersCount: {
+          increment: 1,
+        },
+      },
+    });
+
+    // Update the ordered ticket status and payment ID for each ordered ticket in the order
+    await prisma.orderedTickets.updateMany({
+      where: {
+        orderId: existingTicketOrder.orderId,
+      },
+      data: {
+        orderStatus: OrderStatus.Confirmed,
+        paymentId: existingPayment.id,
+      },
+    });
+
+    // Update the ticket ordered count and remaining tickets for each ticket in the order
+    await prisma.tickets.updateMany({
+      where: {
+        id: {
+          in: orderedTickets.map((orderedTicket) => orderedTicket.ticketId),
+        },
+      },
+      data: {
+        ticketOrdersCount: {
+          increment: 1,
+        },
+        remainingTickets: {
+          decrement: 1,
+        },
+      },
+    });
+
+    // If the user ID exists, update the number of tickets bought by the user
+    if (existingTicketOrder.userId) {
+      // Update the number of tickets bought by the user
+      await prisma.users.update({
+        where: {
+          id: existingTicketOrder.userId,
+        },
+        data: {
+          ticketsBought: {
+            increment: orderedTickets.length,
+          },
+        },
+      });
+    }
+
+    const eventPublisher = existingTicketOrder.event.publisherId;
+
+    // If the event publisher exists, update the ticketSold count of the event publisher
+    if (eventPublisher) {
+      // Update the ticketSold count of the event publisher
+      await prisma.users.update({
+        where: {
+          id: eventPublisher,
+        },
+        data: {
+          ticketsSold: {
+            increment: orderedTickets.length,
+          },
+          totalRevenue: {
+            increment: organizerAmount,
+          },
+        },
+      });
+    }
+
+    console.log("Transaction end: ", new Date());
 
     // Process the email notification to the user
     await processEmailNotification(paymentResult, baseUrl);
