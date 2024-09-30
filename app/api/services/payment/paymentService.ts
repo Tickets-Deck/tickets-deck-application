@@ -292,6 +292,15 @@ export async function handleSuccessfulPayment(
           currency,
           paidAt: new Date(paid_at),
           paymentStatus: PaymentStatus.Paid,
+          user: existingPayment.userId
+            ? {
+                update: {
+                  ticketsBought: {
+                    increment: orderedTickets.length,
+                  },
+                },
+              }
+            : undefined,
         },
       }),
 
@@ -315,6 +324,16 @@ export async function handleSuccessfulPayment(
         data: {
           ticketOrdersCount: {
             increment: 1,
+          },
+          user: {
+            update: {
+              ticketsSold: {
+                increment: orderedTickets.length,
+              },
+              totalRevenue: {
+                increment: organizerAmount,
+              },
+            },
           },
         },
       }),
@@ -350,42 +369,42 @@ export async function handleSuccessfulPayment(
       }),
     ]);
 
-    await prisma.$transaction(async (context) => {
-      // If the user ID exists, update the number of tickets bought by the user
-      if (existingTicketOrder.userId) {
-        // Update the number of tickets bought by the user
-        await context.users.update({
-          where: {
-            id: existingTicketOrder.userId,
-          },
-          data: {
-            ticketsBought: {
-              increment: orderedTickets.length,
-            },
-          },
-        });
-      }
+    // await prisma.$transaction(async (context) => {
+    //   // If the user ID exists, update the number of tickets bought by the user
+    //   if (existingTicketOrder.userId) {
+    //     // Update the number of tickets bought by the user
+    //     await context.users.update({
+    //       where: {
+    //         id: existingTicketOrder.userId,
+    //       },
+    //       data: {
+    //         ticketsBought: {
+    //           increment: orderedTickets.length,
+    //         },
+    //       },
+    //     });
+    //   }
 
-      const eventPublisher = existingTicketOrder.event.publisherId;
+    //   const eventPublisher = existingTicketOrder.event.publisherId;
 
-      // If the event publisher exists, update the ticketSold count of the event publisher
-      if (eventPublisher) {
-        // Update the ticketSold count of the event publisher
-        await context.users.update({
-          where: {
-            id: eventPublisher,
-          },
-          data: {
-            ticketsSold: {
-              increment: orderedTickets.length,
-            },
-            totalRevenue: {
-              increment: organizerAmount,
-            },
-          },
-        });
-      }
-    });
+    //   // If the event publisher exists, update the ticketSold count of the event publisher
+    //   if (eventPublisher) {
+    //     // Update the ticketSold count of the event publisher
+    //     await context.users.update({
+    //       where: {
+    //         id: eventPublisher,
+    //       },
+    //       data: {
+    //         ticketsSold: {
+    //           increment: orderedTickets.length,
+    //         },
+    //         totalRevenue: {
+    //           increment: organizerAmount,
+    //         },
+    //       },
+    //     });
+    //   }
+    // });
 
     console.log("Transaction end: ", new Date());
 
