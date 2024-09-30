@@ -278,70 +278,74 @@ export async function handleSuccessfulPayment(
     // Begin transaction
     console.log("Transaction began: ", new Date());
 
-    // Update the payment table
-    await prisma.payments.update({
-      where: {
-        id: existingPayment.id,
-      },
-      data: {
-        amountPaid,
-        currency,
-        paidAt: new Date(paid_at),
-        paymentStatus: PaymentStatus.Paid,
-      },
-    });
-
-    // Update the order status, payment status of the order, and the payment ID
-    await prisma.ticketOrders.update({
-      where: {
-        id: ticketOrderId,
-      },
-      data: {
-        orderStatus: OrderStatus.Confirmed,
-        paymentStatus: PaymentStatus.Paid,
-        paymentId: existingPayment.id,
-      },
-    });
-
-    // Update the number of ticket orders for the event
-    await prisma.events.update({
-      where: {
-        id: existingTicketOrder.eventId,
-      },
-      data: {
-        ticketOrdersCount: {
-          increment: 1,
+    await prisma.$transaction([
+      // Update the payment table
+      prisma.payments.update({
+        where: {
+          id: existingPayment.id,
         },
-      },
-    });
+        data: {
+          amountPaid,
+          currency,
+          paidAt: new Date(paid_at),
+          paymentStatus: PaymentStatus.Paid,
+        },
+      }),
 
-    // Update the ordered ticket status and payment ID for each ordered ticket in the order
-    await prisma.orderedTickets.updateMany({
-      where: {
-        orderId: existingTicketOrder.orderId,
-      },
-      data: {
-        orderStatus: OrderStatus.Confirmed,
-        paymentId: existingPayment.id,
-      },
-    });
+      // Update the order status, payment status of the order, and the payment ID
+      prisma.ticketOrders.update({
+        where: {
+          id: ticketOrderId,
+        },
+        data: {
+          orderStatus: OrderStatus.Confirmed,
+          paymentStatus: PaymentStatus.Paid,
+          paymentId: existingPayment.id,
+        },
+      }),
 
-    // Update the ticket ordered count and remaining tickets for each ticket in the order
-    await prisma.tickets.updateMany({
-      where: {
-        id: {
-          in: orderedTickets.map((orderedTicket) => orderedTicket.ticketId),
+      // Update the number of ticket orders for the event
+      prisma.events.update({
+        where: {
+          id: existingTicketOrder.eventId,
         },
-      },
-      data: {
-        ticketOrdersCount: {
-          increment: 1,
+        data: {
+          ticketOrdersCount: {
+            increment: 1,
+          },
         },
-        remainingTickets: {
-          decrement: 1,
+      }),
+    ]);
+
+    await prisma.$transaction([
+      // Update the ordered ticket status and payment ID for each ordered ticket in the order
+      prisma.orderedTickets.updateMany({
+        where: {
+          orderId: existingTicketOrder.orderId,
         },
-      },
-    });
+        data: {
+          orderStatus: OrderStatus.Confirmed,
+          paymentId: existingPayment.id,
+        },
+      }),
+
+      // Update the ticket ordered count and remaining tickets for each ticket in the order
+      prisma.tickets.updateMany({
+        where: {
+          id: {
+            in: orderedTickets.map((orderedTicket) => orderedTicket.ticketId),
+          },
+        },
+        data: {
+          ticketOrdersCount: {
+            increment: 1,
+          },
+          remainingTickets: {
+            decrement: 1,
+          },
+        },
+      }),
+    ]);
 
     // If the user ID exists, update the number of tickets bought by the user
     if (existingTicketOrder.userId) {
