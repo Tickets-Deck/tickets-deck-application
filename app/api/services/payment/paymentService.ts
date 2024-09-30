@@ -13,201 +13,6 @@ import { StatusCodes } from "@/app/models/IStatusCodes";
 import { generatePaymentReference } from "@/app/constants/idgenerator";
 import { processEmailNotification } from "../notification/emailNotification";
 
-// Function to handle successful payment result
-export async function handleSuccessfulPayment(
-  paymentResult: Paystack.Response,
-  baseUrl: string
-) {
-  try {
-    const { data } = paymentResult;
-
-    const {
-      reference,
-      amount,
-      paid_at,
-      status,
-      metadata,
-      currency,
-    }: PaymentResultData = data;
-
-    const ticketOrderId = metadata.ticketOrderId;
-    const organizerAmount = metadata.organizerAmount;
-
-    if (status !== "success") {
-      throw new Error(
-        "Payment not successful"
-      );
-    }
-
-    const existingTicketOrder = await prisma.ticketOrders.findUnique({
-      where: {
-        id: ticketOrderId,
-      },
-    });
-
-    if (!existingTicketOrder) {
-      throw new Error(
-        "Ticket order based on the provided ticket order ID could not be found"
-      );
-    }
-
-    // Get the payment status of the order
-    const paymentStatus = existingTicketOrder.paymentStatus;
-
-    // If payment status is not PaymentStatus.Pending
-    if (paymentStatus !== PaymentStatus.Pending) {
-      throw new Error("Payment status for the order is not pending");
-    }
-
-    const orderedTickets = await prisma.orderedTickets.findMany({
-      where: {
-        orderId: existingTicketOrder.orderId,
-      },
-    });
-
-    const existingPayment = await prisma.payments.findFirst({
-      where: {
-        ticketOrderId: existingTicketOrder.id,
-      },
-    });
-
-    if (!existingPayment) {
-      throw new Error(
-        "Payment based on the ticket order ID provided not found"
-      );
-    }
-
-    const amountPaid = amount / 100;
-
-    // Begin transaction
-    await prisma.$transaction([
-      // Update the payment table
-      prisma.payments.update({
-        where: {
-          id: existingPayment.id,
-        },
-        data: {
-          amountPaid,
-          currency,
-          paidAt: new Date(paid_at),
-          paymentStatus: PaymentStatus.Paid,
-        },
-      }),
-
-      // Update the order status, payment status of the order, and the payment ID
-      prisma.ticketOrders.update({
-        where: {
-          id: ticketOrderId,
-        },
-        data: {
-          orderStatus: OrderStatus.Confirmed,
-          paymentStatus: PaymentStatus.Paid,
-          paymentId: existingPayment.id,
-        },
-      }),
-
-      // Update the number of ticket orders for the event
-      prisma.events.update({
-        where: {
-          id: existingTicketOrder.eventId,
-        },
-        data: {
-          ticketOrdersCount: {
-            increment: 1,
-          },
-        },
-      }),
-    ]);
-
-    await prisma.$transaction([
-      // Update the ordered ticket status and payment ID for each ordered ticket in the order
-      prisma.orderedTickets.updateMany({
-        where: {
-          orderId: existingTicketOrder.orderId,
-        },
-        data: {
-          orderStatus: OrderStatus.Confirmed,
-          paymentId: existingPayment.id,
-        },
-      }),
-
-      // Update the ticket ordered count and remaining tickets for each ticket in the order
-      prisma.tickets.updateMany({
-        where: {
-          id: {
-            in: orderedTickets.map((orderedTicket) => orderedTicket.ticketId),
-          },
-        },
-        data: {
-          ticketOrdersCount: {
-            increment: 1,
-          },
-          remainingTickets: {
-            decrement: 1,
-          },
-        },
-      }),
-    ]);
-
-    // If the user ID exists, update the number of tickets bought by the user
-    if (existingTicketOrder.userId) {
-      // Update the number of tickets bought by the user
-      await prisma.users.update({
-        where: {
-          id: existingTicketOrder.userId,
-        },
-        data: {
-          ticketsBought: {
-            increment: orderedTickets.length,
-          },
-        },
-      });
-    }
-
-    // Get the event publisher
-    const eventPublisher = await prisma.events.findUnique({
-      where: {
-        id: existingTicketOrder.eventId,
-      },
-      select: {
-        publisherId: true,
-      },
-    });
-
-    // If the event publisher exists, update the ticketSold count of the event publisher
-    if (eventPublisher) {
-      // Update the ticketSold count of the event publisher
-      await prisma.users.update({
-        where: {
-          id: eventPublisher.publisherId,
-        },
-        data: {
-          ticketsSold: {
-            increment: orderedTickets.length,
-          },
-          totalRevenue: {
-            increment: organizerAmount,
-          },
-        },
-      });
-    }
-
-    // Process the email notification to the user
-    await processEmailNotification(paymentResult, baseUrl);
-
-    return { data: paymentResult.data };
-  } catch (error) {
-    if (error instanceof Error) {
-      return `Error: ${(error as Error).message}`;
-      //   throw new Error(`Error: ${(error as Error).message}`);
-    } else {
-      // Handle other types of errors
-      return `System Error: ${(error as Error).message}`;
-      //   throw new Error(`System Error: ${(error as Error).message}`);
-    }
-  }
-}
-
 export async function processPayment(req: NextRequest) {
   // Get the body of the request
   const request = (await req.json()) as InitializePayStack;
@@ -370,9 +175,7 @@ export async function verifyPayment(req: NextRequest) {
   const existingPayment = await prisma.payments.findFirst({
     where: {
       paymentReference: trxref,
-      AND: {
-        paymentStatus: PaymentStatus.Paid,
-      },
+      paymentStatus: PaymentStatus.Paid,
     },
   });
 
@@ -393,11 +196,9 @@ export async function verifyPayment(req: NextRequest) {
   const baseUrl = `${
     headers.get("x-forwarded-proto") || "http"
   }://${headers.get("host")}`;
-  
-  console.log("PAYMENT RESULT: ", paymentResult);
 
   // If the payment is successful...
-  if (paymentResult.status === true) {
+  if (paymentResult.data.status == "success") {
     // Process the payment result
     await handleSuccessfulPayment(paymentResult, baseUrl);
 
@@ -408,5 +209,197 @@ export async function verifyPayment(req: NextRequest) {
       errorCode: paymentResult.message,
       statusCode: StatusCodes.BadRequest,
     };
+  }
+}
+
+// Function to handle successful payment result
+export async function handleSuccessfulPayment(
+  paymentResult: Paystack.Response,
+  baseUrl: string
+) {
+  try {
+    const { data } = paymentResult;
+
+    const {
+      reference,
+      amount,
+      paid_at,
+      status,
+      metadata,
+      currency,
+    }: PaymentResultData = data;
+
+    const ticketOrderId = metadata.ticketOrderId;
+    const organizerAmount = metadata.organizerAmount;
+
+    const existingTicketOrder = await prisma.ticketOrders.findUnique({
+      where: {
+        id: ticketOrderId,
+      },
+      include: {
+        event: {
+            select: {
+                publisherId: true
+            }
+        }
+      }
+    });
+
+    if (!existingTicketOrder) {
+      throw new Error(
+        "Ticket order based on the provided ticket order ID could not be found"
+      );
+    }
+
+    if (existingTicketOrder.paymentStatus !== PaymentStatus.Pending) {
+      throw new Error("Ticket order payment status is not pending");
+    }
+
+    const orderedTickets = await prisma.orderedTickets.findMany({
+      where: {
+        orderId: existingTicketOrder.orderId,
+      },
+    });
+
+    const existingPayment = await prisma.payments.findFirst({
+      where: {
+        ticketOrderId: existingTicketOrder.id,
+      },
+    });
+
+    if (!existingPayment) {
+      throw new Error(
+        "Payment based on the ticket order ID provided not found"
+      );
+    }
+
+    const amountPaid = amount / 100;
+
+    // Begin transaction
+    await prisma.$transaction(
+      async (_context) => {
+        console.log("Transaction began: ", new Date());
+
+        // Update the payment table
+        await _context.payments.update({
+          where: {
+            id: existingPayment.id,
+          },
+          data: {
+            amountPaid,
+            currency,
+            paidAt: new Date(paid_at),
+            paymentStatus: PaymentStatus.Paid,
+          },
+        });
+
+        // Update the order status, payment status of the order, and the payment ID
+        await _context.ticketOrders.update({
+          where: {
+            id: ticketOrderId,
+          },
+          data: {
+            orderStatus: OrderStatus.Confirmed,
+            paymentStatus: PaymentStatus.Paid,
+            paymentId: existingPayment.id,
+          },
+        });
+
+        // Update the number of ticket orders for the event
+        await _context.events.update({
+          where: {
+            id: existingTicketOrder.eventId,
+          },
+          data: {
+            ticketOrdersCount: {
+              increment: 1,
+            },
+          },
+        });
+
+        // Update the ordered ticket status and payment ID for each ordered ticket in the order
+        await _context.orderedTickets.updateMany({
+          where: {
+            orderId: existingTicketOrder.orderId,
+          },
+          data: {
+            orderStatus: OrderStatus.Confirmed,
+            paymentId: existingPayment.id,
+          },
+        });
+
+        // Update the ticket ordered count and remaining tickets for each ticket in the order
+        await _context.tickets.updateMany({
+          where: {
+            id: {
+              in: orderedTickets.map((orderedTicket) => orderedTicket.ticketId),
+            },
+          },
+          data: {
+            ticketOrdersCount: {
+              increment: 1,
+            },
+            remainingTickets: {
+              decrement: 1,
+            },
+          },
+        });
+
+        // If the user ID exists, update the number of tickets bought by the user
+        if (existingTicketOrder.userId) {
+          // Update the number of tickets bought by the user
+          await _context.users.update({
+            where: {
+              id: existingTicketOrder.userId,
+            },
+            data: {
+              ticketsBought: {
+                increment: orderedTickets.length,
+              },
+            },
+          });
+        }
+
+        const eventPublisher = existingTicketOrder.event.publisherId;
+
+        // If the event publisher exists, update the ticketSold count of the event publisher
+        if (eventPublisher) {
+          // Update the ticketSold count of the event publisher
+          await _context.users.update({
+            where: {
+              id: eventPublisher,
+            },
+            data: {
+              ticketsSold: {
+                increment: orderedTickets.length,
+              },
+              totalRevenue: {
+                increment: organizerAmount,
+              },
+            },
+          });
+        }
+
+        console.log("Transaction end: ", new Date());
+      },
+      {
+        maxWait: 5000, // 5 seconds max wait to connect to prisma
+        timeout: 15000, // 15 seconds
+      }
+    );
+
+    // Process the email notification to the user
+    await processEmailNotification(paymentResult, baseUrl);
+
+    return { data: paymentResult.data };
+  } catch (error) {
+    if (error instanceof Error) {
+      return `Error: ${(error as Error).message}`;
+      //   throw new Error(`Error: ${(error as Error).message}`);
+    } else {
+      // Handle other types of errors
+      return `System Error: ${(error as Error).message}`;
+      //   throw new Error(`System Error: ${(error as Error).message}`);
+    }
   }
 }
