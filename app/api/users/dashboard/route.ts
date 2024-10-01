@@ -5,6 +5,8 @@ import { StatusCodes } from "@/app/models/IStatusCodes";
 import { fetchDashboardData } from "../../services/user/dashboardService";
 import { customNextResponseError } from "../../utils/customNextResponseError";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   // validate request method
   await validateRequestMethod(req, "GET");
@@ -20,7 +22,8 @@ export async function GET(req: NextRequest) {
 
     // Return the response
     return NextResponse.json(operation.data, { status: StatusCodes.Success });
-  } catch {
+  } catch(error) {
+    console.log("🚀 ~ GET ~ error:", error)
     // Return an error if the operation fails
     return NextResponse.json(
       { error: ApplicationError.FailedToFetchUserDashboardData.Text },
