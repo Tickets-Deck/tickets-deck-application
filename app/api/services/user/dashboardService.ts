@@ -39,6 +39,14 @@ export async function fetchDashboardData(req: NextRequest) {
                     },
                     paymentStatus: PaymentStatus.Paid
                 }
+            },
+            select: {
+                amountPaid: true,
+                ticketOrder: {
+                    select: {
+                        quantity: true
+                    }
+                }
             }
         })
         console.log("🚀 ~ fetchDashboardData ~ ticketSold:", ticketSold)
@@ -47,7 +55,7 @@ export async function fetchDashboardData(req: NextRequest) {
       // Construct the dashboard data
       const dashboardData: DashboardInfoResponse = {
         ticketsBought: ticketsBought,
-        ticketsSold: ticketSold.length,
+        ticketsSold: ticketSold.reduce((acc, curr) => acc + Number(curr.ticketOrder.quantity), 0),
         totalRevenue: ticketSold.reduce((acc, curr) => acc + Number(curr.amountPaid), 0),
         totalEvents: user.eventsCount,
         totalEventLikes: user.favoritesCount,
