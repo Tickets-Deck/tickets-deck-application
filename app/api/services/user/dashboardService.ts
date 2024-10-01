@@ -2,6 +2,7 @@ import { ApplicationError } from "@/app/constants/applicationError";
 import { DashboardInfoResponse } from "@/app/models/IDashboardInfoResponse";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { prisma } from "@/lib/prisma";
+import { PaymentStatus } from "@prisma/client";
 import { NextRequest } from "next/server";
 
 export async function fetchDashboardData(req: NextRequest) {
@@ -21,11 +22,33 @@ export async function fetchDashboardData(req: NextRequest) {
 
     // If the user is found, return the user
     if (user) {
+        // find all the paid tickets bought by the user
+        const ticketsBought = await prisma.ticketOrders.count({
+            where: {
+                userId,
+                paymentStatus: PaymentStatus.Paid
+            }
+        })
+
+        // find all the paid tickets sold by the user
+        const ticketSold = await prisma.payments.findMany({
+            where: {
+                ticketOrder: {
+                    event: {
+                        publisherId: userId
+                    },
+                    paymentStatus: PaymentStatus.Paid
+                }
+            }
+        })
+        console.log("🚀 ~ fetchDashboardData ~ ticketSold:", ticketSold)
+
+
       // Construct the dashboard data
       const dashboardData: DashboardInfoResponse = {
-        ticketsBought: user?.ticketsBought,
-        ticketsSold: user?.ticketsSold,
-        totalRevenue: Number(user?.totalRevenue),
+        ticketsBought: ticketsBought,
+        ticketsSold: ticketSold.length,
+        totalRevenue: ticketSold.reduce((acc, curr) => acc + Number(curr.amountPaid), 0),
         totalEvents: user.eventsCount,
         totalEventLikes: user.favoritesCount,
         totalEventShares: 0,
