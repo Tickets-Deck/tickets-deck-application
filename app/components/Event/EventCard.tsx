@@ -73,6 +73,13 @@ const EventCard: FunctionComponent<EventCardProps> = (
     //     return eventDateObj.getTime() === currentDateTime.getTime();
     // };
 
+    let eventDate = new Date(event.date);
+    const currentDate = new Date();
+
+    const eventHoldsToday = eventDate.getDate() === currentDate.getDate() &&
+        eventDate.getMonth() === currentDate.getMonth() &&
+        eventDate.getFullYear() === currentDate.getFullYear();
+
     return (
         <div className={`${appTheme == Theme.Light ? styles.eventLightTheme : styles.event} ${gridDisplay ? styles.gridDisplay : ""}`} style={mobileAndActionButtonDismiss ? { minWidth: 'auto' } : {}}>
             {/* <div className={styles.backgroundImage}>
@@ -142,7 +149,7 @@ const EventCard: FunctionComponent<EventCardProps> = (
                     </div>}
             </div>
             {
-                consoleDisplay && new Date(event.date).getDate() == new Date().getDate() ?
+                consoleDisplay && eventHoldsToday ?
                     <Link
                         href={ApplicationRoutes.CheckIn(event.id, event.title.replace(/ /g, '-'))}
                         className="p-2 rounded-lg bg-white text-dark-grey w-full text-center">
