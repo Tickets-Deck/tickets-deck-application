@@ -1033,6 +1033,7 @@ export async function checkInAttendee(req: NextRequest) {
       name: eachOrderedTicket.ticket.name,
       checkedIn: eachOrderedTicket.checkedIn,
       id: eachOrderedTicket.id,
+      associatedEmail: eachOrderedTicket.associatedEmail ?? eachOrderedTicket.contactEmail,
     };
   });
 
