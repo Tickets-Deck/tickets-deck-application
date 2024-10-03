@@ -99,6 +99,7 @@ const CheckInModal: FunctionComponent<CheckInModalProps> = (
                     </button>
                     <Button
                         isLoading={isCheckingIn}
+                        disabled={isCheckingIn || selectedTickets.length === 0}
                         onClick={() => handleCheckInMultipleTicketOrders()}
                         className="text-sm !bg-white !text-black px-4 py-2 rounded-full hover:bg-white/80 transition-all">
                         Check In
