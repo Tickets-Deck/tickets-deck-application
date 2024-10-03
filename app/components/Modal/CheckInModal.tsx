@@ -51,7 +51,7 @@ const CheckInModal: FunctionComponent<CheckInModalProps> = (
     return (
         <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
             <div className="w-full max-w-full md:w-[400px] md:max-w-[400px] p-6 rounded-2xl bg-container-grey">
-                <div className="flex flex-row justify-between items-center mb-2">
+                <div className="flex flex-row justify-between items-center mb-4">
                     <div className="flex flex-col items-start">
                         <h3>Multiple Tickets</h3>
                         <p className="text-sm text-white/60">
@@ -67,25 +67,28 @@ const CheckInModal: FunctionComponent<CheckInModalProps> = (
                 <div className="flex flex-col gap-2">
                     {
                         multipleTickets?.map((ticket, index) => (
-                            <div key={index} className="relative flex flex-row justify-between items-center bg-white/10 p-2 px-3 rounded-lg overflow-hidden">
-                                <p className="z-20">{ticket.name}</p>
-                                <input
-                                    type="checkbox"
-                                    disabled={ticket.checkedIn}
-                                    className="absolute w-full h-full cursor-pointer top-0 left-0 m-auto appearance-none checked:bg-primary-color checked:rounded disabled:bg-primary-color disabled:pointer-events-none"
-                                    onClick={() => {
-                                        if (selectedTickets.includes(ticket.id)) {
-                                            setSelectedTickets(selectedTickets.filter(selectedTicket => selectedTicket !== ticket.id));
-                                            return;
-                                        }
-                                        setSelectedTickets([...selectedTickets, ticket.id])
-                                    }}
-                                />
+                            <div>
+                                <p className="text-sm">{ticket.associatedEmail}</p>
+                                <div key={index} className="relative flex flex-row justify-between items-center bg-white/10 p-2 px-3 rounded-lg overflow-hidden">
+                                    <p className="z-20">{ticket.name}</p>
+                                    <input
+                                        type="checkbox"
+                                        disabled={ticket.checkedIn}
+                                        className="absolute w-full h-full cursor-pointer top-0 left-0 m-auto appearance-none checked:bg-primary-color checked:rounded disabled:bg-green-500 disabled:pointer-events-none"
+                                        onClick={() => {
+                                            if (selectedTickets.includes(ticket.id)) {
+                                                setSelectedTickets(selectedTickets.filter(selectedTicket => selectedTicket !== ticket.id));
+                                                return;
+                                            }
+                                            setSelectedTickets([...selectedTickets, ticket.id])
+                                        }}
+                                    />
+                                </div>
                             </div>
                         ))
                     }
-                    <p className="text-sm">
-                        The tickets marked with purple are the tickets you have selected to check in.
+                    <p className="text-sm mt-2">
+                        The tickets marked with purple are the tickets you have selected to check in. <br /> The green tickets are already checked in.
                     </p>
                 </div>
                 <div className="flex justify-end mt-4 gap-2">
