@@ -421,7 +421,6 @@
 //   }
 // }
 
-
 import { prisma } from "@/lib/prisma";
 import Paystack from "paystack";
 import {
@@ -639,6 +638,87 @@ export async function handleSuccessfulPayment(
   }
 }
 
+// Function to handle Unsuccessful payment result
+export async function handleUnSuccessfulPayment(
+  paymentResult: Paystack.Response
+) {
+  try {
+    const { data } = paymentResult;
+
+    const {
+      reference,
+      amount,
+      paid_at,
+      status,
+      metadata,
+      currency,
+    }: PaymentResultData = data;
+
+    const ticketOrderId = metadata.ticketOrderId;
+
+    const existingTicketOrder = await prisma.ticketOrders.findUnique({
+      where: {
+        id: ticketOrderId,
+      },
+    });
+
+    if (!existingTicketOrder) {
+      throw new Error(
+        "Ticket order based on the provided ticket order ID could not be found"
+      );
+    }
+
+    // Get the payment status of the order
+    const paymentStatus = existingTicketOrder.paymentStatus;
+
+    // If payment status is not PaymentStatus.Pending
+    if (paymentStatus === PaymentStatus.Failed) {
+      throw new Error("Payment status for the order failed");
+    }
+
+    const existingPayment = await prisma.payments.findFirst({
+      where: {
+        ticketOrderId: existingTicketOrder.id,
+      },
+    });
+
+    if (!existingPayment) {
+      throw new Error(
+        "Payment based on the ticket order ID provided not found"
+      );
+    }
+
+    const amountPaid = amount / 100;
+
+    // Begin transaction
+    await prisma.$transaction([
+      // Update the payment table
+      prisma.payments.update({
+        where: {
+          id: existingPayment.id,
+        },
+        data: {
+          amountPaid,
+          currency,
+          //   paidAt: new Date(paid_at),
+          paymentStatus: PaymentStatus.Pending,
+        },
+      }),
+    ]);
+
+    throw new Error("Payment is pending.");
+  } catch (error) {
+    if (error instanceof Error) {
+      return `Error: ${(error as Error).message}`;
+      //   throw new Error(`Error: ${(error as Error).message}`);
+    } else {
+      // Handle other types of errors
+      return `System Error: ${(error as Error).message}`;
+      //   throw new Error(`System Error: ${(error as Error).message}`);
+    }
+  }
+}
+
 export async function processPayment(req: NextRequest) {
   // Get the body of the request
   const request = (await req.json()) as InitializePayStack;
@@ -826,13 +906,21 @@ export async function verifyPayment(req: NextRequest) {
 
   // If the payment is successful...
   if (paymentResult.status === true) {
+    if (paymentResult.data.status !== "success") {
+      // process unsuccessful payment
+      await handleUnSuccessfulPayment(paymentResult);
+
+      return {
+        error: "Payment was not successful.",
+        statusCode: StatusCodes.BadRequest,
+      };
+    }
+
     // Process the payment result
     await handleSuccessfulPayment(paymentResult);
 
     // Process the email notification to the user
     await processEmailNotification(paymentResult, baseUrl);
-
-    //   console.log("Payment result data: ", paymentResult.data);
 
     return { data: paymentResult.data };
   } else {
