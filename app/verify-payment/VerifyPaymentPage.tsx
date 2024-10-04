@@ -7,6 +7,8 @@ import { useVerifyPaystackPayment } from "../api/apiClient";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import Link from "next/link";
+import { ApplicationRoutes } from "../constants/applicationRoutes";
 
 interface VerifyPaymentPageProps {
 
@@ -55,7 +57,7 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
 
     async function handlePaymentVerification(trxref: string) {
         if (isVerifyingPayment) return;
-        
+
         // Start loader
         setIsVerifyingPayment(true);
 
@@ -94,6 +96,20 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
 
                         return;
                     }
+                    // if (error.response.data.error == "Payment was not successful.") {
+                    //     // Set payment status state
+                    //     setPaymentStatus(PaymentStatus.Failed);
+
+                    //     setTimeout(() => {
+                    //         if (userInfo) {
+                    //             router.push('/app');
+                    //             return;
+                    //         }
+                    //         router.push('/events');
+                    //     }, 5000);
+
+                    //     return;
+                    // }
                 }
 
                 // Set payment status state
@@ -138,6 +154,11 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
                 <div className={styles.loaderAreaContainer}>
                     <h3>An error occured while verifying your payment</h3>
                     <p>A customer care representative would be in touch soon.</p>
+                    <p>
+                        You can also&nbsp;
+                        <Link href={ApplicationRoutes.Contact} className="text-primary-color-sub-50 underline">contact us</Link>&nbsp;
+                        for faster response.
+                    </p>
                 </div>
             }
             {
