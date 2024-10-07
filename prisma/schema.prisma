@@ -107,6 +107,7 @@ model Users {
     ticketsBought Int            @default(0)
     ticketsSold   Int            @default(0)
     totalRevenue  Decimal        @default(0)
+    payouts       Payouts[]
 
     createdAt        DateTime?          @default(now())
     updatedAt        DateTime?          @updatedAt
@@ -262,6 +263,27 @@ model Payments {
     updatedAt              DateTime?              @updatedAt
 
     @@map("Payment")
+}
+
+model Payouts {
+    id             String                 @id @default(uuid())
+    amount         Decimal // The amount being paid to the organizer
+    payoutDate     DateTime // The date and time when the payout was made
+    status         PaymentStatus // Status of the payout 
+    paymentMethod  PaymentServiceProvider
+    transactionRef String?
+    serviceFees    Decimal? // Service fees deducted from the payout (optional)
+    tax            Decimal? // Tax deducted from the payout (optional)
+    currency       String                 @default("NGN")
+    notes          String?
+
+    organizer   Users  @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+    organizerId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("Payouts")
 }
 
 model Follows {
