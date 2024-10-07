@@ -1,6 +1,7 @@
 import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { prisma } from "@/lib/prisma";
+import { PaymentStatus } from "@prisma/client";
 import { NextRequest } from "next/server";
 
 export async function fetchWalletBalance(req: NextRequest) {
@@ -35,9 +36,31 @@ export async function fetchWalletBalance(req: NextRequest) {
     };
   }
 
+  const ticketSold = await prisma.payments.findMany({
+    where: {
+      ticketOrder: {
+        event: {
+          publisherId: userId,
+        },
+        paymentStatus: PaymentStatus.Paid,
+      },
+    },
+    select: {
+      amountPaid: true,
+      ticketOrder: {
+        select: {
+          quantity: true,
+        },
+      },
+    },
+  });
+
+  const ticketRevenue = ticketSold.reduce((acc, curr) => acc + Number(curr.amountPaid), 0);
+
   // Construct the wallet balance data
   const walletBalance = {
-    balance: Number(user.totalRevenue),
+    // balance: Number(user.totalRevenue),
+    balance: ticketRevenue,
   };
 
   // Return the wallet balance data
