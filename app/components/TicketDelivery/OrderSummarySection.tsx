@@ -18,11 +18,12 @@ interface OrderSummarySectionProps {
     eventInfo: EventResponse | undefined
     couponDetails: CouponDetails | undefined
     setOrganizerAmount: Dispatch<SetStateAction<number | undefined>>
+    hideActionButtons?: boolean
 }
 
 const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
     { eventTickets, totalPrice, setVisibility, couponDetails, setOrganizerAmount,
-        handleTicketOrderCreation, isProcessingOrder, eventInfo }): ReactElement => {
+        handleTicketOrderCreation, isProcessingOrder, eventInfo, hideActionButtons }): ReactElement => {
 
     const { transactionFees } = useContext(ApplicationContext) as ApplicationContextData;
 
@@ -40,64 +41,97 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
     }, [totalAmountPayable, fees]);
 
     return (
-        <div className={styles.rhs}>
-            <div className={styles.eventImageContainer}>
-                <div className={styles.eventImage}>
-                    {eventInfo?.mainImageUrl && <Image src={eventInfo.mainImageUrl as string} fill alt="Flyer" sizes="auto" />}
+        <div className="flex flex-col basis-full gap-4 md:basis-[35%]">
+            <div className="relative before:contents before:absolute before:w-full before:h-[60%] before:bottom-0 before:z-10 before:bg-gradient-to-b from-transparent to-black/80">
+                <div className="w-full h-[150px] min-h-[150px] rounded-2xl overflow-hidden relative">
+                    {
+                        eventInfo?.mainImageUrl &&
+                        <Image
+                            className="w-full h-full object-cover"
+                            src={eventInfo.mainImageUrl as string}
+                            fill
+                            alt="Flyer"
+                        />
+                    }
                 </div>
-                <div className={styles.eventDetails}>
-                    <h3>{eventInfo?.title}</h3>
-                    {/* <p>{eventInfo?.description}</p> */}
-                    {/* <p>{eventInfo?.venue}</p> */}
-                    <p>{moment(eventInfo?.date).format("Do of MMMM YYYY")}</p>
+                <div className="z-10 absolute w-full bottom-0 p-[10px]">
+                    <h3 className="text-2xl font-bold text-white whitespace-nowrap text-ellipsis overflow-hidden w-full">
+                        {eventInfo?.title}
+                    </h3>
+                    <p className="text-white opacity-80">
+                        {moment(eventInfo?.date).format("Do of MMMM YYYY")}
+                    </p>
                 </div>
             </div>
             <h3>Order summary</h3>
-            <div className={styles.summaryInfo}>
+            <div className="flex flex-col gap-2 h-full max-h-full overflow-y-auto pr-[0.375rem] summaryInfoScroller">
                 {
                     eventTickets?.filter((eventTicket) => eventTicket.selectedTickets > 0).map((eventTicket, index) => {
                         return (
-                            <div className={styles.summaryInfo__ticket} key={index}>
-                                <span>{eventTicket.selectedTickets} x {eventTicket.name}</span>
-                                <span className={styles.value}>&#8358;{(eventTicket.price * eventTicket.selectedTickets).toLocaleString()}</span>
+                            <div className="px-6 py-3 bg-primary-color-sub-50/10 rounded-lg flex items-center justify-between" key={index}>
+                                <span className="text-[14px] text-primary-color-sub-50">
+                                    {eventTicket.selectedTickets} x {eventTicket.name}
+                                </span>
+                                <span className="text-[14px] font-sans">
+                                    &#8358;{(eventTicket.price * eventTicket.selectedTickets).toLocaleString()}
+                                </span>
                             </div>
                         )
                     })
                 }
-                {/* {
-                                    ticketPricings.map((ticketPricing, index) => {
-                                        return (
-                                            <div className={styles.summaryInfo__ticket} key={index}>
-                                                <span>{ticketPricing.selectedTickets} x {ticketPricing.ticketType}</span>
-                                                <span className={styles.value}>&#8358;{(parseInt(ticketPricing.price.total) * ticketPricing.selectedTickets).toLocaleString()}</span>
-                                            </div>
-                                        )
-                                    })
-                                } */}
-                <div className={styles.summaryInfo__subs}>
-                    <span>Subtotal</span>
-                    <span className={styles.value}>&#8358;{(totalPrice)?.toLocaleString()}</span>
+                <div className="px-6 py-[6px] bg-transparent rounded-lg flex items-center justify-between">
+                    <span className="text-[14px] text-primary-color-sub-50">
+                        Subtotal
+                    </span>
+                    <span className="text-[14px] font-sans">
+                        &#8358;{(totalPrice)?.toLocaleString()}
+                    </span>
                 </div>
-                <div className={styles.summaryInfo__subs}>
-                    <span>Discount ({couponDetails?.discount ?? 0}% off)</span>
-                    <span className={styles.value}>-&nbsp;&#8358;{((totalPrice * Number(couponDetails?.discount ?? 0)) / 100).toLocaleString()}</span>
+                <div className="px-6 py-[6px] bg-transparent rounded-lg flex items-center justify-between">
+                    <span className="text-[14px] text-primary-color-sub-50">
+                        Discount ({couponDetails?.discount ?? 0}% off)
+                    </span>
+                    <span className="text-[14px] font-sans">
+                        -&nbsp;&#8358;{((totalPrice * Number(couponDetails?.discount ?? 0)) / 100).toLocaleString()}
+                    </span>
                 </div>
-                <div className={styles.summaryInfo__subs}>
-                    <span>Fees</span>
-                    <span className={styles.value}>&#8358;{(fees)?.toLocaleString()}</span>
+                <div className="px-6 py-[6px] bg-transparent rounded-lg flex items-center justify-between">
+                    <span className="text-[14px] text-primary-color-sub-50">
+                        Fees
+                    </span>
+                    <span className="text-[14px] font-sans">
+                        &#8358;{(fees)?.toLocaleString()}
+                    </span>
                 </div>
-                <div className={styles.summaryInfo__subs}>
-                    <span>Total</span>
-                    <span className={styles.value}>&#8358;{(totalAmountPayable)?.toLocaleString()}</span>
+                <div className="px-6 py-[6px] bg-transparent rounded-lg flex items-center justify-between">
+                    <span className="text-[14px] text-primary-color-sub-50">
+                        Total
+                    </span>
+                    <span className="text-[14px] font-sans">
+                        &#8358;{(totalAmountPayable)?.toLocaleString()}
+                    </span>
                 </div>
             </div>
-            <div className={styles.actionButtons}>
-                <button onClick={() => setVisibility(false)} disabled={isProcessingOrder} tabIndex={1}>Cancel</button>
-                <button onClick={() => handleTicketOrderCreation()} disabled={isProcessingOrder} tabIndex={1}>
-                    Pay now
-                    {isProcessingOrder && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
-                </button>
-            </div>
+            {
+                hideActionButtons ? <></> :
+                    <div className="fixed bottom-0 left-0 w-full px-2 py-4 md:relative md:z-10 flex items-center gap-4 mt-4 z-10">
+                        <button
+                            className="secondary-button !bg-failed-color"
+                            onClick={() => setVisibility(false)}
+                            disabled={isProcessingOrder}
+                            tabIndex={1}>
+                            Cancel
+                        </button>
+                        <button
+                            className="secondary-button !bg-white !text-dark-grey"
+                            onClick={() => handleTicketOrderCreation()}
+                            disabled={isProcessingOrder}
+                            tabIndex={1}>
+                            Pay now
+                            {isProcessingOrder && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
+                        </button>
+                    </div>
+            }
         </div>
     );
 }
