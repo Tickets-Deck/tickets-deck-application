@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement, useState, useContext, Dispatch, SetStateAction, useEffect, ChangeEvent, useMemo } from "react";
+import { FunctionComponent, ReactElement, useState, Dispatch, SetStateAction, useEffect, ChangeEvent, useMemo } from "react";
 import styles from "../../styles/TicketDelivery.module.scss";
 import ModalWrapper from "./ModalWrapper";
 import { CheckIcon, CloseIcon } from "../SVGs/SVGicons";
@@ -15,7 +15,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import Toggler from "../custom/Toggler";
 import { toast } from "sonner";
-import MobileOrderSummarySection from "../TicketDelivery/MobileOrderSummarySection";
 import ComponentLoader from "../Loader/ComponentLoader";
 import EmailVerificationPrompt from "./EmailVerificationPrompt";
 import { Theme } from "@/app/enums/Theme";
@@ -689,12 +688,24 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                         <div className={styles.rhs}>
                             {
                                 onMobile && orderSummaryVisible &&
-                                <MobileOrderSummarySection
-                                    eventInfo={eventInfo}
+                                <OrderSummarySection
                                     eventTickets={eventTickets}
                                     totalPrice={totalPrice}
+                                    setVisibility={setVisibility}
+                                    handleTicketOrderCreation={handleTicketOrderCreation}
+                                    isProcessingOrder={isProcessingOrder}
+                                    eventInfo={eventInfo}
                                     couponDetails={couponDetails}
+                                    setOrganizerAmount={setOrganizerAmount}
+                                    hideActionButtons={true}
                                 />
+                                // <MobileOrderSummarySection
+                                //     eventInfo={eventInfo}
+                                //     eventTickets={eventTickets}
+                                //     totalPrice={totalPrice}
+                                //     couponDetails={couponDetails}
+                                //     setOrganizerAmount={setOrganizerAmount}
+                                // />
                             }
                             <div className={styles.actionButtons}>
                                 <button onClick={() => setVisibility(false)}>Cancel</button>
