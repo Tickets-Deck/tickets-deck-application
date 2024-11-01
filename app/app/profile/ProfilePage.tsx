@@ -18,6 +18,7 @@ import AccountSettingsFormContainer from "@/app/components/ProfilePage/AccountSe
 import Link from "next/link"
 import { useDispatch } from "react-redux";
 import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
+import { updateUserBankAccount } from "@/app/redux/features/user/walletSlice";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import BankInformation from "@/app/components/ProfilePage/BankInformation";
@@ -143,6 +144,8 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
         // Fetch user bank accounts
         await fetchUserBankAccount(userInformation?.id as string)
             .then((response) => {
+                // Save to redux
+                dispatch(updateUserBankAccount(response.data));
                 setUserBankAccounts(response.data);
             })
             .catch((error) => {
