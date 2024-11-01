@@ -103,11 +103,12 @@ model Users {
     isSubscribed           Boolean @default(false)
     isNewsletterSubscribed Boolean @default(false)
 
-    ticketOrders  TicketOrders[]
-    ticketsBought Int            @default(0)
-    ticketsSold   Int            @default(0)
-    totalRevenue  Decimal        @default(0)
-    payouts       Payouts[]
+    ticketOrders   TicketOrders[]
+    ticketsBought  Int            @default(0)
+    ticketsSold    Int            @default(0)
+    totalRevenue   Decimal        @default(0)
+    totalWithdrawn Decimal        @default(0)
+    payouts        Payouts[]
 
     createdAt        DateTime?          @default(now())
     updatedAt        DateTime?          @updatedAt
@@ -268,7 +269,7 @@ model Payments {
 model Payouts {
     id             String                 @id @default(uuid())
     amount         Decimal // The amount being paid to the organizer
-    payoutDate     DateTime // The date and time when the payout was made
+    payoutDate     DateTime? // The date and time when the payout was made
     status         PaymentStatus // Status of the payout 
     paymentMethod  PaymentServiceProvider
     transactionRef String?
