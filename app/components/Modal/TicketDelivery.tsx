@@ -496,15 +496,22 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                 <ModalWrapper disallowOverlayFunction visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff' }}>
                     <div className={appTheme === Theme.Light ? styles.ticketDeliveryContainerLightTheme : styles.ticketDeliveryContainer}>
                         <div className={styles.lhs}>
-                            <div className={styles.top}>
-                                <h3>Ticket Delivery Details</h3>
-                                <p>Enter the email addresses of all attendees. <br />Each ticket will be sent to the respective email addresses provided.</p>
-                                <span>Note: All tickets will also be sent to the selected primary email.</span>
-                            </div>
+                            {
+                                ticketPricings.length > 1 ?
+                                <div className={styles.top}>
+                                    <h3>Ticket Delivery Details</h3>
+                                    <p>Enter the email addresses of all attendees. <br />Each ticket will be sent to the respective email addresses provided.</p>
+                                    <span>Note: All tickets will also be sent to the selected primary email.</span>
+                                </div> :
+                                <div className={styles.top}>
+                                    <h3>Ticket Delivery Details</h3>
+                                    <p>Enter your email address below.</p>
+                                </div>
+                            }
                             {
                                 userInfo &&
                                 <div className={styles.toggleSection}>
-                                    <p>Use My Email as Primary Email</p>
+                                    <p>Use My Email as Primary Email instead.</p>
                                     <Toggler
                                         mainColor='77b255'
                                         disabledColor='dadada'
