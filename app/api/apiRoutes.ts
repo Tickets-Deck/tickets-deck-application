@@ -130,9 +130,14 @@ export class ApiRoutes {
   static UserPasswordChange: string = "api/users/password/change";
 
   /**
-   * The route to User Wallet Balance endpoint
+   * The route to User Wallet endpoint
    */
-  static UserWalletBalance: string = "api/users/wallet-balance";
+  static UserWallet: string = "api/users/wallet";
+
+  /**
+   * The route to User Payouts endpoint
+   */
+  static UserPayout: string = "api/users/wallet/payout";
 
   /**
    * The route to User Favorite Events endpoint
