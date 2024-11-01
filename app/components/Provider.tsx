@@ -6,10 +6,12 @@ import { Provider } from 'react-redux';
 import { AppProvider } from '../context/ApplicationContext';
 import userReducer from '@/app/redux/features/user/userSlice';
 import themeReducer from '@/app/redux/features/theme/themeSlice';
+import walletReducer from '@/app/redux/features/user/walletSlice';
 
 const store = configureStore({
     reducer: {
         userCredentials: userReducer,
+        wallet: walletReducer,
         theme: themeReducer,
     },
 });
