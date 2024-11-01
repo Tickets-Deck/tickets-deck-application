@@ -745,6 +745,14 @@ export class ApplicationError extends BaseApplicationError {
     Code: "BANK_1004",
   };
 
+  /**
+   * The error message for ~ No bank account found for this user
+   */
+  static NoBankAccount: IApplicationError = {
+    Text: "No bank account found for this user",
+    Code: "BANK_1005",
+  };
+
   //#endregion
 
   //#region Transaction Fee Errors
@@ -847,6 +855,50 @@ export class ApplicationError extends BaseApplicationError {
   static FailedToDeleteCouponCode: IApplicationError = {
     Text: "Failed to delete coupon code",
     Code: "COUPON_CODE_1007",
+  };
+
+  //#endregion
+
+  //#region wallet
+
+  /**
+   * The error message for ~ Amount is required
+   */
+  static AmountIsRequired: IApplicationError = {
+    Text: "Amount is required",
+    Code: "WALLET_1000",
+  };
+
+  /**
+   * The error message for ~ Insufficient balance
+   */
+  static InsufficientBalance: IApplicationError = {
+    Text: "Insufficient balance",
+    Code: "WALLET_1001",
+  };
+
+  /**
+   * The error message for ~ Failed to fetch wallet balance
+   */
+  static FailedtoFetchWalletBalance: IApplicationError = {
+    Text: "Failed to fetch wallet balance",
+    Code: "WALLET_1002",
+  };
+
+  /**
+   * The error message for ~ Failed to initiate withdrawal
+   */
+  static FailedToInitiateWithdrawal: IApplicationError = {
+    Text: "Failed to initiate withdrawal",
+    Code: "WALLET_1003",
+  };
+
+  /**
+   * The error message for ~ Failed to fetch payouts
+   */
+  static FailedToFetchPayouts: IApplicationError = {
+    Text: "Failed to fetch payouts",
+    Code: "WALLET_1004",
   };
 
   //#endregion
