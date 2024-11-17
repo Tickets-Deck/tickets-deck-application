@@ -21,7 +21,7 @@ import {
 import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_LIVE,
+  baseURL: ApiRoutes.BASE_URL_DEV,
 });
 
 export function useCreateNewsletterSubscriber() {
@@ -111,9 +111,14 @@ export function useCheckInTicketOrder() {
 }
 
 export function useCheckInMultipleTicketOrders() {
-  async function checkInMultipleTicketOrders(ticketOrderId: string, eventId: string, orderIds: string[]) {
+  async function checkInMultipleTicketOrders(
+    ticketOrderId: string,
+    eventId: string,
+    orderIds: string[]
+  ) {
     return API.post(
-      `${ApiRoutes.CheckInMultipleTicketOrder}?ticketOrderId=${ticketOrderId}&eventId=${eventId}`, { orderIds }
+      `${ApiRoutes.CheckInMultipleTicketOrder}?ticketOrderId=${ticketOrderId}&eventId=${eventId}`,
+      { orderIds }
     );
   }
 
