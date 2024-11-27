@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { prisma } from "../../../../lib/prisma";
 import { UserCredentialsResponse } from "@/app/models/IUser";
 
 export interface UserState {

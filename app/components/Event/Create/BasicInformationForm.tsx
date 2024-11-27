@@ -30,7 +30,6 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
 
     const [categoryDropdownIsVisible, setCategoryDropdownIsVisible] = useState(false);
     const [tag, setTag] = useState<string>();
-    const [startTimeString, setStartTimeString] = useState<string>('');
 
     const [titleErrorMsg, setTitleErrorMsg] = useState<boolean>();
     const [venueErrorMsg, setVenueErrorMsg] = useState<boolean>();
@@ -59,6 +58,27 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
             setState(false);
         }
     };
+
+    // Function to combine date and time
+    // const updateDateTime = (selectedDate, selectedTime) => {
+    //     if (selectedDate && selectedTime) {
+    //         const [hours, minutesAmPm] = selectedTime.match(/(\d{1,2})([0-5]\d)([APap][Mm])/).slice(1);
+    //         let hours24 = parseInt(hours, 10);
+    //         const isPM = minutesAmPm[2].toUpperCase() === "PM";
+    //         const minutes = minutesAmPm.substring(0, 2);
+
+    //         // Convert to 24-hour format
+    //         if (isPM && hours24 < 12) hours24 += 12;
+    //         if (!isPM && hours24 === 12) hours24 = 0;
+
+    //         // Create a new Date object by merging the date and time
+    //         const dateTime = new Date(selectedDate);
+    //         dateTime.setHours(hours24);
+    //         dateTime.setMinutes(minutes);
+
+    //         setCombinedDateTime(dateTime.toISOString());
+    //     }
+    // };
 
     function validateForm() {
         if (eventRequest?.title && eventRequest.venue && eventRequest.date && eventRequest.time && eventRequest.description && (eventRequest.tags && eventRequest.tags.length > 0)) {
@@ -135,13 +155,6 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
             return;
         }
     };
-
-    // const onStartTimeChange = useCallback((time: Date | null | undefined) => {
-    //     if (time) {
-    //         setStartTimeString(time.toLocaleTimeString());
-    //         handleInputChange(index, 'startTime', time.toLocaleTimeString());
-    //     }
-    // }, [handleInputChange, index]);
 
     //#endregion
 
