@@ -111,18 +111,19 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                 // Save to redux
                 dispatch(updateUserCredentials(response.data));
 
-                // Fetch user information again
-                await handleFetchUserInformation();
-
-                // Update the user's profile photo in the session
-                await update({
-                    ...session,
-                    user: {
-                        ...session?.user,
-                        name: `${response.data.firstName} ${response.data.lastName}`,
-                        email: response.data.email,
-                    },
-                })
+                await Promise.all([
+                    // Fetch user information again
+                    handleFetchUserInformation(),
+                    // Update the user's profile photo in the session
+                    update({
+                        ...session,
+                        user: {
+                            ...session?.user,
+                            name: `${response.data.firstName} ${response.data.lastName}`,
+                            email: response.data.email,
+                        },
+                    })
+                ]);
 
                 setIsUpdatingUserInformation(false);
                 setIsFormFieldsEditable(false);
