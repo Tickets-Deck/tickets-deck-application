@@ -2,7 +2,7 @@
 import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "@/app/styles/Tickets.module.scss";
 import DynamicTab from "@/app/components/custom/DynamicTab";
-import { DownloadIcon } from "@/app/components/SVGs/SVGicons";
+import { CaretDownIcon, DownloadIcon } from "@/app/components/SVGs/SVGicons";
 import { useFetchUserTicketOrders } from "@/app/api/apiClient";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
@@ -19,7 +19,8 @@ import TicketUi from "@/app/components/Ticket/TicketUi";
 import { TicketPass } from "@/app/models/ITicketPass";
 import QRCode from "qrcode.react";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import Button from "@/app/components/ui/button";
 
 interface TicketsPageProps {
 
@@ -44,6 +45,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
     // const [selectedTicketOrder, setSelectedTicketOrder] = useState<UserTicketOrder>();
     const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] = useState<TicketPass>();
     const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+    const [isDownloadingTicketsSoldUsers, setIsDownloadingTicketsSoldUsers] = useState(false);
 
     const [isTicketVisible, setIsTicketVisible] = useState(false);
 
@@ -176,10 +178,10 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
 
     return (
         <>
-            <ModalWrapper 
-            visibility={isTicketVisible && (selectedTicketOrderInfo !== undefined)} 
-            setVisibility={setIsTicketVisible} 
-            styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content", overflowY: "auto", maxHeight: "100vh", paddingTop: "50px", paddingBottom: "50px" }}>
+            <ModalWrapper
+                visibility={isTicketVisible && (selectedTicketOrderInfo !== undefined)}
+                setVisibility={setIsTicketVisible}
+                styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content", overflowY: "auto", maxHeight: "100vh", paddingTop: "50px", paddingBottom: "50px" }}>
                 <div className={styles.ticketUIModal} ref={pdfRef}>
                     {
                         selectedTicketOrderInfo &&
@@ -202,7 +204,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                     <h3>Tickets page</h3>
                 </div>
 
-                <div className={styles.filterSection}>
+                <div className="ml-auto mt-2 mb-8 p-4 flex flex-row items-center gap-5 w-full md:p-0">
                     <DynamicTab
                         currentTab={selectedTicketTab}
                         setCurrentTab={setSelectedTicketTab as Dispatch<SetStateAction<TicketTab>>}
@@ -212,6 +214,14 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                         indicatorColor='#8133F1'
                         containerbackgroundColor="#fff"
                     />
+
+                    <Button
+                        isLoading={isDownloadingTicketsSoldUsers}
+                        disabled={isDownloadingTicketsSoldUsers || selectedTicketTab == TicketTab.Bought}
+                        className="bg-white !text-text-grey"
+                        minBtn>
+                        Download
+                    </Button>
                 </div>
 
                 <div className={styles.tableContainer}>
@@ -248,16 +258,16 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                                                 <>
                                                     {
                                                         userTicketOrder.orderStatus === OrderStatus.Confirmed ?
-                                                        <td className={styles.actionsDropdownContainer}>
-                                                            <button onClick={() => showTicketUi(userTicketOrder)}>View Info</button>
-                                                            {/* <span
+                                                            <td className={styles.actionsDropdownContainer}>
+                                                                <button onClick={() => showTicketUi(userTicketOrder)}>View Info</button>
+                                                                {/* <span
                                                                 onClick={() => {
                                                                     handleSelectPdfForDownload(userTicketOrder)
                                                                 }}
                                                                 style={isDownloadingPdf ? { opacity: 0.45, pointerEvents: 'none' } : {}}>
                                                                 <DownloadIcon />
                                                             </span> */}
-                                                        </td> : <td></td>
+                                                            </td> : <td></td>
                                                     }
                                                 </>
                                             }
