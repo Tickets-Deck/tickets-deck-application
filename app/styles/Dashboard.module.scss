@@ -120,16 +120,15 @@
         }
     }
     .activities {
-        margin-top: 2rem;
 
         h3 {
             font-size: $font-size-16;
             font-weight: $fontWeight-400;
             color: $white;
             margin-bottom: 0.5rem;
-            opacity: 0.5;
             span,
             select {
+                opacity: 0.5;
                 font-style: italic;
                 font-size: $font-size-16 - 0.25rem;
                 cursor: pointer;
