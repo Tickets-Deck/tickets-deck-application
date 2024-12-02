@@ -208,7 +208,7 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
                 }
 
                 <div className="flex flex-col items-start gap-4 mt-8 pb-10 md:pb-0 md:flex-row">
-                    <div className={`${styles.activities} w-full md:basis-3/5`}>
+                    <div className={`${styles.activities} w-full order-2 md:order-1 md:basis-3/5`}>
                         <h3>Recent transactions&nbsp;
                             <select onChange={(e) => handleFetchUserRecentTransactions(e.target.value)}>
                                 <option value="14">within the last 2 weeks</option>
@@ -279,7 +279,7 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
                         </div>
                     </div>
 
-                    <div className="w-full md:basis-2/5">
+                    <div className="w-full order-1 md:order-2 md:basis-2/5">
                         <div className="flex flex-row items-center justify-between mb-3">
                             <h3 className="text-white">Tickets Sold</h3>
                             <Link
