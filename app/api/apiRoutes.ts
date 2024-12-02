@@ -94,6 +94,12 @@ export class ApiRoutes {
   static Dashboard: string = "api/users/dashboard";
 
   /**
+   * The route to Tickets Sold Metrics endpoint
+   */
+  static TicketsSoldMetrics: string =
+    "api/users/dashboard/sold-tickets-metrics";
+
+  /**
    * The route to Follows endpoint
    */
   static Follows: string = "api/users/follows";
