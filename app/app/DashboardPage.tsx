@@ -5,7 +5,7 @@ import { EventIcon } from "../components/SVGs/SVGicons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useFetchDashboardInfo, useFetchUserRecentTransactions } from "../api/apiClient";
+import { useFetchDashboardInfo, useFetchTicketsSoldMetrics, useFetchUserRecentTransactions } from "../api/apiClient";
 import { DashboardInfoResponse } from "../models/IDashboardInfoResponse";
 import { catchError } from "../constants/catchError";
 import ComponentLoader from "../components/Loader/ComponentLoader";
@@ -17,6 +17,7 @@ import { OrderStatus } from "../enums/IOrderStatus";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import PhoneNumberModal from "../components/Modal/PhoneNumberModal";
+import { TicketsSoldMetrics } from "../models/IMetrics";
 
 interface DashboardPageProps {
 }
@@ -25,6 +26,8 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
 
     const fetchDashboardInfo = useFetchDashboardInfo();
     const fetchUserRecentTransactions = useFetchUserRecentTransactions();
+    const fetchTicketsSoldMetrics = useFetchTicketsSoldMetrics();
+
     const { data: session, status } = useSession();
     const user = session?.user;
     const { push } = useRouter();
@@ -36,6 +39,8 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
     const [userRecentTransactions, setUserRecentTransactionss] = useState<UserRecentTransaction[]>([]);
     const [isFetchingUserRecentTransactions, setIsFetchingUserRecentTransactions] = useState(true);
     const [showPhoneNumberModal, setShowPhoneNumberModal] = useState(false);
+    const [isFetchingTicketsSoldMetrics, setIsFetchingTicketsSoldMetrics] = useState(true);
+    const [ticketsSoldMetrics, setTicketsSoldMetrics] = useState<TicketsSoldMetrics[]>([]);
 
     function showTagStyle(orderStatus: OrderStatus) {
         switch (orderStatus) {
@@ -84,6 +89,24 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
             .finally(() => {
                 setIsFetchingUserRecentTransactions(false);
             });
+    };
+
+    async function handleFetchTicketsSoldMetrics() {
+
+        // show loader
+        setIsFetchingTicketsSoldMetrics(true);
+
+        await fetchTicketsSoldMetrics(user?.id as string)
+            .then((response) => {
+                console.log("🚀 ~ .fetchTicketsSoldMetrics ~ response:", response)
+                setTicketsSoldMetrics(response.data);
+            })
+            .catch((error) => {
+                catchError(error);
+            })
+            .finally(() => {
+                setIsFetchingTicketsSoldMetrics(false);
+            });
     }
 
     function greeting() {
@@ -103,7 +126,8 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
     useEffect(() => {
         if (user) {
             handleFetchDashboardInfo();
-            handleFetchUserRecentTransactions("14");
+            handleFetchUserRecentTransactions("14"); // set to fetch transactions within the last 2 weeks by default
+            handleFetchTicketsSoldMetrics();
         }
     }, [user]);
 
@@ -184,8 +208,8 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
                     </div>
                 }
 
-                <div className="flex items-start gap-4 mt-8">
-                    <div className={`${styles.activities} basis-3/5`}>
+                <div className="flex flex-col items-start gap-4 mt-8 pb-10 md:pb-0 md:flex-row">
+                    <div className={`${styles.activities} w-full md:basis-3/5`}>
                         <h3>Recent transactions&nbsp;
                             <select onChange={(e) => handleFetchUserRecentTransactions(e.target.value)}>
                                 <option value="14">within the last 2 weeks</option>
@@ -256,17 +280,58 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
                         </div>
                     </div>
 
-                    <div className="basis-2/5 bg-white">
-                        <div className="flex flex-row">
+                    <div className="w-full md:basis-2/5">
+                        <div className="flex flex-row items-center justify-between mb-3">
                             <h3 className="text-white">Tickets Sold</h3>
-                            <button>See all</button>
+                            <Link
+                                href={`${ApplicationRoutes.EventTickets}?t=1`}
+                                className="text-sm p-1 px-3 rounded-full bg-white/10 hover:bg-white/20">
+                                See all
+                            </Link>
                         </div>
 
-                        <div className="flex flex-col">
-                            <div className="cursor-pointer hover:opacity-50">
-                                <p>The Ultimate Breakfast Cooking Class</p>
-                                <span>245</span>
-                            </div>
+                        <div className={styles.tableContainer}>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <th>Event name</th>
+                                        <th>Tickets Sold</th>
+                                        <th>Revenue</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    {
+                                        !isFetchingTicketsSoldMetrics && ticketsSoldMetrics?.map((ticketsSoldMetric, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{ticketsSoldMetric.title}</td>
+                                                    <td>{ticketsSoldMetric.totalTicketsSold}</td>
+                                                    <td>&#8358;{ticketsSoldMetric.totalAmountPaid.toLocaleString()}</td>
+                                                    <td>
+                                                        <Link
+                                                            className="text-primary-color p-2 px-3 rounded-full bg-primary-color/5 hover:bg-primary-color/20"
+                                                            href={`${ApplicationRoutes.EventTickets}/${ticketsSoldMetric.id}`}>
+                                                            View
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+
+                            {
+                                ticketsSoldMetrics.length == 0 && !isFetchingTicketsSoldMetrics &&
+                                <div className={styles.tableInfoUnavailable}>
+                                    <p>There is no data available</p>
+                                </div>
+                            }
+                            {
+                                ticketsSoldMetrics.length == 0 && isFetchingTicketsSoldMetrics &&
+                                <div className={styles.tableLoader}>
+                                    <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
