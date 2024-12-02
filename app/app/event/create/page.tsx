@@ -27,7 +27,6 @@ import {
 } from "@/app/models/IFormField";
 import { StorageKeys } from "@/app/constants/storageKeys";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
-import PhoneNumberModal from "@/app/components/Modal/PhoneNumberModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 
