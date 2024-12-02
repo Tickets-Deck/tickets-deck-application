@@ -9,6 +9,7 @@ import { useFetchEvents, useFetchFeaturedEvents } from "./api/apiClient";
 import { EventResponse } from "./models/IEvents";
 import BetaTestModal from "./components/Modal/BetaTestModal";
 import { ImageWithPlaceholder } from "./models/IImage";
+import TestimonialSection from "./components/Homepage/TestimonialSection";
 
 interface HomepageProps {
   imageWithPlaceholder: ImageWithPlaceholder[];
@@ -126,6 +127,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({
           isFetchingEvents={isFetchingFeaturedEvents}
           featuredEvents={featuredEvents}
         />
+        <TestimonialSection />
         <Services />
         <CreateEvent />
       </div>
