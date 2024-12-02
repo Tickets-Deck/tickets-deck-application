@@ -204,7 +204,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                     <h3>Tickets page</h3>
                 </div>
 
-                <div className="ml-auto mt-2 mb-8 p-4 flex flex-row items-center gap-5 w-full md:p-0">
+                <div className="ml-auto mt-2 mb-8 p-4 flex flex-row items-center gap-5 md:p-0">
                     <DynamicTab
                         currentTab={selectedTicketTab}
                         setCurrentTab={setSelectedTicketTab as Dispatch<SetStateAction<TicketTab>>}
