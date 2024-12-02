@@ -1,4 +1,5 @@
 import React from 'react'
+import EventTicketDetails from './EventTicketDetails'
 
 type Props = {
     params: { eventId: string }
@@ -6,6 +7,8 @@ type Props = {
 
 export default function page({ params }: Props) {
     return (
-        <div>Tickets page for Event - {params.eventId}</div>
+        <EventTicketDetails
+            eventId={params.eventId}
+        />
     )
 }
