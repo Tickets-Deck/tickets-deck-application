@@ -1,8 +1,6 @@
 "use client"
 import { FunctionComponent, ReactElement } from 'react';
 import styles from '../../styles/Home.module.scss';
-import Image from 'next/image';
-import images from '../../../public/images';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import useResponsiveness from '@/app/hooks/useResponsiveness';
