@@ -98,7 +98,6 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
 
         await fetchTicketsSoldMetrics(user?.id as string)
             .then((response) => {
-                console.log("🚀 ~ .fetchTicketsSoldMetrics ~ response:", response)
                 setTicketsSoldMetrics(response.data);
             })
             .catch((error) => {
