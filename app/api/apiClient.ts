@@ -271,6 +271,14 @@ export function useFetchDashboardInfo() {
   return fetchDashboardInfo;
 }
 
+export function useFetchTicketsSoldMetrics() {
+    async function fetchTicketsSoldMetrics(userId: string) {
+        return API.get(`${ApiRoutes.TicketsSoldMetrics}?userId=${userId}`);
+    }
+    
+    return fetchTicketsSoldMetrics;
+}
+
 export function useFetchUserTicketOrders() {
   async function fetchUserTicketOrders(
     userId: string,
