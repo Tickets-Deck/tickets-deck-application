@@ -1,9 +1,9 @@
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { NextRequest, NextResponse } from "next/server";
-import { fetchUserTickets } from "../../services/ticket/ticketService";
 import { customNextResponseError } from "../../utils/customNextResponseError";
 import { validateRequestMethod } from "../../services/reusable-services/requestMethodValidator";
 import { ApplicationError } from "@/app/constants/applicationError";
+import { fetchUserTickets } from "../../services/user/ticketService";
 
 export async function GET(req: NextRequest) {
   // Call the request validation method
