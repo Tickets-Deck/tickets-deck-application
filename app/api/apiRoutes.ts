@@ -79,6 +79,11 @@ export class ApiRoutes {
   static UserTicketOrder: string = "api/users/tickets";
 
   /**
+   * The route to User Event Tickets sold endpoint
+   */
+  static UserEventTicketsSold: string = "api/users/events/tickets-sold";
+
+  /**
    * The route to Payment endpoint
    */
   static Payment: string = "api/events/tickets/payment";
