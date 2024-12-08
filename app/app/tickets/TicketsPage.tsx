@@ -42,7 +42,6 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
     const [isFetchingUserTicketOrders, setIsFetchingUserTicketOrders] = useState(true);
     const [userTicketOrders, setUserTicketOrders] = useState<UserTicketOrder[]>([]);
 
-    // const [selectedTicketOrder, setSelectedTicketOrder] = useState<UserTicketOrder>();
     const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] = useState<TicketPass>();
     const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
     const [isDownloadingTicketsSoldUsers, setIsDownloadingTicketsSoldUsers] = useState(false);
@@ -215,13 +214,13 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                         containerbackgroundColor="#fff"
                     />
 
-                    <Button
+                    {/* <Button
                         isLoading={isDownloadingTicketsSoldUsers}
                         disabled={isDownloadingTicketsSoldUsers || selectedTicketTab == TicketTab.Bought}
                         className="bg-white !text-text-grey"
                         minBtn>
                         Download
-                    </Button>
+                    </Button> */}
                 </div>
 
                 <div className={styles.tableContainer}>
