@@ -279,6 +279,14 @@ export function useFetchTicketsSoldMetrics() {
     return fetchTicketsSoldMetrics;
 }
 
+export function useFetchUserEventTicketsSold() {
+    async function userEventTicketsSold(userId: string, eventId: string) {
+        return API.get(`${ApiRoutes.UserEventTicketsSold}?userId=${userId}&eventId=${eventId}`);
+    }
+    
+    return userEventTicketsSold;
+}
+
 export function useFetchUserTicketOrders() {
   async function fetchUserTicketOrders(
     userId: string,
