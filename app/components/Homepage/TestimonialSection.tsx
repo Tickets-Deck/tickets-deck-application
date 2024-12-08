@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from '../../styles/Home.module.scss';
-import { StarIcon } from '../SVGs/SVGicons';
+import { ProfileIcon, StarIcon } from '../SVGs/SVGicons';
 import Image from 'next/image';
 import images from '@/public/images';
 
@@ -57,7 +57,7 @@ export default function TestimonialSection({ }: Props) {
                                 }
                             </div>
                             <p className='mb-2'>{testimony.message}</p>
-                            <div className='flex flex-row items-center gap-2'>
+                            <div className='flex flex-row items-center gap-2 mt-auto'>
                                 <span className='w-10 h-10 rounded-full overflow-hidden'>
                                     <Image src={testimony.user.avatar} alt='User avatar' />
                                 </span>
