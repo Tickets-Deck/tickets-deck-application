@@ -15,7 +15,6 @@ import { StorageKeys } from "@/app/constants/storageKeys";
 import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
 import { useFetchUserInformation } from "@/app/api/apiClient";
 import { useDispatch } from "react-redux";
-import ImagesDisplay from "./ImagesDisplay";
 
 interface LoginProps {
 
@@ -101,7 +100,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
 
                 // If we have an error
                 if (response?.error && !response.error.includes("prisma.users.findUnique" || "Authentication failed" || "prisma" || "database server")) {
-                    setMessage(response.error);
+                    setMessage(response.error); 
                     // Close loader
                     setIsLoading(false);
                     return;
