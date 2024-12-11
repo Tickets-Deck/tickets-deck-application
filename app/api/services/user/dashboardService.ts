@@ -161,7 +161,5 @@ export async function fetchTicketSoldMetrics(req: NextRequest) {
   // Convert grouped data to an array
   const result = Object.values(groupedData);
 
-  console.log("🚀 ~ tsbe ~ result:", result);
-
   return { data: result };
 }
