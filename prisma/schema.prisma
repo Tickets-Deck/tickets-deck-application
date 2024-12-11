@@ -79,6 +79,7 @@ model Users {
     verificationTokenExpiry  DateTime?
     passwordResetToken       String?
     passwordResetTokenExpiry DateTime?
+    // couponCodes              CouponCodes[]
 
     facebookUrl  String?
     twitterUrl   String?
@@ -389,6 +390,7 @@ model CouponCodes {
     maxUsage   Int       @default(10)
     validUntil DateTime
     events     Events[]
+    // users      Users[]
     createdAt  DateTime? @default(now())
     updatedAt  DateTime? @updatedAt
 
