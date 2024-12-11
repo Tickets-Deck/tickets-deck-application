@@ -1,7 +1,6 @@
 import { ApplicationError } from "@/app/constants/applicationError";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { prisma } from "@/lib/prisma";
-import { NextRequest } from "next/server";
 
 export async function verifyCouponCode(eventId: string, couponCode: string) {
   // check if the eventId, and couponCode are provided
