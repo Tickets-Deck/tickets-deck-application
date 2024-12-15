@@ -119,18 +119,19 @@ const DashboardPage: FunctionComponent<DashboardPageProps> = (): ReactElement =>
         }
     }, [status]);
 
-    useEffect(() => {
-        if (userInfo && !userInfo.phone || userInfo?.phone == "") {
-            setShowPhoneNumberModal(true);
-        }
-    }, [userInfo]);
+    // useEffect(() => {
+    //     if (!showPhoneNumberModal && userInfo && !userInfo.phone || userInfo?.phone == "") {
+    //         setShowPhoneNumberModal(true);
+    //     }
+    // }, [userInfo, showPhoneNumberModal]);
 
     return (
         <>
             <PhoneNumberModal
-                visibility={showPhoneNumberModal}
+                visibility={(userInfo && !userInfo.phone || userInfo?.phone == "") ? true : showPhoneNumberModal}
                 setVisibility={setShowPhoneNumberModal}
             />
+
             <div className={styles.dashboard}>
                 {
                     userInfo &&
