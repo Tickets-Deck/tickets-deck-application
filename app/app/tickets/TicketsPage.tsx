@@ -44,7 +44,6 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
 
     const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] = useState<TicketPass>();
     const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
-    const [isDownloadingTicketsSoldUsers, setIsDownloadingTicketsSoldUsers] = useState(false);
 
     const [isTicketVisible, setIsTicketVisible] = useState(false);
 
