@@ -217,7 +217,7 @@ const PhoneNumberModal: FunctionComponent<PhoneNumberProps> = ({
                                     placeholder='Your Number...'
                                     className='bg-container-grey text-grey p-2 px-3 rounded-[8px] w-full text-sm placeholder:text-sm placeholder:text-text-grey'
                                 />
-                                <input list="countries" id="ice-cream-choice" name="ice-cream-choice" />
+                                {/* <input list="countries" id="ice-cream-choice" name="ice-cream-choice" />
 
                                 <datalist id="countries">
                                     <option value="Chocolate"></option>
@@ -225,7 +225,7 @@ const PhoneNumberModal: FunctionComponent<PhoneNumberProps> = ({
                                     <option value="Mint"></option>
                                     <option value="Strawberry"></option>
                                     <option value="Vanilla"></option>
-                                </datalist>
+                                </datalist> */}
                             </div>
                             <Button
                                 type='submit'
