@@ -154,6 +154,7 @@ export const authOptions: NextAuthOptions = {
         return {
           ...token,
           id: exisitingUser.id,
+          expAt: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24 hours
         };
       } else if (user) {
         const u = user as unknown as any;
@@ -162,6 +163,7 @@ export const authOptions: NextAuthOptions = {
         return {
           ...token,
           id: u.id,
+          expAt: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24 hours
         };
       }
 
@@ -171,6 +173,7 @@ export const authOptions: NextAuthOptions = {
           ...session.user,
           name: session.user.name,
           email: session.user.email,
+          expAt: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24 hours
         };
       }
 
