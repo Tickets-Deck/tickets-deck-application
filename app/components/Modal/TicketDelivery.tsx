@@ -221,9 +221,9 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             tickets: collatedTicketOrderRequests,
             contactEmail: primaryEmail ?? (userEmailIsPrimaryEmail ? userInfo?.email as string : ""),
             userId: userInfo?.id as string,
-            contactFirstName: contactDetails?.firstName,
-            contactLastName: contactDetails?.lastName,
-            contactPhone: contactDetails?.phone,
+            contactFirstName: contactDetails?.firstName ?? userInfo?.firstName,
+            contactLastName: contactDetails?.lastName ?? userInfo?.lastName,
+            contactPhone: contactDetails?.phone ?? userInfo?.phone,
             couponCode: couponCodeValue,
         };
 
