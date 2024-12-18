@@ -16,12 +16,20 @@ const authMiddleware = withAuth({
   },
 });
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   console.log("🚀 ~ middleware ~ req.nextUrl.pathname:", req.nextUrl.pathname);
   // Apply the API key check for `/api` routes
-  if (req.nextUrl.pathname.startsWith("/api")  && !req.nextUrl.pathname.startsWith("/api/auth")) {
+  if (
+    req.nextUrl.pathname.startsWith("/api") &&
+    !req.nextUrl.pathname.startsWith("/api/auth")
+  ) {
     const apiKeyResponse = checkApiKeyMiddleware(req);
+    console.log("🚀 ~ middleware ~ apiKeyResponse:", apiKeyResponse)
     if (apiKeyResponse) return apiKeyResponse;
+
+    // const tokenAuthResponse = await userValidatorMiddleware(req);
+    // console.log("🚀 ~ middleware ~ tokenAuthResponse:", tokenAuthResponse)
+    // if (tokenAuthResponse) return tokenAuthResponse;
   }
 
   withAuth({
