@@ -1,5 +1,9 @@
 import { generateQRCode } from "@/app/services/GenerateQrImage";
-import { compileTicketOrderTemplate, sendMail } from "@/lib/mail";
+import {
+  compileNewTicketPurchaseTemplate,
+  compileTicketOrderTemplate,
+  sendMail,
+} from "@/lib/mail";
 import { prisma } from "@/lib/prisma";
 import moment from "moment";
 import Paystack from "paystack";
@@ -29,7 +33,6 @@ import Paystack from "paystack";
 //       ],
 //     };
 //   }
-  
 
 export async function processEmailNotification(
   paymentResult: Paystack.Response,
@@ -44,15 +47,30 @@ export async function processEmailNotification(
       id: ticketOrderId,
     },
     include: {
-      event: true,
+      event: {
+        include: {
+          user: {
+            select: {
+              email: true,
+            },
+          },
+        },
+      },
       tickets: {
         include: {
-            ticket: {
-                select: {
-                    name: true
-                }
-            }
-        }
+          ticket: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      payments: {
+        select: {
+          amountPaid: true,
+          currency: true,
+          ticketOrderId: true,
+        },
       },
     },
   });
@@ -127,7 +145,9 @@ export async function processEmailNotification(
       time: ticketOrder.event.time as string,
       qrImage: ticketOrder.orderId,
       ticketOrderId: ticketOrder.orderId,
-      ticketType: ticketOrder.tickets.map(ticket => ticket.ticket.name).join(', '),
+      ticketType: ticketOrder.tickets
+        .map((ticket) => ticket.ticket.name)
+        .join(", "),
       orderPageUrl: `${process.env.NEXTAUTH_URL}/order/${ticketOrder.id}`,
     }),
     attachments: [
@@ -169,4 +189,38 @@ export async function processEmailNotification(
       ],
     });
   }
+
+  // get the total amount paid for the ticket order
+  const totalAmountPaid = ticketOrder.payments.reduce(
+    (total, payment) => total + Number(payment.amountPaid),
+    0
+  );
+
+  // send email to the organizer
+  await sendMail({
+    to: ticketOrder.event.user.email,
+    name: `New Ticket Purchased for ${ticketOrder.event.title}`,
+    subject: ticketOrder.event.title,
+    body: compileNewTicketPurchaseTemplate({
+      title: ticketOrder.event.title,
+      image: ticketOrder.event.mainImageUrl,
+      ticketType: ticketOrder.tickets
+        .map((ticket) => ticket.ticket.name)
+        .join(", "),
+      eventName: ticketOrder.event.title,
+      quantity: ticketOrder.tickets.length,
+      amountPaid: `N${totalAmountPaid.toLocaleString()}`,
+      customerName:
+        ticketOrder.contactFirstName + " " + ticketOrder.contactLastName,
+      customerEmail: ticketOrder.contactEmail,
+      customerPhone: ticketOrder.contactNumber as string,
+      eventPageUrl: `${baseUrl}/app/events`,
+    }),
+    attachments: [
+      {
+        filename: `${ticketOrder.event.title}` + ".png",
+        content: qrCodeBuffer,
+      },
+    ],
+  });
 }
