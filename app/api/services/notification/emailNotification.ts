@@ -72,6 +72,14 @@ export async function processEmailNotification(
           ticketOrderId: true,
         },
       },
+      user: {
+        select: {
+            email: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+        }
+      }
     },
   });
 
@@ -213,14 +221,15 @@ export async function processEmailNotification(
       customerName:
         ticketOrder.contactFirstName + " " + ticketOrder.contactLastName,
       customerEmail: ticketOrder.contactEmail,
-      customerPhone: ticketOrder.contactNumber as string,
+      customerPhone: ticketOrder.user?.phone ?? (ticketOrder.contactNumber as string) ?? "Not provided",
+
+    //   customerName:
+    //     ticketOrder.user ? ticketOrder.user.firstName + " " + ticketOrder.user.lastName :
+    //     ticketOrder.contactFirstName + " " + ticketOrder.contactLastName,  
+    //   customerEmail: ticketOrder.user?.email ?? ticketOrder.contactEmail,
+    //   customerPhone:
+    //     ticketOrder.user?.phone ?? (ticketOrder.contactNumber as string),
       eventPageUrl: `${baseUrl}/app/events`,
-    }),
-    attachments: [
-      {
-        filename: `${ticketOrder.event.title}` + ".png",
-        content: qrCodeBuffer,
-      },
-    ],
+    })
   });
 }
