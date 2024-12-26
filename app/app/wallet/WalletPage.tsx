@@ -213,7 +213,7 @@ const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
                     </div>
                 </div>
 
-                {userBankAccount && (
+                {userBankAccount && userBankAccount[0] && (
                     <div className='mt-5 flex flex-col gap-2'>
                         <h4>Bank details</h4>
                         <div className='bg-text-grey/30 p-5 rounded-2xl w-fit'>

@@ -174,8 +174,9 @@ const PhoneNumberModal: FunctionComponent<PhoneNumberProps> = ({
                                         },
                                     }}
                                 >
-                                    {countries.map((country) => (
+                                    {countries.map((country, index) => (
                                         <MenuItem
+                                            key={index}
                                             value={country.dialCode}
                                             sx={{
                                                 color: "#f2f2f2",
