@@ -21,7 +21,7 @@ import {
 import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_TEST,
+  baseURL: ApiRoutes.BASE_URL_LIVE,
   headers: {
     "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
     // "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
