@@ -12,7 +12,7 @@ import images from '@/public/images';
 import Image from "next/image";
 import { IToastOptions } from '../models/toastOptions';
 import { Session } from 'next-auth';
-import { useFetchUserInformation } from '../api/apiClient';
+import { useFetchUserBankAccount, useFetchUserInformation } from '../api/apiClient';
 import { useDispatch } from 'react-redux';
 import { updateUserCredentials } from '../redux/features/user/userSlice';
 import { catchError } from '../constants/catchError';
@@ -22,6 +22,7 @@ import { Theme } from '../enums/Theme';
 import NextTopLoader from 'nextjs-toploader';
 import UserLoginPrompt from './Modal/UserLoginPrompt';
 import { ApplicationContext, ApplicationContextData } from '../context/ApplicationContext';
+import { updateUserBankAccount } from "@/app/redux/features/user/walletSlice";
 
 export const metadata: Metadata = {
     title: 'Ticketsdeck Events',
@@ -42,6 +43,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     const iswindow = typeof window !== "undefined" ? true : false;
 
     const fetchUserInformation = useFetchUserInformation();
+    const fetchUserBankAccount = useFetchUserBankAccount();
 
     const dispatch = useDispatch();
 
@@ -65,6 +67,18 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
             })
     };
 
+    async function handleFetchUserBankAccount() {
+
+        // Fetch user bank accounts
+        await fetchUserBankAccount(session?.user.id as string)
+            .then((response) => {
+                // Save to redux
+                dispatch(updateUserBankAccount(response.data));
+            })
+            .catch((error) => {
+                catchError(error);
+            })
+    };
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -75,6 +89,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     useEffect(() => {
         if (session && status === 'authenticated') {
             handleFetchUserInformation();
+            handleFetchUserBankAccount();
         }
     }, [session, status])
 
