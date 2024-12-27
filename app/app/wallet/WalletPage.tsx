@@ -153,7 +153,7 @@ const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
                 </div>
 
                 {/* KPI Section */}
-                <div className='w-full flex flex-col md:flex-row gap-4'>
+                {/* <div className='w-full flex flex-col md:flex-row gap-4'>
                     <div className='p-6 rounded-2xl flex flex-col w-full justify-between gap-1 bg-dark-grey'>
                         <span className='text-sm font-light text-white'>
                             Total Witdrawals
@@ -170,28 +170,9 @@ const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
                             &#8358;{(55700).toLocaleString()}
                         </span>
                     </div>
-                    {/* <div className='p-6 rounded-2xl flex flex-col bg-dark-grey basis-3/5'>
-                        <span className='text-2xl font-semibold mb-4 font-Mona-Sans-Wide'>
-                            &#8358;
-                            {walletBalance && showWalletBalance
-                                ? walletBalance.toLocaleString()
-                                : "****"}
-                        </span>
-                        <div className='flex flex-row gap-2'>
-                            <span className='text-sm font-light text-white'>
-                                Wallet Balance
-                            </span>
-                            <button
-                                onClick={() => setShowWalletBalance(!showWalletBalance)}
-                                className='text-sm font-light text-text-grey/80'
-                            >
-                                {showWalletBalance ? "Hide" : "Show"}
-                            </button>
-                        </div>
-                    </div> */}
-                </div>
+                </div> */}
 
-                <div className="w-full flex flex-col mt-5">
+                {/* <div className="w-full flex flex-col mt-5">
                     <h3 className='mb-3 text-xl'>Events Payments</h3>
                     <div className="w-full flex flex-row gap-4">
                         <div className='p-6 rounded-2xl flex flex-col w-full justify-between gap-1 bg-primary-color basis-1/5'>
@@ -211,7 +192,7 @@ const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
                             </span>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {userBankAccount && userBankAccount[0] && (
                     <div className='mt-5 flex flex-col gap-2'>
