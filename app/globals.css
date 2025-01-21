@@ -1,9 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
-    'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
-    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -104,4 +108,29 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+@layer utilities {
+  .navLink {
+    @apply rounded-lg w-full flex justify-start items-center p-[0.8rem] my-0 mx-auto gap-2 [&_svg]:size-4;
+  }
+
+  .primaryButton {
+    @apply size-fit rounded-[0.625rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-primary-color text-white flex items-center gap-2 [&_svg]:opacity-100 [&_svg]:text-white [&_svg]:w-3 [&_svg]:[&_path]:fill-white hover:bg-white hover:text-primary-color;
+  }
+}
+
+.bumpDownAnimation {
+  animation: bumpDown 400ms cubic-bezier(0.65, -0.07, 0.25, 1.24);
+}
+
+@keyframes bumpDown {
+  from {
+    top: 2.188rem;
+    opacity: 0;
+  }
+}
+
+.sectionPadding {
+  @apply p-[1.25rem] md:px-[5rem] min-[1300px]:px-[16%] min-[1440px]:px-[10rem];
 }

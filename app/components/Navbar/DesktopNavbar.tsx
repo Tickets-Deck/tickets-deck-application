@@ -1,89 +1,132 @@
-"use client"
+"use client";
 import { FunctionComponent, ReactElement, useRef, useState } from "react";
-import Link from 'next/link';
+import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
-import Image from 'next/image';
+import Image from "next/image";
 import images from "@/public/images";
 import { CaretDownIcon, MoonIcon, SunIcon, UserIcon } from "../SVGs/SVGicons";
-import { useDispatch } from 'react-redux';
-import { signOut } from 'next-auth/react';
+import { useDispatch } from "react-redux";
+import { signOut } from "next-auth/react";
 import { clearUserCredentials } from "@/app/redux/features/user/userSlice";
-import styles from '@/app/styles/Navbar.module.scss';
 import useOuterClick from "@/app/hooks/useOuterClick";
 import { Session } from "next-auth";
 import { Theme } from "@/app/enums/Theme";
 import { updateAppTheme } from "@/app/redux/features/theme/themeSlice";
 
 interface DesktopNavbarProps {
-    isLightTheme: boolean
-    appTheme: Theme | null
-    session: Session | null
+  isLightTheme: boolean;
+  appTheme: Theme | null;
+  session: Session | null;
 }
 
-const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ isLightTheme, session, appTheme }): ReactElement => {
-    const dispatch = useDispatch();
-    const user = session?.user;
+const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({
+  isLightTheme,
+  session,
+  appTheme,
+}): ReactElement => {
+  const dispatch = useDispatch();
+  const user = session?.user;
 
-    const [navbarDropdownIsVisible, setNavbarDropdownIsVisible] = useState(false);
+  const [navbarDropdownIsVisible, setNavbarDropdownIsVisible] = useState(false);
 
-    const navbarDropdownRef = useRef<HTMLDivElement>(null);
+  const navbarDropdownRef = useRef<HTMLDivElement>(null);
 
-    useOuterClick(navbarDropdownRef, setNavbarDropdownIsVisible);
+  useOuterClick(navbarDropdownRef, setNavbarDropdownIsVisible);
 
-    return (
-        <section className={styles.navbarContainer}>
-            <Link href={ApplicationRoutes.Home}>
-                <div className={styles.navbarContainer__lhs}>
-                    <div className={styles.logo}>
-                        {appTheme === Theme.Light ? <Image src={images.logoPurple} alt='Logo' /> : <Image src={images.logoWhite} alt='Logo' />}
-                    </div>
-                    <p>Ticketsdeck Events</p>
+  return (
+    <section className='bg-dark-grey flex items-center justify-between sectionPadding'>
+      <Link href={ApplicationRoutes.Home}>
+        <div className='flex items-center gap-1 '>
+          <div className='h-[1.875rem]'>
+            {appTheme === Theme.Light ? (
+              <Image
+                src={images.logoPurple}
+                alt='Logo'
+                className='h-full w-full object-contain'
+              />
+            ) : (
+              <Image
+                src={images.logoWhite}
+                alt='Logo'
+                className='h-full w-full object-contain'
+              />
+            )}
+          </div>
+          <p className='text-white text-sm font-[300]'>Ticketsdeck Events</p>
+        </div>
+      </Link>
+      <div className='flex items-center gap-6 text-white text-sm'>
+        <ul className='border-r pr-6 border-grey list-none flex items-center gap-4 cursor-pointer'>
+          <Link href={ApplicationRoutes.Home}>
+            <li className='hover:text-primary-color-sub'>Home</li>
+          </Link>
+          <Link href={ApplicationRoutes.GeneralEvents}>
+            <li className='hover:text-primary-color-sub'>Events</li>
+          </Link>
+          <Link href={ApplicationRoutes.About}>
+            <li className='hover:text-primary-color-sub'>About</li>
+          </Link>
+          {/* <li>Support</li> */}
+        </ul>
+        <div
+          className='flex group items-center relative cursor-pointer gap-2'
+          ref={navbarDropdownRef}
+          onClick={() => setNavbarDropdownIsVisible(!navbarDropdownIsVisible)}
+        >
+          {user ? (
+            <>
+              <div className='size-8 border border-grey/10 grid place-items-center rounded-full relative overflow-hidden [&_img]:size-full [&_img]:object-cover [&_svg]:size-[0.85rem]'>
+                {
+                  <Image
+                    src={user?.image ?? images.user_avatar}
+                    alt='Profile picture'
+                    fill
+                    sizes='auto'
+                  />
+                }
+              </div>
+              <h3 className='font-medium text-sm text-primary-color-sub max-w-[90px] text-ellipsis overflow-hidden whitespace-nowrap'>
+                {user?.name ?? "Account"}
+              </h3>
+              <span className='size-6 grid place-items-center rounded-lg group-hover:bg-white/10'>
+                <CaretDownIcon className='size-4 [&_path]:fill-primary-color-sub text-white' />
+              </span>
+              {navbarDropdownIsVisible && (
+                <div className='bg-white p-1 rounded-lg flex flex-col absolute top-[2.813rem] -right-[0.688rem] w-[90%] max-w-32 shadow-[0rem_0.25rem_0.5rem_0.063rem_rgba(0,0,0,0.04)] z-[3] animate-bumpDown after:size-[0.875rem] after:bg-white after:rotate-45 after:absolute after:top[-0.375rem] after:right-4 after:rounded-[0.188rem]'>
+                  <Link
+                    className='py-2 px-3 text-black rounded-[0.375rem] hover:bg-grey/80'
+                    href={ApplicationRoutes.Dashboard}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    className='py-2 px-3 text-black rounded-[0.375rem] hover:bg-grey/80'
+                    href={ApplicationRoutes.Profile}
+                  >
+                    Profile
+                  </Link>
+                  <span
+                    className='py-2 px-3 text-black rounded-[0.375rem] hover:bg-grey/80'
+                    onClick={() => {
+                      signOut();
+                      // Clear user credentials from redux store
+                      dispatch(clearUserCredentials());
+                    }}
+                  >
+                    Log out
+                  </span>
                 </div>
+              )}
+            </>
+          ) : (
+            <Link href={ApplicationRoutes.SignIn}>
+              <button className='primaryButton py-2 bg-white text-dark-grey hover:bg-dark-grey hover:text-white'>
+                Log in
+              </button>
             </Link>
-            <div className={styles.navbarContainer__rhs}>
-                <ul className={styles.navLinks}>
-                    <Link href={ApplicationRoutes.Home}>
-                        <li>Home</li>
-                    </Link>
-                    <Link href={ApplicationRoutes.GeneralEvents}>
-                        <li>Events</li>
-                    </Link>
-                    <Link href={ApplicationRoutes.About}>
-                        <li>About</li>
-                    </Link>
-                    {/* <li>Support</li> */}
-                </ul>
-                <div className={styles.accountSection} ref={navbarDropdownRef} onClick={() => setNavbarDropdownIsVisible(!navbarDropdownIsVisible)}>
-                    {
-                        user ? <>
-                            <div className={styles.profileCircle}>
-                                {<Image src={user?.image ?? images.user_avatar} alt='Profile picture' fill sizes="auto" /> ?? <UserIcon />}
-                            </div>
-                            <h3>{user?.name ?? 'Account'}</h3>
-                            <span className={styles.dropdownIcon}>
-                                <CaretDownIcon />
-                            </span>
-                            {
-                                navbarDropdownIsVisible &&
-                                <div className={styles.dropdownContainer}>
-                                    <Link href={ApplicationRoutes.Dashboard}>Dashboard</Link>
-                                    <Link href={ApplicationRoutes.Profile}>Profile</Link>
-                                    <span onClick={() => {
-                                        signOut();
-                                        // Clear user credentials from redux store
-                                        dispatch(clearUserCredentials());
-                                    }}>Log out</span>
-                                </div>
-                            }
-                        </>
-                            : <Link href={ApplicationRoutes.SignIn}>
-                                <button>
-                                    Log in
-                                </button>
-                            </Link>
-                    }
-                </div>
-                {/* <span
+          )}
+        </div>
+        {/* <span
                     className={styles.themeController}
                     onClick={() =>
                         dispatch(appTheme == Theme.Light ?
@@ -91,9 +134,9 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ isLightTheme, se
                             updateAppTheme(Theme.Light))}>
                     {appTheme === Theme.Light ? <MoonIcon /> : <SunIcon />}
                 </span> */}
-            </div>
-        </section>
-    );
-}
+      </div>
+    </section>
+  );
+};
 
 export default DesktopNavbar;
