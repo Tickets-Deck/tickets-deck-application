@@ -1,44 +1,50 @@
-"use client"
-import { FunctionComponent, ReactElement } from 'react';
-import styles from '../../styles/Home.module.scss';
-import Image from 'next/image';
-import images from '../../../public/images';
-import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import useResponsiveness from '@/app/hooks/useResponsiveness';
-import { ApplicationRoutes } from '@/app/constants/applicationRoutes';
+"use client";
+import { FunctionComponent, ReactElement } from "react";
+import styles from "../../styles/Home.module.scss";
+import Image from "next/image";
+import images from "../../../public/images";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import useResponsiveness from "@/app/hooks/useResponsiveness";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
-interface CreateEventProps {
-
-}
+interface CreateEventProps {}
 
 const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
+  const windowRes = useResponsiveness();
+  const isMobile = windowRes.width && windowRes.width < 768;
+  const onMobile = typeof isMobile == "boolean" && isMobile;
+  const onDesktop = typeof isMobile == "boolean" && !isMobile;
 
-    const windowRes = useResponsiveness();
-    const isMobile = windowRes.width && windowRes.width < 768;
-    const onMobile = typeof (isMobile) == "boolean" && isMobile;
-    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+  const { data: session } = useSession();
+  const user = session?.user;
 
-    const { data: session } = useSession();
-    const user = session?.user;
-
-    return (
-        <section className={styles.createEventSection}>
-            <div className={styles.createEventSection__lhs}>
-                {/* <div className={styles.image}>
+  return (
+    <section className='sectionPadding flex justify-between bg-white gap-6 pb-8 pt-12 border-t-4 border-primary-color flex-col sm:flex-row sm:gap-12'>
+      <div className='basis-[100%] sm:basis-[80%] w-full relative text-dark-grey flex-col gap-2 justify-center'>
+        {/* <div className={styles.image}>
                     {onMobile ? <Image src={images.createImageMobile} alt='Create image' /> : <Image src={images.createImage} alt='Create image' />}
                 </div> */}
-                <h3>Create your own Event</h3>
-                {/* <p>Lets help you manage your ticketing, while you make your events with us.</p> */}
-                <p>Time to enjoy seamless ticketing, and event creation process.</p>
-            </div>
-            <div className={styles.createEventSection__rhs}>
-                <Link href={user ? ApplicationRoutes.CreateEvent : ApplicationRoutes.SignIn}> 
-                    <button>Create Events</button>
-                </Link>
-            </div>
-        </section>
-    );
-}
+        <h3 className='text-[35px] sm:text-[30px] font-semibold'>
+          Create your own Event
+        </h3>
+        {/* <p>Lets help you manage your ticketing, while you make your events with us.</p> */}
+        <p className='w-full sm:w-[60%] font-light'>
+          Time to enjoy seamless ticketing, and event creation process.
+        </p>
+      </div>
+      <div className='flex items-center text-center p-0 sm:py-8 gap-2 sm:items-start justify-center sm:flex-col basis-[20%]'>
+        <Link
+          className='w-fit'
+          href={user ? ApplicationRoutes.CreateEvent : ApplicationRoutes.SignIn}
+        >
+          <button className='secondaryButton hover:shadow-[0px_10px_50px_0px_rgba(61,55,241,0.25)] w-fit'>
+            Create Events
+          </button>
+        </Link>
+      </div>
+    </section>
+  );
+};
 
 export default CreateEvent;

@@ -120,7 +120,7 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({
             </>
           ) : (
             <Link href={ApplicationRoutes.SignIn}>
-              <button className='primaryButton py-2 bg-white text-dark-grey hover:bg-dark-grey hover:text-white'>
+              <button className='primaryButton py-2 !bg-white hover:!bg-transparent !text-dark-grey hover:bg-dark-grey hover:!text-white'>
                 Log in
               </button>
             </Link>

@@ -116,14 +116,39 @@ a {
   }
 
   .primaryButton {
-    @apply size-fit rounded-[0.625rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-primary-color text-white flex items-center gap-2 [&_svg]:opacity-100 [&_svg]:text-white [&_svg]:w-3 [&_svg]:[&_path]:fill-white hover:bg-white hover:text-primary-color;
+    @apply size-fit rounded-[0.625rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-primary-color text-white flex items-center gap-2 [&_svg]:opacity-100 [&_svg]:text-white [&_svg]:w-3 [&_svg_path]:fill-white hover:bg-white hover:text-primary-color;
   }
+
+  .secondaryButton {
+    @apply w-fit rounded-[3.125rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-primary-color text-white flex items-center gap-2 [&_svg]:text-white [&_svg]:w-3 [&_svg_path]:fill-white;
+  }
+
+  .tertiaryButton {
+    @apply w-fit rounded-[3.125rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-white text-dark-grey flex items-center gap-2 [&_svg]:text-white [&_svg]:w-3 [&_svg_path]:fill-white hover:opacity-60;
+  }
+}
+
+.sectionPadding {
+  @apply p-[1.25rem] md:px-[5rem] min-[1300px]:px-[16%] lg:px-[10rem];
 }
 
 .bumpDownAnimation {
   animation: bumpDown 400ms cubic-bezier(0.65, -0.07, 0.25, 1.24);
 }
+.moveFirstAnimation {
+  animation: moveFirst 5400ms ease infinite alternate;
+}
+.moveSecondAnimation {
+  animation: moveSecond 5400ms ease infinite alternate;
+}
+.moveThirdAnimation {
+  animation: moveThird 7800ms ease infinite alternate;
+}
+.moveFourthAnimation {
+  animation: moveFourth 7800ms ease infinite alternate;
+}
 
+/* keyFrames */
 @keyframes bumpDown {
   from {
     top: 2.188rem;
@@ -131,6 +156,94 @@ a {
   }
 }
 
-.sectionPadding {
-  @apply p-[1.25rem] md:px-[5rem] min-[1300px]:px-[16%] min-[1440px]:px-[10rem];
+@keyframes moveFirst {
+  0% {
+    top: -50%;
+    left: -40%;
+    transform: translate(0%, 0%);
+  }
+  25% {
+    top: -50%;
+    left: 80%;
+    transform: translate(0%, 0%);
+  }
+  50% {
+    top: 0%;
+    left: 0%;
+    transform: translate(50%, 50%);
+  }
+  100% {
+    top: 0%;
+    left: 0%;
+    transform: translate(250%, 50%);
+  }
+}
+@keyframes moveSecond {
+  0% {
+    top: -50%;
+    left: 80%;
+    transform: translate(0%, 0%);
+  }
+  25% {
+    top: -50%;
+    left: -40%;
+    transform: translate(0%, 0%);
+  }
+  50% {
+    top: 0%;
+    left: 0%;
+    transform: translate(50%, 50%);
+  }
+  100% {
+    top: 150%;
+    left: -40%;
+    transform: translate(0%, 0%);
+  }
+}
+@keyframes moveThird {
+  0% {
+    top: 0%;
+    left: 0%;
+    transform: translate(50%, 50%);
+  }
+  25% {
+    top: -50%;
+    left: -40%;
+    transform: translate(0%, 0%);
+  }
+  50% {
+    top: -50%;
+    left: 80%;
+    transform: translate(0%, 0%);
+  }
+  100% {
+    top: 150%;
+    left: -40%;
+    transform: translate(0%, 0%);
+  }
+}
+@keyframes moveFourth {
+  0% {
+    top: 150%;
+    left: -40%;
+    transform: translate(0%, 0%);
+  }
+  25% {
+    top: 50%;
+    left: -40%;
+    transform: translate(0%, 0%);
+    scale: 1;
+  }
+  50% {
+    top: -50%;
+    left: 80%;
+    transform: translate(0%, 0%);
+    scale: 3;
+  }
+  100% {
+    top: 0%;
+    left: 0%;
+    transform: translate(50%, 50%);
+    scale: 1;
+  }
 }

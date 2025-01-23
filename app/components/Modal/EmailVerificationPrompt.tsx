@@ -1,4 +1,10 @@
-import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  FunctionComponent,
+  ReactElement,
+  SetStateAction,
+  useState,
+} from "react";
 import ModalWrapper from "./ModalWrapper";
 import styles from "@/app/styles/promptModal.module.scss";
 import { CloseIcon } from "../SVGs/SVGicons";
@@ -8,69 +14,102 @@ import ComponentLoader from "../Loader/ComponentLoader";
 import { toast } from "sonner";
 
 interface EmailVerificationPromptProps {
-    visibility: boolean
-    setVisibility: Dispatch<SetStateAction<boolean>>
-    userEmail: string
-    userName: string
+  visibility: boolean;
+  setVisibility: Dispatch<SetStateAction<boolean>>;
+  userEmail: string;
+  userName: string;
 }
 
-const EmailVerificationPrompt: FunctionComponent<EmailVerificationPromptProps> = ({ visibility, setVisibility, userEmail, userName }): ReactElement => {
+const EmailVerificationPrompt: FunctionComponent<
+  EmailVerificationPromptProps
+> = ({ visibility, setVisibility, userEmail, userName }): ReactElement => {
+  const resendVerificationLink = useResendVerificationLink();
+  const [isResendingEmail, setIsResendingEmail] = useState(false);
 
-    const resendVerificationLink = useResendVerificationLink();
-    const [isResendingEmail, setIsResendingEmail] = useState(false);
+  async function handleResendVerificationLink() {
+    // Set the isResendingEmail state to true
+    setIsResendingEmail(true);
 
-    async function handleResendVerificationLink() {
+    await resendVerificationLink(userEmail)
+      .then((response) => {
+        // console.log("Resend response: ", response);
 
-        // Set the isResendingEmail state to true
-        setIsResendingEmail(true);
+        if (response.data.error) {
+          // Show error message
+          toast.error(
+            "An error occurred while sending the verification link. Please try again."
+          );
+          return;
+        }
 
-        await resendVerificationLink(userEmail)
-            .then((response) => {
-                // console.log("Resend response: ", response);
+        // Show success message
+        toast.success("Verification link has been sent successfully.", {
+          duration: 10000,
+        });
 
-                if (response.data.error) {
-                    // Show error message
-                    toast.error("An error occurred while sending the verification link. Please try again.");
-                    return;
-                }
+        // Close the modal
+        setVisibility(false);
+      })
+      .catch((error) => {
+        console.log("🚀 ~ handleResendVerificationLink ~ error:", error);
+        // Show error message
+        toast.error(
+          "An error occurred while sending the verification link. Please try again."
+        );
+        catchError(error);
+      })
+      .finally(() => {
+        // Close the loader
+        setIsResendingEmail(false);
+      });
+  }
 
-                // Show success message
-                toast.success("Verification link has been sent successfully.", { duration: 10000 });
-
-                // Close the modal
-                setVisibility(false);
-            })
-            .catch((error) => {
-                console.log("🚀 ~ handleResendVerificationLink ~ error:", error);
-                // Show error message
-                toast.error("An error occurred while sending the verification link. Please try again.");
-                catchError(error);
-            })
-            .finally(() => {
-                // Close the loader
-                setIsResendingEmail(false);
-            });
-    };
-
-    return (
-        <ModalWrapper disallowOverlayFunction visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
-            <div className={styles.promptModal}>
-                <div className={styles.topAreaSection}>
-                    <div className={styles.topArea}>
-                        <h3>Hello {userName}</h3>
-                        <p>Please verify your email to proceed.</p>
-                    </div>
-                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><CloseIcon /></span>
-                </div>
-                <div className={styles.actionButton}>
-                    <button onClick={() => handleResendVerificationLink()} disabled={isResendingEmail}>
-                        Get verification link
-                        {isResendingEmail && <ComponentLoader isSmallLoader customBackground="#DC143C" lightTheme customLoaderColor="#fff" />}
-                    </button>
-                </div>
-            </div>
-        </ModalWrapper>
-    );
-}
+  return (
+    <ModalWrapper
+      disallowOverlayFunction
+      visibility={visibility}
+      setVisibility={setVisibility}
+      styles={{
+        backgroundColor: "transparent",
+        color: "#fff",
+        width: "fit-content",
+      }}
+    >
+      <div className=' w-full sm:w-[21.875rem] p-6 rounded-[20px] bg-container-grey bg-[linear-gradient(180deg,_#313131_0%,_#313131_100%)]'>
+        <div className='flex items-start [justify-self:space-between]'>
+          <div className='flex flex-col items-start'>
+            <h3 className='text-base font-normal mb-1'>Hello {userName}</h3>
+            <p className='text-[0.8rem] font-light text-grey opacity-80 [text-decoration:none]'>
+              Please verify your email to proceed.
+            </p>
+          </div>
+          <span
+            className='ml-auto size-8 rounded-full grid place-items-center cursor-pointer hover:bg-white/10'
+            onClick={() => setVisibility(false)}
+          >
+            <CloseIcon className='*:stroke-white *:fill-white' />
+          </span>
+        </div>
+        <div className={"flex justify-end mt-4 gap-2"}>
+          <button
+            className='tertiaryButton py-2 px-4'
+            onClick={() => handleResendVerificationLink()}
+            disabled={isResendingEmail}
+          >
+            Get verification link
+            {isResendingEmail && (
+              <ComponentLoader
+                isSmallLoader
+                customBackground='#DC143C'
+                lightTheme
+                customLoaderColor='#fff'
+              />
+            )}
+          </button>
+        </div>
+      </div>
+    </ModalWrapper>
+  );
+};
 
 export default EmailVerificationPrompt;

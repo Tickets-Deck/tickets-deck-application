@@ -534,9 +534,10 @@ export function FacebookIcon({
 
 //#region Emojis
 
-export function ThinkingEmojiIcon({ width, height }: any) {
+export function ThinkingEmojiIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='72'
       height='73'
       viewBox='0 0 72 73'
@@ -569,9 +570,10 @@ export function ThinkingEmojiIcon({ width, height }: any) {
 
 //#region Services Icons
 
-export function PlatformIcon({ width, height }: any) {
+export function PlatformIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='80'
       height='80'
       viewBox='0 0 80 80'
@@ -593,9 +595,10 @@ export function PlatformIcon({ width, height }: any) {
   );
 }
 
-export function QuickTicketBookingIcon({ width, height }: any) {
+export function QuickTicketBookingIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='77'
       height='76'
       viewBox='0 0 77 76'
@@ -622,9 +625,10 @@ export function QuickTicketBookingIcon({ width, height }: any) {
   );
 }
 
-export function EventsIcon({ width, height }: any) {
+export function EventsIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='24'
       height='24'
       viewBox='0 0 24 24'
@@ -639,9 +643,10 @@ export function EventsIcon({ width, height }: any) {
   );
 }
 
-export function CreateEventsIcon({ width, height }: any) {
+export function CreateEventsIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='80'
       height='80'
       viewBox='0 0 80 80'
@@ -679,9 +684,10 @@ export function CreateEventsIcon({ width, height }: any) {
   );
 }
 
-export function EfficientPaymentIcon({ width, height }: any) {
+export function EfficientPaymentIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='80'
       height='80'
       viewBox='0 0 80 80'
@@ -696,9 +702,10 @@ export function EfficientPaymentIcon({ width, height }: any) {
   );
 }
 
-export function EasyManagementIcon({ width, height }: any) {
+export function EasyManagementIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='80'
       height='80'
       viewBox='0 0 80 80'
@@ -720,9 +727,10 @@ export function EasyManagementIcon({ width, height }: any) {
   );
 }
 
-export function TrackPerformanceIcon({ width, height }: any) {
+export function TrackPerformanceIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='80'
       height='80'
       viewBox='0 0 80 80'
@@ -741,10 +749,11 @@ export function TrackPerformanceIcon({ width, height }: any) {
 
 //#endregion Services Icons
 
-export function InfoIcon({ width, height, stroke }: any) {
+export function InfoIcon({ width, height, stroke, className }: any) {
   return (
     <svg
       width={width ?? "20"}
+      className={className}
       height={height ?? "20"}
       viewBox='0 0 20 20'
       fill='none'
@@ -943,9 +952,10 @@ export function VerifiedIcon({ width, height, className }: any) {
   );
 }
 
-export function CloseIcon({ width, height, stroke }: any) {
+export function CloseIcon({ width, height, stroke, className }: any) {
   return (
     <svg
+      className={className}
       width='16'
       height='17'
       viewBox='0 0 16 17'
