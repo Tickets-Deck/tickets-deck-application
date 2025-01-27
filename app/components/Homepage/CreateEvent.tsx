@@ -20,15 +20,11 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
   const user = session?.user;
 
   return (
-    <section className='sectionPadding flex justify-between bg-white gap-6 pb-8 pt-12 border-t-4 border-primary-color flex-col sm:flex-row sm:gap-12'>
+    <section className='sectionPadding flex justify-between items-center !pb-8 !pt-12 bg-white gap-6 sm:!py-0 border-t-4 border-primary-color flex-col sm:flex-row sm:gap-12'>
       <div className='basis-[100%] sm:basis-[80%] w-full relative text-dark-grey flex-col gap-2 justify-center'>
-        {/* <div className={styles.image}>
-                    {onMobile ? <Image src={images.createImageMobile} alt='Create image' /> : <Image src={images.createImage} alt='Create image' />}
-                </div> */}
         <h3 className='text-[35px] sm:text-[30px] font-semibold'>
           Create your own Event
         </h3>
-        {/* <p>Lets help you manage your ticketing, while you make your events with us.</p> */}
         <p className='w-full sm:w-[60%] font-light'>
           Time to enjoy seamless ticketing, and event creation process.
         </p>

@@ -418,9 +418,10 @@ export function CaretUpIcon({ width, height }: any) {
 
 //#region SOCIAL MEDIA Icons
 
-export function LinkedInIcon({ width, height }: any) {
+export function LinkedInIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='40'
       height='40'
       viewBox='0 0 40 40'
@@ -434,9 +435,10 @@ export function LinkedInIcon({ width, height }: any) {
     </svg>
   );
 }
-export function InstagramIcon({ width, height }: any) {
+export function InstagramIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='40'
       height='40'
       viewBox='0 0 40 40'
@@ -457,9 +459,10 @@ export function InstagramIcon({ width, height }: any) {
   );
 }
 
-export function TwitterIcon({ width, height }: any) {
+export function TwitterIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='40'
       height='40'
       viewBox='0 0 40 40'
@@ -474,9 +477,10 @@ export function TwitterIcon({ width, height }: any) {
   );
 }
 
-export function YoutubeIcon({ width, height }: any) {
+export function YoutubeIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='40'
       height='40'
       viewBox='0 0 40 40'
