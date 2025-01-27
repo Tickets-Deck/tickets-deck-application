@@ -1,4 +1,3 @@
-import { EventVisibility } from "../enums/IEventVisibility";
 import { OrderStatus } from "../enums/IOrderStatus";
 
 export interface SingleTicketOrderRequest {
@@ -22,11 +21,11 @@ export interface TicketOrderRequest {
 //#region Responses
 
 export interface TicketEventOrderResponse {
-    title: string;
-    venue: string;
-    date: string;
-    time: string;
-    mainImageUrl: string;
+  title: string;
+  venue: string;
+  date: string;
+  time: string;
+  mainImageUrl: string;
 }
 
 export interface TicketOrderResponse {
@@ -44,6 +43,13 @@ export interface TicketOrderResponse {
   event: TicketEventOrderResponse;
 }
 
+interface UserTicketOrderResponse {
+  contactEmail: string | null;
+  contactFirstName: string | null;
+  contactLastName: string | null;
+  contactNumber: string | null;
+}
+
 export interface UserTicketOrder {
   id: string;
   ticketId: string;
@@ -56,6 +62,7 @@ export interface UserTicketOrder {
   createdAt: string;
   updatedAt: string;
   ticket: TicketOrderResponse;
+  order: UserTicketOrderResponse;
 }
 
 //#endregion

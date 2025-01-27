@@ -5,6 +5,7 @@ import { accountCreationTemplate } from "./templates/accountCreation";
 import { ticketOrderTemplate } from "./templates/ticketOrder";
 import { verifyEmailTemplate } from "./templates/verifyAccount";
 import { htmlToPlainText } from "@/utils/convertHtmlToText";
+import { newTicketPurchaseToOrganizerTemplate } from "./templates/newTicketPurchaseToOrganizer";
 
 type Mail = {
   to: string;
@@ -12,7 +13,7 @@ type Mail = {
   subject: string;
   body: string;
   bcc?: string;
-  attachments?: { filename: string; content: Buffer | string; }[];
+  attachments?: { filename: string; content: Buffer | string }[];
 };
 
 export async function sendMail({
@@ -119,6 +120,36 @@ export function compileTicketOrderTemplate(eventInfo: {
   });
   //   const htmlBody = '<p>Here is your QR code:</p><img src="' + eventInfo.qrImage + '" alt="QR Code">';
 
+  return htmlBody;
+}
+
+export function compileNewTicketPurchaseTemplate(ticketPurchaseInfo: {
+  title: string;
+  image: string;
+  ticketType: string;
+  eventName: string;
+  quantity: number;
+  amountPaid: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  eventPageUrl: string;
+}) {
+  const template = handlebars.compile(newTicketPurchaseToOrganizerTemplate);
+
+  const htmlBody = template({
+    eventTitle: ticketPurchaseInfo.title,
+    eventImage: ticketPurchaseInfo.image,
+    ticketType: ticketPurchaseInfo.ticketType,
+    eventName: ticketPurchaseInfo.eventName,
+    quantity: ticketPurchaseInfo.quantity,
+    amountPaid: ticketPurchaseInfo.amountPaid,
+    customerName: ticketPurchaseInfo.customerName,
+    customerEmail: ticketPurchaseInfo.customerEmail,
+    customerPhone: ticketPurchaseInfo.customerPhone,
+    eventPageUrl: ticketPurchaseInfo.eventPageUrl,
+  });
+  
   return htmlBody;
 }
 

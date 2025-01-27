@@ -194,6 +194,7 @@ export async function fetchTicketsSoldForEvent(req: NextRequest) {
       ticket: {
         select: {
           name: true,
+          price: true,
           event: {
             select: {
               title: true,
@@ -201,6 +202,14 @@ export async function fetchTicketsSoldForEvent(req: NextRequest) {
           },
         }, 
       },
+      order: {
+        select: {
+            contactEmail: true,
+            contactFirstName: true,
+            contactLastName: true,
+            contactNumber: true,
+        }
+      }
     },
     orderBy: {
       createdAt: "desc",

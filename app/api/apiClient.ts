@@ -25,7 +25,7 @@ export const API = axios.create({
   headers: {
     "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
     // "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-  },
+  }
 });
 
 export function useCreateNewsletterSubscriber() {
@@ -464,9 +464,7 @@ export function useFetchUserWalletBalance() {
 
 export function useInitiateWitdrawal() {
   async function initiateWitdrawal(userId: string, amount: string) {
-    return API.post(
-      `${ApiRoutes.UserWallet}?userId=${userId}&amount=${amount}`
-    );
+    return API.post(`${ApiRoutes.UserWallet}?userId=${userId}&amount=${amount}`);
   }
 
   return initiateWitdrawal;
