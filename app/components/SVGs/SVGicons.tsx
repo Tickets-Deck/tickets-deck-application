@@ -771,9 +771,10 @@ export function InfoIcon({ width, height, stroke, className }: any) {
   );
 }
 
-export function LocationPinIcon({ width, height }: any) {
+export function LocationPinIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='21'
       height='21'
       viewBox='0 0 21 21'
@@ -788,9 +789,10 @@ export function LocationPinIcon({ width, height }: any) {
   );
 }
 
-export function ShareIcon({ width, height }: any) {
+export function ShareIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='19'
       height='19'
       viewBox='0 0 19 19'
@@ -805,9 +807,10 @@ export function ShareIcon({ width, height }: any) {
   );
 }
 
-export function HorizontalLineIcon({ width, height }: any) {
+export function HorizontalLineIcon({ width, height, className }: any) {
   return (
     <svg
+      className={className}
       width='323'
       height='2'
       viewBox='0 0 323 2'
@@ -827,7 +830,7 @@ export function HorizontalLineIcon({ width, height }: any) {
   );
 }
 
-export function LikeIcon({ width, height, isLiked }: any) {
+export function LikeIcon({ width, height, isLiked, className }: any) {
   return (
     <>
       {/* {isLiked ?
@@ -843,6 +846,7 @@ export function LikeIcon({ width, height, isLiked }: any) {
       <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 16 16'
+        className={className}
         width='32'
         height='32'
       >
