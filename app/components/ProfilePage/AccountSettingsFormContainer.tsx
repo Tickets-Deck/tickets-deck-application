@@ -1,40 +1,54 @@
-import { ReactElement, FunctionComponent, Dispatch, SetStateAction, useState } from "react";
+import {
+  ReactElement,
+  FunctionComponent,
+  Dispatch,
+  SetStateAction,
+  useState,
+} from "react";
 import styles from "../../styles/ProfilePage.module.scss";
 import { UserCredentialsResponse } from "@/app/models/IUser";
 
 interface AccountSettingsFormContainerProps {
-    userInformation: UserCredentialsResponse | undefined;
-    retrievedUserInformation: UserCredentialsResponse | undefined;
-    setRetrievedUserInformation: Dispatch<SetStateAction<UserCredentialsResponse | undefined>>
-    isFormFieldsEditable: boolean
-    emailErrorMsg: boolean
-    setTriggerInfoUpdate: Dispatch<SetStateAction<boolean>>
+  userInformation: UserCredentialsResponse | undefined;
+  retrievedUserInformation: UserCredentialsResponse | undefined;
+  setRetrievedUserInformation: Dispatch<
+    SetStateAction<UserCredentialsResponse | undefined>
+  >;
+  isFormFieldsEditable: boolean;
+  emailErrorMsg: boolean;
+  setTriggerInfoUpdate: Dispatch<SetStateAction<boolean>>;
 }
 
-const AccountSettingsFormContainer: FunctionComponent<AccountSettingsFormContainerProps> = (
-    { userInformation, retrievedUserInformation, setRetrievedUserInformation,
-        isFormFieldsEditable, emailErrorMsg, setTriggerInfoUpdate }): ReactElement => {
+const AccountSettingsFormContainer: FunctionComponent<
+  AccountSettingsFormContainerProps
+> = ({
+  userInformation,
+  retrievedUserInformation,
+  setRetrievedUserInformation,
+  isFormFieldsEditable,
+  emailErrorMsg,
+  setTriggerInfoUpdate,
+}): ReactElement => {
+  const [isFacebookUrlValid, setIsFacebookUrlValid] = useState<boolean>();
+  const [isTwitterUrlValid, setIsTwitterUrlValid] = useState<boolean>();
+  const [isInstagramUrlValid, setIsInstagramUrlValid] = useState<boolean>();
 
-    const [isFacebookUrlValid, setIsFacebookUrlValid] = useState<boolean>();
-    const [isTwitterUrlValid, setIsTwitterUrlValid] = useState<boolean>();
-    const [isInstagramUrlValid, setIsInstagramUrlValid] = useState<boolean>();
+  /**
+   * Function to handle creating an event for the key down event on the input fields
+   * @param e is the event object
+   */
+  function createEventKeyDownHandler(e: React.KeyboardEvent<HTMLInputElement>) {
+    // Check if user pressed the shift + enter keys
+    // if (e.keyCode === 13 && e.shiftKey) {
+    //     console.log('Shift + Enter pressed');
+    //     return;
+    // }
+    if (e.keyCode === 13 && e.ctrlKey) {
+      setTriggerInfoUpdate(true);
+    }
+  }
 
-    /**
-     * Function to handle creating an event for the key down event on the input fields
-     * @param e is the event object
-     */
-    function createEventKeyDownHandler(e: React.KeyboardEvent<HTMLInputElement>) {
-        // Check if user pressed the shift + enter keys
-        // if (e.keyCode === 13 && e.shiftKey) {
-        //     console.log('Shift + Enter pressed');
-        //     return;
-        // }
-        if (e.keyCode === 13 && e.ctrlKey) {
-            setTriggerInfoUpdate(true);
-        }
-    };
-
-    /**
+  /**
      * Function to validate a facebook url
     @summary ^: Asserts the start of the string.
     @summary (https?:\/\/)?: Matches the protocol part of the URL (e.g., "http://" or "https://"), where:
@@ -60,176 +74,243 @@ const AccountSettingsFormContainer: FunctionComponent<AccountSettingsFormContain
      * @param url is the url to be validated
      * @returns true if the url is valid, false otherwise
      */
-    function validateFacebookUrl(url: string): boolean {
-        const facebookRegex = /^(https?:\/\/)?(www\.)?facebook.com\/[a-zA-Z0-9(\.\?)?]/;
-        return facebookRegex.test(url);
-    }
+  function validateFacebookUrl(url: string): boolean {
+    const facebookRegex =
+      /^(https?:\/\/)?(www\.)?facebook.com\/[a-zA-Z0-9(\.\?)?]/;
+    return facebookRegex.test(url);
+  }
 
-    function validateTwitterUrl(url: string): boolean {
-        const twitterRegex = /^(https?:\/\/)?(www\.)?twitter.com\/[a-zA-Z0-9_]+\/?$/;
-        return twitterRegex.test(url);
-    }
+  function validateTwitterUrl(url: string): boolean {
+    const twitterRegex =
+      /^(https?:\/\/)?(www\.)?twitter.com\/[a-zA-Z0-9_]+\/?$/;
+    return twitterRegex.test(url);
+  }
 
-    function validateInstagramUrl(url: string): boolean {
-        const instagramRegex = /^(https?:\/\/)?(www\.)?instagram.com\/[a-zA-Z0-9_]+\/?$/;
-        return instagramRegex.test(url);
-    }
+  function validateInstagramUrl(url: string): boolean {
+    const instagramRegex =
+      /^(https?:\/\/)?(www\.)?instagram.com\/[a-zA-Z0-9_]+\/?$/;
+    return instagramRegex.test(url);
+  }
 
-    return (
-        <div className={styles.accountSettingsFormContainer}>
-            <div className={styles.formRow}>
-                <div className={styles.formField}>
-                    <label htmlFor="firstname">First name</label>
-                    <input
-                        type="text"
-                        name="firstname"
-                        value={retrievedUserInformation?.firstName}
-                        // defaultValue={userInformation?.firstName}
-                        placeholder="Enter first name"
-                        onChange={(e) => { setRetrievedUserInformation({ ...retrievedUserInformation as UserCredentialsResponse, firstName: e.target.value }) }}
-                        disabled={!isFormFieldsEditable}
-                        onKeyDown={(e) => createEventKeyDownHandler(e)}
-                    />
-                    {/* {true && <span className={styles.errorMsg}>Please enter your first name</span>} */}
-                </div>
-                <div className={styles.formField}>
-                    <label htmlFor="lastname">Last name</label>
-                    <input
-                        type="text"
-                        name="lastname"
-                        value={retrievedUserInformation?.lastName}
-                        // defaultValue={userInformation?.lastName}
-                        placeholder="Enter last name"
-                        onChange={(e) => { setRetrievedUserInformation({ ...retrievedUserInformation as UserCredentialsResponse, lastName: e.target.value }) }}
-                        disabled={!isFormFieldsEditable}
-                        onKeyDown={(e) => createEventKeyDownHandler(e)}
-                    />
-                    {/* {true && <span className={styles.errorMsg}>Please enter your last name</span>} */}
-                </div>
-            </div>
-            <div className={styles.formRow}>
-                <div className={styles.formField}>
-                    <label htmlFor="firstname">Email address</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={retrievedUserInformation?.email}
-                        // defaultValue={userInformation?.email}
-                        placeholder="Enter email address"
-                        onChange={(e) => { setRetrievedUserInformation({ ...retrievedUserInformation as UserCredentialsResponse, email: e.target.value }) }}
-                        disabled={!isFormFieldsEditable}
-                        onKeyDown={(e) => createEventKeyDownHandler(e)}
-                    />
-                    {emailErrorMsg && <span className={styles.errorMsg}>Email address already exists</span>}
-                </div>
-                <div className={styles.formField}>
-                    <label htmlFor="phone">Phone number</label>
-                    <input
-                        type="text"
-                        name="phone"
-                        value={retrievedUserInformation?.phone}
-                        placeholder="Enter phone number"
-                        onChange={(e) => {
-                            // if(phoneNumberRegex.test(e.target.value) != true) {
-                            //     return;
-                            // }
-                            // if(!Number(e.target.value)) {
-                            //     return;
-                            // }
-                            // if(!isNaN(Number(e.currentTarget.value))) {
-                            //     return; 
-                            // }
-                            setRetrievedUserInformation({ ...retrievedUserInformation as UserCredentialsResponse, phone: e.target.value })
-                        }}
-                        onKeyDown={(e) => createEventKeyDownHandler(e)}
-                        disabled={!isFormFieldsEditable}
-                    />
-                    {/* {true && <span className={styles.errorMsg}>Please enter your last name</span>} */}
-                </div>
-            </div>
-            <br />
-            <div className={styles.formRow}>
-                <div className={styles.formField}>
-                    <label htmlFor="facebookUrl">Facebook Url</label>
-                    <input
-                        type="text"
-                        name="facebookUrl"
-                        value={retrievedUserInformation?.facebookUrl}
-                        placeholder="Enter link to your Facebook profile"
-                        onChange={(e) => {
-                            setRetrievedUserInformation({ ...retrievedUserInformation as UserCredentialsResponse, facebookUrl: e.target.value })
-                        }}
-                        onKeyUp={(e) => {
-                            if (e.currentTarget.value === '') {
-                                setIsFacebookUrlValid(true);
-                                return;
-                            }
-                            if (!validateFacebookUrl(e.currentTarget.value)) {
-                                setIsFacebookUrlValid(false);
-                                return;
-                            }
-                            setIsFacebookUrlValid(true);
-                        }}
-                        disabled={!isFormFieldsEditable}
-                        onKeyDown={(e) => createEventKeyDownHandler(e)}
-                    />
-                    {isFacebookUrlValid === false && <span className={styles.errorMsg}>Please input a valid facebook url</span>}
-                </div>
-                <div className={styles.formField}>
-                    <label htmlFor="twitterUrl">Twitter Url</label>
-                    <input
-                        type="text"
-                        name="twitterUrl"
-                        value={retrievedUserInformation?.twitterUrl}
-                        placeholder="Enter link to your Twitter profile"
-                        onChange={(e) => {
-                            setRetrievedUserInformation({ ...retrievedUserInformation as UserCredentialsResponse, twitterUrl: e.target.value })
-                        }}
-                        onKeyUp={(e) => {
-                            if (e.currentTarget.value === '') {
-                                setIsTwitterUrlValid(true);
-                                return;
-                            }
-                            if (!validateTwitterUrl(e.currentTarget.value)) {
-                                setIsTwitterUrlValid(false);
-                                return;
-                            }
-                            setIsTwitterUrlValid(true);
-                        }}
-                        disabled={!isFormFieldsEditable}
-                        onKeyDown={(e) => createEventKeyDownHandler(e)}
-                    />
-                    {(isTwitterUrlValid === false) && <span className={styles.errorMsg}>Please input a valid twitter url</span>}
-                </div>
-            </div>
-            <div className={styles.formField}>
-                <label htmlFor="instagramUrl">Instagram Url</label>
-                <input
-                    type="text"
-                    name="instagramUrl"
-                    value={retrievedUserInformation?.instagramUrl}
-                    placeholder="Enter link to your Instagram profile"
-                    onChange={(e) => {
-                        setRetrievedUserInformation({ ...retrievedUserInformation as UserCredentialsResponse, instagramUrl: e.target.value })
-                    }}
-                    onKeyUp={(e) => {
-                        if (e.currentTarget.value === '') {
-                            setIsInstagramUrlValid(true);
-                            return;
-                        }
-                        if (!validateInstagramUrl(e.currentTarget.value)) {
-                            setIsInstagramUrlValid(false);
-                            return;
-                        }
-                        setIsInstagramUrlValid(true);
-                    }}
-                    disabled={!isFormFieldsEditable}
-                    onKeyDown={(e) => createEventKeyDownHandler(e)}
-                />
-                {(isInstagramUrlValid === false) && <span className={styles.errorMsg}>Please input a valid instagram url</span>}
-            </div>
+  return (
+    <div className='flex flex-col gap-4'>
+      <div className='flex-col gap-4 md:flex-row md:gap-6'>
+        <div className='w-full flex flex-col gap-1 relative'>
+          <label htmlFor='firstname' className='text-sm text-dark-grey'>
+            First name
+          </label>
+          <input
+            type='text'
+            className='input !rounded-lg !w-full bg-dark-grey/10 !text-sm disabled:opacity-65 !text-dark-grey'
+            name='firstname'
+            value={retrievedUserInformation?.firstName}
+            // defaultValue={userInformation?.firstName}
+            placeholder='Enter first name'
+            onChange={(e) => {
+              setRetrievedUserInformation({
+                ...(retrievedUserInformation as UserCredentialsResponse),
+                firstName: e.target.value,
+              });
+            }}
+            disabled={!isFormFieldsEditable}
+            onKeyDown={(e) => createEventKeyDownHandler(e)}
+          />
+          {/* {true && <span className={styles.errorMsg}>Please enter your first name</span>} */}
         </div>
-    );
-}
+        <div className='w-full flex flex-col gap-1 relative'>
+          <label className='text-sm text-dark-grey' htmlFor='lastname'>
+            Last name
+          </label>
+          <input
+            type='text'
+            name='lastname'
+            className='input !rounded-lg !w-full bg-dark-grey/10 !text-sm disabled:opacity-65 !text-dark-grey'
+            value={retrievedUserInformation?.lastName}
+            // defaultValue={userInformation?.lastName}
+            placeholder='Enter last name'
+            onChange={(e) => {
+              setRetrievedUserInformation({
+                ...(retrievedUserInformation as UserCredentialsResponse),
+                lastName: e.target.value,
+              });
+            }}
+            disabled={!isFormFieldsEditable}
+            onKeyDown={(e) => createEventKeyDownHandler(e)}
+          />
+          {/* {true && <span className={styles.errorMsg}>Please enter your last name</span>} */}
+        </div>
+      </div>
+      <div className='flex-col gap-4 md:flex-row md:gap-6'>
+        <div className='w-full flex flex-col gap-1 relative'>
+          <label htmlFor='firstname' className='text-sm text-dark-grey'>
+            Email address
+          </label>
+          <input
+            type='email'
+            name='email'
+            className='input !rounded-lg !w-full bg-dark-grey/10 !text-sm disabled:opacity-65 !text-dark-grey'
+            value={retrievedUserInformation?.email}
+            // defaultValue={userInformation?.email}
+            placeholder='Enter email address'
+            onChange={(e) => {
+              setRetrievedUserInformation({
+                ...(retrievedUserInformation as UserCredentialsResponse),
+                email: e.target.value,
+              });
+            }}
+            disabled={!isFormFieldsEditable}
+            onKeyDown={(e) => createEventKeyDownHandler(e)}
+          />
+          {emailErrorMsg && (
+            <span className='text-sm text-failed-color'>
+              Email address already exists
+            </span>
+          )}
+        </div>
+        <div className='w-full flex flex-col gap-1 relative'>
+          <label className='text-sm text-dark-grey' htmlFor='phone'>
+            Phone number
+          </label>
+          <input
+            type='text'
+            name='phone'
+            className='input !rounded-lg !w-full bg-dark-grey/10 !text-sm disabled:opacity-65 !text-dark-grey'
+            value={retrievedUserInformation?.phone}
+            placeholder='Enter phone number'
+            onChange={(e) => {
+              // if(phoneNumberRegex.test(e.target.value) != true) {
+              //     return;
+              // }
+              // if(!Number(e.target.value)) {
+              //     return;
+              // }
+              // if(!isNaN(Number(e.currentTarget.value))) {
+              //     return;
+              // }
+              setRetrievedUserInformation({
+                ...(retrievedUserInformation as UserCredentialsResponse),
+                phone: e.target.value,
+              });
+            }}
+            onKeyDown={(e) => createEventKeyDownHandler(e)}
+            disabled={!isFormFieldsEditable}
+          />
+          {/* {true && <span className={styles.errorMsg}>Please enter your last name</span>} */}
+        </div>
+      </div>
+      <br />
+      <div className='flex-col gap-4 md:flex-row md:gap-6'>
+        <div className='w-full flex flex-col gap-1 relative'>
+          <label className='text-sm text-dark-grey' htmlFor='facebookUrl'>
+            Facebook Url
+          </label>
+          <input
+            type='text'
+            name='facebookUrl'
+            className='input !rounded-lg !w-full bg-dark-grey/10 !text-sm disabled:opacity-65 !text-dark-grey'
+            value={retrievedUserInformation?.facebookUrl}
+            placeholder='Enter link to your Facebook profile'
+            onChange={(e) => {
+              setRetrievedUserInformation({
+                ...(retrievedUserInformation as UserCredentialsResponse),
+                facebookUrl: e.target.value,
+              });
+            }}
+            onKeyUp={(e) => {
+              if (e.currentTarget.value === "") {
+                setIsFacebookUrlValid(true);
+                return;
+              }
+              if (!validateFacebookUrl(e.currentTarget.value)) {
+                setIsFacebookUrlValid(false);
+                return;
+              }
+              setIsFacebookUrlValid(true);
+            }}
+            disabled={!isFormFieldsEditable}
+            onKeyDown={(e) => createEventKeyDownHandler(e)}
+          />
+          {isFacebookUrlValid === false && (
+            <span className='text-sm text-failed-color'>
+              Please input a valid facebook url
+            </span>
+          )}
+        </div>
+        <div className='w-full flex flex-col gap-1 relative'>
+          <label className='text-sm text-dark-grey' htmlFor='twitterUrl'>
+            Twitter Url
+          </label>
+          <input
+            type='text'
+            name='twitterUrl'
+            className='input !rounded-lg !w-full bg-dark-grey/10 !text-sm disabled:opacity-65 !text-dark-grey'
+            value={retrievedUserInformation?.twitterUrl}
+            placeholder='Enter link to your Twitter profile'
+            onChange={(e) => {
+              setRetrievedUserInformation({
+                ...(retrievedUserInformation as UserCredentialsResponse),
+                twitterUrl: e.target.value,
+              });
+            }}
+            onKeyUp={(e) => {
+              if (e.currentTarget.value === "") {
+                setIsTwitterUrlValid(true);
+                return;
+              }
+              if (!validateTwitterUrl(e.currentTarget.value)) {
+                setIsTwitterUrlValid(false);
+                return;
+              }
+              setIsTwitterUrlValid(true);
+            }}
+            disabled={!isFormFieldsEditable}
+            onKeyDown={(e) => createEventKeyDownHandler(e)}
+          />
+          {isTwitterUrlValid === false && (
+            <span className='text-sm text-failed-color'>
+              Please input a valid twitter url
+            </span>
+          )}
+        </div>
+      </div>
+      <div className='w-full flex flex-col gap-1 relative'>
+        <label className='text-sm text-dark-grey' htmlFor='instagramUrl'>
+          Instagram Url
+        </label>
+        <input
+          type='text'
+          name='instagramUrl'
+          className='input !rounded-lg !w-full bg-dark-grey/10 !text-sm disabled:opacity-65 !text-dark-grey'
+          value={retrievedUserInformation?.instagramUrl}
+          placeholder='Enter link to your Instagram profile'
+          onChange={(e) => {
+            setRetrievedUserInformation({
+              ...(retrievedUserInformation as UserCredentialsResponse),
+              instagramUrl: e.target.value,
+            });
+          }}
+          onKeyUp={(e) => {
+            if (e.currentTarget.value === "") {
+              setIsInstagramUrlValid(true);
+              return;
+            }
+            if (!validateInstagramUrl(e.currentTarget.value)) {
+              setIsInstagramUrlValid(false);
+              return;
+            }
+            setIsInstagramUrlValid(true);
+          }}
+          disabled={!isFormFieldsEditable}
+          onKeyDown={(e) => createEventKeyDownHandler(e)}
+        />
+        {isInstagramUrlValid === false && (
+          <span className='text-sm text-failed-color'>
+            Please input a valid instagram url
+          </span>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default AccountSettingsFormContainer;

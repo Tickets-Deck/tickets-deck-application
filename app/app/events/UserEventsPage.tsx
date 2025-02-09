@@ -1,9 +1,12 @@
-"use client"
+"use client";
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import styles from "../../styles/Events.module.scss";
 import useResponsive from "../../hooks/useResponsiveness";
 import EventsGroup from "../../components/events/EventsGroup";
-import { useDeleteEvent, useFetchEventsByPublisherId } from "@/app/api/apiClient";
+import {
+  useDeleteEvent,
+  useFetchEventsByPublisherId,
+} from "@/app/api/apiClient";
 import { useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
 import { useRouter } from "next/navigation";
@@ -13,98 +16,99 @@ import { Session } from "next-auth";
 import { toast } from "sonner";
 
 interface UserEventsPageProps {
-    session: Session | null
+  session: Session | null;
 }
 
-const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({ session }): ReactElement => {
+const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({
+  session,
+}): ReactElement => {
+  const deleteEvent = useDeleteEvent();
+  const fetchEventsByPublisherId = useFetchEventsByPublisherId();
 
-    const deleteEvent = useDeleteEvent();
-    const fetchEventsByPublisherId = useFetchEventsByPublisherId();
+  const router = useRouter();
+  const windowRes = useResponsive();
+  // const { data: session } = useSession();
 
-    const router = useRouter();
-    const windowRes = useResponsive();
-    // const { data: session } = useSession();
+  const [isFetchingEvents, setIsFetchingEvents] = useState(true);
+  const [events, setEvents] = useState<EventResponse[]>();
+  const [selectedEvent, setSelectedEvent] = useState<EventResponse>();
+  const [
+    isDeleteConfirmationModalVisible,
+    setIsDeleteConfirmationModalVisible,
+  ] = useState(false);
+  const [isDeletingEvent, setIsDeletingEvent] = useState(false);
+  const [isEventDeleted, setIsEventDeleted] = useState(false);
 
-    const [isFetchingEvents, setIsFetchingEvents] = useState(true);
-    const [events, setEvents] = useState<EventResponse[]>();
-    const [selectedEvent, setSelectedEvent] = useState<EventResponse>();
-    const [isDeleteConfirmationModalVisible, setIsDeleteConfirmationModalVisible] = useState(false);
-    const [isDeletingEvent, setIsDeletingEvent] = useState(false);
-    const [isEventDeleted, setIsEventDeleted] = useState(false);
+  async function handleFetchEventsByPublisherId() {
+    // Reset events
+    setEvents(undefined);
 
-    async function handleFetchEventsByPublisherId() {
+    // Start fetching events
+    setIsFetchingEvents(true);
 
-        // Reset events
-        setEvents(undefined);
+    await fetchEventsByPublisherId(session?.user.id as string)
+      .then((response) => {
+        // Set events
+        setEvents(response.data);
+        // Reset event deleted state
+        setIsEventDeleted(false);
+      })
+      .catch((error) => {
+        catchError(error);
+      })
+      .finally(() => {
+        // Stop fetching events
+        setIsFetchingEvents(false);
+      });
+  }
 
-        // Start fetching events
-        setIsFetchingEvents(true);
+  async function handleDeleteEvent() {
+    // Start deleting event
+    setIsDeletingEvent(true);
 
-        await fetchEventsByPublisherId(session?.user.id as string)
-            .then((response) => {
-                // Set events
-                setEvents(response.data);
-                // Reset event deleted state
-                setIsEventDeleted(false);
-            })
-            .catch((error) => {
-                catchError(error);
-            })
-            .finally(() => {
-                // Stop fetching events
-                setIsFetchingEvents(false);
-            })
-    };
-
-    async function handleDeleteEvent() {
-
-        // Start deleting event
-        setIsDeletingEvent(true);
-
-        await deleteEvent(selectedEvent?.id as string)
-            .then((response) => {
-                // console.log(response);
-                // Fetch events again
-                handleFetchEventsByPublisherId();
-                // Set event deleted state
-                setIsEventDeleted(true);
-                // Close modal after deleting event
-                setIsDeleteConfirmationModalVisible(false);
-            })
-            .catch((error) => {
-                catchError(error);
-                toast.error("Failed to delete event. Please try again later.");
-            })
-            .finally(() => {
-                // Stop deleting event
-                setIsDeletingEvent(false);
-            })
-    }
-
-    useEffect(() => {
-        if (!session) {
-            router.push('/auth/signin');
-            return;
-        }
+    await deleteEvent(selectedEvent?.id as string)
+      .then((response) => {
+        // console.log(response);
+        // Fetch events again
         handleFetchEventsByPublisherId();
-    }, [session])
+        // Set event deleted state
+        setIsEventDeleted(true);
+        // Close modal after deleting event
+        setIsDeleteConfirmationModalVisible(false);
+      })
+      .catch((error) => {
+        catchError(error);
+        toast.error("Failed to delete event. Please try again later.");
+      })
+      .finally(() => {
+        // Stop deleting event
+        setIsDeletingEvent(false);
+      });
+  }
 
-    useEffect(() => {
-        if (isEventDeleted)
-            handleFetchEventsByPublisherId();
-    }, [isEventDeleted]);
+  useEffect(() => {
+    if (!session) {
+      router.push("/auth/signin");
+      return;
+    }
+    handleFetchEventsByPublisherId();
+  }, [session]);
 
-    return (
-        <div className={`${styles.allEventsPage} ${styles.allEventsPageConsole}`}>
-            <DeletionConfirmationModal
-                visibility={isDeleteConfirmationModalVisible}
-                setVisibility={setIsDeleteConfirmationModalVisible}
-                deleteFunction={handleDeleteEvent}
-                isLoading={isDeletingEvent}
-                actionText="Delete Event"
-            />
+  useEffect(() => {
+    if (isEventDeleted) handleFetchEventsByPublisherId();
+  }, [isEventDeleted]);
 
-            {/* <section className={styles.heroSection}>
+  return (
+    <div className={`text-white h-full`}>
+      <DeletionConfirmationModal
+        visibility={isDeleteConfirmationModalVisible}
+        setVisibility={setIsDeleteConfirmationModalVisible}
+        deleteFunction={handleDeleteEvent}
+        isLoading={isDeletingEvent}
+        actionText='Delete Event'
+      />
+
+      {/* <section className={styles.heroSection}>
                 <div className={styles.video}>
                     <video
                         autoPlay
@@ -118,19 +122,21 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({ session }): Re
                 </div>
             </section> */}
 
-            {/* <FeaturedEvents isNotHomepage /> */}
+      {/* <FeaturedEvents isNotHomepage /> */}
 
-            <EventsGroup
-                consoleDisplay
-                eventsData={events}
-                title="All Events"
-                subText="Below is a list of all your events."
-                isFetchingEvents={isFetchingEvents}
-                setIsDeleteConfirmationModalVisible={setIsDeleteConfirmationModalVisible}
-                setSelectedEvent={setSelectedEvent}
-            />
-        </div>
-    );
-}
+      <EventsGroup
+        consoleDisplay
+        eventsData={events}
+        title='All Events'
+        subText='Below is a list of all your events.'
+        isFetchingEvents={isFetchingEvents}
+        setIsDeleteConfirmationModalVisible={
+          setIsDeleteConfirmationModalVisible
+        }
+        setSelectedEvent={setSelectedEvent}
+      />
+    </div>
+  );
+};
 
 export default UserEventsPage;

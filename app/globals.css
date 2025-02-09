@@ -110,9 +110,87 @@ a {
   }
 }
 
+@layer base {
+  table {
+    @apply bg-white w-full border-collapse;
+  }
+
+  table th,
+  table td {
+    @apply border-dark-grey border-b text-left;
+  }
+
+  table th:first-child,
+  table td:first-child {
+    @apply pl-6 max-w-[140px] text-ellipsis overflow-hidden whitespace-nowrap;
+  }
+
+  table tr:last-child td {
+    @apply border-0;
+  }
+
+  table th {
+    @apply bg-gray-800 py-4 px-3 text-white text-sm font-normal;
+  }
+
+  table td {
+    @apply text-gray-500 text-sm py-3 px-[10px];
+  }
+
+  /* tags */
+  table .tag {
+    @apply bg-success-color text-white px-2 py-1 rounded-2xl text-xs w-fit;
+  }
+
+  table .pendingTag {
+    @apply tag bg-warning-color;
+  }
+
+  table .completedTag {
+    @apply tag bg-success-color;
+  }
+
+  table .cancelledTag {
+    @apply tag bg-failed-color;
+  }
+
+  table .initiatedTag {
+    @apply tag bg-premium;
+  }
+
+  /* actions dropdown */
+  table .actionsDropdownContainer {
+    @apply relative flex;
+  }
+
+  table .actionsDropdownContainer button {
+    @apply tertiaryButton !text-xs !px-1 !py-0.5 !mr-1;
+  }
+
+  table .actionsDropdownContainer span {
+    @apply w-6 h-6 grid place-items-center cursor-pointer rounded relative hover:opacity-65;
+  }
+
+  table .actionsDropdownContainer svg {
+    @apply w-[0.85rem] h-[0.85rem];
+  }
+
+  table .dropdownOptions {
+    @apply absolute top-8 right-1/2 h-fit bg-white border-2  border-black z-[3] [&_span]:p-2 flex flex-col w-[200px];
+  }
+
+  table .dropdownBtn {
+    @apply size-[26px] grid place-items-center cursor-pointer bg-dark-grey/[0.025] rounded-lg hover:bg-dark-grey/10 [&_svg_path]:fill-dark-grey;
+  }
+}
+
 @layer utilities {
   .navLink {
     @apply rounded-lg w-full flex justify-start items-center p-[0.8rem] my-0 mx-auto gap-2 [&_svg]:size-4;
+  }
+
+  .input {
+    @apply w-fit rounded-[3.125rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:bg-grey-bg;
   }
 
   .primaryButton {
@@ -125,6 +203,21 @@ a {
 
   .tertiaryButton {
     @apply w-fit rounded-[3.125rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-white text-dark-grey flex items-center gap-2 [&_svg]:text-white [&_svg]:w-3 [&_svg_path]:fill-white hover:opacity-60;
+  }
+
+  .tableConatiner {
+    @apply max-h-[65vh] overflow-y-auto rounded-2xl relative bg-container-grey;
+  }
+  .tableLoader {
+    @apply w-full h-[15vh] bg-grey-bg;
+  }
+
+  .tableInfoUnavailable {
+    @apply w-full min-w-full h-[15vh] relative col-span-2 bg-grey-bg;
+  }
+
+  .tableInfoUnavailable p {
+    @apply absolute m-auto opacity-80 whitespace-nowrap top-[40%] left-1/2 -translate-x-1/2 text-sm text-dark-grey;
   }
 }
 

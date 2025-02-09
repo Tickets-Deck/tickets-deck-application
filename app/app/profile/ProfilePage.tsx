@@ -1,13 +1,26 @@
-"use client"
-import { ReactElement, FunctionComponent, useContext, useState, useEffect } from "react";
-import styles from "../../styles/ProfilePage.module.scss"
+"use client";
+import {
+  ReactElement,
+  FunctionComponent,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
+import styles from "../../styles/ProfilePage.module.scss";
 import { ToastContext } from "@/app/extensions/toast";
 import { ProfilePageTab } from "@/app/enums/ProfilePageTab";
-import { useFetchUserBankAccount, useFetchUserInformation, useUpdateUserInformation } from "@/app/api/apiClient";
+import {
+  useFetchUserBankAccount,
+  useFetchUserInformation,
+  useUpdateUserInformation,
+} from "@/app/api/apiClient";
 import { useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
 import { useRouter } from "next/navigation";
-import { UserCredentialsResponse, UserCredentialsUpdateRequest } from "@/app/models/IUser";
+import {
+  UserCredentialsResponse,
+  UserCredentialsUpdateRequest,
+} from "@/app/models/IUser";
 import { AddIcon, EditIcon } from "@/app/components/SVGs/SVGicons";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import PhotoUpload from "@/app/components/Modal/PhotoUpload";
@@ -15,7 +28,7 @@ import UserAvatarContainer from "@/app/components/ProfilePage/UserAvatarContaine
 import UserNameUpdateContainer from "@/app/components/ProfilePage/UserNameUpdateContainer";
 import UserCoverContainer from "@/app/components/ProfilePage/UserCoverContainer";
 import AccountSettingsFormContainer from "@/app/components/ProfilePage/AccountSettingsFormContainer";
-import Link from "next/link"
+import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
@@ -24,314 +37,375 @@ import BankInformation from "@/app/components/ProfilePage/BankInformation";
 import BankAccountCreationModal from "@/app/components/Modal/BankAccountCreationModal";
 import { BankAccount } from "@/app/models/IBankAccount";
 
-interface ProfilePageProps {
-
-}
+interface ProfilePageProps {}
 
 const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
+  const { data: session, update, status } = useSession();
+  const fetchUserInformation = useFetchUserInformation();
+  const fetchUserBankAccount = useFetchUserBankAccount();
 
-    const { data: session, update, status } = useSession();
-    const fetchUserInformation = useFetchUserInformation();
-    const fetchUserBankAccount = useFetchUserBankAccount();
+  const toastHandler = useContext(ToastContext);
+  const { push, prefetch } = useRouter();
+  const updateUserInformation = useUpdateUserInformation();
 
-    const toastHandler = useContext(ToastContext);
-    const { push, prefetch } = useRouter();
-    const updateUserInformation = useUpdateUserInformation();
+  const windowRes = useResponsiveness();
+  const isMobile = windowRes.width && windowRes.width < 768;
+  const onMobile = typeof isMobile == "boolean" && isMobile;
+  const onDesktop = typeof isMobile == "boolean" && !isMobile;
 
-    const windowRes = useResponsiveness();
-    const isMobile = windowRes.width && windowRes.width < 768;
-    const onMobile = typeof (isMobile) == "boolean" && isMobile;
-    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
+  const [isUpdatingUserInformation, setIsUpdatingUserInformation] =
+    useState(false);
+  const [isFetchingUserBankAccounts, setIsFetchingUserBankAccounts] =
+    useState(true);
+  const [isFetchingUserInformation, setIsFetchingUserInformation] =
+    useState(true);
 
-    const [isUpdatingUserInformation, setIsUpdatingUserInformation] = useState(false);
-    const [isFetchingUserBankAccounts, setIsFetchingUserBankAccounts] = useState(true);
-    const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(true);
+  const [currentTab, setCurrentTab] = useState(ProfilePageTab.BasicInformation);
+  const [isFormFieldsEditable, setIsFormFieldsEditable] = useState(false);
+  const [userInformation, setUserInformation] =
+    useState<UserCredentialsResponse>();
+  const [userBankAccounts, setUserBankAccounts] = useState<BankAccount[]>();
+  const [retrievedUserInformation, setRetrievedUserInformation] =
+    useState<UserCredentialsResponse>();
 
-    const [currentTab, setCurrentTab] = useState(ProfilePageTab.BasicInformation);
-    const [isFormFieldsEditable, setIsFormFieldsEditable] = useState(false);
-    const [userInformation, setUserInformation] = useState<UserCredentialsResponse>();
-    const [userBankAccounts, setUserBankAccounts] = useState<BankAccount[]>();
-    const [retrievedUserInformation, setRetrievedUserInformation] = useState<UserCredentialsResponse>();
+  const [isPhotoUploadModalVisible, setIsPhotoUploadModalVisible] =
+    useState(false);
+  const [isBankAccountModalVisible, setIsBankAccountModalVisible] =
+    useState(false);
 
-    const [isPhotoUploadModalVisible, setIsPhotoUploadModalVisible] = useState(false);
-    const [isBankAccountModalVisible, setIsBankAccountModalVisible] = useState(false);
+  const [emailErrorMsg, setEmailErrorMsg] = useState(false);
+  const [triggerInfoUpdate, setTriggerInfoUpdate] = useState(false);
 
-    const [emailErrorMsg, setEmailErrorMsg] = useState(false);
-    const [triggerInfoUpdate, setTriggerInfoUpdate] = useState(false);
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
+  function showSuccessToast() {
+    toastHandler?.logSuccess("Success", "This is a success message");
+  }
 
-    function showSuccessToast() {
-        toastHandler?.logSuccess("Success", "This is a success message");
+  async function handleFetchUserInformation() {
+    // Show loading indicator
+    setIsFetchingUserInformation(true);
+
+    await fetchUserInformation(session?.user.id as string)
+      .then((response) => {
+        // Save to redux
+        dispatch(updateUserCredentials(response.data));
+        // console.log(response.data);
+        setUserInformation(response.data);
+      })
+      .catch((error) => {
+        // console.log(error);
+        catchError(error);
+      })
+      .finally(() => {
+        setIsFetchingUserInformation(false);
+      });
+  }
+
+  async function handleUpdateUserInformation() {
+    // Start loader
+    setIsUpdatingUserInformation(true);
+
+    const data: UserCredentialsUpdateRequest = {
+      email: retrievedUserInformation?.email || null,
+      firstName: retrievedUserInformation?.firstName || null,
+      lastName: retrievedUserInformation?.lastName || null,
+      phone: retrievedUserInformation?.phone || null,
+      facebookUrl: retrievedUserInformation?.facebookUrl || null,
+      instagramUrl: retrievedUserInformation?.instagramUrl || null,
+      twitterUrl: retrievedUserInformation?.twitterUrl || null,
     };
+    // console.log("🚀 ~ handleUpdateUserInformation ~ data:", data);
 
-    async function handleFetchUserInformation() {
+    // Update user information
+    await updateUserInformation(userInformation?.id as string, data)
+      .then(async (response) => {
+        // console.log(response);
 
-        // Show loading indicator
-        setIsFetchingUserInformation(true);
+        // Save to redux
+        dispatch(updateUserCredentials(response.data));
 
-        await fetchUserInformation(session?.user.id as string)
-            .then((response) => {
-                // Save to redux
-                dispatch(updateUserCredentials(response.data));
-                // console.log(response.data);
-                setUserInformation(response.data);
-            })
-            .catch((error) => {
-                // console.log(error);
-                catchError(error);
-            })
-            .finally(() => {
-                setIsFetchingUserInformation(false);
-            })
-    };
+        // Fetch user information again
+        await handleFetchUserInformation();
 
-    async function handleUpdateUserInformation() {
+        // Update the user's profile photo in the session
+        await update({
+          ...session,
+          user: {
+            ...session?.user,
+            name: `${response.data.firstName} ${response.data.lastName}`,
+            email: response.data.email,
+          },
+        });
 
-        // Start loader
-        setIsUpdatingUserInformation(true);
-
-        const data: UserCredentialsUpdateRequest = {
-            email: retrievedUserInformation?.email || null,
-            firstName: retrievedUserInformation?.firstName || null,
-            lastName: retrievedUserInformation?.lastName || null,
-            phone: retrievedUserInformation?.phone || null,
-            facebookUrl: retrievedUserInformation?.facebookUrl || null,
-            instagramUrl: retrievedUserInformation?.instagramUrl || null,
-            twitterUrl: retrievedUserInformation?.twitterUrl || null,
+        setIsUpdatingUserInformation(false);
+        setIsFormFieldsEditable(false);
+      })
+      .catch((error) => {
+        if (error.response.data.error == "Email is already taken") {
+          toastHandler?.logError("Error", "Email is already taken");
+          setEmailErrorMsg(true);
         }
-        // console.log("🚀 ~ handleUpdateUserInformation ~ data:", data);
+        catchError(error);
+        setIsUpdatingUserInformation(false);
+      });
+  }
 
-        // Update user information
-        await updateUserInformation(userInformation?.id as string, data)
-            .then(async (response) => {
-                // console.log(response);
+  async function handleFetchUserBankAccount() {
+    // Show loading indicator
+    setIsFetchingUserBankAccounts(true);
 
-                // Save to redux
-                dispatch(updateUserCredentials(response.data));
+    // Fetch user bank accounts
+    await fetchUserBankAccount(userInformation?.id as string)
+      .then((response) => {
+        setUserBankAccounts(response.data);
+      })
+      .catch((error) => {
+        catchError(error);
+      })
+      .finally(() => {
+        setIsFetchingUserBankAccounts(false);
+      });
+  }
 
-                // Fetch user information again
-                await handleFetchUserInformation();
+  useEffect(() => {
+    if (session && !userInformation) {
+      handleFetchUserInformation();
+    }
+  }, [session]);
 
-                // Update the user's profile photo in the session
-                await update({
-                    ...session,
-                    user: {
-                        ...session?.user,
-                        name: `${response.data.firstName} ${response.data.lastName}`,
-                        email: response.data.email,
-                    },
-                })
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      push(ApplicationRoutes.SignIn);
+    }
+  }, [status]);
 
-                setIsUpdatingUserInformation(false);
-                setIsFormFieldsEditable(false);
-            })
-            .catch((error) => {
-                if (error.response.data.error == "Email is already taken") {
-                    toastHandler?.logError("Error", "Email is already taken");
-                    setEmailErrorMsg(true);
-                }
-                catchError(error);
-                setIsUpdatingUserInformation(false);
-            })
-    };
+  useEffect(() => {
+    setRetrievedUserInformation(userInformation);
+    handleFetchUserBankAccount();
+  }, [userInformation]);
 
-    async function handleFetchUserBankAccount() {
-        // Show loading indicator
-        setIsFetchingUserBankAccounts(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setEmailErrorMsg(false);
+    }, 3000);
+  }, [emailErrorMsg]);
 
-        // Fetch user bank accounts
-        await fetchUserBankAccount(userInformation?.id as string)
-            .then((response) => {
-                setUserBankAccounts(response.data);
-            })
-            .catch((error) => {
-                catchError(error);
-            })
-            .finally(() => {
-                setIsFetchingUserBankAccounts(false);
-            })
-    };
+  useEffect(() => {
+    if (triggerInfoUpdate) {
+      handleUpdateUserInformation();
+    }
+  }, [triggerInfoUpdate]);
 
-    useEffect(() => {
-        if (session && !userInformation) {
-            handleFetchUserInformation();
-        }
-    }, [session]);
+  return (
+    <div className=''>
+      {userInformation && (
+        <>
+          {isPhotoUploadModalVisible && (
+            <PhotoUpload
+              visibility={isPhotoUploadModalVisible}
+              setVisibility={setIsPhotoUploadModalVisible}
+              handleFetchUserInformation={handleFetchUserInformation}
+            />
+          )}
+          <UserCoverContainer
+            userInformation={userInformation}
+            handleFetchUserInformation={handleFetchUserInformation}
+          />
+          <BankAccountCreationModal
+            visibility={isBankAccountModalVisible}
+            setVisibility={setIsBankAccountModalVisible}
+            handleFetchUserBankAccount={handleFetchUserBankAccount}
+          />
 
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            push(ApplicationRoutes.SignIn);
-        }
-    }, [status]);
-
-    useEffect(() => {
-        setRetrievedUserInformation(userInformation);
-        handleFetchUserBankAccount();
-    }, [userInformation]);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setEmailErrorMsg(false);
-        }, 3000);
-    }, [emailErrorMsg]);
-
-    useEffect(() => {
-        if (triggerInfoUpdate) {
-            handleUpdateUserInformation();
-        }
-    }, [triggerInfoUpdate]);
-
-    return (
-        <div className={styles.profilePage}>
-            {
-                userInformation &&
-                <>
-                    {
-                        isPhotoUploadModalVisible &&
-                        <PhotoUpload
-                            visibility={isPhotoUploadModalVisible}
-                            setVisibility={setIsPhotoUploadModalVisible}
-                            handleFetchUserInformation={handleFetchUserInformation}
-                        />
-                    }
-                    <UserCoverContainer
-                        userInformation={userInformation}
-                        handleFetchUserInformation={handleFetchUserInformation}
-                    />
-                    <BankAccountCreationModal
-                        visibility={isBankAccountModalVisible}
-                        setVisibility={setIsBankAccountModalVisible}
-                        handleFetchUserBankAccount={handleFetchUserBankAccount}
-                    />
-
-                    <div className={styles.profilePage__body}>
-                        <div className={styles.profileInfo}>
-                            <div className={styles.basicInfoSection}>
-                                <UserAvatarContainer
-                                    userInformation={userInformation}
-                                    setIsPhotoUploadModalVisible={setIsPhotoUploadModalVisible}
-                                />
-                                <div className={styles.userInfo}>
-                                    <h3>{`${userInformation?.firstName} ${userInformation?.lastName}`}</h3>
-                                    <UserNameUpdateContainer
-                                        userInformation={userInformation}
-                                        handleFetchUserInformation={handleFetchUserInformation}
-                                    />
-                                </div>
-                            </div>
-                            <div className={styles.stats}>
-                                <Link href={ApplicationRoutes.Events} className={styles.stat}>
-                                    <p>Events</p>
-                                    <span>{userInformation?.eventsCount}</span>
-                                </Link>
-                                <Link href={`${ApplicationRoutes.EventTickets}?t=1`} className={styles.stat}>
-                                    <p>Tickets Sold</p>
-                                    <span>{userInformation.ticketsSold}</span>
-                                </Link>
-                                <div className={styles.stat}>
-                                    <p className={styles.userLink}>
-                                        <Link target="_blank" href={`${window.location.origin}/u/${userInformation.username ?? userInformation.id}`}>
-                                            {`${window.location.origin}/${userInformation.username ?? userInformation.id}`}
-                                        </Link>
-                                    </p>
-                                    <span>&nbsp;</span>
-                                </div>
-                            </div>
-                            <div className={styles.accountAction}>
-                                <button>Change Password</button>
-                            </div>
-                        </div>
-                        <div className={styles.mainProfileInfo}>
-                            <div className={styles.optionSelectionContainer}>
-                                <span className={currentTab === ProfilePageTab.BasicInformation ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.BasicInformation)}>Basic Information</span>
-                                {/* <span className={currentTab === ProfilePageTab.IdentityVerification ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.IdentityVerification)}>Identity Verification</span> */}
-                                <span className={currentTab === ProfilePageTab.BankInformation ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.BankInformation)}>Bank Information</span>
-                                {
-                                    onDesktop &&
-                                    !isFormFieldsEditable &&
-                                    currentTab === ProfilePageTab.BasicInformation &&
-                                    <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}>
-                                        <EditIcon /> Edit Profile
-                                    </button>
-                                }
-                                {
-                                    onDesktop &&
-                                    (!userBankAccounts || userBankAccounts?.length == 0) &&
-                                    currentTab === ProfilePageTab.BankInformation &&
-                                    <button className={styles.editButton} onClick={() => setIsBankAccountModalVisible(true)}>
-                                        <AddIcon /> Add Bank Account
-                                    </button>
-                                }
-                            </div>
-                            <div className={styles.settingsFormContainer}>
-                                {
-                                    currentTab === ProfilePageTab.BasicInformation &&
-                                    <AccountSettingsFormContainer
-                                        userInformation={userInformation}
-                                        retrievedUserInformation={retrievedUserInformation}
-                                        setRetrievedUserInformation={setRetrievedUserInformation}
-                                        isFormFieldsEditable={isFormFieldsEditable}
-                                        emailErrorMsg={emailErrorMsg}
-                                        setTriggerInfoUpdate={setTriggerInfoUpdate}
-                                    />
-                                }
-                                {
-                                    currentTab === ProfilePageTab.BankInformation &&
-                                    <BankInformation
-                                        userBankAccounts={userBankAccounts}
-                                        isFetchingUserBankAccounts={isFetchingUserBankAccounts}
-                                    />
-                                }
-
-
-                                {
-                                    isFormFieldsEditable &&
-                                    <div className={styles.actionButtonContainer}>
-                                        <button
-                                            disabled={isUpdatingUserInformation}
-                                            onClick={handleUpdateUserInformation}>
-                                            {/* onClick={() => showSuccessToast()}> */}
-                                            Update
-                                            {isUpdatingUserInformation && <ComponentLoader isSmallLoader customBackground="#8133F1" lightTheme customLoaderColor="#fff" />}
-                                        </button>
-                                        <button
-                                            disabled={isUpdatingUserInformation}
-                                            onClick={() => setIsFormFieldsEditable(false)}>
-                                            Cancel
-                                        </button>
-                                    </div>
-                                }
-                                {
-                                    isMobile &&
-                                    !isFormFieldsEditable &&
-                                    currentTab === ProfilePageTab.BasicInformation &&
-                                    <button className={styles.editButton} onClick={() => { setIsFormFieldsEditable(true) }}>
-                                        <EditIcon /> Edit Profile
-                                    </button>
-                                }
-                                {
-                                    isMobile &&
-                                    (!userBankAccounts || userBankAccounts?.length == 0) &&
-                                    !isFormFieldsEditable &&
-                                    currentTab === ProfilePageTab.BankInformation &&
-                                    <button className={styles.editButton} onClick={() => { setIsBankAccountModalVisible(true) }}>
-                                        <AddIcon /> Add Bank Account
-                                    </button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </>
-            }
-            {
-                !userInformation && isFetchingUserInformation &&
-                <div className={styles.profilePage__loader}>
-                    <ComponentLoader customLoaderColor="#fff" />
+          <div className='md:py-6 md:px-8 translate-y-[-5rem] z-[3] flex gap-6 relative flex-col md:flex-row p-4'>
+            <div className='flex flex-col items-center gap-2 z-[3] text-dark-grey bg-white basis-full max-w-full md:basis-[30%] md:max-w-[30%] pb-4'>
+              <div className='w-full flex flex-col items-center gap-2 p-4'>
+                <UserAvatarContainer
+                  userInformation={userInformation}
+                  setIsPhotoUploadModalVisible={setIsPhotoUploadModalVisible}
+                />
+                <div className='flex flex-col items-center gap-[0.15rem]'>
+                  <h3 className='text-[20px] font-medium'>{`${userInformation?.firstName} ${userInformation?.lastName}`}</h3>
+                  <UserNameUpdateContainer
+                    userInformation={userInformation}
+                    handleFetchUserInformation={handleFetchUserInformation}
+                  />
                 </div>
-            }
+              </div>
+              <div className='w-full flex flex-col'>
+                <Link
+                  href={ApplicationRoutes.Events}
+                  className='flex items-center justify-between py-2 px-4 border-y border-dark-grey/10 cursor-pointer hover:bg-dark-grey/[0.035]'
+                >
+                  <p className='text-sm max-w-[85%] whitespace-nowrap overflow-hidden text-ellipsis'>
+                    Events
+                  </p>
+                  <span className='font-medium'>
+                    {userInformation?.eventsCount}
+                  </span>
+                </Link>
+                <Link
+                  href={`${ApplicationRoutes.EventTickets}?t=1`}
+                  className='flex items-center justify-between py-2 px-4 border-y border-dark-grey/10 cursor-pointer hover:bg-dark-grey/[0.035]'
+                >
+                  <p className='text-sm max-w-[85%] whitespace-nowrap overflow-hidden text-ellipsis'>
+                    Tickets Sold
+                  </p>
+                  <span className='font-medium'>
+                    {userInformation.ticketsSold}
+                  </span>
+                </Link>
+                <div className='flex items-center justify-between py-2 px-4 border-y border-dark-grey/10 cursor-pointer hover:bg-dark-grey/[0.035]'>
+                  <p className='text-primary-color text-xs'>
+                    <Link
+                      target='_blank'
+                      href={`${window.location.origin}/u/${
+                        userInformation.username ?? userInformation.id
+                      }`}
+                    >
+                      {`${window.location.origin}/${
+                        userInformation.username ?? userInformation.id
+                      }`}
+                    </Link>
+                  </p>
+                  <span className='font-medium'>&nbsp;</span>
+                </div>
+              </div>
+              <div className='w-full py-2 px-4'>
+                <button className='primaryButton !w-full justify-center !bg-failed-color hover:!text-white hover:!bg-[darken(#dc143c,_amount:_10%)]'>
+                  Change Password
+                </button>
+              </div>
+            </div>
+            <div className='z-[3] text-dark-grey bg-white basis-full md:basis-[70%] h-fit'>
+              <div className='w-full flex items-center max-[768px]:overflow-x-auto'>
+                <span
+                  className={
+                    currentTab === ProfilePageTab.BasicInformation
+                      ? "!border-primary-color !bg-dark-grey/[0.025] opacity-100 pointer-events-none"
+                      : ""
+                  }
+                  onClick={() => setCurrentTab(ProfilePageTab.BasicInformation)}
+                >
+                  Basic Information
+                </span>
+                {/* <span className={currentTab === ProfilePageTab.IdentityVerification ? styles.active : ""} onClick={() => setCurrentTab(ProfilePageTab.IdentityVerification)}>Identity Verification</span> */}
+                <span
+                  className={
+                    currentTab === ProfilePageTab.BankInformation
+                      ? "!border-primary-color !bg-dark-grey/[0.025] opacity-100 pointer-events-none"
+                      : ""
+                  }
+                  onClick={() => setCurrentTab(ProfilePageTab.BankInformation)}
+                >
+                  Bank Information
+                </span>
+                {onDesktop &&
+                  !isFormFieldsEditable &&
+                  currentTab === ProfilePageTab.BasicInformation && (
+                    <button
+                      className='tertiaryButton py-[0.4rem] px-[0.8rem] text-xs ml-auto gap-1 [&_svg_path]:fill-dark-grey'
+                      onClick={() => {
+                        setIsFormFieldsEditable(true);
+                      }}
+                    >
+                      <EditIcon /> Edit Profile
+                    </button>
+                  )}
+                {onDesktop &&
+                  (!userBankAccounts || userBankAccounts?.length == 0) &&
+                  currentTab === ProfilePageTab.BankInformation && (
+                    <button
+                      className='tertiaryButton py-[0.4rem] px-[0.8rem] text-xs ml-auto gap-1 [&_svg_path]:fill-dark-grey'
+                      onClick={() => setIsBankAccountModalVisible(true)}
+                    >
+                      <AddIcon /> Add Bank Account
+                    </button>
+                  )}
+              </div>
+              <div className='p-4'>
+                {currentTab === ProfilePageTab.BasicInformation && (
+                  <AccountSettingsFormContainer
+                    userInformation={userInformation}
+                    retrievedUserInformation={retrievedUserInformation}
+                    setRetrievedUserInformation={setRetrievedUserInformation}
+                    isFormFieldsEditable={isFormFieldsEditable}
+                    emailErrorMsg={emailErrorMsg}
+                    setTriggerInfoUpdate={setTriggerInfoUpdate}
+                  />
+                )}
+                {currentTab === ProfilePageTab.BankInformation && (
+                  <BankInformation
+                    userBankAccounts={userBankAccounts}
+                    isFetchingUserBankAccounts={isFetchingUserBankAccounts}
+                  />
+                )}
+
+                {isFormFieldsEditable && (
+                  <div className='flex justify-start gap-4 mt-8'>
+                    <button
+                      className='primaryButton hover:!bg-[darken(#8133f1,_amount:_10%)] !text-white'
+                      disabled={isUpdatingUserInformation}
+                      onClick={handleUpdateUserInformation}
+                    >
+                      {/* onClick={() => showSuccessToast()}> */}
+                      Update
+                      {isUpdatingUserInformation && (
+                        <ComponentLoader
+                          isSmallLoader
+                          customBackground='#8133F1'
+                          lightTheme
+                          customLoaderColor='#fff'
+                        />
+                      )}
+                    </button>
+                    <button
+                      className='tertiaryButton'
+                      disabled={isUpdatingUserInformation}
+                      onClick={() => setIsFormFieldsEditable(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+                {isMobile &&
+                  !isFormFieldsEditable &&
+                  currentTab === ProfilePageTab.BasicInformation && (
+                    <button
+                      className='tertiaryButton py-[0.4rem] px-[0.8rem] text-xs ml-auto gap-1 [&_svg_path]:fill-dark-grey'
+                      onClick={() => {
+                        setIsFormFieldsEditable(true);
+                      }}
+                    >
+                      <EditIcon /> Edit Profile
+                    </button>
+                  )}
+                {isMobile &&
+                  (!userBankAccounts || userBankAccounts?.length == 0) &&
+                  !isFormFieldsEditable &&
+                  currentTab === ProfilePageTab.BankInformation && (
+                    <button
+                      className='tertiaryButton py-[0.4rem] px-[0.8rem] text-xs ml-auto gap-1 [&_svg_path]:fill-dark-grey'
+                      onClick={() => {
+                        setIsBankAccountModalVisible(true);
+                      }}
+                    >
+                      <AddIcon /> Add Bank Account
+                    </button>
+                  )}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      {!userInformation && isFetchingUserInformation && (
+        <div className='md:h-[40vh] grid place-items-center h-[calc(100vh-50px)]'>
+          <ComponentLoader customLoaderColor='#fff' />
         </div>
-    );
-}
+      )}
+    </div>
+  );
+};
 
 export default ProfilePage;

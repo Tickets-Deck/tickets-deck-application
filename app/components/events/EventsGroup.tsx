@@ -6,7 +6,7 @@ import {
 } from "react";
 import Image from "next/image";
 import images from "../../../public/images";
-import styles from "../../styles/EventGroupSection.module.scss";
+// import styles from "../../styles/EventGroupSection.module.scss";
 import EventCard from "../Event/EventCard";
 import { useRouter } from "next/navigation";
 import { EventResponse } from "@/app/models/IEvents";

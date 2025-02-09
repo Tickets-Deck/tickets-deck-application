@@ -1,6 +1,12 @@
-"use client"
-import React, { FunctionComponent, ReactElement, useState, FormEvent, useEffect } from "react";
-import styles from '../../../styles/CreateEvent.module.scss';
+"use client";
+import React, {
+  FunctionComponent,
+  ReactElement,
+  useState,
+  FormEvent,
+  useEffect,
+} from "react";
+import styles from "../../../styles/CreateEvent.module.scss";
 import CreateEventProgressBar from "../../../components/shared/CreateEventProgressBar";
 import { CloseIcon } from "@/app/components/SVGs/SVGicons";
 import { EventRequest, EventResponse } from "@/app/models/IEvents";
@@ -15,229 +21,267 @@ import { useCreateEvent } from "@/app/api/apiClient";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
+import {
+  DefaultFormResponseStatus,
+  FormFieldResponse,
+} from "@/app/models/IFormField";
 import { StorageKeys } from "@/app/constants/storageKeys";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
-interface CreateEventProps {
-
-}
+interface CreateEventProps {}
 
 const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
+  const createEvent = useCreateEvent();
+  const { data: session } = useSession();
+  const { push } = useRouter();
 
-    const createEvent = useCreateEvent();
-    const { data: session } = useSession();
-    const { push } = useRouter();
+  const [eventCreationStage, setEventCreationStage] =
+    useState<EventCreationStage>(EventCreationStage.BasicInfo);
+  const [eventRequest, setEventRequest] = useState<EventRequest>();
+  const [isEventCreated, setIsEventCreated] = useState(false);
+  const [validationStage, setValidationStage] = useState<{
+    status: ValidationStatus;
+  }>();
 
-    const [eventCreationStage, setEventCreationStage] = useState<EventCreationStage>(EventCreationStage.BasicInfo);
-    const [eventRequest, setEventRequest] = useState<EventRequest>();
-    const [isEventCreated, setIsEventCreated] = useState(false);
-    const [validationStage, setValidationStage] = useState<{ status: ValidationStatus }>();
+  const [mainImageFile, setMainImageFile] = useState<File>();
+  const [mainImageUrl, setMainImageUrl] = useState<string>();
+  const [isUploadingMainImage, setIsUploadingMainImage] = useState(false);
+  const [imageValidationMessage, setImageValidationMessage] =
+    useState<FormFieldResponse>();
+  const [ticketValidationMessage, setTicketValidationMessage] =
+    useState<FormFieldResponse>();
+  const [disableAllTabs, setDisableAllTabs] = useState(false);
 
-    const [mainImageFile, setMainImageFile] = useState<File>();
-    const [mainImageUrl, setMainImageUrl] = useState<string>();
-    const [isUploadingMainImage, setIsUploadingMainImage] = useState(false);
-    const [imageValidationMessage, setImageValidationMessage] = useState<FormFieldResponse>();
-    const [ticketValidationMessage, setTicketValidationMessage] = useState<FormFieldResponse>();
-    const [disableAllTabs, setDisableAllTabs] = useState(false);
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
 
-    const [isCreatingEvent, setIsCreatingEvent] = useState(false);
+  function proceedToImageUpload() {
+    // Set the validation stage to running
+    setValidationStage({ status: ValidationStatus.Running });
 
-    function proceedToImageUpload() {
-
-        // Set the validation stage to running
-        setValidationStage({ status: ValidationStatus.Running });
-
-        // Set visibility to public if it is undefined
-        if (!eventRequest?.visibility) {
-            setEventRequest({ ...eventRequest as EventRequest, visibility: EventVisibility.PUBLIC });
-        }
-
-        // Update the event creation stage
-        // setEventCreationStage(EventCreationStage.ImageUpload);
-
-        // console.log(eventRequest);
-    };
-
-    function moveToNextStage(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-
-        switch (eventCreationStage) {
-            case EventCreationStage.BasicInfo:
-                proceedToImageUpload();
-                break;
-            case EventCreationStage.ImageUpload:
-                if (eventRequest?.mainImageUrl) {
-                    setEventRequest({ ...eventRequest as EventRequest, tickets: [] });
-                    setEventCreationStage(EventCreationStage.TicketDetails);
-                    break;
-                }
-                setImageValidationMessage({ message: "Please upload an image", status: DefaultFormResponseStatus.Failed });
-                break;
-            case EventCreationStage.TicketDetails:
-                if (eventRequest?.tickets?.length === 0) {
-                    setTicketValidationMessage({ message: "Please add at least one ticket", status: DefaultFormResponseStatus.Failed });
-                    break;
-                }
-                setEventCreationStage(EventCreationStage.Confirmation);
-                break;
-            case EventCreationStage.Confirmation:
-                setDisableAllTabs(true);
-                handleEventCreation();
-                break;
-        }
-    };
-
-    function removeTagFromFormRequest(selectedTag: string) {
-        // Write code to remove tag from form request 
-        const tags = eventRequest?.tags?.filter(tag => tag !== selectedTag);
-        if (!tags) {
-            setEventRequest({ ...eventRequest as EventRequest, tags: [] });
-            return;
-        };
-        setEventRequest({ ...eventRequest as EventRequest, tags: tags });
-    };
-
-    function persistNewlyCreatedEvent(event: EventResponse) {
-        // persist the newly created event to session storage
-        const newlyCreatedEvent = JSON.stringify(event);
-
-        // Save the event to session storage
-        sessionStorage.setItem(StorageKeys.NewlyCreatedEvent, newlyCreatedEvent);
+    // Set visibility to public if it is undefined
+    if (!eventRequest?.visibility) {
+      setEventRequest({
+        ...(eventRequest as EventRequest),
+        visibility: EventVisibility.PUBLIC,
+      });
     }
 
-    async function handleEventCreation() {
+    // Update the event creation stage
+    // setEventCreationStage(EventCreationStage.ImageUpload);
 
-        // Upload image to cloudinary
-        // const imageUrlResponse = await uploadImageToCloudinary(mainImageFile as File, setIsUploadingMainImage, cloudinaryImageUrl, setCloudinaryImageUrl)
+    // console.log(eventRequest);
+  }
 
-        // console.log('imageUrlResponse gotten1: ', imageUrlResponse);
-        // if (!imageUrlResponse) {
-        //     console.log("Error uploading image to cloudinary");
-        //     return;
-        // }
+  function moveToNextStage(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-        // console.log('imageUrlResponse gotten2: ', imageUrlResponse); 
+    switch (eventCreationStage) {
+      case EventCreationStage.BasicInfo:
+        proceedToImageUpload();
+        break;
+      case EventCreationStage.ImageUpload:
+        if (eventRequest?.mainImageUrl) {
+          setEventRequest({ ...(eventRequest as EventRequest), tickets: [] });
+          setEventCreationStage(EventCreationStage.TicketDetails);
+          break;
+        }
+        setImageValidationMessage({
+          message: "Please upload an image",
+          status: DefaultFormResponseStatus.Failed,
+        });
+        break;
+      case EventCreationStage.TicketDetails:
+        if (eventRequest?.tickets?.length === 0) {
+          setTicketValidationMessage({
+            message: "Please add at least one ticket",
+            status: DefaultFormResponseStatus.Failed,
+          });
+          break;
+        }
+        setEventCreationStage(EventCreationStage.Confirmation);
+        break;
+      case EventCreationStage.Confirmation:
+        setDisableAllTabs(true);
+        handleEventCreation();
+        break;
+    }
+  }
 
-        // Start loader
-        setIsCreatingEvent(true);
+  function removeTagFromFormRequest(selectedTag: string) {
+    // Write code to remove tag from form request
+    const tags = eventRequest?.tags?.filter((tag) => tag !== selectedTag);
+    if (!tags) {
+      setEventRequest({ ...(eventRequest as EventRequest), tags: [] });
+      return;
+    }
+    setEventRequest({ ...(eventRequest as EventRequest), tags: tags });
+  }
 
-        // console.log("🚀 ~ handleEventCreation ~ eventRequest:", eventRequest)
+  function persistNewlyCreatedEvent(event: EventResponse) {
+    // persist the newly created event to session storage
+    const newlyCreatedEvent = JSON.stringify(event);
 
-        // Create the event
-        await createEvent({ ...eventRequest as EventRequest })
-            .then((response) => {
-                // Update created event state
-                setIsEventCreated(true);
+    // Save the event to session storage
+    sessionStorage.setItem(StorageKeys.NewlyCreatedEvent, newlyCreatedEvent);
+  }
 
-                // log response
-                // console.log(response);
+  async function handleEventCreation() {
+    // Upload image to cloudinary
+    // const imageUrlResponse = await uploadImageToCloudinary(mainImageFile as File, setIsUploadingMainImage, cloudinaryImageUrl, setCloudinaryImageUrl)
 
-                // Persist the newly created event
-                persistNewlyCreatedEvent(response.data);
+    // console.log('imageUrlResponse gotten1: ', imageUrlResponse);
+    // if (!imageUrlResponse) {
+    //     console.log("Error uploading image to cloudinary");
+    //     return;
+    // }
 
-                // Clear the event request
-                // setEventRequest(undefined);
+    // console.log('imageUrlResponse gotten2: ', imageUrlResponse);
 
-                // Redirect to the event page
-                push(`${ApplicationRoutes.Event}/${response.data.id}`);
-            })
-            .catch((error) => {
-                // log error
-                // console.log(error);
-                // Stop loader
-                setIsCreatingEvent(false);
-            })
-        // .finally(() => {
-        // });
-    };
+    // Start loader
+    setIsCreatingEvent(true);
 
-    useEffect(() => {
-        setEventRequest({ ...eventRequest as EventRequest, publisherId: session?.user.id as string });
-    }, [session]);
+    // console.log("🚀 ~ handleEventCreation ~ eventRequest:", eventRequest)
 
+    // Create the event
+    await createEvent({ ...(eventRequest as EventRequest) })
+      .then((response) => {
+        // Update created event state
+        setIsEventCreated(true);
 
-    return (
-        <div className={styles.main}>
-            <div className={styles.topArea}>
-                <h3>Create Event</h3>
-                {/* <Link href={ApplicationRoutes.CreateEvent}>
+        // log response
+        // console.log(response);
+
+        // Persist the newly created event
+        persistNewlyCreatedEvent(response.data);
+
+        // Clear the event request
+        // setEventRequest(undefined);
+
+        // Redirect to the event page
+        push(`${ApplicationRoutes.Event}/${response.data.id}`);
+      })
+      .catch((error) => {
+        // log error
+        // console.log(error);
+        // Stop loader
+        setIsCreatingEvent(false);
+      });
+    // .finally(() => {
+    // });
+  }
+
+  useEffect(() => {
+    setEventRequest({
+      ...(eventRequest as EventRequest),
+      publisherId: session?.user.id as string,
+    });
+  }, [session]);
+
+  return (
+    <div className={"max-[768px]:size-screen"}>
+      <div className='flex items-center justify-between max-[768px]:p-4'>
+        <h3>Create Event</h3>
+        {/* <Link href={ApplicationRoutes.CreateEvent}>
                     <button>New Event</button>
                 </Link> */}
+      </div>
+
+      <CreateEventProgressBar
+        eventCreationStage={eventCreationStage}
+        setEventCreationStage={setEventCreationStage}
+        eventRequest={eventRequest}
+        disableAllTabs={disableAllTabs}
+      />
+
+      <form onSubmit={moveToNextStage}>
+        {eventCreationStage === EventCreationStage.BasicInfo && (
+          <BasicInformationForm
+            eventRequest={eventRequest}
+            setEventRequest={setEventRequest}
+            validationStage={validationStage}
+            setValidationStage={setValidationStage}
+            setEventCreationStage={setEventCreationStage}
+          />
+        )}
+
+        {eventCreationStage === EventCreationStage.ImageUpload && (
+          <ImageUploadSection
+            eventRequest={eventRequest}
+            setEventRequest={setEventRequest}
+            mainImageFile={mainImageFile}
+            setMainImageFile={setMainImageFile}
+            mainImageUrl={mainImageUrl}
+            setMainImageUrl={setMainImageUrl}
+            imageValidationMessage={imageValidationMessage}
+            setImageValidationMessage={setImageValidationMessage}
+          />
+        )}
+
+        {eventCreationStage === EventCreationStage.TicketDetails && (
+          <TicketDetailsSection
+            eventRequest={eventRequest}
+            setEventRequest={setEventRequest}
+            ticketValidationMessage={ticketValidationMessage}
+            setTicketValidationMessage={setTicketValidationMessage}
+          />
+        )}
+
+        {eventCreationStage === EventCreationStage.Confirmation && (
+          <ConfirmationSection
+            eventRequest={eventRequest}
+            setEventRequest={setEventRequest}
+            isEventCreated={isEventCreated}
+            mainImageUrl={mainImageUrl}
+            setEventCreationStage={setEventCreationStage}
+          />
+        )}
+
+        <div className='flelx justify-between w-full ml-auto gap-2'>
+          {eventCreationStage === EventCreationStage.BasicInfo && (
+            <div className='flex items-center gap-2'>
+              {eventRequest?.tags?.map((tag, index) => {
+                return (
+                  <span
+                    className='flex items-center gap-1 p-2 rounded-lg bg-white/10 text-sm text-white h-fit'
+                    key={index}
+                  >
+                    {tag}
+                    <span
+                      className='inline-flex size-4 rounded-full cursor-pointer hover:bg-white/15 [&:hover_svg_path]:stroke-white'
+                      onClick={() => removeTagFromFormRequest(tag)}
+                    >
+                      <CloseIcon />
+                    </span>
+                  </span>
+                );
+              })}
             </div>
-
-            <CreateEventProgressBar
-                eventCreationStage={eventCreationStage}
-                setEventCreationStage={setEventCreationStage}
-                eventRequest={eventRequest}
-                disableAllTabs={disableAllTabs}
-            />
-
-            <form onSubmit={moveToNextStage}>
-                {eventCreationStage === EventCreationStage.BasicInfo &&
-                    <BasicInformationForm
-                        eventRequest={eventRequest}
-                        setEventRequest={setEventRequest}
-                        validationStage={validationStage}
-                        setValidationStage={setValidationStage}
-                        setEventCreationStage={setEventCreationStage}
-                    />}
-
-                {eventCreationStage === EventCreationStage.ImageUpload &&
-                    <ImageUploadSection
-                        eventRequest={eventRequest}
-                        setEventRequest={setEventRequest}
-                        mainImageFile={mainImageFile}
-                        setMainImageFile={setMainImageFile}
-                        mainImageUrl={mainImageUrl}
-                        setMainImageUrl={setMainImageUrl}
-                        imageValidationMessage={imageValidationMessage}
-                        setImageValidationMessage={setImageValidationMessage}
-                    />}
-
-                {eventCreationStage === EventCreationStage.TicketDetails &&
-                    <TicketDetailsSection
-                        eventRequest={eventRequest}
-                        setEventRequest={setEventRequest}
-                        ticketValidationMessage={ticketValidationMessage}
-                        setTicketValidationMessage={setTicketValidationMessage}
-                    />
-                }
-
-                {eventCreationStage === EventCreationStage.Confirmation &&
-                    <ConfirmationSection
-                        eventRequest={eventRequest}
-                        setEventRequest={setEventRequest}
-                        isEventCreated={isEventCreated}
-                        mainImageUrl={mainImageUrl}
-                        setEventCreationStage={setEventCreationStage}
-                    />
-                }
-
-                <div className={styles.actionButtons}>
-                    {eventCreationStage === EventCreationStage.BasicInfo &&
-                        <div className={styles.tagSection}>
-                            {
-                                eventRequest?.tags?.map((tag, index) => {
-                                    return (
-                                        <span className={styles.tag} key={index}>
-                                            {tag}
-                                            <span onClick={() => removeTagFromFormRequest(tag)}><CloseIcon /></span>
-                                        </span>
-                                    )
-                                })
-                            }
-                        </div>
-                    }
-                    <button type="submit" disabled={isCreatingEvent || isUploadingMainImage}>
-                        {/* { 'Next'} */}
-                        {eventCreationStage === EventCreationStage.Confirmation ? isUploadingMainImage ? 'Uploading images' : isCreatingEvent ? 'Creating event' : 'Create Event' : 'Next'}
-                        {isCreatingEvent && <ComponentLoader isSmallLoader customBackground="#fff" customLoaderColor="#111111" />}
-                    </button>
-                </div>
-            </form>
+          )}
+          <button
+            className='primaryButton !py-[10px] !px-[20px] !ml-auto'
+            type='submit'
+            disabled={isCreatingEvent || isUploadingMainImage}
+          >
+            {/* { 'Next'} */}
+            {eventCreationStage === EventCreationStage.Confirmation
+              ? isUploadingMainImage
+                ? "Uploading images"
+                : isCreatingEvent
+                ? "Creating event"
+                : "Create Event"
+              : "Next"}
+            {isCreatingEvent && (
+              <ComponentLoader
+                isSmallLoader
+                customBackground='#fff'
+                customLoaderColor='#111111'
+              />
+            )}
+          </button>
         </div>
-    );
-}
+      </form>
+    </div>
+  );
+};
 
 export default CreateEvent;
