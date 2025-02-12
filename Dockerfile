@@ -5,14 +5,14 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 # Installing dependencies
 COPY package*.json /usr/src/app/
-COPY prisma ./prisma/
+# COPY prisma ./prisma/
 RUN npm install
 # Copying source files
 COPY . /usr/src/app
 # Building app
 RUN npm run build
 # 👇 copy prisma directory
-COPY --from=builder /app/prisma ./prisma
+# COPY --from=builder /app/prisma ./prisma
 EXPOSE 3000
 # Running the app
 # CMD "npm" "run" "start" - default

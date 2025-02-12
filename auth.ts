@@ -1,7 +1,6 @@
 import { compare } from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "./lib/prisma";
 import GoogleProvider from "next-auth/providers/google";
 import { compileAccountCreationTemplate, sendMail } from "./lib/mail";
 import { ApplicationRoutes } from "./app/constants/applicationRoutes";
@@ -31,20 +30,6 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials.password) {
           // Throw an error to display an error message
           throw new Error("Please provide email and password");
-        }
-
-        // Check if user exists in database checking each user's email if it matches the email provided
-        const user = await prisma.users.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        });
-
-        if (!user) {
-          // Throw an error to display an error message
-          throw new Error(
-            "User account not found. Please sign up, or check your email and try again."
-          );
         }
 
         // Check that password matches
