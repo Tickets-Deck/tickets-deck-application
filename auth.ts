@@ -2,7 +2,6 @@ import { compare } from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { compileAccountCreationTemplate, sendMail } from "./lib/mail";
 import { ApplicationRoutes } from "./app/constants/applicationRoutes";
 import { StorageKeys } from "./app/constants/storageKeys";
 
