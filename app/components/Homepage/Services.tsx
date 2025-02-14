@@ -1,6 +1,5 @@
 "use client";
 import { FunctionComponent, ReactElement, useEffect } from "react";
-import styles from "../../styles/Home.module.scss";
 import {
   CreateEventsIcon,
   EasyManagementIcon,
@@ -73,9 +72,6 @@ const Services: FunctionComponent<ServicesProps> = (): ReactElement => {
         {services.map((service, index) => (
           <div
             className={
-              // appTheme == Theme.Light
-              //   ? styles.serviceLightTheme
-              //   : styles.service
               `w-full min-w-[160px] sm:min-w-[250px] flex flex-col items-center text-center py-8 px-6 gap-4 rounded-3xl bg-[linear-gradient(180deg,_rgba(255,255,255,0.1)_0%,_rgba(255,255,255,0)_100%)] ${
                 appTheme == Theme.Light
                   ? "bg-[linear-gradient(180deg,_#0000001a_0%,_#00000000_100%)] [&_span]:bg-black/20"
