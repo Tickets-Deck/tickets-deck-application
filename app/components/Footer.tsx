@@ -1,6 +1,5 @@
 "use client";
 import { FunctionComponent, ReactElement } from "react";
-import styles from "../styles/Footer.module.scss";
 import Link from "next/link";
 import images from "../../public/images";
 import Image from "next/image";
@@ -8,27 +7,16 @@ import { InstagramIcon, LinkedInIcon, TwitterIcon } from "./SVGs/SVGicons";
 import SubscriptionFormSection from "./Footer/SubscriptionFormSection";
 import { useSession } from "next-auth/react";
 import { ApplicationRoutes } from "../constants/applicationRoutes";
-import { Theme } from "../enums/Theme";
-import { RootState } from "../redux/store";
-import { useSelector } from "react-redux";
 
 interface FooterProps {}
 
 const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
-  const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
   const { data: session } = useSession();
   const user = session?.user;
 
   return (
-    <section
-      className={
-        // appTheme == Theme.Light
-        //   ? styles.footerContainerLightTheme
-        //   : styles.footerContainer
-        "sectionPadding !py-16 md:!py-12 bg-dark-grey flex flex-col md:flex-row items-start text-white gap-[3.25rem]"
-      }
-    >
+    <section className={"sectionPadding !py-16 md:!py-12 bg-dark-grey flex flex-col md:flex-row items-start text-white gap-[3.25rem]"}>
       <div className='flex mb-4 sm:mb-8 md:mb-0 w-full md:w-[30%] flex-col gap-5'>
         <div className='flex items-center gap-1'>
           <div className='size-8'>
@@ -88,7 +76,6 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                 Buy Tickets
               </li>
             </Link>
-            {/* <li>Online Events</li> */}
           </div>
         </div>
         <div className={`order-3 md:order-none`}>
@@ -116,10 +103,6 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                 Privacy Policy
               </li>
             </Link>
-            {/* <li>Help Center</li>
-                    <li>Privacy</li>
-                    <li>Terms</li>
-                    <li>Blog</li> */}
           </div>
         </div>
         <div className={`order-1 md:order-none`}>
@@ -131,9 +114,6 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
             Events and concerts
           </p>
           <SubscriptionFormSection />
-          {/* <div className={styles.content__languageArea}>
-                        <h5>Language </h5>
-                    </div> */}
         </div>
       </div>
     </section>
