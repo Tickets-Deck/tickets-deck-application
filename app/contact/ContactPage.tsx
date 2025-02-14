@@ -39,7 +39,8 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
 
         // If all fields are not filled, show error
         if (!formValues?.name || !formValues?.email || !formValues?.subject || !formValues?.message) {
-            toast.error("Please fill all fields, and try again.")
+            toast.error("Please fill all fields, and try again.");
+            return;
         }
 
         // Start loader
@@ -75,27 +76,45 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
                 title="Contact Us"
                 description="Have a question or need assistance? We're here to help!"
             />
-            <section className={appTheme === Theme.Light ? styles.contactSectionLightTheme : styles.contactSection}>
-                <div className={styles.lhs}>
-                    <p>
+            <section className={"sectionPadding py-8 md:!py-16 flex flex-col md:flex-row items-center justify-between bg-dark-grey-2 text-white"}>
+                <div className="flex flex-col mb-20 w-full md:w-[45%]">
+                    <p className="mb-6 leading-[1.875rem] font-light text-[0.875rem]">
                         Do you have any inquiries, requests, or complaints? Feel free to
                         contact us immediately, and we will respond to you as soon as
                         possible. Your satisfaction is our priority, and we are here to
                         assist you with any concerns you may have.
                     </p>
-                    <div className={styles.links}>
-                        <Link href="mailto:ticketsdeckevents@gmail.com"><MailIcon />ticketsdeckevents@gmail.com</Link>
-                        <Link href="tel:8065926316"><PhoneIcon />(234) 806 592 6316</Link>
-                        <Link href="tel:9057977870"><PhoneIcon />(234) 905 797 7870</Link>
-                        <Link href={"https://www.google.com/maps/search/?api=1&query=Lagos,+Nigeria"}><LocationIcon />Lagos, Nigeria</Link>
+                    <div className="flex flex-col gap-[0.85rem]">
+                        <Link
+                            className="flex items-center gap-[0.35rem] text-[0.75rem] text-white opacity-70 hover:opacity-100 hover:text-primary-color-sub no-underline w-fit"
+                            href="mailto:ticketsdeckevents@gmail.com">
+                            <MailIcon />ticketsdeckevents@gmail.com
+                        </Link>
+                        <Link
+                            className="flex items-center gap-[0.35rem] text-[0.75rem] text-white opacity-70 hover:opacity-100 hover:text-primary-color-sub no-underline w-fit"
+                            href="tel:8065926316">
+                            <PhoneIcon />(234) 806 592 6316
+                        </Link>
+                        <Link
+                            className="flex items-center gap-[0.35rem] text-[0.75rem] text-white opacity-70 hover:opacity-100 hover:text-primary-color-sub no-underline w-fit"
+                            href="tel:9057977870">
+                            <PhoneIcon />(234) 905 797 7870
+                        </Link>
+                        <Link
+                            className="flex items-center gap-[0.35rem] text-[0.75rem] text-white opacity-70 hover:opacity-100 hover:text-primary-color-sub no-underline w-fit"
+                            href={"https://www.google.com/maps/search/?api=1&query=Lagos,+Nigeria"}><LocationIcon />Lagos, Nigeria
+                        </Link>
                     </div>
                 </div>
-                <form onSubmit={handeCreateEnquiry}>
-                    <h3>Send a message</h3>
+                <form
+                    onSubmit={handeCreateEnquiry}
+                    className="p-6 bg-container-grey w-[45%] rounded-2xl tablet:w-full">
+                    <h3 className="text-white text-[1.25rem] font-normal mb-4">Send a message</h3>
                     <input
                         type="text"
                         name="name"
                         placeholder="Full name"
+                        className="w-full outline-none border-none bg-white/10 text-white text-[1rem] mb-2 p-3 rounded-lg"
                         value={formValues?.name ?? ""}
                         onChange={(e) => onFormValueChange(e)}
                     />
@@ -103,6 +122,7 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
                         type="text"
                         name="email"
                         placeholder="Email"
+                        className="w-full outline-none border-none bg-white/10 text-white text-[1rem] mb-2 p-3 rounded-lg"
                         value={formValues?.email ?? ""}
                         onChange={(e) => onFormValueChange(e)}
                     />
@@ -110,12 +130,14 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
                         type="text"
                         name="subject"
                         placeholder="Title of message"
+                        className="w-full outline-none border-none bg-white/10 text-white text-[1rem] mb-2 p-3 rounded-lg"
                         value={formValues?.subject ?? ""}
                         onChange={(e) => onFormValueChange(e)}
                     />
                     <textarea
                         name="message"
                         placeholder="Message"
+                        className="w-full outline-none border-none bg-white/10 text-white text-[1rem] mb-2 p-3 rounded-lg resize-none h-[120px] leading-5"
                         value={formValues?.message ?? ""}
                         onChange={(e) => onFormValueChange(e)}
                         onKeyDown={(e) => {
@@ -125,7 +147,9 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
                             }
                         }}
                     />
-                    <button type="submit">
+                    <button
+                        className="tertiaryButton mt-4 !w-full flex justify-center text-base"
+                        type="submit">
                         Send
                         {isCreatingEnquiry && <ComponentLoader isSmallLoader customBackground="#ffffff" customLoaderColor="#111111" />}
                     </button>
