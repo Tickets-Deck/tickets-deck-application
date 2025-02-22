@@ -4,14 +4,11 @@
     "private": true,
     "scripts": {
         "dev": "next dev -p 9000",
-        "build": "prisma generate && next build",
+        "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "postinstall": "prisma generate",
-        "start:migrate:prod": "prisma migrate deploy && npm run start:prod"
-    },
-    "prisma": {
-        "schema": "prisma/schema.prisma"
+        "postinstall": "",
+        "start:migrate:prod": "npm run start:prod"
     },
     "dependencies": {
         "@ducanh2912/next-pwa": "^10.2.8",
@@ -22,6 +19,7 @@
         "@mui/material": "^5.15.2",
         "@plaiceholder/next": "^3.0.0",
         "@reduxjs/toolkit": "^2.1.0",
+        "@rive-app/react-canvas": "^4.18.2",
         "@types/nodemailer": "^6.4.14",
         "axios": "^1.6.2",
         "bcryptjs": "^2.4.3",
@@ -60,7 +58,6 @@
         "webpack": "^5.94.0"
     },
     "devDependencies": {
-        "@prisma/client": "^5.18.0",
         "@types/bcryptjs": "^2.4.6",
         "@types/dom-to-image": "^2.6.7",
         "@types/file-saver": "^2.0.7",
@@ -74,7 +71,6 @@
         "@types/ws": "^8.5.10",
         "autoprefixer": "^10.4.19",
         "postcss": "^8.4.38",
-        "prisma": "^5.18.0",
         "tailwindcss": "^3.4.4",
         "typescript": "^5"
     }
