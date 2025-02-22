@@ -20,6 +20,7 @@ import { RootState } from '@/app/redux/store';
 import { useSelector } from 'react-redux';
 import ContactDetailsModal from '@/app/components/Modal/ContactDetailsModal';
 import { CustomerContactDetails } from '@/app/models/IUser';
+import { useApplicationContext } from '@/app/context/ApplicationContext';
 
 interface EventDetailsPageProps {
     params: { id: string }
@@ -41,6 +42,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
 
     const fetchEventInfo = useFetchEventById();
     const toasthandler = useContext(ToastContext);
+    const { handleFetchTransactionFee } = useApplicationContext();
 
     const [eventInfo, setEventInfo] = useState<EventResponse>();
     const [eventTickets, setEventTickets] = useState<RetrievedTicketResponse[]>();
@@ -99,7 +101,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
             return;
         }
         const eventTitle = eventInfo?.title;
-        const eventDate = moment(eventInfo?.date).format('YYYY-MM-DD');
+        const eventDate = moment(eventInfo?.startDate).format('YYYY-MM-DD');
         const eventTime = eventInfo.time;
         const location = eventLocation;
 
@@ -117,7 +119,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
             .then((response) => {
 
                 // Log the result
-                // console.log("Events: ", response.data);
+                console.log("Event: ", response.data);
 
                 // Set the event results
                 let _eventInfo = response.data;
@@ -186,6 +188,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
         setTicketsSelectionContainerIsVisible(false);
 
         if (id) {
+            handleFetchTransactionFee(id);
             handleFetchEventInfo();
         }
     }, [id]);
