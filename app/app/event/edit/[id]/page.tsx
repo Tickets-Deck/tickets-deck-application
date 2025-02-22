@@ -447,7 +447,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({
                       minDate={new Date()}
                       value={
                         eventRequest?.date ??
-                        new Date(eventInfo?.date as string)
+                        new Date(eventInfo?.startDate as string)
                       }
                       onSelectDate={(date) => {
                         // Set the form value
