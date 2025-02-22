@@ -49,7 +49,7 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
         // Call the function to create customer enquiry
         await createCustomerEnquiry(formValues as CustomerEnquiry)
             .then((response) => {
-                console.log(response);
+                console.log("🚀 ~ .then ~ response:", response)
 
                 // Clear form values
                 setFormValues(undefined);
@@ -58,7 +58,7 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
                 toast.success("Your message has been sent successfully. We will get back to you soon.");
             })
             .catch((error) => {
-                console.log(error);
+                console.log("🚀 ~ handeCreateEnquiry ~ error:", error)
 
                 // Show error message
                 toast.error("An error occurred while sending your message. Please try again later.");
