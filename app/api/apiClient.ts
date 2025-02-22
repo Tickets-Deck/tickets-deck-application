@@ -21,15 +21,44 @@ import {
 import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_LIVE,
+  baseURL: ApiRoutes.BASE_URL,
 });
+
+export const getApiConfig = (token: string) => {
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+    },
+  };
+};
+
+export function useRequestCredentialToken() {
+  async function requestToken() {
+    return API.get(ApiRoutes.RequestCredentialToken, getApiConfig(""));
+  }
+
+  return requestToken;
+}
 
 export function useCreateNewsletterSubscriber() {
   async function createNewsletterSubscriber(email: string) {
-    return API.post(ApiRoutes.CreateNewsletterSubscriber, { email });
+    return API.post(
+      ApiRoutes.CreateNewsletterSubscriber,
+      { email },
+      getApiConfig("")
+    );
   }
 
   return createNewsletterSubscriber;
+}
+
+export function useCreateCustomerEnquiry() {
+  async function createCustomerEnquiry(data: CustomerEnquiry) {
+    return API.post(ApiRoutes.CustomerEnquiries, data, getApiConfig(""));
+  }
+
+  return createCustomerEnquiry;
 }
 
 //#region event
@@ -43,24 +72,33 @@ export function useCreateEvent() {
 }
 
 export function useFetchEvents() {
+  // Request token
+  const requestToken = useRequestCredentialToken();
   async function fetchEvents() {
-    return API.get(ApiRoutes.Events);
+    const token = await requestToken();
+    return API.get(ApiRoutes.Events, getApiConfig(token.data.token));
   }
 
   return fetchEvents;
 }
 
 export function useFetchFeaturedEvents() {
+  // Request token
+  const requestToken = useRequestCredentialToken();
   async function fetchFeaturedEvents() {
-    return API.get(ApiRoutes.FeaturedEvents);
+    const token = await requestToken();
+    return API.get(ApiRoutes.FeaturedEvents, getApiConfig(token.data.token));
   }
 
   return fetchFeaturedEvents;
 }
 
 export function useFetchEventById() {
+    // Request token
+    const requestToken = useRequestCredentialToken();
   async function fetchEvent(id: string) {
-    return API.get(`${ApiRoutes.Events}?id=${id}`);
+    const token = await requestToken();
+    return API.get(`${ApiRoutes.Events}/${id}`, getApiConfig(token.data.token));
   }
 
   return fetchEvent;
@@ -351,30 +389,6 @@ export function useFetchUserFollowMetrics() {
   return fetchUserFollowMetrics;
 }
 
-export function useCreateCustomerEnquiry() {
-  async function createCustomerEnquiry(data: CustomerEnquiry) {
-    return API.post(ApiRoutes.CustomerEnquiries, data);
-  }
-
-  return createCustomerEnquiry;
-}
-
-export function useFetchCustomerEnquiries() {
-  async function fetchCustomerEnquiries() {
-    return API.get(ApiRoutes.CustomerEnquiries);
-  }
-
-  return fetchCustomerEnquiries;
-}
-
-export function useUpdateCustomerEnquiriesStatus() {
-  async function updateCustomerEnquiriesById(id: string) {
-    return API.get(`${ApiRoutes.CustomerEnquiries}?id=${id}`);
-  }
-
-  return updateCustomerEnquiriesById;
-}
-
 export function useFetchUserRecentTransactions() {
   async function fetchUserRecentTransactions(
     userId: string,
@@ -480,8 +494,15 @@ export function useFetchUserBankAccount() {
 }
 
 export function useFetchTransactionFee() {
-  async function fetchTransactionFee() {
-    return API.get(ApiRoutes.TransactionFee);
+  // Request token
+  const requestToken = useRequestCredentialToken();
+
+  async function fetchTransactionFee(eventId: string) {
+    const token = await requestToken();
+    return API.get(
+      ApiRoutes.TransactionFee(eventId),
+      getApiConfig(token.data.token)
+    );
   }
 
   return fetchTransactionFee;
