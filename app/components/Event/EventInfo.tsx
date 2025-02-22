@@ -1,5 +1,5 @@
-import { CSSProperties, Dispatch, FunctionComponent, ReactElement, SetStateAction, useContext, useEffect, useState } from "react";
-import { CalenderIcon, HeartIcon, LikeIcon, ShareIcon } from "../SVGs/SVGicons";
+import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useContext, useEffect, useState } from "react";
+import { CalenderIcon, ShareIcon } from "../SVGs/SVGicons";
 import styles from "@/app/styles/EventInfo.module.scss";
 import { Link as ScrollLink } from 'react-scroll';
 import Tooltip from "../custom/Tooltip";
@@ -9,7 +9,6 @@ import images from "@/public/images";
 import moment from "moment";
 import { EventFavoriteAction, EventResponse } from "@/app/models/IEvents";
 import { Theme } from "@/app/enums/Theme";
-import { motion } from "framer-motion";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { ApplicationContext, ApplicationContextData } from "@/app/context/ApplicationContext";
 import { useSession } from "next-auth/react";
@@ -31,7 +30,8 @@ interface EventMainInfoProps {
 
 const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     { appTheme, eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
-        forOrdersPage, hideStatusTag, hostUrl }): ReactElement => {
+        forOrdersPage, hostUrl }): ReactElement => {
+    console.log("🚀 ~ eventInfo:", eventInfo)
 
     const { data: session } = useSession();
     const likeEvent = useLikeEvent();
@@ -58,27 +58,27 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
             });
     };
 
-    async function handleUpdateUserFavouriteEvents(eventId: string, action: string = EventFavoriteAction.Like) {
+    // async function handleUpdateUserFavouriteEvents(eventId: string, action: string = EventFavoriteAction.Like) {
 
-        // Check if user is logged in and prompt user to login if not
-        if (!isUserLoginPromptVisible && !session) {
-            toggleUserLoginPrompt();
-            return;
-        }
+    //     // Check if user is logged in and prompt user to login if not
+    //     if (!isUserLoginPromptVisible && !session) {
+    //         toggleUserLoginPrompt();
+    //         return;
+    //     }
 
-        // Update the event's like status
-        setIsEventLiked(!isEventLiked);
+    //     // Update the event's like status
+    //     setIsEventLiked(!isEventLiked);
 
-        await likeEvent(session?.user.id as string, eventId, action)
-            .then((response) => {
-                // console.log("🚀 ~ .then ~ response:", response)
-            })
-            .catch((error) => {
-                catchError(error);
-                // Revert the event's like status
-                setIsEventLiked(!isEventLiked);
-            })
-    };
+    //     await likeEvent(session?.user.id as string, eventId, action)
+    //         .then((response) => {
+    //             // console.log("🚀 ~ .then ~ response:", response)
+    //         })
+    //         .catch((error) => {
+    //             catchError(error);
+    //             // Revert the event's like status
+    //             setIsEventLiked(!isEventLiked);
+    //         })
+    // };
 
     async function handleFetchEventLikeStatus(eventId: string) {
         await fetchEventLikeStatus(session?.user.id as string, eventId)
@@ -99,57 +99,54 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     }, [session]);
 
     return (
-        <div className={`${appTheme === Theme.Light ? styles.mainSectionLightTheme : styles.mainSection} ${forOrdersPage ? styles.opMainSection : ''}`}>
-            <div className={forOrdersPage ? styles.eventImageForOrderPage : styles.eventImage}>
-                <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill sizes="auto" />
+        <div className={`flex flex-col md:flex-row items-center rounded-3xl p-6 bg-container-grey gap-4 relative min-h-[320px] ${forOrdersPage ? 'flex-col' : ''}`}>
+            <div
+                className={`${forOrdersPage ? 'w-full h-[200px]' : 'w-full md:w-1/3 md:min-w-[30%] h-[300px]'} rounded-2xl overflow-hidden relative after after:bg-black after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-[0] hover:after:opacity-40 after:transition-all after:duration-300 group`}>
+                <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill className="object-cover" />
+                <button className="absolute left-1/2 transform -translate-x-1/2 -bottom-12 p-2 px-4 rounded-full bg-primary-color text-sm w-fit h-fit z-[3] hover:bg-white hover:text-primary-color group-hover:bottom-4 transition-all">Expand</button>
             </div>
             {/* {!hideStatusTag && <span className={styles.tag}>Latest</span>} */}
-            <div className={styles.eventDetails}>
-                <div className={styles.leftInfo}>
-                    <h2 className={styles.title}>{eventInfo?.title}</h2>
-                    <p className={styles.datePosted}>Posted on: {moment(eventInfo.createdAt).format('Do MMMM YYYY')}</p>
-                    <Link className={styles.publisherInfo} href={`/u/${eventInfo.user.username ?? eventInfo.user.id}`}>
-                        <div className={styles.publisherInfo__image}>
-                            <Image src={eventInfo.user.profilePhoto ?? images.user_avatar} alt='Avatar' fill sizes="auto" />
-                        </div>
-                        <div className={styles.publisherInfo__name}>{`${eventInfo?.user.firstName} ${eventInfo?.user.lastName}`}</div>
-                    </Link>
-                    <div className={styles.dateTime}>
-                        <h4>{moment(eventInfo?.date).format("MMM. Do YYYY")}</h4>
-                        |
-                        <h4>{eventInfo.time}</h4>
+            <div className="flex items-end gap-1 w-full min-h-full h-fit">
+                <div className="flex flex-col w-full gap-3">
+                    <h2 className="text-3xl font-semibold text-white">{eventInfo?.title}</h2>
+                    <div className="text-xs flex flex-row space-x-2">
+                        <p className="text-gray-300">Posted on: {moment(eventInfo.createdAt).format('Do MMMM YYYY')}</p>
+                        <span>|</span>
+                        <span>Views: 3504</span>
                     </div>
-                    {/* <div className={styles.location}>
-                        <p>{eventInfo?.location.blockNumber + ' ' + eventInfo?.location.street + ' ' + eventInfo?.location.city + ', ' + eventInfo?.location.state + ', ' + eventInfo?.location.country}</p>
-                        <Link href={`https://www.google.com/maps/search/?api=1&query=${eventInfo?.location.blockNumber},+${eventInfo?.location.street},+${eventInfo?.location.city}+${eventInfo?.location.state}+${eventInfo?.location.country}`} target='_blank'>
-                            <button>Get directions on map</button>
-                        </Link>
-                    </div> */}
-                    <div className={styles.location}>
-                        <p>{eventInfo.venue}</p>
+
+                    <Link href={`/u/${eventInfo.publisher.username ?? eventInfo.publisher.id}`} className="flex items-center gap-2 w-fit hover:opacity-75">
+                        <div className="w-10 h-10 rounded-full overflow-hidden relative">
+                            <Image src={eventInfo.publisher.profilePhoto ?? images.user_avatar} alt='Avatar' fill className="object-cover" />
+                        </div>
+                        <span className="text-white text-sm font-medium">{`${eventInfo?.publisher.firstName} ${eventInfo?.publisher.lastName}`}</span>
+                    </Link>
+                    <div className="flex items-center gap-3 text-white">
+                        <h4>{moment(eventInfo?.startDate).format("MMM. Do YYYY")}</h4>
+                        <span>|</span>
+                        <h4>{moment(eventInfo?.startDate).format("hh:mm a")}</h4>
+                    </div>
+
+                    <div className="w-full">
+                        <p className="text-sm text-white">{eventInfo.venue}</p>
                         <Link href={`https://www.google.com/maps/search/?api=1&query=${eventInfo.venue}`} target='_blank'>
-                            <button>Get directions on map</button>
+                            <button className="text-gray-400 underline hover:opacity-75">Get directions on map</button>
                         </Link>
                     </div>
                     {
                         eventInfo.purchaseEndDate && new Date(eventInfo.purchaseEndDate) > new Date() ?
                             forOrdersPage ?
-                                <div className={styles.bottomArea}>
-                                    <Link href={`${hostUrl}/event/${eventInfo.id}`} className={styles.rePurchaseBtn}>
+                                <div className="flex gap-3 mt-2">
+                                    <Link href={`${hostUrl}/event/${eventInfo.id}`} className="bg-white text-black font-medium rounded-full px-6 py-2 text-sm hover:opacity-80">
                                         Buy again
                                     </Link>
                                     {/* <button className={styles.reportEvent} disabled>Report event</button> */}
                                 </div>
                                 :
-                                <div className={styles.bottomArea}>
+                                <div className="flex gap-3 mt-2">
                                     {
                                         eventInfo && eventInfo?.tickets == null ?
                                             <>
-                                                {/* <div className={styles.priceArea}>
-                                                    <span>Ticket price:</span>
-                                                    <h2>&#8358;{eventInfo?.ticketPrice.amount.toLocaleString()}</h2>
-                                                </div> */}
-                                                {/* <button>Purchase your ticket(s)</button> */}
                                             </>
                                             :
                                             <ScrollLink
@@ -158,7 +155,9 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                                                 duration={200}
                                                 offset={-100}
                                                 onClick={() => setTicketsSelectionContainerIsVisible && setTicketsSelectionContainerIsVisible(true)}>
-                                                <button>Get available tickets</button>
+                                                <button className="bg-white text-black font-medium rounded-full px-6 py-3 text-base hover:opacity-80">
+                                                    Get available tickets
+                                                </button>
                                             </ScrollLink>
                                     }
                                 </div>
@@ -168,36 +167,23 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                             </div>
                     }
                 </div>
-                <div className={forOrdersPage ? styles.actionButtonsForOrderPage : styles.actionButtons}>
+
+                <div className={`${forOrdersPage ? 'w-fit' : 'w-1/12'} flex flex-col w-full md:w-fit gap-3 [&_svg]:w-4 [&_svg]:h-4`}>
                     <Tooltip
                         position={onMobile ? "top" : onDesktop ? "left" : undefined}
                         tooltipText='Add to calender'>
-                        <div className={styles.actionButton} onClick={() => addEventToGoogleCalender && addEventToGoogleCalender()}>
+                        <div className="w-10 h-10 rounded-full bg-white grid place-items-center cursor-pointer"
+                            onClick={() => addEventToGoogleCalender && addEventToGoogleCalender()}>
                             <CalenderIcon />
                         </div>
                     </Tooltip>
-                    {/* <Tooltip
-                        position={onMobile ? "top" : onDesktop ? "left" : undefined}
-                        tooltipText='Like event' action={() => handleUpdateUserFavouriteEvents(eventInfo.id, isEventLiked ? EventFavoriteAction.Unlike : EventFavoriteAction.Like)}>
-                        <div className={styles.actionButton}>
-                            <motion.span
-                                style={{ width: "100%", height: "100%", display: "grid", placeItems: "center" }}
-                                whileTap={{ scale: 2.5 }}
-                                transition={{ duration: 0.35 }}>
-                                <LikeIcon isLiked={isEventLiked} />
-                            </motion.span>
-                        </div>
-                    </Tooltip> */}
                     <EventLikeButton eventInfo={eventInfo} forEventInfo />
                     <Tooltip
                         position={onMobile ? "top" : onDesktop ? "left" : undefined}
                         tooltipText='Share event'>
                         <div
-                            className={styles.actionButton}
-                            style={{ backgroundColor: '#D5542A' }}
-                            onClick={() => {
-                                shareEvent()
-                            }}>
+                            className="w-10 h-10 rounded-full bg-[#D5542A] grid place-items-center cursor-pointer"
+                            onClick={() => shareEvent()}>
                             <ShareIcon />
                         </div>
                     </Tooltip>
