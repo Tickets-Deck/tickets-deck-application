@@ -11,7 +11,7 @@ export class ApiRoutes {
   /**
    * The test base url for the application
    */
-  static BASE_URL_TEST: string = "https://beta.events.ticketsdeck.com";
+  static BASE_URL_TEST: string = "https://apitest.ticketsdeck.com/";
 
   /**
    * The live base url for the application
@@ -19,14 +19,29 @@ export class ApiRoutes {
   static BASE_URL_LIVE: string = "https://events.ticketsdeck.com";
 
   /**
+   * The base url being used for the application
+   */
+  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
+
+  /**
+   * The route to Request Credential Token endpoint
+   */
+  static RequestCredentialToken: string = "auth/request-token";
+
+  /**
    * The route to CreateNewsletterSubscriber endpoint
    */
-  static CreateNewsletterSubscriber: string = "api/newsletter-subscriber";
+  static CreateNewsletterSubscriber: string = "newsletter/signup";
+
+  /**
+   * The route to Customer Enquiries endpoint
+   */
+  static CustomerEnquiries: string = "enquiries";
 
   /**
    * The route to Events endpoint
    */
-  static Events: string = "api/events";
+  static Events: string = "events";
 
   /**
    * The route to Orders endpoint
@@ -99,11 +114,6 @@ export class ApiRoutes {
   static Follows: string = "api/users/follows";
 
   /**
-   * The route to Customer Enquiries endpoint
-   */
-  static CustomerEnquiries: string = "api/customer-enquiries";
-
-  /**
    * The route to User Recent Transactions endpoint
    */
   static UserRecentTransactions: string = "api/users/recent-transactions";
@@ -142,7 +152,7 @@ export class ApiRoutes {
   /**
    * The route to Featured Events endpoint
    */
-  static FeaturedEvents: string = "api/events/featured";
+  static FeaturedEvents: string = "events/featured";
 
   /**
    * The route to Fetch all Banks endpoint
@@ -162,7 +172,7 @@ export class ApiRoutes {
   /**
    * The route to Transaction Fee endpoint
    */
-  static TransactionFee: string = "api/transaction-fees";
+  static TransactionFee: (eventId: string) => string = (eventId: string) => `transaction-fees/event/${eventId}`;
 
   /**
    * The route to Verify Coupon Code endpoint
