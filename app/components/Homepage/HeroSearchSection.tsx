@@ -26,7 +26,7 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({
   events: _events,
   isFetchingEvents,
 }): ReactElement => {
-  const events = _events.filter((event) => new Date(event.date) >= new Date());
+  const events = _events.filter((event) => new Date(event.startDate) >= new Date());
 
   const windowRes = useResponsiveness();
   const isMobile = windowRes.width && windowRes.width < 768;
@@ -135,7 +135,7 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({
                       {event.title}
                     </h4>
                     <h4 className='min-w-fit opacity-80 text-xs font-medium'>
-                      {moment(event?.date).format("MMM. Do YYYY")}
+                      {moment(event?.startDate).format("MMM. Do YYYY")}
                     </h4>
                   </div>
                   {/* <p>Starting price: &#8358;{event.ticketPrice.amount.toLocaleString()}</p> */}
