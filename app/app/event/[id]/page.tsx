@@ -122,7 +122,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({
       return;
     }
     const eventTitle = eventInfo?.title;
-    const eventDate = moment(eventInfo.date).format("YYYY-MM-DD"); // Use the actual event date
+    const eventDate = moment(eventInfo.startDate).format("YYYY-MM-DD"); // Use the actual event date
     // const eventTime = moment(eventInfo?.eventDateTime).format('HH:MM');      // Use the actual event time
     const eventTime = moment(eventInfo.time); // Use the actual event time
     const location = eventLocation;
@@ -305,16 +305,16 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({
                   <div className='size-8 min-[400px]:size-10 relative rounded-full overflow-hidden'>
                     <Image
                       className='size-full object-cover'
-                      src={eventInfo.user.profilePhoto ?? images.user_avatar}
+                      src={eventInfo.publisher.profilePhoto ?? images.user_avatar}
                       alt='Avatar'
                       fill
                     />
                   </div>
-                  <div className='text-white font-medium text-sm min-[400px]:text-base'>{`${eventInfo.user.firstName} ${eventInfo.user.lastName}`}</div>
+                  <div className='text-white font-medium text-sm min-[400px]:text-base'>{`${eventInfo.publisher.firstName} ${eventInfo.publisher.lastName}`}</div>
                 </div>
                 <div className='flex items-center gap-3'>
                   <h4 className='font-medium text-white'>
-                    {moment(eventInfo?.date).format("MMM. Do YYYY")}
+                    {moment(eventInfo?.startDate).format("MMM. Do YYYY")}
                   </h4>
                   <h4 className='font-medium text-white'>{eventInfo.time}</h4>
                 </div>
