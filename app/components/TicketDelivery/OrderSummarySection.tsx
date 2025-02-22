@@ -25,13 +25,13 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
     { eventTickets, totalPrice, setVisibility, couponDetails, setOrganizerAmount,
         handleTicketOrderCreation, isProcessingOrder, eventInfo, hideActionButtons }): ReactElement => {
 
-    const { transactionFees } = useContext(ApplicationContext) as ApplicationContextData;
+    const { transactionFee } = useContext(ApplicationContext) as ApplicationContextData;
 
-    const eventTransactionFee = transactionFees?.find((transactionFee) => transactionFee.events.find((event) => event.title == eventInfo?.title));
-    const generalTransactionFee = transactionFees?.find((transactionFee) => transactionFee.events.length == 0);
+    // const eventTransactionFee = transactionFees?.find((transactionFee) => transactionFee.events.find((event) => event.title == eventInfo?.title));
+    // const generalTransactionFee = transactionFees?.find((transactionFee) => transactionFee.events.length == 0);
 
-    const transactionFeePercentage = Number(eventTransactionFee?.percentage as string) || Number(generalTransactionFee?.percentage as string) || 0;
-    const flatFee = Number(eventTransactionFee?.flatFee as string) || Number(generalTransactionFee?.flatFee as string) || 0;
+    const transactionFeePercentage = Number(transactionFee?.percentage as string) || 0;
+    const flatFee = Number(transactionFee?.flatFee as string) || 0;
 
     const fees = eventInfo?.organizerPaysFee || totalPrice == 0 ? 0 : (transactionFeePercentage ? (totalPrice * transactionFeePercentage) / 100 : 0) + (flatFee || 0);
     const totalAmountPayable = eventInfo?.organizerPaysFee ? totalPrice - (couponDetails?.discount ? (totalPrice * Number(couponDetails.discount)) / 100 : 0) : totalPrice + fees - (couponDetails?.discount ? (totalPrice * Number(couponDetails.discount)) / 100 : 0);
@@ -59,7 +59,7 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = (
                         {eventInfo?.title}
                     </h3>
                     <p className="text-white opacity-80">
-                        {moment(eventInfo?.date).format("Do of MMMM YYYY")}
+                        {moment(eventInfo?.startDate).format("Do of MMMM YYYY")}
                     </p>
                 </div>
             </div>
