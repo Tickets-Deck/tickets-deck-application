@@ -10,7 +10,6 @@ import EventCard from "../Event/EventCard";
 import { useRouter } from "next/navigation";
 import { EventResponse } from "@/app/models/IEvents";
 import ComponentLoader from "../Loader/ComponentLoader";
-import useResponsiveness from "../../hooks/useResponsiveness";
 import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
@@ -81,14 +80,13 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = ({
             </div>
             <div
                 className={`w-full overflow-x-auto relative overflow-hidden ${consoleDisplay
-                        ? "min-h-[50vh] flex flex-col pr-2 h-full !overflow-y-auto"
-                        : ""
+                    ? "min-h-[50vh] flex flex-col pr-2 h-full !overflow-y-auto"
+                    : ""
                     }`}
             >
                 <div
-                    className={
-                        "[grid-template-columns:_repeat(auto-fill,_minmax(200px,_1fr))] min-[550px]:[[grid-template-columns:_repeat(auto-fill,_minmax(250px,_1fr))]]"
-                    }
+                    className="grid grid-cols-3 gap-4"
+                    // "[grid-template-columns:_repeat(auto-fill,_minmax(200px,_1fr))] min-[550px]:[[grid-template-columns:_repeat(auto-fill,_minmax(250px,_1fr))]]"
                 >
                     {!isFetchingEvents &&
                         eventsData &&
@@ -98,22 +96,25 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = ({
                                 consoleDisplay
                                     ? event
                                     : forPastEvents
-                                        ? new Date(event.date) < new Date()
-                                        : new Date(event.date) >= new Date()
+                                        ? new Date(event.startDate) < new Date()
+                                        : new Date(event.startDate) >= new Date()
                             )
-                            .map((event, index) => (
-                                <EventCard
-                                    event={event}
-                                    mobileAndActionButtonDismiss
-                                    key={index}
-                                    gridDisplay={true}
-                                    consoleDisplay={consoleDisplay}
-                                    setIsDeleteConfirmationModalVisible={
-                                        setIsDeleteConfirmationModalVisible
-                                    }
-                                    setSelectedEvent={setSelectedEvent}
-                                />
-                            ))}
+                            .map((event, index) => {
+                                console.log("🚀 ~ .map ~ event:", event)
+                                return (
+                                    <EventCard
+                                        event={event}
+                                        mobileAndActionButtonDismiss
+                                        key={index}
+                                        gridDisplay={true}
+                                        consoleDisplay={consoleDisplay}
+                                        setIsDeleteConfirmationModalVisible={
+                                            setIsDeleteConfirmationModalVisible
+                                        }
+                                        setSelectedEvent={setSelectedEvent}
+                                    />
+                                )
+                            })}
                 </div>
                 {isFetchingEvents && (
                     <div className='min-[50vh] grid place-items-center'>
