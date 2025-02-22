@@ -43,7 +43,7 @@ export type EventResponse = {
   description: string;
   locationId: string | null;
   venue: string;
-  date: string;
+  startDate: string;
   time: string;
   category: string;
   visibility: string;
@@ -54,7 +54,7 @@ export type EventResponse = {
   allowedGuestType: string;
   createdAt: string;
   updatedAt: string;
-  user: UserCredentialsResponse;
+  publisher: UserCredentialsResponse;
   tickets: TicketResponse[];
   images: [];
   tags: string[];
