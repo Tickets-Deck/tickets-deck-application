@@ -89,7 +89,7 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
                 isFetchingEvents={isFetchingEvents}
             />
 
-            {events.some((event) => new Date(event.date) < new Date()) && (
+            {events.some((event) => new Date(event.startDate) < new Date()) && (
                 <EventsGroup
                     eventsData={events}
                     title='Past Events'
