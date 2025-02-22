@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import EmailVerificationPrompt from "../Modal/EmailVerificationPrompt";
 import HeroSearchSection from "./HeroSearchSection";
 import { ImageWithPlaceholder } from "@/app/models/IImage";
+import { Rive, useStateMachineInput } from '@rive-app/react-canvas';
+import { useRive } from '@rive-app/react-canvas';
 
 interface HeroSectionProps {
     events: EventResponse[];
@@ -53,6 +55,14 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
 
     const [heroSectionImgIndex, setHeroSectionImgIndex] = useState(0);
     const [emailVerificationPromptIsVisible, setEmailVerificationPromptIsVisible] = useState(false);
+
+    const { rive, RiveComponent } = useRive({
+        src: '/rive/btn_anim.riv',
+        stateMachines: 'State Machine 1',
+        autoplay: true,
+    });
+    // Assuming you have a boolean input called "hover"
+    const hoverInput = useStateMachineInput(rive, "State Machine 1", "Boolean 1");
 
     function showEmailVerificationAlert() {
         // Check for the email verification status if the user is logged in.
@@ -107,6 +117,13 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                                 Explore Events
                             </button>
                         </Link>
+                        {/* <Link
+                            href={`/events`}
+                            onMouseEnter={() => hoverInput && (hoverInput.value = true)}
+                            onMouseLeave={() => hoverInput && (hoverInput.value = false)}
+                            className="w-48 h-32">
+                            <RiveComponent className="w-48 h-32" />
+                        </Link> */}
                         {!user && (
                             <Link href={ApplicationRoutes.SignIn}>
                                 <button className='!border-[1.5px] !border-solid !border-white !text-white font-medium !bg-transparent hover:opacity-60'>
