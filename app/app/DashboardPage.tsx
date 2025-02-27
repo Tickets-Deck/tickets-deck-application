@@ -28,7 +28,6 @@ const DashboardPage: FunctionComponent<
   const fetchUserRecentTransactions = useFetchUserRecentTransactions();
   const { data: session, status } = useSession();
   const user = session?.user;
-  console.log("🚀 ~ user:", user)
   const { push } = useRouter();
 
   const userInfo = useSelector(
