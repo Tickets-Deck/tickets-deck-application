@@ -1,9 +1,15 @@
-import { compare } from "bcryptjs";
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, Token } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { ApplicationRoutes } from "./app/constants/applicationRoutes";
-import { StorageKeys } from "./app/constants/storageKeys";
+import { useRequestCredentialToken } from "./app/api/apiClient";
+import { ApiRoutes } from "./app/api/apiRoutes";
+import { ApplicationError } from "./app/constants/applicationError";
+
+// Request token
+const requestToken = useRequestCredentialToken();
+
+const API_BASE_URL = ApiRoutes.BASE_URL;
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -17,39 +23,51 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Sign in",
       credentials: {
-        email: {
-          label: "Email",
-          type: "email",
+        username: {
+          label: "Username",
+          type: "username",
           placeholder: "hello@example.com",
         },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         // If email or password is missing, return null to display an error
-        if (!credentials?.email || !credentials.password) {
+        if (!credentials?.username || !credentials.password) {
           // Throw an error to display an error message
-          throw new Error("Please provide email and password");
+          throw new Error("Please provide username and password");
         }
 
-        // Check that password matches
-        const isPasswordValid = await compare(
-          credentials.password,
-          user.password
-        );
+        const token = await requestToken();
 
-        if (!isPasswordValid) {
-          // Throw an error to display an error message
-          throw new Error(
-            "Incorrect password. Please check your password and try again."
-          );
+        // Call your API to login user
+        const res = await fetch(`${API_BASE_URL}${ApiRoutes.UserLogin}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token.data.token || ""}`,
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
+            credentials: "include", // allow cookies to be sent
+          },
+          body: JSON.stringify(credentials),
+        });
+
+        // Get the response
+        const loginResponse = await res.json();
+        console.log("🚀 ~ authorize ~ loginResponse:", loginResponse);
+
+        if (
+          loginResponse?.errorCode === ApplicationError.InvalidCredentials.Code
+        ) {
+          throw new Error(ApplicationError.InvalidCredentials.Text);
         }
 
-        // Return user object to be stored in JWT
-        return {
-          id: user.id + "",
-          email: user.email,
-          name: user.firstName + " " + user.lastName,
-        };
+        if (!res.ok) throw new Error("Invalid credentials");
+
+        if (loginResponse?.token) {
+          // Return login response object to be stored in JWT
+          return { ...loginResponse };
+        }
+        return null;
       },
     }),
     GoogleProvider({
@@ -68,52 +86,14 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.SECRET,
   callbacks: {
     async signIn({ account, profile }) {
-      // console.log("Sign In Callback", { account, profile });
+      console.log("Sign In Callback", { account, profile });
 
       if (account?.provider === "google") {
         // Check if user exists in database checking each user's email if it matches the email provided
-        const user = await prisma.users.findUnique({
-          where: {
-            email: profile?.email,
-          },
-        });
 
         // If user exists, return true to allow sign in
-        if (user) {
-          // Update emailVerified to true
-          await prisma.users.update({
-            where: {
-              id: user.id,
-            },
-            data: {
-              emailVerified: true,
-            },
-          });
 
-          return true; // Return true to allow sign in
-        }
-
-        // If user does not exist, create user
-        await prisma.users.create({
-          data: {
-            email: profile?.email as string,
-            firstName: profile?.name?.split(" ")[0] as string,
-            lastName: profile?.name?.split(" ")[1] as string,
-            password: "google-signup-no-password",
-            profilePhoto: profile?.picture as string,
-            emailVerified: true,
-          },
-        });
-
-        // Send email to the subscriber
-        await sendMail({
-          to: profile?.email as string,
-          name: "Account Created",
-          subject: "Welcome to Ticketsdeck",
-          body: compileAccountCreationTemplate(
-            `${profile?.name?.split(" ")[0]} ${profile?.name?.split(" ")[1]}`
-          ),
-        });
+        // If user does not exist, create user in database
 
         return true; // Return true to allow sign in
       }
@@ -124,74 +104,64 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage JWTs here
     jwt: async ({ token, user, trigger, session }) => {
-      // console.log("JWT Callback", { token, user, trigger, session });
+      console.log("🚀 ~ jwt: ~ user:", user);
+      console.log("🚀 ~ jwt: ~ token:", token);
+      const customToken = token as Token;
 
-      // Check prisma for user with email gotten in token
-      const exisitingUser = await prisma.users.findUnique({
-        where: {
-          email: token.email as string,
-        },
-      });
-
-      // If user exists, return user id in JWT so it will be accessible in the session
-      if (exisitingUser) {
+      if (user) {
         return {
-          ...token,
-          id: exisitingUser.id,
-        };
-      } else if (user) {
-        const u = user as unknown as any;
-
-        // Return user info so it will be accessible in the session
-        return {
-          ...token,
-          id: u.id,
+          ...customToken,
+          id: user.id,
+          token: user.token,
+          refreshToken: user.refreshToken,
+          accessTokenExpires: Date.now() + 60 * 60 * 1000, // Example: 60 min expiry
         };
       }
 
-      if (trigger === "update") {
-        return {
-          ...token,
-          ...session.user,
-          name: session.user.name,
-          email: session.user.email,
-        };
+      console.log("Date.now(): ", Date.now());
+      console.log(
+        "customToken.accessTokenExpires: ",
+        customToken.accessTokenExpires
+      );
+      console.log(
+        "token expired?: ",
+        Date.now() > customToken.accessTokenExpires
+      );
+
+      // If the access token is still valid, return it
+      if (Date.now() < customToken.accessTokenExpires) {
+        return customToken;
       }
 
-      return token;
+      // Access token expired — refresh it
+      const refreshedToken = await refreshAccessToken(customToken);
+      console.log("🚀 ~ jwt: ~ refreshedToken:", refreshedToken);
+
+      // Ensure the refreshed token is fully passed on
+      return refreshedToken;
     },
     // Create and manage sessions here
     session: async ({ session, token }) => {
-      // console.log("Session Callback", { session, token });
-
-      // Fetch user details from database
-      const user = await prisma.users.findUnique({
-        where: {
-          id: token.id as string,
-        },
-      });
-      // console.log("🚀 ~ session: ~ user:", user);
+      console.log("🚀 ~ session: ~ token:", token);
+      console.log("🚀 ~ session: ~ session:", session);
+      const customToken = token as Token;
 
       return {
         ...session,
+        error: customToken.error,
         user: {
           ...session.user,
-          id: token.id,
-          accessToken: token.accessToken,
-          idToken: token.idToken,
-          image: user?.profilePhoto,
-          name: user?.firstName + " " + user?.lastName,
-          email: user?.email,
-          //   image: token.image as string ?? user?.profilePhoto,
-          //   name: token.name,
-          //   email: token.email,
+          id: customToken.id,
+          token: customToken.token,
+          refreshToken: customToken.refreshToken,
+          accessTokenExpires: customToken.accessTokenExpires,
         },
       };
     },
   },
   events: {
     async signIn(message) {
-    //   console.log("Sign In Event", { message });
+      //   console.log("Sign In Event", { message });
     },
     async signOut(message) {
       // Delete the session cookie
@@ -201,11 +171,6 @@ export const authOptions: NextAuthOptions = {
           "Content-Type": "application/json",
         },
       });
-
-      // Delete the new user email from session storage
-      sessionStorage.removeItem(StorageKeys.NewlyCreatedUserEmail);
-
-      // console.log("Sign Out Event", { message });
     },
     // async createUser(message) {
     //   console.log("Create User Event", { message });
@@ -221,3 +186,36 @@ export const authOptions: NextAuthOptions = {
     signIn: ApplicationRoutes.SignIn,
   },
 };
+
+async function refreshAccessToken(token: Token): Promise<Token> {
+  try {
+    const res = await fetch(`${ApiRoutes.BASE_URL}${ApiRoutes.RefreshToken}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
+      },
+      body: JSON.stringify({ refreshToken: token.refreshToken }),
+    });
+
+    const refreshedTokens = await res.json();
+
+    console.log("🚀 ~ refreshAccessToken ~ refreshedTokens:", refreshedTokens);
+
+    if (!res.ok) throw refreshedTokens;
+
+    return {
+      ...token,
+      token: refreshedTokens.accessToken,
+      accessTokenExpires: Date.now() + 60 * 60 * 1000, // Example: 60 min expiry
+      refreshToken: refreshedTokens.refreshToken,
+    };
+  } catch (error) {
+    console.error("Refresh token error", error);
+
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
+  }
+}
