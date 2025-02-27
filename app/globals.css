@@ -89,16 +89,6 @@ body {
   overflow-x: hidden;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
 a {
   color: inherit;
   text-decoration: none;
@@ -182,6 +172,59 @@ a {
   table .dropdownBtn {
     @apply size-[26px] grid place-items-center cursor-pointer bg-dark-grey/[0.025] rounded-lg hover:bg-dark-grey/10 [&_svg_path]:fill-dark-grey;
   }
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 220.9 39.3% 11%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 224 71.4% 4.1%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 20% 98%;
+    --primary-foreground: 220.9 39.3% 11%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 216 12.2% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
 }
 
 @layer utilities {
@@ -190,7 +233,7 @@ a {
   }
 
   .input {
-    @apply w-fit rounded-[3.125rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:bg-grey-bg;
+    @apply w-fit rounded-[3.125rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder-grey-bg;
   }
 
   .primaryButton {
@@ -219,9 +262,39 @@ a {
   .tableInfoUnavailable p {
     @apply absolute m-auto opacity-80 whitespace-nowrap top-[40%] left-1/2 -translate-x-1/2 text-sm text-dark-grey;
   }
+
+  .createEventFormField {
+    @apply w-full flex flex-col gap-1 relative;
+  }
+  .createEventFormField input,
+  select {
+    @apply input !rounded-lg !w-full !bg-white/10 text-white text-sm p-4 font-normal placeholder-white/50;
+  }
+  .createEventFormField label {
+    @apply text-sm text-white;
+  }
+
+  .imageInput {
+    @apply absolute size-full top-0 left-0 opacity-0 cursor-pointer;
+  }
+
+  .custom-datepicker input {
+    @apply !bg-transparent;
+  }
+  .custom-datepicker .MuiStack-root,
+  .css-v0pjtz-MuiStack-root {
+    @apply !pt-0;
+  }
+  .custom-datepicker .css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root {
+    @apply !text-white !bg-transparent !rounded-lg;
+  }
+  .custom-datepicker .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+    @apply !bg-white/10 !rounded-lg;
+  }
 }
 
 .sectionPadding {
+  /* @apply p-[1.25rem]; */
   @apply p-[1.25rem] md:px-[5rem] min-[1300px]:px-[16%] lg:px-[10rem];
 }
 
@@ -239,6 +312,16 @@ a {
 }
 .moveFourthAnimation {
   animation: moveFourth 7800ms ease infinite alternate;
+}
+
+.errorMsg {
+  @apply text-sm text-[#eb485b] flex items-center gap-2 [&_svg]:w-3 [&_svg]:h-[fit-content] [&_svg]:inline-flex [&_svg_path]:fill-[#eb485b];
+}
+
+/* This is for the description box */
+.ql-container,
+.ql-snow {
+  @apply !h-full;
 }
 
 /* keyFrames */
@@ -342,5 +425,14 @@ a {
     left: 0%;
     transform: translate(50%, 50%);
     scale: 1;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
