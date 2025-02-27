@@ -64,8 +64,8 @@ export function useCreateCustomerEnquiry() {
 //#region event
 
 export function useCreateEvent() {
-  async function createEvent(event: EventRequest) {
-    return API.post(ApiRoutes.Events, event);
+  async function createEvent(token: string, event: EventRequest) {
+    return API.post(ApiRoutes.Events, event, getApiConfig(token));
   }
 
   return createEvent;
@@ -94,8 +94,8 @@ export function useFetchFeaturedEvents() {
 }
 
 export function useFetchEventById() {
-    // Request token
-    const requestToken = useRequestCredentialToken();
+  // Request token
+  const requestToken = useRequestCredentialToken();
   async function fetchEvent(id: string) {
     const token = await requestToken();
     return API.get(`${ApiRoutes.Events}/${id}`, getApiConfig(token.data.token));
@@ -121,8 +121,11 @@ export function useFetchEventByEventId() {
 }
 
 export function useFetchEventsByPublisherId() {
-  async function fetchEventsByPublisherId(publisherId: string) {
-    return API.get(`${ApiRoutes.Events}?publisherId=${publisherId}`);
+  async function fetchEventsByPublisherId(token: string, publisherId: string) {
+    return API.get(
+      ApiRoutes.FetchOrganizerEvents(publisherId),
+      getApiConfig(token)
+    );
   }
 
   return fetchEventsByPublisherId;
@@ -172,8 +175,8 @@ export function useUpdateEventById() {
 }
 
 export function useDeleteEvent() {
-  async function deleteEvent(id: string) {
-    return API.delete(`${ApiRoutes.Events}?id=${id}`);
+  async function deleteEvent(token: string, id: string) {
+    return API.delete(`${ApiRoutes.Events}/${id}`, getApiConfig(token));
   }
 
   return deleteEvent;
@@ -192,8 +195,13 @@ export function useCreateUser() {
 }
 
 export function useFetchUserInformation() {
+  const requestToken = useRequestCredentialToken();
   async function fetchUserInformation(userId: string) {
-    return API.get(`${ApiRoutes.Users}?userId=${userId}`);
+    const token = await requestToken();
+    return API.get(
+      ApiRoutes.FetchUserInformation(userId),
+      getApiConfig(token.data.token)
+    );
   }
 
   return fetchUserInformation;
@@ -237,22 +245,31 @@ export const useUpdateUserCoverPhoto = () => {
 };
 
 export function useUpdateUserName() {
-  async function updateUserName(userId: string, data: UsernameRequest) {
-    return API.put(`${ApiRoutes.UpdateUserName}?userId=${userId}`, data);
+  async function updateUserName(
+    token: string,
+    userId: string,
+    data: UsernameRequest
+  ) {
+    return API.put(ApiRoutes.UpdateUserName(userId), data, getApiConfig(token));
   }
 
   return updateUserName;
 }
 
-export function useUpdateUserInformation() {
-  async function updateUserInformation(
+export function useUpdateUserProfileInformation() {
+  async function updateUserProfileInformation(
+    token: string,
     userId: string,
     data: UserCredentialsUpdateRequest
   ) {
-    return API.put(`${ApiRoutes.Users}?userId=${userId}`, data);
+    return API.put(
+      ApiRoutes.UpdateUserProfileInformation(userId),
+      data,
+      getApiConfig(token)
+    );
   }
 
-  return updateUserInformation;
+  return updateUserProfileInformation;
 }
 
 //#endregion
@@ -273,33 +290,53 @@ export function useResendVerificationLink() {
   return resendVerificationLink;
 }
 
-export function useCreateTicketOrder() {
-  async function createTicketOrder(data: TicketOrderRequest) {
-    return API.post(ApiRoutes.TicketOrder, data);
+export function useInitializeTicketOrder() {
+  const requestToken = useRequestCredentialToken();
+  async function initializeTicketOrder(data: TicketOrderRequest) {
+    const token = await requestToken();
+    return API.post(
+      ApiRoutes.InitializeTicketOrder,
+      data,
+      getApiConfig(token.data.token)
+    );
   }
 
-  return createTicketOrder;
+  return initializeTicketOrder;
 }
 
 export function useInitializePaystackPayment() {
+  const requestToken = useRequestCredentialToken();
   async function initializePaystackPayment(data: InitializePayStack) {
-    return API.post(ApiRoutes.Payment, data);
+    const token = await requestToken();
+    return API.post(
+      ApiRoutes.InitializePayment,
+      data,
+      getApiConfig(token.data.token)
+    );
   }
 
   return initializePaystackPayment;
 }
 
 export function useVerifyPaystackPayment() {
+  const requestToken = useRequestCredentialToken();
   async function verifyPaystackPayment(reference: string) {
-    return API.get(`${ApiRoutes.Payment}?trxref=${reference}`);
+    const token = await requestToken();
+    return API.get(
+      ApiRoutes.VerifyPayment(reference),
+      getApiConfig(token.data.token)
+    );
   }
 
   return verifyPaystackPayment;
 }
 
 export function useFetchDashboardInfo() {
-  async function fetchDashboardInfo(userId: string) {
-    return API.get(`${ApiRoutes.Dashboard}?userId=${userId}`);
+  async function fetchDashboardInfo(token: string, userId: string) {
+    return API.get(
+      ApiRoutes.FetchDashboardInformation(userId),
+      getApiConfig(token)
+    );
   }
 
   return fetchDashboardInfo;
@@ -311,16 +348,29 @@ export function useFetchUserTicketOrders() {
     category?: TicketCategory
   ) {
     return API.get(
-      `${ApiRoutes.UserTicketOrder}?userId=${userId}&category=${category}`
+      `${ApiRoutes.FetchTicketsBought}?userId=${userId}&category=${category}`
     );
   }
 
   return fetchUserTicketOrders;
 }
 
+export function useFetchUserBoughtTickets() {
+  async function fetchUserBoughtTickets(token: string, userId: string) {
+    return API.get(ApiRoutes.FetchTicketsBought(userId), getApiConfig(token));
+  }
+
+  return fetchUserBoughtTickets;
+}
+
 export function useFetchOrderInformationById() {
+  const requestToken = useRequestCredentialToken();
   async function fetchOrderInformationById(id: string) {
-    return API.get(`${ApiRoutes.Orders}?ticketOrderId=${id}`);
+    const token = await requestToken();
+    return API.get(
+      ApiRoutes.FetchOrderInformation(id),
+      getApiConfig(token.data.token)
+    );
   }
 
   return fetchOrderInformationById;
@@ -391,13 +441,13 @@ export function useFetchUserFollowMetrics() {
 
 export function useFetchUserRecentTransactions() {
   async function fetchUserRecentTransactions(
+    token: string,
     userId: string,
-    duration?: string
+    duration?: number
   ) {
     return API.get(
-      `${ApiRoutes.UserRecentTransactions}?userId=${userId}${
-        duration ? `&duration=${duration}` : undefined
-      }`
+      ApiRoutes.UserRecentTransactions(userId, duration),
+      getApiConfig(token)
     );
   }
 
@@ -405,31 +455,42 @@ export function useFetchUserRecentTransactions() {
 }
 
 export function useFetchEventLikeStatus() {
-  async function fetchEventLikeStatus(userId: string, eventId: string) {
-    return API.get(
-      `${ApiRoutes.LikeEvent}?userId=${userId}&eventId=${eventId}`
-    );
+  async function fetchEventLikeStatus(token: string, eventId: string) {
+    return API.get(ApiRoutes.EventLikeStatus(eventId), getApiConfig(token));
   }
 
   return fetchEventLikeStatus;
 }
 
 export function useFetchUserFavoriteEvents() {
-  async function fetchUserFavoriteEvents(userId: string) {
-    return API.get(`${ApiRoutes.UserFavoriteEvents}?userId=${userId}`);
+  async function fetchUserFavoriteEvents(token: string, userId: string) {
+    return API.get(ApiRoutes.UserFavoriteEvents(userId), getApiConfig(token));
   }
 
   return fetchUserFavoriteEvents;
 }
 
 export function useLikeEvent() {
-  async function likeEvent(userId: string, eventId: string, action: string) {
+  async function likeEvent(token: string, userId: string, eventId: string) {
     return API.post(
-      `${ApiRoutes.LikeEvent}?userId=${userId}&eventId=${eventId}&action=${action}`
+      ApiRoutes.LikeEvent(eventId, userId),
+      {},
+      getApiConfig(token)
     );
   }
 
   return likeEvent;
+}
+
+export function useUnlikeEvent() {
+  async function unlikeEvent(token: string, userId: string, eventId: string) {
+    return API.delete(
+      ApiRoutes.UnlikeEvent(eventId, userId),
+      getApiConfig(token)
+    );
+  }
+
+  return unlikeEvent;
 }
 
 export function useRequestPasswordResetLink() {
@@ -457,20 +518,23 @@ export function useFetchUserWalletBalance() {
 }
 
 export function useFetchBankList() {
+  const requestToken = useRequestCredentialToken();
   async function fetchBankList() {
-    return API.get(ApiRoutes.FetchAllBanks);
+    const token = await requestToken();
+    return API.get(ApiRoutes.FetchAllBanks, getApiConfig(token.data.token));
   }
 
   return fetchBankList;
 }
 
 export function useFetchBankDetails() {
-  async function fetchBankDetails({
-    accountNumber,
-    bankCode,
-  }: BankAccountDetailsRequest) {
+  async function fetchBankDetails(
+    token: string,
+    { accountNumber, bankCode }: BankAccountDetailsRequest
+  ) {
     return API.get(
-      `${ApiRoutes.FetchBankDetails}?accountNumber=${accountNumber}&bankCode=${bankCode}`
+      ApiRoutes.FetchBankDetails(bankCode, accountNumber),
+      getApiConfig(token)
     );
   }
 
@@ -478,16 +542,24 @@ export function useFetchBankDetails() {
 }
 
 export function useCreateUserBankAccount() {
-  async function createUserBankAccount(userId: string, data: BankAccount) {
-    return API.post(`${ApiRoutes.UserBankAccount}?userId=${userId}`, data);
+  async function createUserBankAccount(
+    token: string,
+    userId: string,
+    data: BankAccount
+  ) {
+    return API.post(
+      ApiRoutes.UserBankAccount(userId),
+      data,
+      getApiConfig(token)
+    );
   }
 
   return createUserBankAccount;
 }
 
 export function useFetchUserBankAccount() {
-  async function fetchUserBankAccount(userId: string) {
-    return API.get(`${ApiRoutes.UserBankAccount}?userId=${userId}`);
+  async function fetchUserBankAccount(token: string, userId: string) {
+    return API.get(ApiRoutes.UserBankAccount(userId), getApiConfig(token));
   }
 
   return fetchUserBankAccount;
@@ -506,6 +578,18 @@ export function useFetchTransactionFee() {
   }
 
   return fetchTransactionFee;
+}
+
+export function useFetchEventCategories() {
+  // Request token
+  const requestToken = useRequestCredentialToken();
+
+  async function fetchEventCategories() {
+    const token = await requestToken();
+    return API.get(ApiRoutes.EventCategory, getApiConfig(token.data.token));
+  }
+
+  return fetchEventCategories;
 }
 
 export function useVerifyCouponCode() {
