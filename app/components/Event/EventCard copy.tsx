@@ -5,12 +5,7 @@ import {
     Dispatch,
     SetStateAction,
 } from "react";
-import {
-    DeleteIcon,
-    EditIcon,
-    LocationPinIcon,
-    ShareIcon,
-} from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import Image from "next/image";
 import moment from "moment";
 import { EventResponse } from "@/app/models/IEvents";
@@ -95,7 +90,7 @@ const EventCard: FunctionComponent<EventCardProps> = ({
                         <span className='text-sm text-white/80 opacity-80'>{moment(event.startDate).format("hh:mm a")}</span>
                     </div>
                     <div className='inline-flex items-center gap-0.5 w-full'>
-                        <LocationPinIcon className='w-4 min-w-4 h-4' />
+                        <Icons.LocationPin className='w-4 min-w-4 h-4' />
                         <p className='text-sm font-light max-w-full text-ellipsis overflow-hidden whitespace-nowrap'>
                             {event.venue}
                         </p>
@@ -129,7 +124,7 @@ const EventCard: FunctionComponent<EventCardProps> = ({
                                     )
                                 }
                             >
-                                <ShareIcon className='size-[0.8rem]' />
+                                <Icons.Share className='size-[0.8rem]' />
                             </button>
                         </div>
                         <p className='text-xs text-grey-3'>{event.allowedGuestType}</p>
@@ -157,7 +152,7 @@ const EventCard: FunctionComponent<EventCardProps> = ({
                             //   className={styles.noStyle}
                             >
                                 <button className='w-12 min-w-12 bg-white rounded-lg cursor-pointer scale-90 grid place-items-center hover:bg-[darken(#fff,_amount:10%)] [&_svg_path]:fill-primary-color'>
-                                    <EditIcon />
+                                    <Icons.Edit />
                                 </button>
                             </Link>
                         )}
@@ -190,7 +185,7 @@ const EventCard: FunctionComponent<EventCardProps> = ({
                                     setIsDeleteConfirmationModalVisible(true);
                                 }}
                             >
-                                <DeleteIcon />
+                                <Icons.Delete />
                             </button>
                         )}
                 </div>

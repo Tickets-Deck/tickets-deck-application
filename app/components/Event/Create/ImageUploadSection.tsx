@@ -1,6 +1,5 @@
 import { ReactElement, FunctionComponent, useState, Dispatch, SetStateAction, useEffect } from "react";
-import styles from '../../../styles/CreateEvent.module.scss';
-import { PhotoIcon } from "../../SVGs/SVGicons";
+import { Icons } from "../../ui/icons";
 import Image from "next/image";
 import { EventRequest } from "@/app/models/IEvents";
 import { FormFieldResponse } from "@/app/models/IFormField";
@@ -20,9 +19,9 @@ interface ImageUploadSectionProps {
 const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = (
     { eventRequest, setEventRequest, mainImageFile,
         setMainImageFile, imageValidationMessage, setImageValidationMessage,
-    mainImageUrl, setMainImageUrl }): ReactElement => {
-        
-        
+        mainImageUrl, setMainImageUrl }): ReactElement => {
+
+
     const [mainImageBase64Url, setMainImageBase64Url] = useState<string>();
     const [subImageFiles, setSubImageFiles] = useState<File[]>();
     const [subImageUrls, setSubImageUrls] = useState<string[]>();
@@ -167,7 +166,7 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = (
 
     useEffect(() => {
         if (mainImageBase64Url) {
-            setEventRequest({ ...eventRequest as EventRequest, mainImageUrl: mainImageBase64Url });
+            setEventRequest({ ...eventRequest as EventRequest, mainImageBase64Url: mainImageBase64Url });
         }
     }, [mainImageBase64Url])
 
@@ -178,21 +177,40 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = (
     // }, [eventRequest])
 
     return (
-        <div className={styles.imageUploadSection}>
-            <div className={styles.mainImageContainer}>
-                <h3>Main Image</h3>
-                <div className={styles.imageUploadContainer}>
-                    <div className={styles.image}>
-                        <input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />
-                        {mainImageUrl && <Image src={mainImageUrl} alt="Event flyer" fill />}
-                        <PhotoIcon />
+        <div className="flex flex-col gap-8 mb-8">
+            <div className="flex flex-col gap-4">
+                <h3 className="font-normal">Main Image</h3>
+                <div className="flex gap-6 items-center md:flex-col md:gap-4">
+                    <div className="w-[250px] md:w-[50%] h-[250px] rounded-lg bg-[rgba($white,0.1)] overflow-hidden relative grid place-items-center cursor-pointer [&_img]:size-full [&_img]:object-cover [&_svg]:w-[40px] [&_svg]:h-[40px] [&_svg_path]:fill-white">
+                        <input
+                            className="imageInput"
+                            type="file"
+                            accept="image/png, image/jpeg"
+                            onChange={(e) => handleFileUpload(e)}
+                        />
+                        {
+                            mainImageUrl &&
+                            <Image
+                                src={mainImageUrl}
+                                alt="Event flyer"
+                                fill
+                            />
+                        }
+                        <Icons.Photo />
                     </div>
-                    <button type="button">
-                        <input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />
+                    <button
+                        type="button"
+                        className="tertiaryButton">
+                        <input
+                            className="imageInput"
+                            type="file"
+                            accept="image/png, image/jpeg"
+                            onChange={(e) => handleFileUpload(e)}
+                        />
                         <span>{mainImageUrl ? "Change image" : "Choose image"}</span>
                     </button>
                 </div>
-                {imageValidationMessage && <span className={styles.errorMsg}>{imageValidationMessage.message}</span>}
+                {imageValidationMessage && <span className="errorMsg">{imageValidationMessage.message}</span>}
             </div>
 
             {/* <div className={styles.subImagesContainer}>

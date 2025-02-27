@@ -1,7 +1,6 @@
 "use client"
 import { CSSProperties, Dispatch, FunctionComponent, ReactElement, SetStateAction, useState } from "react";
 import styles from "../../styles/ConsoleSidebar.module.scss";
-import { AddEventIcon, CaretRightIcon, DashboardIcon, EventIcon, LogoutIcon, OrderIcon, ProfileIcon, WalletIcon } from "../SVGs/SVGicons";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
@@ -9,6 +8,7 @@ import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { motion } from "framer-motion";
 import { mobileMenuVariant } from "@/app/animations/navbarAnimations";
+import { Icons } from "../ui/icons";
 
 interface SidebarProps {
     isMobileSidebarOpen: boolean;
@@ -63,12 +63,12 @@ const Sidebar: FunctionComponent<SidebarProps> = ({ isMobileSidebarOpen, setIsMo
                         route={ApplicationRoutes.Dashboard}
                         currentPageChecker={currentPageIsDashboard}
                         text="Dashboard"
-                        icon={<DashboardIcon />}
+                        icon={<Icons.Dashboard />}
                     />
                     <li
                         className={(currentPageIsEvents || currentPageIsCreateEvent || currentPageIsEditEvent) ? styles.active : ''}
                         onClick={() => setEventsSubLinksIsOpen(!eventsSubLinksIsOpen)}>
-                        <EventIcon /> Events <span className={eventsSubLinksIsOpen ? styles.active : ''}><CaretRightIcon /></span>
+                        <Icons.Event /> Events <span className={eventsSubLinksIsOpen ? styles.active : ''}><Icons.CaretRight /></span>
                     </li>
                     <div className={`${styles.subLinks} ${eventsSubLinksIsOpen ? styles.subLinkContainerIsOpen : ''}`} style={{ '--multiplicant-value': `${3.1}` } as CSSProperties}>
 
@@ -76,19 +76,19 @@ const Sidebar: FunctionComponent<SidebarProps> = ({ isMobileSidebarOpen, setIsMo
                             route={ApplicationRoutes.Events}
                             currentPageChecker={currentPageIsEvents}
                             text="My Events"
-                            icon={<EventIcon />}
+                            icon={<Icons.Event />}
                         />
                         <ReusableLink
                             route={ApplicationRoutes.FavouriteEvents}
                             currentPageChecker={currentPageIsFavorites}
                             text="My Favorites"
-                            icon={<EventIcon />}
+                            icon={<Icons.Event />}
                         />
                         <ReusableLink
                             route={ApplicationRoutes.CreateEvent}
                             currentPageChecker={currentPageIsCreateEvent}
                             text="Create Event"
-                            icon={<AddEventIcon />}
+                            icon={<Icons.AddEvent />}
                         />
                     </div>
 
@@ -96,20 +96,20 @@ const Sidebar: FunctionComponent<SidebarProps> = ({ isMobileSidebarOpen, setIsMo
                         route={ApplicationRoutes.Wallet}
                         currentPageChecker={currentPageIsWallet}
                         text="Wallet"
-                        icon={<WalletIcon />}
+                        icon={<Icons.Wallet />}
                     />
                     <ReusableLink
                         route={ApplicationRoutes.Profile}
                         currentPageChecker={currentPageIsProfile}
                         text="Profile"
-                        icon={<ProfileIcon />}
+                        icon={<Icons.Profile />}
                     />
                     <li
                         className={styles.logoutBtn} onClick={() => {
                             signOut();
                             closeSidebar();
                         }}>
-                        <LogoutIcon /> Logout
+                        <Icons.Logout /> Logout
                     </li>
                 </ul>
             </div>

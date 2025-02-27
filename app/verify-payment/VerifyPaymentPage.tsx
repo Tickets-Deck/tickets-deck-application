@@ -4,7 +4,6 @@ import styles from "../styles/VerifyPaymentPage.module.scss"
 import ComponentLoader from "../components/Loader/ComponentLoader";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useVerifyPaystackPayment } from "../api/apiClient";
-import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import Link from "next/link";

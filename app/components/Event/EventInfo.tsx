@@ -1,18 +1,17 @@
 import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useContext, useEffect, useState } from "react";
-import { CalenderIcon, ShareIcon } from "../SVGs/SVGicons";
-import styles from "@/app/styles/EventInfo.module.scss";
+import { Icons } from "../ui/icons";
 import { Link as ScrollLink } from 'react-scroll';
 import Tooltip from "../custom/Tooltip";
 import Link from "next/link";
 import Image from "next/image";
 import images from "@/public/images";
 import moment from "moment";
-import { EventFavoriteAction, EventResponse } from "@/app/models/IEvents";
+import { EventResponse } from "@/app/models/IEvents";
 import { Theme } from "@/app/enums/Theme";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { ApplicationContext, ApplicationContextData } from "@/app/context/ApplicationContext";
 import { useSession } from "next-auth/react";
-import { useFetchEventLikeStatus, useLikeEvent } from "@/app/api/apiClient";
+import { useFetchEventLikeStatus } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
 import EventLikeButton from "../custom/EventLikeButton";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
@@ -31,10 +30,8 @@ interface EventMainInfoProps {
 const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     { appTheme, eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
         forOrdersPage, hostUrl }): ReactElement => {
-    console.log("🚀 ~ eventInfo:", eventInfo)
 
     const { data: session } = useSession();
-    const likeEvent = useLikeEvent();
     const fetchEventLikeStatus = useFetchEventLikeStatus();
 
     const windowRes = useResponsiveness();
@@ -81,9 +78,9 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     // };
 
     async function handleFetchEventLikeStatus(eventId: string) {
-        await fetchEventLikeStatus(session?.user.id as string, eventId)
+        await fetchEventLikeStatus(session?.user.token as string, eventId)
             .then((response) => {
-                // console.log("🚀 ~ .then ~ response:", response)
+                console.log("🚀 ~ .then ~ fetchEventLikeStatus response:", response)
                 setIsEventLiked(response.data.userLikedEvent);
             })
             .catch((error) => {
@@ -99,7 +96,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     }, [session]);
 
     return (
-        <div className={`flex flex-col md:flex-row items-center rounded-3xl p-6 bg-container-grey gap-4 relative min-h-[320px] ${forOrdersPage ? 'flex-col' : ''}`}>
+        <div className={`flex flex-col md:flex-row items-center rounded-3xl p-6 bg-container-grey gap-4 relative min-h-[320px] ${forOrdersPage ? 'md:flex-col' : ''}`}>
             <div
                 className={`${forOrdersPage ? 'w-full h-[200px]' : 'w-full md:w-1/3 md:min-w-[30%] h-[300px]'} rounded-2xl overflow-hidden relative after after:bg-black after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-[0] hover:after:opacity-40 after:transition-all after:duration-300 group`}>
                 <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill className="object-cover" />
@@ -110,14 +107,14 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                 <div className="flex flex-col w-full gap-3">
                     <h2 className="text-3xl font-semibold text-white">{eventInfo?.title}</h2>
                     <div className="text-xs flex flex-row space-x-2">
-                        <p className="text-gray-300">Posted on: {moment(eventInfo.createdAt).format('Do MMMM YYYY')}</p>
+                        <p className="text-gray-300 text-nowrap">Posted on: {moment(eventInfo.createdAt).format('Do MMMM YYYY')}</p>
                         <span>|</span>
-                        <span>Views: 3504</span>
+                        <span className="flex flex-row items-center gap-1"><Icons.Eye width={16} height={16} /> 3504</span>
                     </div>
 
                     <Link href={`/u/${eventInfo.publisher.username ?? eventInfo.publisher.id}`} className="flex items-center gap-2 w-fit hover:opacity-75">
                         <div className="w-10 h-10 rounded-full overflow-hidden relative">
-                            <Image src={eventInfo.publisher.profilePhoto ?? images.user_avatar} alt='Avatar' fill className="object-cover" />
+                            <Image src={eventInfo.publisher.profilePhoto || images.user_avatar} alt='Avatar' fill className="object-cover" />
                         </div>
                         <span className="text-white text-sm font-medium">{`${eventInfo?.publisher.firstName} ${eventInfo?.publisher.lastName}`}</span>
                     </Link>
@@ -128,7 +125,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     </div>
 
                     <div className="w-full">
-                        <p className="text-sm text-white">{eventInfo.venue}</p>
+                        <p className="text-sm text-white capitalize">{eventInfo.venue}</p>
                         <Link href={`https://www.google.com/maps/search/?api=1&query=${eventInfo.venue}`} target='_blank'>
                             <button className="text-gray-400 underline hover:opacity-75">Get directions on map</button>
                         </Link>
@@ -168,13 +165,13 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     }
                 </div>
 
-                <div className={`${forOrdersPage ? 'w-fit' : 'w-1/12'} flex flex-col w-full md:w-fit gap-3 [&_svg]:w-4 [&_svg]:h-4`}>
+                <div className={`${forOrdersPage ? '!w-fit' : 'w-1/12'} flex flex-col w-full md:w-fit gap-3 [&_svg]:w-4 [&_svg]:h-4`}>
                     <Tooltip
                         position={onMobile ? "top" : onDesktop ? "left" : undefined}
                         tooltipText='Add to calender'>
                         <div className="w-10 h-10 rounded-full bg-white grid place-items-center cursor-pointer"
                             onClick={() => addEventToGoogleCalender && addEventToGoogleCalender()}>
-                            <CalenderIcon />
+                            <Icons.Calender />
                         </div>
                     </Tooltip>
                     <EventLikeButton eventInfo={eventInfo} forEventInfo />
@@ -184,7 +181,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                         <div
                             className="w-10 h-10 rounded-full bg-[#D5542A] grid place-items-center cursor-pointer"
                             onClick={() => shareEvent()}>
-                            <ShareIcon />
+                            <Icons.Share />
                         </div>
                     </Tooltip>
                 </div>

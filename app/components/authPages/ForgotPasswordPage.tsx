@@ -1,10 +1,9 @@
 "use client";
 import { FunctionComponent, ReactElement, useState } from "react";
-import styles from "@/app/styles/AuthStyles.module.scss";
 import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import ComponentLoader from "../Loader/ComponentLoader";
-import { EmailIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import PasswordResetLinkModal from "../Modal/PasswordResetLinkModal";
 import { useRequestPasswordResetLink } from "@/app/api/apiClient";
 import { toast } from "sonner";
@@ -125,7 +124,7 @@ const ForgotPasswordPage: FunctionComponent<
                 </label>
                 <div className='flex rounded-lg overflow-hidden'>
                   <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
-                    <EmailIcon />
+                    <Icons.Email />
                   </span>
                   <input
                     type='email'

@@ -1,14 +1,13 @@
-import { ReactElement, FunctionComponent, Dispatch, SetStateAction, useRef, ChangeEvent, useState, useEffect } from "react";
+import { ReactElement, FunctionComponent, Dispatch, SetStateAction, useRef, useState, useEffect } from "react";
 import styles from '../../../styles/CreateEvent.module.scss';
 import { EventRequest } from "@/app/models/IEvents";
-import { CalenderIcon, CloseIcon, DeleteIcon, EditIcon } from "../../SVGs/SVGicons";
-import { DatePicker } from "@fluentui/react";
-import { TicketRequest, TicketResponse } from "@/app/models/ITicket";
-import ModalWrapper from "../../Modal/ModalWrapper";
-import ComponentLoader from "../../Loader/ComponentLoader";
+import { Icons } from "../../ui/icons";
+import { TicketRequest } from "@/app/models/ITicket";
 import TicketCreationModal from "./TicketsCreation/TicketCreationModal";
 import { FormFieldResponse } from "@/app/models/IFormField";
 import { formattedDateForApi } from "@/utils/dateformatter";
+import BasicDateTimePicker from "../../custom/DateTimePicker";
+import moment from "moment";
 
 
 interface TicketDetailsSectionProps {
@@ -61,7 +60,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
     }, [isTicketCreationModalVisible])
 
     return (
-        <div className={styles.ticketDetailsSection}>
+        <div className="flex flex-col gap-8">
 
             <TicketCreationModal
                 modalVisibility={isTicketCreationModalVisible}
@@ -72,40 +71,42 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
                 selectedTicketIndex={selectedTicketIndex}
             />
 
-            <div className={styles.topSection}>
-                <div className={styles.textContents}>
-                    <h3>Let's Create Tickets</h3>
-                    <p>Click on the "Create ticket" button below to add tickets for your event</p>
+            <div className="flex items-start justify-between">
+                <div>
+                    <h3 className="text-xl font-normal mb-1">Let's Create Tickets</h3>
+                    <p className="text-sm text-white/60">Click on the "Create ticket" button below to add tickets for your event</p>
                 </div>
-                <div className={styles.ticketsCreated}>
-                    <span>{eventRequest?.tickets.length}</span>
-                    <p>tickets created</p>
+                <div className="flex flex-col items-center gap-1">
+                    <span className="w-8 h-8 rounded-full bg-white text-black grid place-items-center">{eventRequest?.tickets.length}</span>
+                    <p className="text-sm text-white/60 md:text-center">tickets created</p>
                 </div>
             </div>
 
-            <div className={styles.ticketCards}>
+            <div className="grid grid-cols-2 gap-4">
                 {
                     eventRequest?.tickets.map((ticket, index) =>
-                        <div className={styles.ticketCard} key={index}>
-                            <div className={styles.ticketCardHeader}>
-                                <h3>{ticket.name}</h3>
-                                <span onClick={() => {
-                                    setIsEditingTicket(true)
-                                    setSelectedTicketIndex(index)
-                                    setIsTicketCreationModalVisible(true)
-                                }}><EditIcon /></span>
+                        <div className="p-6 rounded-lg bg-container-grey flex flex-col gap-6" key={index}>
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-xl font-normal md:text-lg">{ticket.name}</h3>
+                                <span
+                                    className="w-[2.5rem] h-[2.5rem] rounded-lg grid place-items-center bg-dark-grey cursor-pointer md:w-[2rem] md:h-[2rem] md:min-w-[2rem] md:min-h-[2rem] md:cursor-pointer md:[&_svg]:w-[1rem] md:[&_svg]:h-[1rem]"
+                                    onClick={() => {
+                                        setIsEditingTicket(true)
+                                        setSelectedTicketIndex(index)
+                                        setIsTicketCreationModalVisible(true)
+                                    }}><Icons.Edit /></span>
                             </div>
-                            <div className={styles.ticketCardBody}>
-                                <div className={styles.info}>
-                                    <span>Price</span>
+                            <div className="flex md:flex-col md:gap-1 md:mt-auto">
+                                <div className="w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start">
+                                    <span className="text-sm text-grey">Price</span>
                                     <p>&#8358;{ticket.price.toLocaleString()}</p>
                                 </div>
-                                <div className={styles.info}>
-                                    <span>Total available</span>
+                                <div className="w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start">
+                                    <span className="text-sm text-grey">Total available</span>
                                     <p>{ticket.quantity}</p>
                                 </div>
-                                <div className={styles.info}>
-                                    <span>User per Ticket</span>
+                                <div className="w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start">
+                                    <span className="text-sm text-grey">User per Ticket</span>
                                     <p>{ticket.numberOfUsers}</p>
                                 </div>
                             </div>
@@ -115,123 +116,45 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
             </div>
             {
                 eventRequest?.tickets.length == 0 &&
-                <div className={styles.noTicketCard}>
-                    <p>No tickets created yet</p>
+                <div className="flex flex-col items-center justify-center gap-4 w-1/2 m-auto mt-1 mb-4">
+                    <p className="text-sm text-grey">No tickets created yet</p>
                 </div>
             }
 
             {ticketValidationMessage && <span className={styles.errorMsg} style={{ textAlign: 'center' }}>{ticketValidationMessage.message}</span>}
 
-            <button type="button" onClick={() => setIsTicketCreationModalVisible(true)}>Create Ticket</button>
+            <button className="tertiaryButton mx-auto" type="button" onClick={() => setIsTicketCreationModalVisible(true)}>Create Ticket</button>
             <br />
             {
                 eventRequest?.tickets && eventRequest?.tickets.length > 0 &&
-                <div className={styles.formContainer}>
-                    <div className={styles.lhs}>
-                        <div className={styles.formRow}>
-                            <div className={styles.formField}>
+                <div className="flex-col md:flex-row gap-8 size-full mb-8">
+                    <div className="w-full flex flex-col gap-4">
+                        <div className="flex flex-col gap-4 md:flex-row md:gap-8">
+                            <div className="createEventFormField">
                                 <label htmlFor="date">Purchase start date</label>
-                                <div className={styles.inputFieldContainer} ref={purchaseStartDateRef}>
-                                    <CalenderIcon />
-                                    <DatePicker
-                                        style={{
-                                            backgroundColor: '#ed100'
-                                        }}
-                                        textField={{
-                                            style: {
-                                                background: '#ed100'
-                                            },
-                                            borderless: true,
-                                        }}
-                                        calloutProps={{
-                                            gapSpace: 8,
-                                            target: purchaseStartDateRef
-                                        }}
-                                        placeholder="Purchase start date"
-                                        ariaLabel="Select a date"
-                                        minDate={new Date()}
-                                        maxDate={eventRequest?.date as Date ?? undefined}
-                                        value={eventRequest?.purchaseStartDate}
-                                        onSelectDate={(date) => {
+                                <div className="" ref={purchaseStartDateRef}>
+                                    <BasicDateTimePicker
+                                        className='custom-datepicker'
+                                        defaultValue={eventRequest?.purchaseStartDate ? moment(eventRequest.purchaseStartDate) : undefined}
+                                        onChangeFn={(newValue) => {
                                             // Set the form value
-                                            setEventRequest({ ...eventRequest as EventRequest, purchaseStartDate: formattedDateForApi(date as Date) });
-                                            // Close error message
-                                            // setDateErrorMsg(false);
+                                            setEventRequest({ ...eventRequest as EventRequest, purchaseStartDate: formattedDateForApi(newValue.toDate()) });
                                         }}
-                                        onKeyDown={(e) => {
-                                            // console.log('Key down...');
-
-                                            // If backward tab was pressed...
-                                            if (e.shiftKey && e.key === 'Tab') {
-                                                // console.log("Backward tab pressed...");
-                                            }
-
-                                            // If forward was tab was pressed...
-                                            if (e.key === 'Tab') {
-                                                // console.log("Forward tab pressed...");
-                                                // If shit key was enabled...
-                                                if (e.shiftKey)
-                                                    // Exit to aviod backward tab
-                                                    return;
-                                                // console.log('Got here...');
-                                            }
-                                        }}
-                                        underlined={false}
-                                        showGoToToday={false}
-                                        isMonthPickerVisible={true}
+                                        minDate={moment(eventRequest?.startDate)}
                                     />
                                 </div>
                             </div>
-                            <div className={styles.formField}>
+                            <div className="createEventFormField">
                                 <label htmlFor="date">Purchase date deadline</label>
-                                <div className={styles.inputFieldContainer} ref={purchaseEndDateRef}>
-                                    <CalenderIcon />
-                                    <DatePicker
-                                        style={{
-                                            backgroundColor: '#ed100'
-                                        }}
-                                        textField={{
-                                            style: {
-                                                background: '#ed100'
-                                            },
-                                            borderless: true,
-                                        }}
-                                        calloutProps={{
-                                            gapSpace: 8,
-                                            target: purchaseEndDateRef
-                                        }}
-                                        placeholder="Purchase end date"
-                                        ariaLabel="Select a date"
-                                        minDate={eventRequest?.purchaseStartDate as Date ?? new Date()}
-                                        maxDate={eventRequest?.date as Date ?? undefined}
-                                        value={eventRequest?.purchaseEndDate}
-                                        onSelectDate={(date) => {
+                                <div className="" ref={purchaseEndDateRef}>
+                                    <BasicDateTimePicker
+                                        className='custom-datepicker'
+                                        defaultValue={eventRequest?.purchaseStartDate ? moment(eventRequest.purchaseStartDate) : undefined}
+                                        onChangeFn={(newValue) => {
                                             // Set the form value
-                                            setEventRequest({ ...eventRequest as EventRequest, purchaseEndDate: formattedDateForApi(date as Date) });
-                                            // Close error message
-                                            // setDateErrorMsg(false);
+                                            setEventRequest({ ...eventRequest as EventRequest, purchaseEndDate: formattedDateForApi(newValue.toDate()) });
                                         }}
-                                        onKeyDown={(e) => {
-                                            // console.log('Key down...');
-
-                                            // If backward tab was pressed...
-                                            if (e.shiftKey && e.key === 'Tab') {
-                                                // console.log("Backward tab pressed...");
-                                            }
-
-                                            // If forward was tab was pressed...
-                                            if (e.key === 'Tab') {
-                                                // console.log("Forward tab pressed...");
-                                                // If shit key was enabled...
-                                                if (e.shiftKey)
-                                                    // Exit to aviod backward tab
-                                                    return;
-                                                // console.log('Got here...');
-                                            }
-                                        }}
-                                        underlined={false}
-                                        showGoToToday={false}
-                                        isMonthPickerVisible={true}
+                                        minDate={moment(eventRequest?.purchaseStartDate)}
                                     />
                                 </div>
                             </div>

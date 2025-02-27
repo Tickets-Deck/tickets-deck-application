@@ -2,12 +2,13 @@ import { Dispatch, FunctionComponent, ReactElement, SetStateAction } from "react
 import styles from "../../styles/ConsoleTopbar.module.scss";
 import Image from "next/image";
 import images from "../../../public/images";
-import { HamburgerMenuIcon, SearchIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
 
 interface TopbarProps {
     isMobileSidebarOpen: boolean
@@ -16,8 +17,9 @@ interface TopbarProps {
 
 const Topbar: FunctionComponent<TopbarProps> = ({ isMobileSidebarOpen, setIsMobileSidebarOpen }): ReactElement => {
 
-    const { data: session } = useSession();
-    const user = session?.user;
+    const userInfo = useSelector(
+        (state: RootState) => state.userCredentials.userInfo
+    );
 
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
@@ -42,15 +44,15 @@ const Topbar: FunctionComponent<TopbarProps> = ({ isMobileSidebarOpen, setIsMobi
                 <Link href={ApplicationRoutes.Profile}>
                     <div className={styles.accountContainer}>
                         <div className={styles.accountContainer__image}>
-                            <Image src={user?.image ?? images.user_avatar} fill alt="Profile" />
+                            <Image src={userInfo?.profilePhoto || images.user_avatar} fill alt="Profile" />
                         </div>
-                        <h3>{user?.name ?? user?.username}</h3>
+                        <h3>{userInfo?.firstName ?? userInfo?.username}</h3>
                     </div>
                 </Link>
                 {
                     onMobile &&
                     <motion.span whileTap={{ scale: 0.6 }} className={styles.menu} onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}>
-                        <HamburgerMenuIcon />
+                        <Icons.HamburgerMenu />
                     </motion.span>
                 }
             </div>

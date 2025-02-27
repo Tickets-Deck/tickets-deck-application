@@ -4,13 +4,15 @@ import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import Image from "next/image";
 import images from "@/public/images";
-import { CaretDownIcon } from "../SVGs/SVGicons";
+import { CaretDownIcon } from "../ui/icons";
 import { useDispatch } from "react-redux";
 import { signOut } from "next-auth/react";
 import { clearUserCredentials } from "@/app/redux/features/user/userSlice";
 import useOuterClick from "@/app/hooks/useOuterClick";
 import { Session } from "next-auth";
 import { Theme } from "@/app/enums/Theme";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
 
 interface DesktopNavbarProps {
     isLightTheme: boolean;
@@ -20,7 +22,10 @@ interface DesktopNavbarProps {
 
 const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ session, appTheme }): ReactElement => {
     const dispatch = useDispatch();
-    const user = session?.user;
+
+    const userInfo = useSelector(
+        (state: RootState) => state.userCredentials.userInfo
+    );
 
     const [navbarDropdownIsVisible, setNavbarDropdownIsVisible] = useState(false);
 
@@ -70,12 +75,12 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ session, appThem
                     ref={navbarDropdownRef}
                     onClick={() => setNavbarDropdownIsVisible(!navbarDropdownIsVisible)}
                 >
-                    {user ? (
+                    {userInfo ? (
                         <>
                             <div className='size-8 border border-grey/10 grid place-items-center rounded-full relative overflow-hidden [&_img]:size-full [&_img]:object-cover [&_svg]:size-[0.85rem]'>
                                 {
                                     <Image
-                                        src={user?.image ?? images.user_avatar}
+                                        src={userInfo.profilePhoto || images.user_avatar}
                                         alt='Profile picture'
                                         fill
                                         sizes='auto'
@@ -83,7 +88,7 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ session, appThem
                                 }
                             </div>
                             <h3 className='font-medium text-sm text-primary-color-sub max-w-[90px] text-ellipsis overflow-hidden whitespace-nowrap'>
-                                {user?.name ?? "Account"}
+                                {userInfo.firstName ?? "Account"}
                             </h3>
                             <span className='size-6 grid place-items-center rounded-lg group-hover:bg-white/10'>
                                 <CaretDownIcon className='size-4 [&_path]:fill-primary-color-sub text-white' />

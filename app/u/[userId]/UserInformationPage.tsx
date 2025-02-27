@@ -2,13 +2,11 @@
 import { ReactElement, FunctionComponent, useState, useEffect } from "react";
 import styles from "../../styles/UserInformationPage.module.scss";
 import { UserCredentialsResponse } from "@/app/models/IUser";
-import { useFetchUserFollowMetrics, useFetchUserInformation, useFetchUserInformationByUserName, useFollowUser } from "@/app/api/apiClient";
+import { useFetchUserFollowMetrics, useFetchUserInformationByUserName, useFollowUser } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
-import UserAvatarContainer from "@/app/components/ProfilePage/UserAvatarContainer";
 import Link from "next/link";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import UserCoverContainer from "@/app/components/ProfilePage/UserCoverContainer";
-import { FacebookIcon, InstagramIcon, TwitterIcon } from "@/app/components/SVGs/SVGicons";
 import { Session } from "next-auth";
 import UserPersonalInfo from "@/app/components/UserInformationPage/UserPersonalInfo";
 import UserSocials from "@/app/components/UserInformationPage/UserSocials";

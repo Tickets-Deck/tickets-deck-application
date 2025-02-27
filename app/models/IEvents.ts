@@ -10,6 +10,14 @@ export type EventImages = {
   imageUrl: string;
 };
 
+export type EventPublisher = {
+  username: string;
+  id: string;
+  profilePhoto: string;
+  firstName: string;
+  lastName: string;
+};
+
 export type EventRequest = {
   eventId: string;
   publisherId: string;
@@ -18,13 +26,13 @@ export type EventRequest = {
   description: string;
   location: Location;
   venue: string;
-  date: Date;
-  time: string;
-  category: string;
+  startDate: Date;
+  endDate: Date;
+  categoryId: string;
   tags: string[];
   visibility: EventVisibility;
 
-  mainImageUrl: string;
+  mainImageBase64Url: string;
   images: EventImages[];
 
   currency: string;
@@ -41,11 +49,13 @@ export type EventResponse = {
   publisherId: string;
   title: string;
   description: string;
+  onlineLink: string | null;
   locationId: string | null;
   venue: string;
   startDate: string;
-  time: string;
+  endDate: string;
   category: string;
+  categoryId: string;
   visibility: string;
   mainImageUrl: string;
   currency: string;
@@ -54,23 +64,25 @@ export type EventResponse = {
   allowedGuestType: string;
   createdAt: string;
   updatedAt: string;
-  publisher: UserCredentialsResponse;
+//   publisher: UserCredentialsResponse;
+  publisher: EventPublisher;
   tickets: TicketResponse[];
-  images: [];
+  subImages: [];
   tags: string[];
   location: Location | null;
   isArchived: boolean;
+  isFeatured: boolean;
 
   bookmarksCount: number;
   favoritesCount: number;
-  bookmarks: Bookmarks[];
-  favorites: Favourites[];
+//   bookmarks: Bookmarks[];
+//   favorites: Favourites[];
   ticketsPurchasedCount: number;
   ticketsPurchased: TicketPurchased[];
   organizerPaysFee: boolean;
 };
 
 export enum EventFavoriteAction {
-    Like = "like",
-    Unlike = "unlike"
+  Like = "like",
+  Unlike = "unlike",
 }

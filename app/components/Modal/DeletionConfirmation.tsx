@@ -1,10 +1,7 @@
 import { FunctionComponent, ReactElement, Dispatch, SetStateAction } from "react";
 import styles from "../../styles/DeletionConfirmation.module.scss";
-
 import ModalWrapper from "./ModalWrapper";
-import Image from "next/image";
-import images from "@/public/images";
-import { CloseIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import ComponentLoader from "../Loader/ComponentLoader";
 
 interface DeletionConfirmationModalProps {
@@ -27,7 +24,7 @@ const DeletionConfirmationModal: FunctionComponent<DeletionConfirmationModalProp
                         <h3>Are you sure?</h3>
                         <p>This action cannot be reversed.</p>
                     </div>
-                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><CloseIcon /></span>
+                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><Icons.Close /></span>
                 </div>
                 {/* <div className={styles.miniEventDetailsContainer}>
                     <div className={styles.miniEventDetails}>

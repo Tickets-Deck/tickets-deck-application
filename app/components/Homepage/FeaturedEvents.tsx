@@ -1,5 +1,5 @@
 "use client";
-import { FunctionComponent, ReactElement } from "react";
+import { FunctionComponent, ReactElement, useContext } from "react";
 import Image from "next/image";
 import images from "../../../public/images";
 import Link from "next/link";
@@ -88,9 +88,12 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
             </div>
             <div className='w-full overflow-x-auto relative overflow-hidden'>
                 {!isFetchingEvents && featuredEvents.length > 0 && (
-                    <div className='overflow-x-auto snap-mandatory h-[300px] gap-1 flex-nowrap'>
+                    <div className='overflow-x-auto snap-mandatory h-[300px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 flex-nowrap'>
                         {featuredEvents.slice(0, 3).map((event, index) => (
-                            <EventCard event={event} key={index} forFeaturedEvents />
+                            <EventCard
+                                event={event}
+                                key={index}
+                            />
                         ))}
                     </div>
                 )}

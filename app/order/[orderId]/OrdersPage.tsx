@@ -1,15 +1,11 @@
 "use client"
 import { ReactElement, FunctionComponent, useEffect, useState, useRef } from "react";
 import styles from "@/app/styles/OrdersPage.module.scss";
-import { ArrowLeftIcon, DownloadIcon } from "../../components/SVGs/SVGicons";
 import EventMainInfo from "../../components/Event/EventInfo";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { EventResponse } from "../../models/IEvents";
 import { useFetchOrderInformationById } from "@/app/api/apiClient";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { UserTicketOrderInfo } from "@/app/models/IUserTicketOrder";
-import moment from "moment";
 import { RootState } from "@/app/redux/store";
 import { useSelector } from "react-redux";
 import { UserTicketOrder } from "@/app/models/ITicketOrder";
@@ -30,6 +26,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
 
     const [isFetchingOrderInformation, setIsFetchingOrderInformation] = useState(true);
     const [orderInformation, setOrderInformation] = useState<UserTicketOrderInfo | null>(null);
+    console.log("🚀 ~ orderInformation:", orderInformation)
     const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] = useState<TicketPass>();
     const [isTicketVisible, setIsTicketVisible] = useState(false);
 

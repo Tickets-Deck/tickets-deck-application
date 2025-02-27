@@ -2,11 +2,11 @@ import { CSSProperties, FunctionComponent, ReactElement, useState, Dispatch, Set
 import styles from "@/app/styles/components/toggler.module.scss";
 
 interface TogglerProps {
-    mainColor: string;
-    disabledColor: string;
-    togglerIndicatorColor: string;
     setCheckboxValue: Dispatch<SetStateAction<boolean>>
     checkboxValue: boolean
+    mainColor?: string;
+    disabledColor?: string;
+    togglerIndicatorColor?: string;
 }
 
 const Toggler: FunctionComponent<TogglerProps> = (

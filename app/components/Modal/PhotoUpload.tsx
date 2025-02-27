@@ -1,7 +1,7 @@
 import { ReactElement, FunctionComponent, Dispatch, SetStateAction, useState } from 'react';
 import ModalWrapper from './ModalWrapper';
 import styles from "../../styles/PhotoUpload.module.scss";
-import { CloseIcon } from '../SVGs/SVGicons';
+import { Icons } from '../ui/icons';
 import Image from 'next/image';
 import { useUploadUserProfilePhoto } from '@/app/api/apiClient';
 import { useSession } from 'next-auth/react';
@@ -128,7 +128,7 @@ const PhotoUpload: FunctionComponent<PhotoUploadProps> = ({ visibility, setVisib
             <div className={styles.photoUploadContainer}>
                 <div className={styles.topArea}>
                     <h2>Upload Photo</h2>
-                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><CloseIcon /></span>
+                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><Icons.Close /></span>
                 </div>
                 <div className={styles.photoContainer}>
                     <div className={styles.photo}>

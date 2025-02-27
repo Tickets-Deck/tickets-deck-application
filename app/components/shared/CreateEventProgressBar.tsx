@@ -13,7 +13,7 @@ interface CreateEventProgressBarProps {
 const CreateEventProgressBar: FunctionComponent<CreateEventProgressBarProps> = (
     { eventCreationStage, setEventCreationStage, eventRequest, disableAllTabs }): ReactElement => {
 
-    const imageUploadIsUndone = eventCreationStage === EventCreationStage.BasicInfo && !eventRequest?.mainImageUrl;
+    const imageUploadIsUndone = eventCreationStage === EventCreationStage.BasicInfo && !eventRequest?.mainImageBase64Url;
     const ticketDetailsIsUndone = eventCreationStage < EventCreationStage.TicketDetails && !eventRequest?.tickets;
     const reviewAndPublishIsUndone = eventCreationStage < EventCreationStage.Confirmation && !eventRequest?.tickets;
 

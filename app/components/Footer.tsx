@@ -3,7 +3,7 @@ import { FunctionComponent, ReactElement } from "react";
 import Link from "next/link";
 import images from "../../public/images";
 import Image from "next/image";
-import { InstagramIcon, LinkedInIcon, TwitterIcon } from "./SVGs/SVGicons";
+import { Icons } from "./ui/icons";
 import SubscriptionFormSection from "./Footer/SubscriptionFormSection";
 import { useSession } from "next-auth/react";
 import { ApplicationRoutes } from "../constants/applicationRoutes";
@@ -38,12 +38,12 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
                     </Link> */}
           <Link href='https://x.com/ticketsdeck_e' target='_blank'>
             <span className='inline-flex cursor-pointer group'>
-              <TwitterIcon className='size-6 mx-auto group-hover:-translate-y-1' />
+              <Icons.Twitter className='size-6 mx-auto group-hover:-translate-y-1' />
             </span>
           </Link>
           <Link href='https://www.instagram.com/ticketsdeck_e' target='_blank'>
             <span className='inline-flex cursor-pointer group'>
-              <InstagramIcon className='size-6 mx-auto group-hover:-translate-y-1' />
+              <Icons.Instagram className='size-6 mx-auto group-hover:-translate-y-1' />
             </span>
           </Link>
           <Link
@@ -51,7 +51,7 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
             target='_blank'
           >
             <span className='inline-flex cursor-pointer group'>
-              <LinkedInIcon className='size-6 mx-auto group-hover:-translate-y-1' />
+              <Icons.LinkedIn className='size-6 mx-auto group-hover:-translate-y-1' />
             </span>
           </Link>
         </div>

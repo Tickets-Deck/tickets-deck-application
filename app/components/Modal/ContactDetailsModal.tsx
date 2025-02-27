@@ -1,6 +1,6 @@
 import { FunctionComponent, ReactElement, Dispatch, SetStateAction } from "react";
 import ModalWrapper from "./ModalWrapper";
-import { CloseIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import { CustomerContactDetails } from "@/app/models/IUser";
 import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
@@ -30,6 +30,8 @@ const ContactDetailsModal: FunctionComponent<ContactDetailsModalProps> = (
             return false
         }
 
+        setContactDetails({...contactDetails as CustomerContactDetails, phone: `+234${contactDetails?.phone.replace(/^0/, '')}`})
+
         return true
     }
 
@@ -43,7 +45,7 @@ const ContactDetailsModal: FunctionComponent<ContactDetailsModalProps> = (
                     <span
                         className="ml-auto w-8 h-8 min-w-8 min-h-8 rounded-full grid place-items-center cursor-pointer hover:bg-white/10"
                         onClick={() => setVisibility(false)}>
-                        <CloseIcon stroke="#fff" />
+                        <Icons.Close stroke="#fff" />
                     </span>
                 </div>
                 <div className="flex flex-col mb-3">
@@ -55,7 +57,7 @@ const ContactDetailsModal: FunctionComponent<ContactDetailsModalProps> = (
                     </span>
                 </div>
 
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 [&_input]:outline-none">
                     <input
                         className="w-full p-2 border-[1px] border-solid border-grey/30 bg-grey/10 rounded-lg"
                         type="text"

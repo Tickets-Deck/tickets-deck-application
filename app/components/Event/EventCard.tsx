@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { FunctionComponent, ReactElement } from "react";
-import { LocationPinIcon } from "../SVGs/SVGicons";
+import { FunctionComponent, ReactElement, useContext } from "react";
+import { Icons } from "../ui/icons";
 import Image from "next/image";
 import moment from "moment";
 import { EventResponse } from "@/app/models/IEvents";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import EventLikeButton from "../custom/EventLikeButton";
+import { ToastContext } from "@/app/context/ToastCardContext";
 
 interface EventCardProps {
     event: EventResponse;
@@ -11,19 +14,18 @@ interface EventCardProps {
 
 const EventCard: FunctionComponent<EventCardProps> = ({ event }): ReactElement => {
 
-    // function shareEvent(eventUrl: string) {
-    //     navigator.clipboard
-    //         .writeText(`${event.title} - Ticketsdeck Events: ${eventUrl}`)
-    //         .then(() => {
-    //             toast.success(`The link to ${event.title} has been copied.`);
-    //         })
-    //         .catch((error) => {
-    //             toast.error("Failed to copy event link. Please try again.");
-    //         });
-    // }
+    const toast = useContext(ToastContext);
 
-    let eventDate = new Date(event.startDate);
-    const currentDate = new Date();
+    function shareEvent(eventUrl: string) {
+        navigator.clipboard
+            .writeText(`${event.title} - Ticketsdeck Events: ${eventUrl}`)
+            .then(() => {
+                toast?.logSuccess(`Success`, `The link to ${event.title} has been copied.`);
+            })
+            .catch((error) => {
+                toast?.logError(`Error`, `Failed to copy event link. Please try again.`);
+            });
+    };
 
     return (
         <div className={`flex flex-col relative w-full overflow-x-auto snap-center md:w-full px-[10px] pt-[20px] pb-[10px] rounded-xl min-[520px]:overflow-hidden h-[300px] max-h-full bg-dark-grey-2`}>
@@ -51,11 +53,34 @@ const EventCard: FunctionComponent<EventCardProps> = ({ event }): ReactElement =
                         <span className='text-sm text-white/80 opacity-80'>{moment(event.startDate).format("hh:mm a")}</span>
                     </div>
                     <div className='inline-flex items-center gap-0.5 w-full'>
-                        <LocationPinIcon className='w-4 min-w-4 h-4' />
-                        <p className='text-sm font-light max-w-full text-ellipsis overflow-hidden whitespace-nowrap'>
+                        <Icons.LocationPin className='w-4 min-w-4 h-4' />
+                        <p className='text-sm font-light max-w-full text-ellipsis overflow-hidden whitespace-nowrap capitalize'>
                             {event.venue}
                         </p>
                     </div>
+                </div>
+                <div className='basis-[15%] flex flex-col items-end justify-between h-full'>
+                    <div className='flex gap-[0.45rem]'>
+                        <EventLikeButton
+                            eventInfo={event}
+                            forEventCard
+                            // skipFetch={forFeaturedEvents}
+                        />
+                        <button
+                            className='size-[1.875rem] rounded-full grid place-items-center cursor-pointer bg-[#d5542a] hover:bg-[darken(#d5542a,_amount:10%)]'
+                            onClick={() =>
+                                shareEvent(
+                                    `${window.location.origin +
+                                    ApplicationRoutes.GeneralEvent +
+                                    event.id
+                                    }`
+                                )
+                            }
+                        >
+                            <Icons.Share className='size-[0.8rem]' />
+                        </button>
+                    </div>
+                    <p className='text-xs text-grey-3'>{event.allowedGuestType}</p>
                 </div>
             </div>
 

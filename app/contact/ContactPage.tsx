@@ -4,14 +4,13 @@ import styles from "@/app/styles/Contact.module.scss";
 import images from "@/public/images";
 import Link from "next/link";
 import PageHeroSection from "../components/shared/PageHeroSection";
-import { LocationIcon, MailIcon, PhoneIcon } from "../components/SVGs/SVGicons";
+import { Icons } from "../components/ui/icons";
 import { CustomerEnquiry } from "../models/ICustomerEnquiries";
 import ComponentLoader from "../components/Loader/ComponentLoader";
 import { useCreateCustomerEnquiry } from "../api/apiClient";
 import { toast } from "sonner"
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
-import { Theme } from "../enums/Theme";
 
 interface ContactPageProps {
 
@@ -88,21 +87,21 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
                         <Link
                             className="flex items-center gap-[0.35rem] text-[0.75rem] text-white opacity-70 hover:opacity-100 hover:text-primary-color-sub no-underline w-fit"
                             href="mailto:ticketsdeckevents@gmail.com">
-                            <MailIcon />ticketsdeckevents@gmail.com
+                            <Icons.Mail />ticketsdeckevents@gmail.com
                         </Link>
                         <Link
                             className="flex items-center gap-[0.35rem] text-[0.75rem] text-white opacity-70 hover:opacity-100 hover:text-primary-color-sub no-underline w-fit"
                             href="tel:8065926316">
-                            <PhoneIcon />(234) 806 592 6316
+                            <Icons.Phone />(234) 806 592 6316
                         </Link>
                         <Link
                             className="flex items-center gap-[0.35rem] text-[0.75rem] text-white opacity-70 hover:opacity-100 hover:text-primary-color-sub no-underline w-fit"
                             href="tel:9057977870">
-                            <PhoneIcon />(234) 905 797 7870
+                            <Icons.Phone />(234) 905 797 7870
                         </Link>
                         <Link
                             className="flex items-center gap-[0.35rem] text-[0.75rem] text-white opacity-70 hover:opacity-100 hover:text-primary-color-sub no-underline w-fit"
-                            href={"https://www.google.com/maps/search/?api=1&query=Lagos,+Nigeria"}><LocationIcon />Lagos, Nigeria
+                            href={"https://www.google.com/maps/search/?api=1&query=Lagos,+Nigeria"}><Icons.Location />Lagos, Nigeria
                         </Link>
                     </div>
                 </div>

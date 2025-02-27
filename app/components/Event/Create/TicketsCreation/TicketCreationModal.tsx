@@ -1,6 +1,6 @@
 import { useCreateTicketForSpecifiedEvent } from "@/app/api/apiClient";
 import ModalWrapper from "@/app/components/Modal/ModalWrapper";
-import { CloseIcon } from "@/app/components/SVGs/SVGicons";
+import { Icons } from "@/app/components/ui/icons";
 import { catchError } from "@/app/constants/catchError";
 import { EventRequest } from "@/app/models/IEvents";
 import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
@@ -233,7 +233,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
                             setModalVisibility(false)
                             setTicketFormRequest({} as TicketRequest);
                         }}>
-                        <CloseIcon />
+                        <Icons.Close />
                     </span>
                 </div>
                 <div className={styles.mainFormSection}>

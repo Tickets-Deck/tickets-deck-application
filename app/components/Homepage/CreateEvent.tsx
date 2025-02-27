@@ -1,20 +1,12 @@
 "use client";
 import { FunctionComponent, ReactElement } from "react";
-import styles from "../../styles/Home.module.scss";
-import Image from "next/image";
-import images from "../../../public/images";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 interface CreateEventProps {}
 
 const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
-  const windowRes = useResponsiveness();
-  const isMobile = windowRes.width && windowRes.width < 768;
-  const onMobile = typeof isMobile == "boolean" && isMobile;
-  const onDesktop = typeof isMobile == "boolean" && !isMobile;
 
   const { data: session } = useSession();
   const user = session?.user;

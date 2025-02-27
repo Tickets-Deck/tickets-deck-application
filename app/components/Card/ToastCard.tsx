@@ -1,204 +1,20 @@
-"use client"
-import { CSSProperties, FunctionComponent, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal, useContext, useEffect, useState } from "react";
-// import { AiOutlineClose, AiOutlineWarning, AiOutlineInfoCircle } from 'react-icons/ai';
-// import { CheckOutlined } from '@ant-design/icons';
-import styles from '../../styles/ToastCard.module.scss';
-import { CloseMenuIcon, OutlineCheckIcon, OutlineCloseIcon, OutlineInfoIcon, OutlineWarningIcon } from "../../components/SVGs/SVGicons";  
-// import useResponsive from "../../hooks/useResponsiveness";
-import { ToastContext } from "../../extensions/toast";
-import { ToastMessageType } from "../../models/ToastMessageType";
-import useResponsiveness from "@/app/hooks/useResponsiveness";
+import { CSSProperties, FunctionComponent, ReactElement, useContext, useEffect } from "react";
+import { Icons } from "../ui/icons";
+import { ToastContext } from "@/app/context/ToastCardContext";
+import { indicatorColor } from "@/app/styles/styles";
+import { ToastMessageType } from "@/app/enums/ToastMessageType";
+
 
 interface ToastCardProps {
-    visibility: Boolean;
+    visibility: boolean;
     messageType: ToastMessageType;
     title: string;
     description: string;
     timeout: number;
+    position: string;
 }
 
-function SuccessCard(props: { messageTitle: string | number | boolean; messageInfo: string | number | boolean; }) {
-
-    const windowRes = useResponsiveness();
-    const isMobile = windowRes.width && windowRes.width < 768;
-    const onMobile = typeof (isMobile) == "boolean" && isMobile;
-    const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
-
-    //States for cards visibility
-    const [visible, setVisibility] = useState(false);
-    const hideCard = () => {
-        setVisibility(!visible);
-    }
-    //Show and hide functions for the sidebar elements
-    const show = () => {
-        if (visible) {
-            return `${styles.show}`
-        } else {
-            return `${styles.hide}`
-        }
-    }
-    const hide = () => {
-        if (visible) {
-            return `${styles.hide}`
-        } else {
-            return `${styles.show}`
-        }
-    }
-    return (
-        <div className={onMobile ? `${styles.toastCard} ${styles.successCard} ${hide()}` : onDesktop ? `${styles.toastCardMobile} ${styles.successCardMobile} ${hide()}` : styles.toastCard}>
-            <div className={styles.toastCard__messageType}>
-                <div className={styles.indicatorSuccess}>
-                    <div className={styles.indicatorSuccess__box}>
-                        <OutlineCheckIcon />
-                    </div>
-                </div>
-                <div className={styles.info}>
-                    <h4 className={styles.info__title}>{props.messageTitle}</h4>
-                    <p className={styles.info__description}>
-                        {props.messageInfo}
-                    </p>
-                </div>
-            </div>
-            <button className={styles.closeCard} onClick={hideCard}>
-                <OutlineCloseIcon />
-            </button>
-        </div>
-    )
-}
-
-function InfoCard(props: { messageTitle: string | number | boolean; messageInfo: string | number | boolean; }) {
-    //States for cards visibility
-    const [visible, setVisibility] = useState(false);
-    const hideCard = () => {
-        setVisibility(!visible);
-    }
-    //Show and hide functions for the sidebar elements
-    const show = () => {
-        if (visible) {
-            return `${styles.show}`
-        } else {
-            return `${styles.hide}`
-        }
-    }
-    const hide = () => {
-        if (visible) {
-            return `${styles.hide}`
-        } else {
-            return `${styles.show}`
-        }
-    }
-    return (
-        <div className={`${styles.toastCard} ${styles.infoCard} ${hide()} `}>
-            <div className={styles.toastCard__messageType}>
-                <div className={styles.indicatorInfo}>
-                    <div className={styles.indicatorInfo__box}>
-                        <OutlineInfoIcon />
-                    </div>
-                </div>
-                <div className={styles.info}>
-                    <h4 className={styles.info__title}>{props.messageTitle} </h4>
-                    <p className={styles.info__description}>
-                        {props.messageInfo}
-                    </p>
-                </div>
-            </div>
-            <button className={styles.closeCard} onClick={hideCard}>
-                <OutlineCloseIcon />
-            </button>
-        </div>
-
-    )
-}
-
-function WarningCard(props: { messageTitle: string | number | boolean; messageInfo: string | number | boolean; }) {
-    //States for cards visibility
-    const [visible, setVisibility] = useState(false);
-    const hideCard = () => {
-        setVisibility(!visible);
-    }
-    //Show and hide functions for the sidebar elements
-    const show = () => {
-        if (visible) {
-            return `${styles.show}`
-        } else {
-            return `${styles.hide}`
-        }
-    }
-    const hide = () => {
-        if (visible) {
-            return `${styles.hide}`
-        } else {
-            return `${styles.show}`
-        }
-    }
-    return (
-        <div className={`${styles.toastCard} ${styles.warningCard} ${hide()} `}>
-            <div className={styles.toastCard__messageType}>
-                <div className={styles.indicatorWarning}>
-                    <div className={styles.indicatorWarning__box}>
-                        <OutlineWarningIcon />
-                    </div>
-                </div>
-                <div className={styles.info}>
-                    <h4 className={styles.info__title}>{props.messageTitle} </h4>
-                    <p className={styles.info__description}>
-                        {props.messageInfo}
-                    </p>
-                </div>
-            </div>
-            <button className={styles.closeCard} onClick={hideCard}>
-                <OutlineCloseIcon />
-            </button>
-        </div>
-
-    )
-}
-
-function ErrorCard(props: { messageTitle: string | number | boolean; messageInfo: string | number | boolean; }) {
-    //States for cards visibility
-    const [visible, setVisibility] = useState(false);
-    const hideCard = () => {
-        setVisibility(!visible);
-    }
-    //Show and hide functions for the sidebar elements
-    const show = () => {
-        if (visible) {
-            return `${styles.show}`
-        } else {
-            return `${styles.hide}`
-        }
-    }
-    const hide = () => {
-        if (visible) {
-            return `${styles.hide}`
-        } else {
-            return `${styles.show}`
-        }
-    }
-    return (
-        <div className={`${styles.toastCard} ${styles.dangerCard} ${hide()} `}>
-            <div className={styles.toastCard__messageType}>
-                <div className={styles.indicatorDanger}>
-                    <div className={styles.indicatorDanger__box}>
-                        <OutlineCloseIcon />
-                    </div>
-                </div>
-                <div className={styles.info}>
-                    <h4 className={styles.info__title}>{props.messageTitle}  </h4>
-                    <p className={styles.info__description}>
-                        {props.messageInfo}
-                    </p>
-                </div>
-            </div>
-            <button className={styles.closeCard} onClick={hideCard}>
-                <OutlineCloseIcon />
-            </button>
-        </div>
-
-    )
-}
-
-const ToastCard: FunctionComponent<ToastCardProps> = ({ messageType, description, title, visibility, timeout }): ReactElement => {
+const ToastCard: FunctionComponent<ToastCardProps> = ({ messageType, description, title, visibility, timeout, position }): ReactElement => {
 
     // Fetch the toast context
     const toastHandler = useContext(ToastContext);
@@ -211,7 +27,7 @@ const ToastCard: FunctionComponent<ToastCardProps> = ({ messageType, description
     }
 
     useEffect(() => {
-        let closeTimeout = setTimeout(() => {
+        const closeTimeout = setTimeout(() => {
 
             // Close the toast
             toastHandler?.closeToast();
@@ -226,102 +42,123 @@ const ToastCard: FunctionComponent<ToastCardProps> = ({ messageType, description
     // set style accoroding to message type 
     function setCardStyle() {
         if (messageType == ToastMessageType.Success) {
-            return `${styles.successCard}`
+            return {
+                closeBtnHover: "hover:bg-green-500/20"
+            }
         }
         if (messageType == ToastMessageType.Info) {
-            return `${styles.infoCard}`
+            return {
+                closeBtnHover: "hover:bg-blue-500/20"
+            }
         }
         if (messageType == ToastMessageType.Warning) {
-            return `${styles.warningCard}`
+            return {
+                closeBtnHover: "hover:bg-yellow-500/20"
+            }
         }
         if (messageType == ToastMessageType.Error) {
-            return `${styles.dangerCard}`
+            return {
+                closeBtnHover: "hover:bg-red-500/20"
+            }
         }
     }
     function indicatorType() {
         if (messageType == ToastMessageType.Success) {
-            return `${styles.indicatorsuccess}`
+            return `${indicatorColor}`
         }
         if (messageType == ToastMessageType.Info) {
-            return `${styles.indicatorinfo}`
+            return `${indicatorColor}`
         }
         if (messageType == ToastMessageType.Warning) {
-            return `${styles.indicatorwarning}`
+            return `${indicatorColor}`
         }
         if (messageType == ToastMessageType.Error) {
-            return `${styles.indicatordanger}`
+            return `${indicatorColor}`
         }
     }
     function indicatorTitle() {
         if (messageType == ToastMessageType.Success) {
-            return `${styles.titlesuccess}`
+            return `text-successColor`
         }
         if (messageType == ToastMessageType.Info) {
-            return `${styles.titleinfo}`
+            return `text-info`
         }
         if (messageType == ToastMessageType.Warning) {
-            return `${styles.titlewarning}`
+            return `text-warning`
         }
         if (messageType == ToastMessageType.Error) {
-            return `${styles.titledanger}`
+            return `text-danger`
         }
     }
     function loaderSpan() {
         if (messageType == ToastMessageType.Success) {
-            return `${styles.spansuccess}`
+            return `bg-successColor`
         }
         if (messageType == ToastMessageType.Info) {
-            return `${styles.spaninfo}`
+            return `bg-info`
         }
         if (messageType == ToastMessageType.Warning) {
-            return `${styles.spanwarning}`
+            return `bg-warning`
         }
         if (messageType == ToastMessageType.Error) {
-            return `${styles.spandanger}`
+            return `bg-danger`
         }
     }
     function indicatorBox() {
         if (messageType == ToastMessageType.Success) {
-            return `${styles.indicatorsuccess__box}`
+            return `${indicatorColor}`
         }
         if (messageType == ToastMessageType.Info) {
-            return `${styles.indicatorinfo__box}`
+            return `text-successColor`
         }
         if (messageType == ToastMessageType.Warning) {
-            return `${styles.indicatorwarning__box}` 
+            return `bg-white p-0 inline-flex rounded-[50%] w-[21.5px] h-[21.5px]`
         }
         if (messageType == ToastMessageType.Error) {
-            return `${styles.indicatordanger__box}`
+            return `bg-white p-0 inline-flex rounded-[50%] w-[21.5px] h-[21.5px]`
         }
     }
 
     return (
-        <>
-            <div className={styles.container}>
-                <div className={`${styles.toastCard} ${setCardStyle()} ${visibility ? styles.show : styles.hide}`}>
-                    <div className={styles.toastCard__messageType}>
-                        <div className={`${indicatorType()}`}>
-                            <div className={`${indicatorBox()}`}>
-                                {messageType == ToastMessageType.Success && <OutlineCheckIcon />}
-                                {messageType == ToastMessageType.Info && <OutlineInfoIcon />}
-                                {messageType == ToastMessageType.Warning && <OutlineWarningIcon />}
-                                {messageType == ToastMessageType.Error && <OutlineCloseIcon />}
-                            </div>
-                        </div>
-                        <div className={styles.info}>
-                            <h4 className={`${styles.info__title} ${indicatorTitle()}`}>{title}</h4>
-                            <p className={styles.info__description}>
-                                {description}
-                            </p>
+        <div
+
+            style={{
+                top: position.includes('top') ? '1rem' : undefined,
+                bottom: position.includes('bottom') ? '1rem' : undefined,
+                left: position.includes('left') ? '1rem' : undefined,
+                right: position.includes('right') ? '12rem' : undefined,
+                margin: position.includes('center') ? '0 auto' : undefined,
+            }}
+            className='fixed top-5 right-1/2 w-[360px] translate-y-0 z-[999] transition-all duration-300 ease-in flex flex-col gap-4 -mr-[180px]'>
+            <div
+                className={`p-3 flex bg-white rounded  gap-[10px] relative shadow-[0px_8px_24px_rgba(0,0,0,0.06)] transition-all duration-300 ease-in 
+                    ${setCardStyle()} 
+                    ${visibility ? "!flex animate-slideInFromRight" : "hidden animate-slideOutToRight"}`
+                }>
+                <div className='flex gap-2 w-full'>
+                    <div className={`${indicatorType()}`}>
+                        <div className={`${indicatorBox()}`}>
+                            {messageType == ToastMessageType.Success && <Icons.FaceSuccessIcon className='text-successColor' />}
+                            {messageType == ToastMessageType.Info && <Icons.OutlineInfoIcon className='text-info' />}
+                            {messageType == ToastMessageType.Warning && <Icons.OutlineWarningIcon className='text-warning' />}
+                            {messageType == ToastMessageType.Error && <Icons.FaceErrorIcon className='text-danger' />}
                         </div>
                     </div>
-                    <button className={styles.closeCard} onClick={closeToast}>
-                        <CloseMenuIcon />
-                    </button>
-                    <span className={`${loaderSpan()}`} style={{'--loader-timer': `${timeout}ms`} as CSSProperties}></span> 
+                    <div className='w-full'>
+                        <h4 className={`font-medium text-base ${indicatorTitle()}`}>{title}</h4>
+                        <p className='text-[10px] md:text-xs font-normal text-gray-800'>
+                            {description}
+                        </p>
+                    </div>
                 </div>
+                <button
+                    className={`p-[6px] cursor-pointer border-none rounded-md bg-transparent flex items-center h-fit ${setCardStyle()?.closeBtnHover}`}
+                    onClick={closeToast}>
+                    <Icons.CloseMenu className='w-4 h-4 fill-black' />
+                </button>
+                <span className={`${loaderSpan()}`} style={{ '--loader-timer': `${timeout}ms` } as CSSProperties}></span>
             </div>
-        </>
+        </div>
     );
 }
 

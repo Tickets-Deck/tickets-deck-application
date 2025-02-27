@@ -1,18 +1,15 @@
-import { FunctionComponent, ReactElement, Dispatch, SetStateAction, ChangeEvent, useState, useRef, useEffect, useCallback } from 'react';
-import styles from '../../../styles/CreateEvent.module.scss';
+import { FunctionComponent, ReactElement, Dispatch, SetStateAction, ChangeEvent, useState, useRef, useEffect } from 'react';
 import { EventRequest } from '@/app/models/IEvents';
-import { AddIcon, CalenderIcon } from '../../SVGs/SVGicons';
-import { DatePicker, IComboBox } from '@fluentui/react';
+import { Icons } from '../../ui/icons';
 import useOuterClick from '@/app/hooks/useOuterClick';
-import { categories } from '@/app/constants/eventCategories';
 import { EventVisibility } from '@/app/enums/IEventVisibility';
 import { ValidationStatus } from '@/app/enums/BasicInfoFormValidationStatus';
 import { EventCreationStage } from '@/app/enums/EventCreationStage';
 import EventDescriptionEditor from '../../Editor/EventDescription';
 import { formattedDateForApi } from '@/utils/dateformatter';
-import { IComboBoxStyles, TimePicker } from "@fluentui/react";
 import moment from 'moment';
-import { timePickerStyles } from '@/app/styles/timePicker';
+import BasicDateTimePicker from '../../custom/DateTimePicker';
+import { useApplicationContext } from '@/app/context/ApplicationContext';
 
 
 interface BasicInformationFormProps {
@@ -26,20 +23,18 @@ interface BasicInformationFormProps {
 const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
     { eventRequest, setEventRequest, validationStage, setEventCreationStage, setValidationStage }): ReactElement => {
 
+    const { eventCategories } = useApplicationContext();
+
     //#region States
 
     const [categoryDropdownIsVisible, setCategoryDropdownIsVisible] = useState(false);
     const [tag, setTag] = useState<string>();
-    const [startTimeString, setStartTimeString] = useState<string>('');
 
     const [titleErrorMsg, setTitleErrorMsg] = useState<boolean>();
     const [venueErrorMsg, setVenueErrorMsg] = useState<boolean>();
-    const [dateErrorMsg, setDateErrorMsg] = useState<boolean>();
-    const [timeErrorMsg, setTimeErrorMsg] = useState<boolean>();
+    const [startDateErrorMsg, setStartDateErrorMsg] = useState<boolean>();
     const [descriptionErrorMsg, setDescriptionErrorMsg] = useState<boolean>();
     const [tagErrorMsg, setTagErrorMsg] = useState<boolean>();
-
-    const basicDateAnchor = new Date('January 1, 2024 12:00:00');
 
     //#endregion
 
@@ -61,12 +56,11 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
     };
 
     function validateForm() {
-        if (eventRequest?.title && eventRequest.venue && eventRequest.date && eventRequest.time && eventRequest.description && (eventRequest.tags && eventRequest.tags.length > 0)) {
+        if (eventRequest?.title && eventRequest.venue && eventRequest.startDate && eventRequest.description && (eventRequest.tags && eventRequest.tags.length > 0)) {
             // Close all error messages
             setTitleErrorMsg(false);
             setVenueErrorMsg(false);
-            setDateErrorMsg(false);
-            setTimeErrorMsg(false);
+            setStartDateErrorMsg(false);
             setDescriptionErrorMsg(false);
             setTagErrorMsg(false);
             return true;
@@ -81,15 +75,10 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
             } else {
                 setVenueErrorMsg(false);
             }
-            if (!eventRequest?.date) {
-                setDateErrorMsg(true);
+            if (!eventRequest?.startDate) {
+                setStartDateErrorMsg(true);
             } else {
-                setDateErrorMsg(false);
-            }
-            if (!eventRequest?.time) {
-                setTimeErrorMsg(true);
-            } else {
-                setTimeErrorMsg(false);
+                setStartDateErrorMsg(false);
             }
             if (!eventRequest?.description) {
                 setDescriptionErrorMsg(true);
@@ -136,23 +125,11 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
         }
     };
 
-    // const onStartTimeChange = useCallback((time: Date | null | undefined) => {
-    //     if (time) {
-    //         setStartTimeString(time.toLocaleTimeString());
-    //         handleInputChange(index, 'startTime', time.toLocaleTimeString());
-    //     }
-    // }, [handleInputChange, index]);
-
-    //#endregion
-
-    //#region Refs
-
-    const eventDateRef = useRef(null);
-    const categoryDropdownRef = useRef(null);
-
     //#endregion
 
     //#region Effects & other hooks
+
+    const categoryDropdownRef = useRef(null);
 
     useOuterClick(categoryDropdownRef, () => setCategoryDropdownIsVisible(false));
 
@@ -169,10 +146,12 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
         }
     }, [validationStage]);
 
+    //#endregion
+
     return (
-        <div className={styles.formContainer}>
-            <div className={styles.lhs}>
-                <div className={styles.formField}>
+        <div className="flex flex-col md:flex-row gap-8 size-full mb-8">
+            <div className="w-full max-w-[50%] flex flex-col gap-5">
+                <div className="createEventFormField">
                     <label htmlFor="title">Title</label>
                     <input
                         type="text"
@@ -181,9 +160,9 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                         placeholder="Event Title"
                         onChange={(e) => onFormValueChange(e, setTitleErrorMsg)}
                     />
-                    {titleErrorMsg && <span className={styles.errorMsg}>Please enter event title</span>}
+                    {titleErrorMsg && <span className="errorMsg">Please enter event title</span>}
                 </div>
-                <div className={styles.formField}>
+                <div className="createEventFormField">
                     <label htmlFor="venue">Location</label>
                     <input
                         type="text"
@@ -193,12 +172,11 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                         placeholder="Event Venue"
                         onChange={(e) => onFormValueChange(e, setVenueErrorMsg)}
                     />
-                    {venueErrorMsg && <span className={styles.errorMsg}>Please enter event location</span>}
+                    {venueErrorMsg && <span className="errorMsg">Please enter event location</span>}
                 </div>
-                <div className={styles.formRow}>
-                    <div className={styles.formField}>
-                        <label htmlFor="date">Date</label>
-                        <div className={styles.inputFieldContainer} ref={eventDateRef}>
+                {/* <div className="createEventFormField">
+                        <label htmlFor="date">Start date</label>
+                        <div className="rounded-lg w-full px-4 py-1 bg-white/10 text-sm flex items-center [&_svg]:w-[18px] [&_svg]:h-[18px] [&_svg_path]:fill-white" ref={eventDateRef}>
                             <CalenderIcon />
                             <DatePicker
                                 style={{
@@ -247,42 +225,47 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                                 isMonthPickerVisible={true}
                             />
                         </div>
-                        {dateErrorMsg && <span className={styles.errorMsg}>Please enter event date</span>}
-                    </div>
-                    <div className={styles.formField}>
-                        <label htmlFor="time">Time</label>
-                        {/* <input
-                            type="text"
-                            name="time"
-                            value={eventRequest?.time}
-                            placeholder="Event Time e.g 8pm"
-                            onChange={(e) => onFormValueChange(e, setTimeErrorMsg)}
-                        /> */}
-                        <TimePicker
-                            placeholder="Start Time"
-                            useHour12
-                            allowFreeform
-                            autoComplete="on"
-                            value={eventRequest ? new Date(eventRequest.time) : undefined}
-                            onChange={(e: React.FormEvent<IComboBox>, time: Date | null | undefined) => {
-                                if (time) {
-                                    // const convertedTime = time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true }).replace('PM', 'pm').replace('AM', 'am').replace(' ', '');
-                                    const convertedTime = moment(time).format('hh:mma');
-                                    setEventRequest({ ...eventRequest as EventRequest, time: convertedTime });
-                                    setTimeErrorMsg(false);
-                                }
+                        {dateErrorMsg && <span className="errorMsg">Please enter event date</span>}
+                    </div> */}
+                <div className="createEventFormField">
+                    <label htmlFor="date">Start date</label>
+                    <div className=''>
+                        <BasicDateTimePicker
+                            className='custom-datepicker'
+                            defaultValue={eventRequest?.startDate ? moment(eventRequest.startDate) : undefined}
+                            onChangeFn={(newValue) => {
+                                // Set the form value
+                                setEventRequest({ ...eventRequest as EventRequest, startDate: formattedDateForApi(newValue.toDate()) });
+                                // Close error message
+                                setStartDateErrorMsg(false);
                             }}
-                            dateAnchor={basicDateAnchor}
-                            styles={timePickerStyles}
-                            errorMessage='Please enter a valid time'
+                            minDate={moment(new Date())}
                         />
-                        {timeErrorMsg && <span className={styles.errorMsg}>Please enter event time</span>}
+                    </div>
+                    {startDateErrorMsg && <span className="errorMsg">Please enter event start date</span>}
+                </div>
+                <div className="createEventFormField">
+                    <label htmlFor="date">End date (Optional)</label>
+                    <div className=''>
+                        <BasicDateTimePicker
+                            className='custom-datepicker'
+                            // defaultValue={eventRequest?.startDate ? moment(eventRequest.startDate) : undefined}
+                            // onChangeFn={(newValue) => {
+                            //     // Set the form value
+                            //     setEventRequest({ ...eventRequest as EventRequest, startDate: formattedDateForApi(newValue.toDate()) });
+                            //     // Close error message
+                            //     setStartDateErrorMsg(false);
+                            // }}
+                            minDate={moment(eventRequest?.startDate)}
+                        />
                     </div>
                 </div>
             </div>
-            <span></span>
-            <div className={styles.rhs}>
-                {/* <div className={styles.formField}>
+
+            <span className='w-[1px] h-auto bg-white/20 block'></span>
+
+            <div className={"w-full max-w-[50%] flex flex-col gap-5"}>
+                {/* <div className="createEventFormField">
                     <label htmlFor="description">Description</label>
                     <textarea
                         name="description"
@@ -290,50 +273,54 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                         placeholder="Event Description"
                         onChange={(e) => onFormValueChange(e, setDescriptionErrorMsg)}
                     />
-                    {descriptionErrorMsg && <span className={styles.errorMsg}>Please enter event description</span>}
+                    {descriptionErrorMsg && <span className="errorMsg">Please enter event description</span>}
                 </div> */}
-                <div className={styles.formField}>
+                <div className="createEventFormField">
                     <label htmlFor="description">Description</label>
                     <EventDescriptionEditor
                         description={eventRequest?.description ?? ''}
                         setEventRequest={setEventRequest}
                     />
-                    {descriptionErrorMsg && <span className={styles.errorMsg}>Please enter event description</span>}
+                    {descriptionErrorMsg && <span className="errorMsg">Please enter event description</span>}
                 </div>
-                <div className={styles.formRow}>
-                    <div className={styles.formField}>
+                <div className="flex flex-col gap-4 md:flex-row md:gap-8">
+                    <div className="createEventFormField">
                         <label htmlFor="category">Category</label>
                         <input
                             type="text"
                             name="category"
                             placeholder="Select category"
-                            value={eventRequest?.category}
+                            value={eventCategories?.find(category => category.id === eventRequest?.categoryId)?.name}
                             onFocus={() => setCategoryDropdownIsVisible(true)}
                             onClick={() => setCategoryDropdownIsVisible(true)}
                             onChange={(e) => onFormValueChange(e)}
                         />
-                        {categoryDropdownIsVisible &&
-                            <div className={styles.categoryDropdownContainer} ref={categoryDropdownRef}>
-                                {categories.map((category, index) => (
+                        {categoryDropdownIsVisible && eventCategories &&
+                            <div
+                                className="absolute w-[120%] top-[70px] left-0 bg-dark-grey z-10 rounded-lg overflow-hidden max-h-[180px] overflow-y-auto scrollbar-thin"
+                                ref={categoryDropdownRef}>
+                                {eventCategories.map((category, index) => (
                                     <span
+                                        className='block px-2 py-3 text-sm text-white cursor-pointer hover:bg-white/10'
                                         key={index}
                                         onClick={() => {
                                             // Set the form value
-                                            setEventRequest({ ...eventRequest as EventRequest, category: category });
+                                            setEventRequest({ ...eventRequest as EventRequest, categoryId: category.id });
                                             // Hide the dropdown
                                             setCategoryDropdownIsVisible(false);
                                         }}>
-                                        {category}
+                                        {category.name}
                                     </span>
                                 ))}
                             </div>}
                     </div>
-                    <div className={styles.formField}>
+                    <div className="createEventFormField">
                         <label htmlFor="tags">Tags</label>
-                        <div className={styles.inputFieldContainer} style={{ paddingRight: '0px' }}>
+                        <div className="flex flex-row items-center space-x-1">
                             <input
                                 type="text"
                                 name="tags"
+                                className='input !rounded-lg w-full !bg-white/10 text-sm'
                                 placeholder="Add event Tags"
                                 value={tag}
                                 onChange={(e) => setTag(e.target.value)}
@@ -346,15 +333,15 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = (
                                 }}
                             />
                             <span
-                                className={styles.addTag}
+                                className="w-[50px] h-full grid place-items-center rounded-lg cursor-pointer bg-white/10 hover:bg-white/20 [&_svg]:w-[20px] [&_svg]:h-[20px] [&_svg_path]:fill-white"
                                 onClick={() => addTagToFormRequest()}>
-                                <AddIcon />
+                                <Icons.Add />
                             </span>
                         </div>
-                        {tagErrorMsg && <span className={styles.errorMsg}>Please add at least one tag</span>}
+                        {tagErrorMsg && <span className="errorMsg">Please add at least one tag</span>}
                     </div>
                 </div>
-                <div className={styles.formField}>
+                <div className="createEventFormField">
                     <label htmlFor="time">Visibility</label>
                     <select name="visibility" onChange={(e) => onFormValueChange(e)} value={eventRequest?.visibility}>
                         <option value={EventVisibility.PUBLIC}>Public - Visible to everyone</option>

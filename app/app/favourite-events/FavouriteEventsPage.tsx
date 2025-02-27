@@ -25,7 +25,7 @@ const FavouriteEventsPage: FunctionComponent<FavouriteEventsPageProps> = (): Rea
      * Function to fetch the user's favourite events
      */
     const handleFetchUserFavoriteEvents = async () => {
-        await fetchUserFavoriteEvents(user?.id as string)
+        await fetchUserFavoriteEvents(user?.token as string, user?.id as string)
             .then((response) => {
                 setFavouriteEvents(response.data);
             })
@@ -58,9 +58,9 @@ const FavouriteEventsPage: FunctionComponent<FavouriteEventsPageProps> = (): Rea
                         !isFetchingFavouriteEvents && (favouriteEvents && favouriteEvents?.length > 0) && favouriteEvents.map((event, index) =>
                             <EventCard
                                 event={event}
-                                mobileAndActionButtonDismiss
+                                // mobileAndActionButtonDismiss
                                 key={index}
-                                gridDisplay={true}
+                                // gridDisplay={true}
                                 // setIsDeleteConfirmationModalVisible={setIsDeleteConfirmationModalVisible}
                                 // setSelectedEvent={setSelectedEvent}
                             />

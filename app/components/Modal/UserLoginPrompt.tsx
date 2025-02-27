@@ -1,7 +1,7 @@
 import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useState } from "react";
 import ModalWrapper from "./ModalWrapper";
 import styles from "@/app/styles/promptModal.module.scss";
-import { CloseIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
@@ -20,7 +20,7 @@ const UserLoginPrompt: FunctionComponent<UserLoginPromptProps> = ({ visibility, 
                         <h3>Hello there</h3>
                         <p>You would need to login to perform this action</p>
                     </div>
-                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><CloseIcon /></span>
+                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><Icons.Close /></span>
                 </div>
                 <div className={styles.actionButton}>
                     <Link href={ApplicationRoutes.SignIn} onClick={() => setVisibility(false)}>

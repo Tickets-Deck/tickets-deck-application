@@ -7,10 +7,10 @@ import {
     MouseEvent,
 } from "react";
 import { useCreateNewsletterSubscriber } from "@/app/api/apiClient";
-import { ToastContext } from "@/app/extensions/toast";
 import { emailRegex } from "@/app/constants/emailRegex";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { ApplicationError } from "@/app/constants/applicationError";
+import { ToastContext } from "@/app/context/ToastCardContext";
 
 interface SubscriptionFormSectionProps { }
 

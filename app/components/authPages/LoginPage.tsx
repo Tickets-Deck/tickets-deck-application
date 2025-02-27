@@ -6,21 +6,10 @@ import {
     useEffect,
     FormEvent,
 } from "react";
-import styles from "../../styles/AuthStyles.module.scss";
-import Image from "next/image";
-import images from "../../../public/images";
-import {
-    EmailIcon,
-    EyeIcon,
-    FacebookIcon,
-    GoogleIcon,
-    PasswordIcon,
-    UserIcon,
-} from "../SVGs/SVGicons";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
@@ -28,7 +17,7 @@ import { StorageKeys } from "@/app/constants/storageKeys";
 import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
 import { useFetchUserInformation } from "@/app/api/apiClient";
 import { useDispatch } from "react-redux";
-import ImagesDisplay from "./ImagesDisplay";
+import { Icons } from "../ui/icons";
 
 interface LoginProps { }
 
@@ -103,7 +92,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         setIsLoading(true);
 
         const userInformation = {
-            email,
+            username: email,
             password,
             redirect: false,
         };
@@ -176,13 +165,13 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                             onClick={async () => await signIn("google")}
                         >
                             <span className='size-[2.5rem] grid place-items-center [&_svg]:size-8'>
-                                <GoogleIcon />
+                                <Icons.Google />
                             </span>
                             <p className='text-sm font-light'>Google</p>
                         </div>
                         {/* <div className={styles.option}>
                             <span>
-                                <FacebookIcon />
+                                <Icons.Facebook />
                             </span>
                             <p>Facebook</p>
                         </div> */}
@@ -200,10 +189,10 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                             </label>
                             <div className='flex rounded-lg overflow-hidden'>
                                 <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
-                                    <EmailIcon />
+                                    <Icons.Email />
                                 </span>
                                 <input
-                                    type='email'
+                                    // type='email'
                                     name='email'
                                     placeholder='email@example.com'
                                     value={email}
@@ -230,7 +219,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                             </label>
                             <div className='flex rounded-lg overflow-hidden'>
                                 <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
-                                    <PasswordIcon />
+                                    <Icons.Password />
                                 </span>
                                 <input
                                     type={isPasswordVisible ? "text" : "password"}
@@ -250,7 +239,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                                     className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem] cursor-pointer hover:text-white/20'
                                     onClick={() => setIsPasswordVisible(!isPasswordVisible)}
                                 >
-                                    <EyeIcon clicked={!isPasswordVisible} />
+                                    <Icons.Eye clicked={!isPasswordVisible} />
                                 </span>
                             </div>
                             {passwordErrorMsg && (

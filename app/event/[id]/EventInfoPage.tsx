@@ -4,7 +4,6 @@ import styles from "../../styles/EventDetails.module.scss";
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import images from '../../../public/images';
-import { ToastContext } from '../../extensions/toast';
 import moment from 'moment';
 import TicketDelivery from '../../components/Modal/TicketDelivery';
 import SkeletonEventInfo from '../../components/Skeletons/SkeletonEventInfo';
@@ -21,6 +20,7 @@ import { useSelector } from 'react-redux';
 import ContactDetailsModal from '@/app/components/Modal/ContactDetailsModal';
 import { CustomerContactDetails } from '@/app/models/IUser';
 import { useApplicationContext } from '@/app/context/ApplicationContext';
+import { ToastContext } from '@/app/context/ToastCardContext';
 
 interface EventDetailsPageProps {
     params: { id: string }
@@ -102,7 +102,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
         }
         const eventTitle = eventInfo?.title;
         const eventDate = moment(eventInfo?.startDate).format('YYYY-MM-DD');
-        const eventTime = eventInfo.time;
+        const eventTime = moment(eventInfo?.startDate).format('hh:mm a');
         const location = eventLocation;
 
         const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${eventTime}%2F${eventDate}T${eventTime}&location=${encodeURIComponent(location)}`;

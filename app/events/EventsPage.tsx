@@ -9,8 +9,8 @@ import {
 import EventsGroup from "../components/events/EventsGroup";
 import { useFetchEvents } from "../api/apiClient";
 import { EventResponse } from "../models/IEvents";
-import { ToastContext } from "../extensions/toast";
 import PageHeroSection from "../components/shared/PageHeroSection";
+import { ToastContext } from "../context/ToastCardContext";
 
 interface AllEventsProps { }
 

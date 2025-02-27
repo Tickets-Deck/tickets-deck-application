@@ -3,9 +3,9 @@ import { Favourites } from "./IFavourites";
 import { TicketPurchased } from "./ITicket";
 
 export type CustomerContactDetails = {
-    firstName: string;
-    lastName: string;
-    phone: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
 };
 
 export type UserCredentialsRequest = {
@@ -71,12 +71,16 @@ export type UsernameRequest = {
   username: string;
 };
 
+type SocialLinks = {
+  facebookUrl: string | null;
+  twitterUrl: string | null;
+  instagramUrl: string | null;
+};
+
 export type UserCredentialsUpdateRequest = {
   email: string | null;
   firstName: string | null;
   lastName: string | null;
   phone: string | null;
-  facebookUrl: string | null;
-  twitterUrl: string | null;
-  instagramUrl: string | null;
+  socialLinks: SocialLinks | null;
 };

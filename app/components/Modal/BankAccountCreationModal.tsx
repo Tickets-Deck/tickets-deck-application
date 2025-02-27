@@ -1,6 +1,6 @@
 import { FunctionComponent, ReactElement, Dispatch, SetStateAction, useState, useEffect, useRef, useMemo, ChangeEvent, useContext, MouseEvent } from "react";
 import ModalWrapper from "./ModalWrapper";
-import { CloseIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import { Bank, BankAccount, BankAccountDetailsRequest, BankAccountRequest, BankVerificationResponse } from "@/app/models/IBankAccount";
 import { useCreateUserBankAccount, useFetchBankDetails, useFetchBankList } from "@/app/api/apiClient";
 import useOuterClick from "@/app/hooks/useOuterClick";
@@ -8,6 +8,7 @@ import { catchError } from "@/app/constants/catchError";
 import { ApplicationContext, ApplicationContextData } from "@/app/context/ApplicationContext";
 import { useSession } from "next-auth/react";
 import Button from "../ui/button";
+import { ToastContext } from "@/app/context/ToastCardContext";
 
 interface BankAccountCreationModalProps {
     visibility: boolean
@@ -18,12 +19,16 @@ interface BankAccountCreationModalProps {
 const BankAccountCreationModal: FunctionComponent<BankAccountCreationModalProps> = (
     { visibility, setVisibility, handleFetchUserBankAccount }): ReactElement => {
 
-    const { data: session, update, status } = useSession();
+    const { data: session } = useSession();
+    const user = session?.user;
+
+    const toasthandler = useContext(ToastContext);
 
     const fetchBankDetails = useFetchBankDetails();
     const createBankAccount = useCreateUserBankAccount();
 
     const { bankList } = useContext(ApplicationContext) as ApplicationContextData;
+    console.log("🚀 ~ bankList:", bankList)
 
     const [isConfirmingAccount, setIsConfirmingAccount] = useState(false);
     const [isCreatingBankAccount, setIsCreatingBankAccount] = useState(false);
@@ -71,8 +76,10 @@ const BankAccountCreationModal: FunctionComponent<BankAccountCreationModalProps>
         }
 
         // Call API to create bank account
-        await createBankAccount(session?.user.id as string, data)
+        await createBankAccount(user?.token as string, user?.id as string, data)
             .then(async (response) => {
+                console.log("🚀 ~ .then ~ response:", response)
+                toasthandler?.logSuccess('Success', `Your ${data.bankName} account has been added successfully.`);
                 await handleFetchUserBankAccount();
                 setVisibility(false);
             })
@@ -103,7 +110,7 @@ const BankAccountCreationModal: FunctionComponent<BankAccountCreationModalProps>
             }
 
             // Call API to verify account
-            await fetchBankDetails(data)
+            await fetchBankDetails(session?.user.token as string, data)
                 .then((response) => {
                     setVerifiedAccount(response.data);
                 })
@@ -141,7 +148,7 @@ const BankAccountCreationModal: FunctionComponent<BankAccountCreationModalProps>
                     <span
                         className="ml-auto w-8 h-8 min-w-8 min-h-8 rounded-full grid place-items-center cursor-pointer hover:bg-white/10"
                         onClick={() => setVisibility(false)}>
-                        <CloseIcon stroke="#fff" />
+                        <Icons.Close stroke="#fff" />
                     </span>
                 </div>
                 <div className="flex flex-col">

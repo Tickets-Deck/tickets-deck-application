@@ -1,7 +1,7 @@
 import { FunctionComponent, ReactElement, useState, Dispatch, SetStateAction, useEffect, ChangeEvent, useMemo } from "react";
 import styles from "../../styles/TicketDelivery.module.scss";
 import ModalWrapper from "./ModalWrapper";
-import { CheckIcon, CloseIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import { RetrievedITicketPricing } from "../../models/ITicketPricing";
 import { emailRegex } from "../../constants/emailRegex";
 import PanelWrapper from "./PanelWrapper";
@@ -9,7 +9,7 @@ import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import { EventResponse } from "@/app/models/IEvents";
 import OrderSummarySection from "../TicketDelivery/OrderSummarySection";
 import useResponsiveness from "../../hooks/useResponsiveness";
-import { useCreateTicketOrder, useInitializePaystackPayment, useVerifyCouponCode } from "@/app/api/apiClient";
+import { useInitializeTicketOrder, useInitializePaystackPayment, useVerifyCouponCode } from "@/app/api/apiClient";
 import { SingleTicketOrderRequest, TicketOrderRequest } from "@/app/models/ITicketOrder";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
@@ -43,7 +43,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     { appTheme, visibility, setVisibility, eventTickets,
         eventInfo, totalPrice, contactDetails }): ReactElement => {
 
-    const createTicketOrder = useCreateTicketOrder();
+    const createTicketOrder = useInitializeTicketOrder();
     const initializePaystackPayment = useInitializePaystackPayment();
     const verifyCoupon = useVerifyCouponCode();
 
@@ -217,7 +217,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         // if we get here, it means the user is logged in, and has not filled in any email or the user is not logged in, and has filled in at least one email
 
         const ticketOrder: TicketOrderRequest = {
-            eventId: eventInfo?.eventId as string,
+            eventId: eventInfo?.id as string,
             tickets: collatedTicketOrderRequests,
             contactEmail: primaryEmail ?? (userEmailIsPrimaryEmail ? userInfo?.email as string : ""),
             userId: userInfo?.id as string,
@@ -571,8 +571,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                             }} placeholder="Enter coupon code" />
                                         <button className={canCodeBeValidated ? styles.active : ''} style={isValidating ? { opacity: 0.5, pointerEvents: 'none', backgroundColor: '#111111' } : {}} onClick={() => handleCheckCoupon()}>{isValidating ? 'Checking...' : 'Apply'}</button>
                                     </div>
-                                    {codeValidationStatus === ValidationStatus.Valid && <span id={styles.valid}><CheckIcon /> Valid code</span>}
-                                    {codeValidationStatus === ValidationStatus.Invalid && <span id={styles.invalid}><CloseIcon /> Invalid code. Please verify code, and try again</span>}
+                                    {codeValidationStatus === ValidationStatus.Valid && <span id={styles.valid}><Icons.Check /> Valid code</span>}
+                                    {codeValidationStatus === ValidationStatus.Invalid && <span id={styles.invalid}><Icons.Close /> Invalid code. Please verify code, and try again</span>}
                                 </div>
                             </div>
                             <div className={styles.bottomArea}>
@@ -676,8 +676,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                             }} placeholder="Enter coupon code" />
                                         <button className={canCodeBeValidated ? styles.active : ''} style={isValidating ? { opacity: 0.5, pointerEvents: 'none', backgroundColor: '#111111' } : {}} onClick={() => handleCheckCoupon()}>{isValidating ? 'Checking...' : 'Apply'}</button>
                                     </div>
-                                    {codeValidationStatus === ValidationStatus.Valid && <span id={styles.valid}><CheckIcon /> Valid code</span>}
-                                    {codeValidationStatus === ValidationStatus.Invalid && <span id={styles.invalid}><CloseIcon /> Invalid code. Please verify code, and try again</span>}
+                                    {codeValidationStatus === ValidationStatus.Valid && <span id={styles.valid}><Icons.Check /> Valid code</span>}
+                                    {codeValidationStatus === ValidationStatus.Invalid && <span id={styles.invalid}><Icons.Close /> Invalid code. Please verify code, and try again</span>}
                                 </div>
                             </div>
                             <div className={styles.viewOrderSummaryBtn}>

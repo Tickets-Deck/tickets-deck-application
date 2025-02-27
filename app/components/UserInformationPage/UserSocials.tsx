@@ -1,5 +1,5 @@
 import { ReactElement, FunctionComponent } from "react";
-import { FacebookIcon, InstagramIcon, TwitterIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import Link from "next/link";
 import styles from "@/app/styles/UserInformationPage.module.scss";
 import { UserCredentialsResponse } from "@/app/models/IUser";
@@ -22,19 +22,19 @@ const UserSocials: FunctionComponent<UserSocialsProps> = ({ userInformation }): 
             {
                 userInformation.facebookUrl &&
                 <Link href={linkStartsWithHttp(userInformation.facebookUrl)} target="_blank">
-                    <span><FacebookIcon /></span>
+                    <span><Icons.Facebook /></span>
                 </Link>
             }
             {
                 userInformation.instagramUrl &&
                 <Link href={linkStartsWithHttp(userInformation.instagramUrl)} target="_blank">
-                    <span><InstagramIcon /></span>
+                    <span><Icons.Instagram /></span>
                 </Link>
             }
             {
                 userInformation.twitterUrl &&
                 <Link href={linkStartsWithHttp(userInformation.twitterUrl)} target="_blank">
-                    <span><TwitterIcon /></span>
+                    <span><Icons.Twitter /></span>
                 </Link>
             }
         </div >

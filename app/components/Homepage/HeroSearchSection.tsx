@@ -6,12 +6,11 @@ import {
   useRef,
   useState,
 } from "react";
-import styles from "../../styles/Home.module.scss";
 import useOuterClick from "@/app/hooks/useOuterClick";
 import { EventResponse } from "@/app/models/IEvents";
 import Link from "next/link";
 import moment from "moment";
-import { InfoIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import { scrollWindow } from "../PageScroll/ScrollWindow";
 import Image from "next/image";
 import images from "@/public/images";
@@ -112,7 +111,7 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({
           />
           {eventNameErrorMsg && (
             <div className='flex items-center gap-[0.125rem]'>
-              <InfoIcon className='size-[0.8rem]' />{" "}
+              <Icons.Info className='size-[0.8rem]' />{" "}
               <p className='text-xs font-normal'>
                 Please type the name of the event
               </p>

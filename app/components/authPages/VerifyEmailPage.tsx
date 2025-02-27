@@ -9,7 +9,7 @@ import {
 } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
 import Link from "next/link";
-import { CheckIcon, VerifiedIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { StorageKeys } from "@/app/constants/storageKeys";
 
@@ -160,7 +160,7 @@ const VerifyEmailPage: FunctionComponent<
               <h3>Email verified</h3>
               <span>
                 <span className={styles.verifiedIcon}>
-                  <VerifiedIcon />
+                  <Icons.Verified />
                 </span>
               </span>
               <p>

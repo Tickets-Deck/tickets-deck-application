@@ -1,6 +1,6 @@
 import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useEffect, useState } from "react";
 import ModalWrapper from "./ModalWrapper";
-import { CloseIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import { MultipleTickets } from "@/app/models/ICheckIn";
 import { useCheckInMultipleTicketOrders } from "@/app/api/apiClient";
 import { toast } from "sonner";
@@ -61,7 +61,7 @@ const CheckInModal: FunctionComponent<CheckInModalProps> = (
                     <span
                         className="ml-auto w-8 h-8 min-w-8 min-h-8 rounded-full grid place-items-center cursor-pointer hover:bg-white/10"
                         onClick={() => setVisibility(false)}>
-                        <CloseIcon stroke="#fff" />
+                        <Icons.Close stroke="#fff" />
                     </span>
                 </div>
                 <div className="flex flex-col gap-2">

@@ -2,7 +2,7 @@ import { FunctionComponent, ReactElement, useEffect, useState, Dispatch, SetStat
 import styles from "../../styles/EventDetails.module.scss";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import { Theme } from "@/app/enums/Theme";
-import { CloseIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 
@@ -157,7 +157,7 @@ const TicketsSelectionContainer: FunctionComponent<TicketsSelectionContainerProp
                     <button
                         onClick={() => setTicketsSelectionContainerIsVisible(false)}
                         className={styles.closeBtn}>
-                        <CloseIcon />
+                        <Icons.Close />
                     </button>
                 </div>
             </div>

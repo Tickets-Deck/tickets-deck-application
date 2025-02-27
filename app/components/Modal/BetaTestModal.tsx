@@ -1,7 +1,7 @@
 import { Dispatch, FunctionComponent, ReactElement, SetStateAction } from "react";
 import ModalWrapper from "./ModalWrapper";
 import styles from "@/app/styles/promptModal.module.scss";
-import { CloseIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
@@ -48,7 +48,7 @@ const BetaTestModal: FunctionComponent<BetaTestModalProps> = ({ visibility, setV
                                 </div>
                         }
                     </div>
-                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><CloseIcon /></span>
+                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><Icons.Close /></span>
                 </div>
                 <div className={styles.actionButton}>
                     <button onClick={() => setVisibility(false)}>

@@ -1,14 +1,6 @@
 "use client";
 import { FunctionComponent, ReactElement, useEffect } from "react";
-import {
-  CreateEventsIcon,
-  EasyManagementIcon,
-  EfficientPaymentIcon,
-  PlatformIcon,
-  QuickTicketBookingIcon,
-  ThinkingEmojiIcon,
-  TrackPerformanceIcon,
-} from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import { RootState } from "@/app/redux/store";
 import { useSelector } from "react-redux";
 import { Theme } from "@/app/enums/Theme";
@@ -20,34 +12,34 @@ const Services: FunctionComponent<ServicesProps> = (): ReactElement => {
 
   const services = [
     {
-      icon: PlatformIcon,
+      icon: Icons.Platform,
       title: "User Friendly Platform",
       subText:
         "We prioritize a swift and data-efficient experience for our users.",
     },
     {
-      icon: QuickTicketBookingIcon,
+      icon: Icons.QuickTicketBooking,
       title: "Quick Ticket Booking",
       subText: "Easily book tickets for your preferred events.",
     },
     {
-      icon: CreateEventsIcon,
+      icon: Icons.CreateEvents,
       title: "Create / Publish Events",
       subText:
         "Create and publish events by entering the necessary information",
     },
     {
-      icon: EasyManagementIcon,
+      icon: Icons.EasyManagement,
       title: "Easy Event Management",
       subText: "Easily manage events from anywhere on your dashboard.",
     },
     {
-      icon: EfficientPaymentIcon,
+      icon: Icons.EfficientPayment,
       title: "Efficient Payment",
       subText: "Easily manage and track sales and commissions.",
     },
     {
-      icon: TrackPerformanceIcon,
+      icon: Icons.TrackPerformance,
       title: "Track your Performance",
       subText:
         "We offer real-time reporting for tracking sales, and commissions.",
@@ -60,7 +52,7 @@ const Services: FunctionComponent<ServicesProps> = (): ReactElement => {
         <h2 className='relative text-[30px] font-Mona-Sans-Wide font-semibold flex items-center gap-0.5'>
           Why Us?{" "}
           <span>
-            <ThinkingEmojiIcon className='size-8' />
+            <Icons.ThinkingEmoji className='size-8' />
           </span>
         </h2>
         <p className='text-sm w-fit text-center'>

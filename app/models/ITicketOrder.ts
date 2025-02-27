@@ -24,7 +24,7 @@ export interface TicketOrderRequest {
 export interface TicketEventOrderResponse {
     title: string;
     venue: string;
-    date: string;
+    startDate: string;
     time: string;
     mainImageUrl: string;
 }

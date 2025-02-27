@@ -3,20 +3,6 @@ import Link from "next/link";
 import { FunctionComponent, ReactElement, useRef, useState } from "react";
 import Image from "next/image";
 import images from "@/public/images";
-import {
-  AboutIcon,
-  CloseMenuIcon,
-  ContactIcon,
-  DashboardIcon,
-  EventsIcon,
-  HamburgerMenuIcon,
-  HomeIcon,
-  LoginIcon,
-  LogoutIcon,
-  MoonIcon,
-  ProfileIcon,
-  SunIcon,
-} from "../SVGs/SVGicons";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -25,7 +11,6 @@ import { clearUserCredentials } from "@/app/redux/features/user/userSlice";
 import { signOut } from "next-auth/react";
 import { motion } from "framer-motion";
 import { Theme } from "@/app/enums/Theme";
-import { updateAppTheme } from "@/app/redux/features/theme/themeSlice";
 import {
   hideNavItemsVariant,
   liVariant,
@@ -34,6 +19,7 @@ import {
   profileVariant,
   ulVariant,
 } from "@/app/animations/navbarAnimations";
+import { Icons } from "../ui/icons";
 
 interface MobileNavbarProps {
   session: Session | null;
@@ -58,22 +44,22 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
     {
       link: ApplicationRoutes.Home,
       text: "Home",
-      icon: HomeIcon,
+      icon: Icons.Home,
     },
     {
       link: ApplicationRoutes.GeneralEvents,
       text: "Events",
-      icon: EventsIcon,
+      icon: Icons.Events,
     },
     {
       link: ApplicationRoutes.About,
       text: "About Us",
-      icon: AboutIcon,
+      icon: Icons.About,
     },
     {
       link: ApplicationRoutes.Contact,
       text: "Contact Us",
-      icon: ContactIcon,
+      icon: Icons.Contact,
     },
   ];
 
@@ -116,7 +102,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
           className='size-10 rounded-[0.625rem] bg-white/10 grid place-items-center cursor-pointer hover:scale-[0.85]'
           onClick={() => setNavbarIsVisible(true)}
         >
-          <HamburgerMenuIcon className='size-6' />
+          <Icons.HamburgerMenu className='size-6' />
         </span>
       </motion.div>
 
@@ -167,7 +153,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
               className='ml-auto size-10 rounded-lg grid place-items-center bg-primary-color/5 hover:scale[0.85]'
               onClick={() => setNavbarIsVisible(false)}
             >
-              <CloseMenuIcon className='size-[1.65rem] [&_path]:fill-primary-color' />
+              <Icons.CloseMenu className='size-[1.65rem] [&_path]:fill-primary-color' />
             </span>
           </div>
 
@@ -210,7 +196,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
                     dispatch(clearUserCredentials());
                   }}
                 >
-                  <LogoutIcon className='*:stroke-failed-color' />
+                  <Icons.Logout className='*:stroke-failed-color' />
                   Log out
                 </motion.button>
               </>
@@ -221,7 +207,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
                 href='/auth/signin'
                 onClick={() => setNavbarIsVisible(false)}
               >
-                <LoginIcon className='*:stroke-primary-color border' />
+                <Icons.Login className='*:stroke-primary-color border' />
                 Login
               </motion.a>
             )}

@@ -13,7 +13,7 @@ import ComponentLoader from "../Loader/ComponentLoader";
 import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
-interface EventsGroupProps {
+interface UserEventsGroupProps {
     title: string;
     subText: string;
     eventsData: EventResponse[] | undefined;
@@ -24,7 +24,7 @@ interface EventsGroupProps {
     forPastEvents?: boolean;
 }
 
-const EventsGroup: FunctionComponent<EventsGroupProps> = ({
+const UserEventsGroup: FunctionComponent<UserEventsGroupProps> = ({
     title,
     subText,
     eventsData,
@@ -39,7 +39,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = ({
 
     return (
         <section
-            className={`sectionPadding !py-[4.5rem] gap-8 flex-col sm:gap-6 flex bg-dark-grey relative items-start min-h-[calc(100vh-56px)] ${consoleDisplay ? "!px-6 !pt-5 !pb-2 h-full" : ""
+            className={`sectionPadding !py-[4.5rem] gap-8 flex-col sm:gap-6  flex bg-dark-grey relative items-start min-h-[calc(100vh-56px)] ${consoleDisplay ? "!px-6 !pt-5 !pb-2 h-full" : ""
                 }`}
         >
             <div className='flex items-start justify-between w-full'>
@@ -85,7 +85,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = ({
                     }`}
             >
                 <div
-                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+                    className="grid grid-cols-3 gap-4"
                     // "[grid-template-columns:_repeat(auto-fill,_minmax(200px,_1fr))] min-[550px]:[[grid-template-columns:_repeat(auto-fill,_minmax(250px,_1fr))]]"
                 >
                     {!isFetchingEvents &&
@@ -133,4 +133,4 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = ({
     );
 };
 
-export default EventsGroup;
+export default UserEventsGroup;

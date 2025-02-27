@@ -1,11 +1,12 @@
 import { FunctionComponent, ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { UserCredentialsResponse } from "../models/IUser";
-import { useFetchBankList, useFetchTransactionFee, useFetchUserInformation } from "../api/apiClient";
+import { useFetchBankList, useFetchEventCategories, useFetchTransactionFee, useFetchUserInformation } from "../api/apiClient";
 import { catchError } from "../constants/catchError";
 import { useSession } from "next-auth/react";
 import { Bank } from "../models/IBankAccount";
 import { StorageKeys } from "../constants/storageKeys";
 import { TransactionFeeResponse } from "../models/ITransactionFee";
+import { IEventCategory } from "../models/IEventCategory";
 
 
 // Define the type for the context data
@@ -19,6 +20,7 @@ export type ApplicationContextData = {
     bankList: Bank[];
     transactionFee: TransactionFeeResponse | undefined;
     handleFetchTransactionFee: (eventId: string) => Promise<void>
+    eventCategories: IEventCategory[] | undefined
 };
 
 // Create a context with the specified data type
@@ -33,11 +35,13 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
 
     const fetchUserInformation = useFetchUserInformation();
     const fetchBankList = useFetchBankList();
+    const fetchEventCategories = useFetchEventCategories();
     const fetchTransactionFee = useFetchTransactionFee();
 
     const { data: session } = useSession();
 
     // Define state for customer data
+    const [eventCategories, setEventCategories] = useState<IEventCategory[]>();
     const [userProfileInformation, setUserProfileInformation] = useState<UserCredentialsResponse | null>(null);
     const [isFetchingUserProfileInformation, setIsFetchingUserProfileInformation] = useState(false);
 
@@ -113,6 +117,18 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
             })
     };
 
+    async function handleFetchEventCategories() {
+        // Fetch the bank list
+        await fetchEventCategories()
+            .then((response) => {
+                console.log("🚀 ~ .then ~ response:", response)
+                setEventCategories(response.data);
+            })
+            .catch((error) => {
+                catchError(error);
+            })
+    };
+
     /**
      * Function to fetch transaction fee percentage
      * @param eventId The event's ID
@@ -123,7 +139,6 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
         }
         await fetchTransactionFee(eventId)
             .then((response) => {
-                // console.log("🚀 ~ .then fee ~ response:", response)
                 setTransactionFee(response.data);
             })
             .catch((error) => {
@@ -136,11 +151,12 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
             handleFetchBankList();
         }
     }, []);
-    // useEffect(() => {
-    //     if (!transactionFees) {
-    //         handleFetchTransactionFee();
-    //     }
-    // }, [transactionFees]);
+
+    useEffect(() => {
+        if (!eventCategories) {
+            handleFetchEventCategories();
+        }
+    }, [eventCategories]);
 
     // Define the values you want to share
     const sharedData: ApplicationContextData = {
@@ -152,7 +168,8 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
         toggleUserLoginPrompt: () => setShowUserLoginPrompt(!showUserLoginPrompt),
         bankList,
         transactionFee,
-        handleFetchTransactionFee
+        handleFetchTransactionFee,
+        eventCategories
     };
 
     return (

@@ -1,4 +1,5 @@
-import { ToastMessageType } from "./ToastMessageType";
+import { ToastMessageType } from "../enums/ToastMessageType";
+
 
 /**
  * The application toast options
@@ -8,5 +9,5 @@ export interface IToastOptions {
     title: string;
     description: string;
     timeout: number;
-    visible: Boolean;
+    visible: boolean;
 }

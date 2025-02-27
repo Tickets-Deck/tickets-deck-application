@@ -1,7 +1,7 @@
 import { Dispatch, FunctionComponent, ReactElement, SetStateAction } from "react";
 import ModalWrapper from "./ModalWrapper";
 import styles from "@/app/styles/promptModal.module.scss";
-import { CloseIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import Link from "next/link";
 
 interface PasswordResetLinkModalProps {
@@ -19,7 +19,7 @@ const PasswordResetLinkModal: FunctionComponent<PasswordResetLinkModalProps> = (
                         <h3>Check your mailbox</h3>
                         <p>We&apos;ve sent you an email with instructions to reset your password.</p>
                     </div>
-                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><CloseIcon /></span>
+                    <span className={styles.closeIcon} onClick={() => setVisibility(false)}><Icons.Close /></span>
                 </div>
                 {
                     moreInfo &&

@@ -67,7 +67,7 @@ const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
                 {/* KPI Section */}
                 <div className="w-full grid grid-cols-2 gap-4">
                     <div className="p-6 rounded-2xl flex flex-col bg-dark-grey">
-                        <span className="text-2xl font-semibold mb-4 font-Mona-Sans-Wide">&#8358;{walletBalance && (walletBalance).toLocaleString()}</span>
+                        <span className="text-2xl font-semibold mb-4 font-Mona-Sans-Wide">&#8358;{walletBalance?.toLocaleString() || 0}</span>
                         <span className="text-sm font-light text-text-grey">Wallet Balance</span>
                     </div>
                     <div className="p-6 rounded-2xl flex flex-col bg-dark-grey">

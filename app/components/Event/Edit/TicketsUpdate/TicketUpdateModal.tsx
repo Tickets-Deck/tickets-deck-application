@@ -1,6 +1,6 @@
 import { useUpdateTicketInformationById } from "@/app/api/apiClient";
 import ModalWrapper from "@/app/components/Modal/ModalWrapper";
-import { CloseIcon } from "@/app/components/SVGs/SVGicons";
+import { Icons } from "@/app/components/ui/icons";
 import { catchError } from "@/app/constants/catchError";
 import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
 import { TicketRequest, TicketResponse } from "@/app/models/ITicket";
@@ -166,7 +166,7 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = (
             <div className={styles.ticketCreationModal}>
                 <div className={styles.topArea}>
                     <h4>Update Ticket</h4>
-                    <span className={styles.closeIcon} onClick={() => setModalVisibility(false)}><CloseIcon /></span>
+                    <span className={styles.closeIcon} onClick={() => setModalVisibility(false)}><Icons.Close /></span>
                 </div>
                 <div className={styles.mainFormSection}>
                     <div className={styles.formField}>

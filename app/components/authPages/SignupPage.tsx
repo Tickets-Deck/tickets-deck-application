@@ -7,27 +7,17 @@ import {
   useContext,
   useEffect,
 } from "react";
-import styles from "../../styles/AuthStyles.module.scss";
-import Image from "next/image";
-import images from "../../../public/images";
-import {
-  EmailIcon,
-  EyeIcon,
-  GoogleIcon,
-  PasswordIcon,
-  UserIcon,
-} from "../SVGs/SVGicons";
 import Link from "next/link";
 import { UserCredentialsRequest } from "../../models/IUser";
 import { emailRegex } from "../../constants/emailRegex";
-import { ToastContext } from "../../extensions/toast";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { useCreateUser } from "@/app/api/apiClient";
 import { toast } from "sonner";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
-import ImagesDisplay from "./ImagesDisplay";
+import { ToastContext } from "@/app/context/ToastCardContext";
+import { Icons } from "../ui/icons";
 
 interface SignupPageProps {}
 
@@ -237,13 +227,13 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
               onClick={async () => await signIn("google")}
             >
               <span className='size-[2.5rem] grid place-items-center [&_svg]:size-8'>
-                <GoogleIcon />
+                <Icons.Google />
               </span>
               <p className='text-sm font-light'>Google</p>
             </div>
             {/* <div className={styles.option}>
                             <span>
-                                <FacebookIcon />
+                                <Icons.Facebook />
                             </span>
                             <p>Facebook</p>
                         </div> */}
@@ -259,7 +249,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                 </label>
                 <div className='flex rounded-lg overflow-hidden'>
                   <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
-                    <UserIcon />
+                    <Icons.User />
                   </span>
                   <input
                     type='text'
@@ -282,7 +272,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                 </label>
                 <div className='flex rounded-lg overflow-hidden'>
                   <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
-                    <UserIcon />
+                    <Icons.User />
                   </span>
                   <input
                     type='text'
@@ -306,7 +296,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
               </label>
               <div className='flex rounded-lg overflow-hidden'>
                 <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
-                  <EmailIcon />
+                  <Icons.Email />
                 </span>
                 <input
                   type='text'
@@ -330,7 +320,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                 </label>
                 <div className='flex rounded-lg overflow-hidden'>
                   <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
-                    <PasswordIcon />
+                    <Icons.Password />
                   </span>
                   <input
                     type={isPasswordVisible ? "text" : "password"}
@@ -344,7 +334,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                     className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem] cursor-pointer hover:text-white/20'
                     onClick={() => setIsPasswordVisible(!isPasswordVisible)}
                   >
-                    <EyeIcon clicked={!isPasswordVisible} />
+                    <Icons.Eye clicked={!isPasswordVisible} />
                   </span>
                 </div>
                 {passwordErrorMsg && (
@@ -359,7 +349,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                 </label>
                 <div className='flex rounded-lg overflow-hidden'>
                   <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
-                    <PasswordIcon />
+                    <Icons.Password />
                   </span>
                   <input
                     type={isPasswordVisible ? "text" : "password"}
@@ -372,7 +362,7 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                     className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem] cursor-pointer hover:text-white/20'
                     onClick={() => setIsPasswordVisible(!isPasswordVisible)}
                   >
-                    <EyeIcon clicked={!isPasswordVisible} />
+                    <Icons.Eye clicked={!isPasswordVisible} />
                   </span>
                 </div>
                 {confirmPasswordErrorMsg?.value && (

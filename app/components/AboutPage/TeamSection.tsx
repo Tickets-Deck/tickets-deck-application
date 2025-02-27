@@ -2,7 +2,7 @@ import { FunctionComponent, ReactElement, useRef } from "react";
 import Image from "next/image";
 import images from "@/public/images";
 import Link from "next/link";
-import { InstagramIcon, LinkedInIcon, TwitterIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import { useScroll, useTransform, motion } from "framer-motion";
 
 interface TeamSectionProps { }
@@ -17,17 +17,17 @@ const TeamSection: FunctionComponent<TeamSectionProps> = (): ReactElement => {
             socials: [
                 {
                     name: "Instagram",
-                    icon: <InstagramIcon />,
+                    icon: <Icons.Instagram />,
                     link: "https://www.instagram.com/the.brand.simlex",
                 },
                 {
                     name: "Twitter",
-                    icon: <TwitterIcon />,
+                    icon: <Icons.Twitter />,
                     link: "https://x.com/simlex_x",
                 },
                 {
                     name: "LinkedIn",
-                    icon: <LinkedInIcon />,
+                    icon: <Icons.LinkedIn />,
                     link: "https://www.linkedin.com/in/simlex/",
                 },
             ],
@@ -39,17 +39,17 @@ const TeamSection: FunctionComponent<TeamSectionProps> = (): ReactElement => {
             socials: [
                 {
                     name: "Instagram",
-                    icon: <InstagramIcon />,
+                    icon: <Icons.Instagram />,
                     link: "https://www.instagram.com/_tobygold",
                 },
                 {
                     name: "Twitter",
-                    icon: <TwitterIcon />,
+                    icon: <Icons.Twitter />,
                     link: "https://x.com/tobygold_a",
                 },
                 {
                     name: "LinkedIn",
-                    icon: <LinkedInIcon />,
+                    icon: <Icons.LinkedIn />,
                     link: "https://www.linkedin.com/in/oluwatobilobaawo/",
                 },
             ],
@@ -61,17 +61,17 @@ const TeamSection: FunctionComponent<TeamSectionProps> = (): ReactElement => {
             socials: [
                 {
                     name: "Instagram",
-                    icon: <InstagramIcon />,
+                    icon: <Icons.Instagram />,
                     link: "https://www.instagram.com/shola_the.design.chef",
                 },
                 {
                     name: "Twitter",
-                    icon: <TwitterIcon />,
+                    icon: <Icons.Twitter />,
                     link: "https://x.com/shollyfresh_",
                 },
                 // {
                 //     name: "LinkedIn",
-                //     icon: <LinkedInIcon />,
+                //     icon: <Icons.LinkedIn />,
                 //     link: "https://www.linkedin.com/in/oluwashola-afolabi-9b0a4b1b0/"
                 // },
             ],

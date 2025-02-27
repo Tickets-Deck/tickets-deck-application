@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { AppProvider } from '../context/ApplicationContext';
 import userReducer from '@/app/redux/features/user/userSlice';
 import themeReducer from '@/app/redux/features/theme/themeSlice';
+import { ToastProvider } from '../context/ToastCardContext';
 
 const store = configureStore({
     reducer: {
@@ -22,9 +23,11 @@ const GlobalProvider = ({ children }: Props) => {
     return (
         <SessionProvider>
             <AppProvider>
-                <Provider store={store}>
-                    {children}
-                </Provider>
+                <ToastProvider>
+                    <Provider store={store}>
+                        {children}
+                    </Provider>
+                </ToastProvider>
             </AppProvider>
         </SessionProvider>
     );

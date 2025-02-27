@@ -9,6 +9,8 @@
     left: 0;
     opacity: 0;
     cursor: pointer;
+
+    // absolute size-full top-0 left-0 opacity-0 cursor-pointer
 }
 
 @mixin formField {
@@ -16,9 +18,13 @@
     flex-direction: column;
     gap: 0.25rem;
     position: relative;
+
+    // flex flex-col gap-1 relative
     label {
         font-size: $font-size-16 - 0.25rem;
         color: $white;
+
+        // text-sm text-white
     }
     > input,
     select,
@@ -33,6 +39,8 @@
         &::placeholder {
             color: rgba($color: $white, $alpha: 0.5);
         }
+
+        // input rounded-lg w-full bg-white bg-opacity-10 text-white text-sm p-4 font-normal placeholder-white
     }
     > select {
         option {
@@ -97,7 +105,11 @@
             &:hover {
                 background-color: rgba($color: $white, $alpha: 0.1);
             }
+
+            // w-[40px] h-full grid place-items-center rounded cursor-pointer hover:bg-white/10
         }
+
+        // input rounded-lg w-full bg-white/10 text-sm flex items-center [&_svg]:w-[18px] [&_svg]:h-[18px] [&_svg_path]:fill-white
     }
     .categoryDropdownContainer {
         position: absolute;
@@ -121,6 +133,9 @@
                 background-color: rgba($color: $white, $alpha: 0.1);
             }
         }
+
+        // absolute w-[120%] top-16 left-0 bg-dark-grey z-10 rounded overflow-hidden max-h-[180px] overflow-y-auto scrollbar-thin
+        // span block px-2 py-4 text-sm text-white cursor-pointer hover:bg-white/10
     }
     .formFieldInfo {
         font-size: $font-size-16 - 0.25rem;
@@ -191,10 +206,14 @@
             padding: 1rem;
         }
 
+        // p-4 md:p-0 flex items-center justify-between
+
         h3 {
             font-size: $font-size-30;
             font-weight: $fontWeight-400;
             color: $white;
+
+            // text-3xl font-semibold text-white
         }
 
         button {
@@ -214,6 +233,8 @@
             padding-bottom: 4rem;
         }
 
+        // max-[768px]:border-none max-[768px]:mb-16 p-4 border border-primary-sub rounded-lg
+
         // style button with type submit
         button[type="submit"] {
             @include tablet {
@@ -231,12 +252,18 @@
                 flex-direction: column;
             }
 
+            // flex gap-8 w-full h-full mb-8 md:flex-col
+
+            // flex-col md:flex-row gap-8 size-full mb-8
+
             .lhs,
             .rhs {
                 width: 100%;
                 display: flex;
                 flex-direction: column;
                 gap: 1.2rem;
+
+                // w-full flex flex-col gap-4
             }
 
             > span {
@@ -246,6 +273,8 @@
                 // create background color with gradient
                 // background: linear-gradient(to bottom, rgba($color: $white, $alpha: 0.5), rgba($color: $white, $alpha: 0.1));
                 display: block;
+
+                // w-[1px] h-auto bg-[rgba($white,0.25)] block
             }
 
             .formRow {
@@ -254,6 +283,8 @@
                 @include tablet {
                     flex-direction: column;
                 }
+
+                // flex flex-col gap-4 md:flex-row md:gap-8
                 .formField {
                     width: 100%;
                 }
@@ -269,14 +300,19 @@
             flex-direction: column;
             gap: 2rem;
             margin-bottom: 2rem;
+            // flex flex-col gap-8 mb-8
             h3 {
                 font-weight: $fontWeight-400;
+
+                // font-semibold
             }
 
             .mainImageContainer {
                 display: flex;
                 flex-direction: column;
                 gap: 1rem;
+
+                // flex flex-col gap-4
                 .imageUploadContainer {
                     display: flex;
                     gap: 1.5rem;
@@ -284,6 +320,8 @@
                     @include tablet {
                         flex-direction: column;
                     }
+
+                    // flex gap-6 items-center md:flex-col md:gap-4
                     .image {
                         width: 50%;
                         height: 250px;
@@ -297,6 +335,8 @@
                         @include tablet {
                             width: 250px;
                         }
+
+                        // w-[250px] md:w-[50%] h-[250px] rounded-lg bg-[rgba($white,0.1)] overflow-hidden relative grid place-items-center cursor-pointer
                         input {
                             @include imageInput;
                         }
@@ -311,6 +351,8 @@
                             path {
                                 fill: $white;
                             }
+
+                            // [&_svg]:w-[40px] [&_svg]:h-[40px] [&_svg_path]:fill-white
                         }
                     }
                     button {
@@ -398,20 +440,28 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
+
+            // flex flex-col gap-8
             .topSection {
                 display: flex;
                 align-items: flex-start;
                 justify-content: space-between;
+
+                // flex items-start justify-between
 
                 .textContents {
                     h3 {
                         font-size: $font-size-20;
                         font-weight: $fontWeight-400;
                         margin-bottom: 0.125rem;
+
+                        // text-xl font-semibold mb-1
                     }
                     p {
                         font-size: $font-size-16 - 0.125rem;
                         color: rgba($color: $white, $alpha: 0.6);
+
+                        // text-sm text-white/60
                     }
                 }
                 .ticketsCreated {
@@ -419,6 +469,8 @@
                     flex-direction: column;
                     align-items: center;
                     gap: 0.25rem;
+
+                    // flex flex-col items-center gap-1
                     span {
                         width: 2rem;
                         height: 2rem;
@@ -427,6 +479,8 @@
                         color: $black;
                         display: grid;
                         place-items: center;
+
+                        // w-[2rem] h-[2rem] rounded-full bg-white text-black grid place-items-center
                     }
                     p {
                         font-size: $font-size-16 - 0.25rem;
@@ -434,6 +488,8 @@
                         @include tablet {
                             text-align: center;
                         }
+
+                        // text-sm text-white/60 md:text-center
                     }
                 }
             }
@@ -449,6 +505,8 @@
                 column-gap: 1rem;
                 row-gap: 1rem;
 
+                // grid grid-cols-2 gap-4
+
                 .ticketCard {
                     padding: 1.5rem;
                     border-radius: 20px;
@@ -460,10 +518,14 @@
                         padding: 1rem;
                     }
 
+                    // p-6 rounded-lg bg-container-grey flex flex-col gap-6
+
                     .ticketCardHeader {
                         display: flex;
                         align-items: center;
                         justify-content: space-between;
+
+                        // flex items-center justify-between
 
                         h3 {
                             font-size: $font-size-20;
@@ -471,6 +533,8 @@
                             @include tablet {
                                 font-size: $font-size-16;
                             }
+
+                            // text-xl font-semibold md:text-lg
                         }
                         span {
                             width: 2.5rem;
@@ -490,6 +554,8 @@
                                     height: 1rem;
                                 }
                             }
+
+                            // w-[2.5rem] h-[2.5rem] rounded-lg grid place-items-center bg-dark-grey cursor-pointer md:w-[2rem] md:h-[2rem] md:min-w-[2rem] md:min-h-[2rem] md:cursor-pointer md:[&_svg]:w-[1rem] md:[&_svg]:h-[1rem]
                         }
                     }
                     .ticketCardBody {
@@ -499,6 +565,7 @@
                             gap: .25rem;
                             margin-top: auto;
                         }
+                        // flex md:flex-col md:gap-1 md:mt-auto
                         .info {
                             width: 100%;
                             display: flex;
@@ -520,9 +587,13 @@
                                     align-items: flex-start;
                                 }
                             }
+
+                            // w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start
                             span {
                                 font-size: $font-size-16 - 0.125rem;
                                 color: $text-grey;
+
+                                // text-sm text-grey
                             }
                         }
                     }
@@ -534,14 +605,13 @@
                 align-items: center;
                 justify-content: center;
                 gap: 1rem;
-                // padding: 1.5rem;
-                // border-radius: 20px;
-                // background-color: $container-grey;
                 width: 50%;
                 margin: 0.25rem auto 1rem;
+                // flex flex-col items-center justify-center gap-4 w-1/2 m-auto mt-1 mb-4
                 p {
                     font-size: $font-size-16 - 0.125rem;
                     color: $text-grey;
+                    // text-sm text-grey
                 }
             }
         }
@@ -553,10 +623,12 @@
                     font-size: $font-size-20;
                     font-weight: $fontWeight-400;
                     color: $white;
+                    // text-xl font-semibold text-white
                 }
                 span {
                     font-size: $font-size-16 - 0.125rem;
                     opacity: 0.5;
+                    // text-sm text-white/50
                 }
             }
 
@@ -566,14 +638,19 @@
                     flex-direction: column;
                 }
 
+                // flex md:flex-col
+
                 .lhs,
                 .rhs {
                     display: flex;
                     flex-direction: column;
                     width: 100%;
+
+                    // flex flex-col w-full
                 }
                 .lhs {
                     margin-right: 2rem;
+                    // flex flex-col w-full mr-8
                 }
 
                 .eventImage {
@@ -585,6 +662,7 @@
                     @include tablet {
                         flex-direction: column;
                     }
+                    // flex gap-4 items-start flex-col mb-6 md:flex-col
 
                     .image {
                         width: 100%;
@@ -598,10 +676,12 @@
                         img {
                             object-fit: cover;
                         }
+
+                        // w-full h-[250px] rounded-lg bg-[rgba($white,0.1)] overflow-hidden relative grid place-items-center [&_img]:object-cover
                     }
                     button {
                         @include tertiary-button;
-                        padding: 0.5rem 1rem;
+                        padding: 0.5rem 1rem; // px-1 py-2
                         // width: fit-content;
                         // white-space: nowrap;
                         // display: grid;
@@ -614,6 +694,8 @@
                     margin-bottom: 1.5rem;
                     // border: 1px solid #fff;
 
+                    // flex flex-col mb-6
+
                     .info,
                     .infoRow {
                         display: flex;
@@ -622,10 +704,12 @@
                         // &:not(&:last-child) {
                         //     margin-bottom: 0.5rem;
                         // }
+                        // flex flex-col mb-2
                         span {
                             font-size: $font-size-16 - 0.25rem;
                             color: $text-grey;
                             margin-bottom: 0.125rem;
+                            // [&_span]:mb-1 [&_span]:text-sm [&_span]:text-grey
                         }
                         p {
                             font-size: $font-size-16;
@@ -634,6 +718,7 @@
                                 border-radius: 1rem;
                                 // margin-bottom: 0.5rem;
                             }
+                            // text-base [&_img]:w-[200px] [&_img]:rounded-lg [&_img]:mb-2
                         }
                     }
                     .infoRow {
@@ -647,9 +732,11 @@
                     .topArea {
                         display: flex;
                         margin-bottom: 1rem;
+                        // flex mb-4
                         h4 {
                             font-size: 1.25rem;
                             font-weight: $fontWeight-400;
+                            // text-lg font-semibold
                         }
                         button {
                             @include tertiary-button;
@@ -666,6 +753,8 @@
                         @include tablet {
                             margin-bottom: 2rem;
                         }
+
+                        // grid grid-template-columns-[repeat(2,minmax(100px,1fr))] gap-4 md:md:gap-8
 
                         .ticketCardBody {
                             padding: 1rem;
@@ -691,6 +780,7 @@
                                 opacity: 0;
                                 transition: all 300ms ease;
                             }
+                            // p-4 rounded-lg bg-container-grey flex flex-col gap-5 w-full relative overflow-hidden &::after:content-[""] absolute w-full h-full top-0 left-0 bg-black/35 z-10 border-radius-[100%] scale-0.5 opacity-0 transition-all-300ms-ease
                             // &:hover {
                             //     &::after {
                             //         // border-radius: 0%;
@@ -706,6 +796,7 @@
                                 display: flex;
                                 flex-direction: column;
                                 gap: 0.25rem;
+                                // flex flex-col gap-1
                                 h5 {
                                     font-weight: $fontWeight-500;
                                 }
@@ -716,18 +807,22 @@
                                     padding: 0.25rem 0.5rem;
                                     border-radius: 0.5rem;
                                     width: fit-content;
+                                    // text-sm bg-white text-black px-2 py-1 rounded w-fit
                                 }
                             }
                             .metrics {
                                 display: flex;
                                 gap: 1rem;
                                 flex-direction: column;
+                                // flex gap-4 flex-col
                                 &__single {
                                     p {
                                         font-size: $font-size-16 - 0.25rem;
+                                        // text-sm
                                     }
                                     span {
                                         font-size: $font-size-16 - 0.125rem;
+                                        // text
                                     }
                                 }
                             }

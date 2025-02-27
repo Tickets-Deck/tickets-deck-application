@@ -7,7 +7,7 @@ import {
 } from "react";
 import ModalWrapper from "./ModalWrapper";
 import styles from "@/app/styles/promptModal.module.scss";
-import { CloseIcon } from "../SVGs/SVGicons";
+import { Icons } from "../ui/icons";
 import { useResendVerificationLink } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
 import ComponentLoader from "../Loader/ComponentLoader";
@@ -87,7 +87,7 @@ const EmailVerificationPrompt: FunctionComponent<
             className='ml-auto size-8 rounded-full grid place-items-center cursor-pointer hover:bg-white/10'
             onClick={() => setVisibility(false)}
           >
-            <CloseIcon className='*:stroke-white *:fill-white' />
+            <Icons.Close className='*:stroke-white *:fill-white' />
           </span>
         </div>
         <div className={"flex justify-end mt-4 gap-2"}>
