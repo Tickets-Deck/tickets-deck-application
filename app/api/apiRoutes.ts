@@ -5,7 +5,7 @@ export class ApiRoutes {
   /**
    * The dev base url for the application
    */
-  static BASE_URL_DEV: string = "http://localhost:9000";
+  static BASE_URL_DEV: string = "http://localhost:3050/";
   //   static BASE_URL_DEV: string = "http://192.168.1.226:9000/";
 
   /**
@@ -21,12 +21,22 @@ export class ApiRoutes {
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
+  static BASE_URL: string = ApiRoutes.BASE_URL_DEV;
 
   /**
    * The route to Request Credential Token endpoint
    */
   static RequestCredentialToken: string = "auth/request-token";
+
+  /**
+   * The route to Refresh Token endpoint
+   */
+  static RefreshToken: string = "auth/refresh-token";
+
+  /**
+   * The route to User Login Token endpoint
+   */
+  static UserLogin: string = "auth/login";
 
   /**
    * The route to CreateNewsletterSubscriber endpoint
@@ -44,9 +54,18 @@ export class ApiRoutes {
   static Events: string = "events";
 
   /**
-   * The route to Orders endpoint
+   * The route to Fetch Organizer Events endpoint
    */
-  static Orders: string = "api/events/orders";
+  static FetchOrganizerEvents: (organizerId: string) => string = (
+    organizerId: string
+  ) => `events/organizer/${organizerId}`;
+
+  /**
+   * The route to FetchOrderInformation endpoint
+   */
+  static FetchOrderInformation: (orderId: string) => string = (
+    orderId: string
+  ) => `orders/${orderId}/tickets`;
 
   /**
    * The route to Check-in an order
@@ -62,6 +81,19 @@ export class ApiRoutes {
    * The route to Users endpoint
    */
   static Users: string = "api/users";
+
+  /**
+   * The route to Update User Profile Information endpoint
+   */
+  static UpdateUserProfileInformation: (userId: string) => string = (
+    userId: string
+  ) => `users/profile/${userId}`;
+
+  /**
+   * The route to Fetch User Information endpoint
+   */
+  static FetchUserInformation: (userId: string) => string = (userId: string) =>
+    `users/id/${userId}`;
 
   /**
    * The route to VerifyUserEmail endpoint
@@ -81,12 +113,13 @@ export class ApiRoutes {
   /**
    * The route to UpdateUserName endpoint
    */
-  static UpdateUserName: string = "api/users/username";
+  static UpdateUserName: (userId: string) => string = (userId: string) =>
+    `users/username/${userId}`;
 
   /**
    * The route to TicketOrder endpoint
    */
-  static TicketOrder: string = "api/events/tickets/order";
+  static InitializeTicketOrder: string = "orders/event/initialize";
 
   /**
    * The route to User TicketOrder endpoint
@@ -94,9 +127,21 @@ export class ApiRoutes {
   static UserTicketOrder: string = "api/users/tickets";
 
   /**
-   * The route to Payment endpoint
+   * The route to Intialize Payment endpoint
    */
-  static Payment: string = "api/events/tickets/payment";
+  static InitializePayment: string = "payments/process";
+
+  /**
+   * The route to Verify Payment endpoint
+   */
+  static VerifyPayment: (reference: string) => string = (reference: string) =>
+    `payments/verify/${reference}`;
+
+  /**
+   * The route to Tickets Bought endpoint
+   */
+  static FetchTicketsBought: (userId: string) => string = (userId: string) =>
+    `users/${userId}/bought-tickets`;
 
   /**
    * The route to Tickets endpoint
@@ -104,9 +149,11 @@ export class ApiRoutes {
   static Tickets: string = "api/events/tickets";
 
   /**
-   * The route to Dashboard endpoint
+   * The route to Fetch Dashboard Information endpoint
    */
-  static Dashboard: string = "api/users/dashboard";
+  static FetchDashboardInformation: (userId: string) => string = (
+    userId: string
+  ) => `dashboard/user/${userId}`;
 
   /**
    * The route to Follows endpoint
@@ -116,12 +163,31 @@ export class ApiRoutes {
   /**
    * The route to User Recent Transactions endpoint
    */
-  static UserRecentTransactions: string = "api/users/recent-transactions";
+  static UserRecentTransactions: (userId: string, duration?: number) => string =
+    (userId: string, duration?: number) =>
+      `users/${userId}/recent-transactions?duration=${duration}`;
+
+  /**
+   * The route to Event Like Status endpoint
+   */
+  static EventLikeStatus: (eventId: string) => string = (eventId: string) =>
+    `events/${eventId}/is-liked`;
 
   /**
    * The route to Like Event endpoint
    */
-  static LikeEvent: string = "api/events/like";
+  static LikeEvent: (eventId: string, userId: string) => string = (
+    eventId: string,
+    userId: string
+  ) => `events/${eventId}/like/${userId}`;
+
+  /**
+   * The route to Unlike Event endpoint
+   */
+  static UnlikeEvent: (eventId: string, userId: string) => string = (
+    eventId: string,
+    userId: string
+  ) => `events/${eventId}/unlike/${userId}`;
 
   /**
    * The route to Request User Password Reset Link endpoint
@@ -147,7 +213,8 @@ export class ApiRoutes {
   /**
    * The route to User Favorite Events endpoint
    */
-  static UserFavoriteEvents: string = "api/events/favourites";
+  static UserFavoriteEvents: (userId: string) => string = (userId: string) =>
+    `events/${userId}/liked-events`;
 
   /**
    * The route to Featured Events endpoint
@@ -157,25 +224,34 @@ export class ApiRoutes {
   /**
    * The route to Fetch all Banks endpoint
    */
-  static FetchAllBanks: string = "api/paystack/banks";
+  static FetchAllBanks: string = "banks";
 
   /**
    * The route to Fetch Bank Details endpoint
    */
-  static FetchBankDetails: string = "api/paystack/validate-bank-account";
+  static FetchBankDetails: (bankCode: string, accountNumber: string) => string =
+    (bankCode: string, accountNumber: string) =>
+      `banks/${bankCode}/details/${accountNumber}`;
 
   /**
    * The route to User Bank Account endpoint
    */
-  static UserBankAccount: string = "api/users/bank-account";
+  static UserBankAccount: (userId: string) => string = (userId: string) =>
+    `banks/${userId}/bank-account`;
 
   /**
    * The route to Transaction Fee endpoint
    */
-  static TransactionFee: (eventId: string) => string = (eventId: string) => `transaction-fees/event/${eventId}`;
+  static TransactionFee: (eventId: string) => string = (eventId: string) =>
+    `transaction-fees/event/${eventId}`;
 
   /**
    * The route to Verify Coupon Code endpoint
    */
   static VerifyCouponCode: string = "api/verify-coupon";
+
+  /**
+   * The route to EventCategory endpoint
+   */
+  static EventCategory: string = "event-category";
 }
