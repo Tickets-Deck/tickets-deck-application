@@ -1,7 +1,6 @@
 "use client";
 import { ReactElement, FunctionComponent, useEffect, useState } from "react";
-import styles from "../styles/Dashboard.module.scss";
-import { EventIcon } from "../components/SVGs/SVGicons";
+import { Icons } from "../components/ui/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -29,6 +28,7 @@ const DashboardPage: FunctionComponent<
   const fetchUserRecentTransactions = useFetchUserRecentTransactions();
   const { data: session, status } = useSession();
   const user = session?.user;
+  console.log("🚀 ~ user:", user)
   const { push } = useRouter();
 
   const userInfo = useSelector(
@@ -64,7 +64,7 @@ const DashboardPage: FunctionComponent<
     // Start loader
     setIsLoading(true);
 
-    await fetchDashboardInfo(user?.id as string)
+    await fetchDashboardInfo(user?.token as string, user?.id as string)
       .then((response) => {
         setDashboardInfo(response.data);
       })
@@ -76,11 +76,11 @@ const DashboardPage: FunctionComponent<
       });
   }
 
-  async function handleFetchUserRecentTransactions(duration?: string) {
+  async function handleFetchUserRecentTransactions(duration?: number) {
     // Start loader
     setIsFetchingUserRecentTransactions(true);
 
-    await fetchUserRecentTransactions(user?.id as string, duration)
+    await fetchUserRecentTransactions(user?.token as string, user?.id as string, duration)
       .then((response) => {
         setUserRecentTransactionss(response.data);
       })
@@ -109,7 +109,7 @@ const DashboardPage: FunctionComponent<
   useEffect(() => {
     if (user) {
       handleFetchDashboardInfo();
-      handleFetchUserRecentTransactions("14");
+      handleFetchUserRecentTransactions(14);
     }
   }, [user]);
 
@@ -148,7 +148,7 @@ const DashboardPage: FunctionComponent<
               className='w-full md:w-[25%] bg-dark-grey rounded-lg p-4 flex hover:opacity-65 items-start gap-2'
             >
               <span className='size-10 rounded bg-dark-grey-2 grid place-items-center [&_svg_path]:fill-white'>
-                <EventIcon />
+                <Icons.Event />
               </span>
               <div className='flex flex-col gap-2'>
                 <h4 className='text-2xl font-medium leading-[22px] text-white'>
@@ -164,7 +164,7 @@ const DashboardPage: FunctionComponent<
               className='w-full md:w-[25%] bg-dark-grey rounded-lg p-4 flex hover:opacity-65 items-start gap-2'
             >
               <span className='size-10 rounded bg-dark-grey-2 grid place-items-center [&_svg_path]:fill-white'>
-                <EventIcon />
+                <Icons.Event />
               </span>
               <div className='flex flex-col gap-2'>
                 <h4 className='text-2xl font-medium leading-[22px] text-white'>
@@ -178,7 +178,7 @@ const DashboardPage: FunctionComponent<
               className='w-full md:w-[25%] bg-dark-grey rounded-lg p-4 flex hover:opacity-65 items-start gap-2'
             >
               <span className='size-10 rounded bg-dark-grey-2 grid place-items-center [&_svg_path]:fill-white'>
-                <EventIcon />
+                <Icons.Event />
               </span>
               <div className='flex flex-col gap-2'>
                 <h4 className='text-2xl font-medium leading-[22px] text-white'>
@@ -192,7 +192,7 @@ const DashboardPage: FunctionComponent<
               className='w-full md:w-[25%] bg-dark-grey rounded-lg p-4 flex hover:opacity-65 items-start gap-2'
             >
               <span className='size-10 rounded bg-dark-grey-2 grid place-items-center [&_svg_path]:fill-white'>
-                <EventIcon />
+                <Icons.Event />
               </span>
               <div className='flex flex-col gap-2'>
                 <h4 className='text-2xl font-medium leading-[22px] text-white'>
@@ -211,27 +211,27 @@ const DashboardPage: FunctionComponent<
       )}
 
       <div className='mt-8'>
-        <h3 className='text-base text-white mb-2 opacity-50'>
+        <h3 className='text-base text-white mb-2 opacity-50 flex flex-row space-x-1'>
           Recent transactions&nbsp;
           <select
-            className='italic text-xs cursor-pointer hover:underline bg-transparent border-none outline-none text-white appearance-none relative'
-            onChange={(e) => handleFetchUserRecentTransactions(e.target.value)}
+            className='p-0 !w-fit !bg-transparent italic text-xs cursor-pointer hover:underline border-none outline-none text-white appearance-none relative'
+            onChange={(e) => handleFetchUserRecentTransactions(Number(e.target.value))}
           >
             <option
               className='bg-dark-grey-2 text-white rounded-lg p-[10px]'
-              value='14'
+              value={14}
             >
               within the last 2 weeks
             </option>
             <option
               className='bg-dark-grey-2 text-white rounded-lg p-[10px]'
-              value='30'
+              value={30}
             >
               within the last 1 month
             </option>
             <option
               className='bg-dark-grey-2 text-white rounded-lg p-[10px]'
-              value='60'
+              value={60}
             >
               within the last 2 months
             </option>
