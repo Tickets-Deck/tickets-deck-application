@@ -11,7 +11,7 @@ export type TicketRequest = {
 export type TicketResponse = TicketRequest & {
   id: string;
   eventId: string;
-  ticketsPurchasedCount: number;
+  ticketOrdersCount: number;
   ticketsPurchased: TicketPurchased[];
   createdAt: string;
   updatedAt: string;
