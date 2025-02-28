@@ -184,7 +184,15 @@ module.exports = {
     					transform: 'translateX(100%)',
     					opacity: '0'
     				}
-    			}
+    			},
+                sqwish: {
+                    '50%': {
+                      transform: 'scale(0.2) translateY(-50%)'
+                    },
+                    '100%': {
+                      transform: 'scale(0.9) translateY(-50%)'
+                    }
+                  }
     		},
     		animation: {
     			'accordion-down': 'accordion-down 0.2s ease-out',
@@ -197,7 +205,8 @@ module.exports = {
     			slideInFromLeft: 'slideInFromLeft 0.25s ease-in-out forwards',
     			slideOutToLeft: 'slideOutToLeft 0.25s ease-in-out forwards',
     			slideInFromRight: 'slideInFromRight 0.25s ease-in-out forwards',
-    			slideOutToRight: 'slideOutToRight 0.25s ease-in-out forwards'
+    			slideOutToRight: 'slideOutToRight 0.25s ease-in-out forwards',
+                sqwish: 'sqwish 0.5s ease-in-out forwards'
     		},
     		boxShadow: {
     			teamCard: '0px 0px 4px rgba(0, 0, 0, 0.25)',
