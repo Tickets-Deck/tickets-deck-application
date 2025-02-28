@@ -53,16 +53,12 @@ const FavouriteEventsPage: FunctionComponent<FavouriteEventsPageProps> = (): Rea
             </div>
 
             <div className="flex flex-col w-full">
-                <div className="grid grid-cols-1 md:grid-cols-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {
                         !isFetchingFavouriteEvents && (favouriteEvents && favouriteEvents?.length > 0) && favouriteEvents.map((event, index) =>
                             <EventCard
                                 event={event}
-                                // mobileAndActionButtonDismiss
                                 key={index}
-                                // gridDisplay={true}
-                                // setIsDeleteConfirmationModalVisible={setIsDeleteConfirmationModalVisible}
-                                // setSelectedEvent={setSelectedEvent}
                             />
                         )
                     }
