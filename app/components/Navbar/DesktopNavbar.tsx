@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import Image from "next/image";
 import images from "@/public/images";
-import { CaretDownIcon } from "../ui/icons";
+import { Icons } from "../ui/icons";
 import { useDispatch } from "react-redux";
 import { signOut } from "next-auth/react";
 import { clearUserCredentials } from "@/app/redux/features/user/userSlice";
@@ -91,7 +91,7 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ session, appThem
                                 {userInfo.firstName ?? "Account"}
                             </h3>
                             <span className='size-6 grid place-items-center rounded-lg group-hover:bg-white/10'>
-                                <CaretDownIcon className='size-4 [&_path]:fill-primary-color-sub text-white' />
+                                <Icons.CaretDown className='size-4 [&_path]:fill-primary-color-sub text-white' />
                             </span>
                             {navbarDropdownIsVisible && (
                                 <div className='bg-white p-1 rounded-lg flex flex-col absolute top-[2.813rem] -right-[0.688rem] w-[90%] max-w-32 shadow-[0rem_0.25rem_0.5rem_0.063rem_rgba(0,0,0,0.04)] z-[3] animate-bumpDown after:size-[0.875rem] after:bg-white after:rotate-45 after:absolute after:top[-0.375rem] after:right-4 after:rounded-[0.188rem]'>
