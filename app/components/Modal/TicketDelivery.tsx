@@ -506,9 +506,9 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                 <div className={styles.toggleSection}>
                                     <p>Use My Email as Primary Email</p>
                                     <Toggler
-                                        mainColor='77b255'
-                                        disabledColor='dadada'
-                                        togglerIndicatorColor='ffffff'
+                                        // mainColor='77b255'
+                                        // disabledColor='dadada'
+                                        // togglerIndicatorColor='ffffff'
                                         setCheckboxValue={setUserEmailIsPrimaryEmail}
                                         checkboxValue={userEmailIsPrimaryEmail} />
                                 </div>
@@ -623,9 +623,9 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                                 <div className={styles.toggleSection}>
                                     <p>Use My Email as Primary Email</p>
                                     <Toggler
-                                        mainColor='77b255'
-                                        disabledColor='dadada'
-                                        togglerIndicatorColor='ffffff'
+                                        // mainColor='77b255'
+                                        // disabledColor='dadada'
+                                        // togglerIndicatorColor='ffffff'
                                         setCheckboxValue={setUserEmailIsPrimaryEmail}
                                         checkboxValue={userEmailIsPrimaryEmail} />
                                 </div>
