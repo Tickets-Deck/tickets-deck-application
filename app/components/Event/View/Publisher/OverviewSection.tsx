@@ -1,61 +1,75 @@
 import Toggler from '@/app/components/custom/Toggler'
 import { Icons } from '@/app/components/ui/icons'
-import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons'
+import { EventRequest, EventResponse } from '@/app/models/IEvents'
+import moment from 'moment'
 import React from 'react'
 
-type Props = {}
+type Props = {
+    eventInfo: EventResponse
+    handleUpdateEventInfo(updatedEventInfo: EventRequest): Promise<void>
+}
 
-export default function OverviewSection({ }: Props) {
+export default function OverviewSection({ eventInfo, handleUpdateEventInfo }: Props) {
+console.log("🚀 ~ OverviewSection ~ eventInfo:", eventInfo)
+
+    const [isArchived, setIsArchived] = React.useState(false);
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 rounded-xl p-5 bg-[#1e1e1e] border-gray-700 h-fit">
+            <div className="md:col-span-2 rounded-xl p-5 pb-8 bg-[#1e1e1e] border-[2px] border-container-grey h-fit">
                 <div className='mb-5'>
                     <h4 className='text-2xl font-medium'>Event Details</h4>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-6">
                     <div>
-                        <h3 className="text-lg font-semibold mb-1">Description</h3>
-                        <p className="text-gray-300">Description comes everywhere here</p>
+                        <h3 className="text-base text-gray-400 font-medium mb-1">Description</h3>
+                        <p className="text-sm text-white" dangerouslySetInnerHTML={{ __html: eventInfo.description }} />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                         <div>
-                            <h3 className="text-lg font-semibold mb-2">Event Schedule</h3>
-                            <div className="space-y-3">
+                            <h3 className="text-base font-medium mb-2">Event Schedule</h3>
+                            <div className="space-y-4">
                                 <div className="flex items-start">
-                                    <span className='w-10 h-10 mr-2 bg-white/50 rounded-full grid place-items-center'>
-                                        <Icons.Calender width={16} height={16} />
+                                    <span className='w-10 h-10 mr-2 bg-white/10 rounded-full grid place-items-center'>
+                                        <Icons.Calender width={18} height={18} fill='#fff' />
                                     </span>
                                     <div>
-                                        <p className="text-sm text-gray-400">Start Date & Time</p>
-                                        <p>Thu, Feb 27, 2025, 05:30 PM</p>
+                                        <p className="text-sm text-gray-400 mb-1">Start Date & Time</p>
+                                        <p className='text-sm'>{moment(eventInfo.startDate).format("ddd, MMM Do, YYYY, hh:mm A")}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start">
-                                    <Icons.Sun className="h-5 w-5 mr-2 text-purple-400 mt-1" />
+                                    <span className='w-10 h-10 mr-2 bg-white/10 rounded-full grid place-items-center'>
+                                        <Icons.Calender width={18} height={18} fill='#fff' />
+                                    </span>
                                     <div>
                                         <p className="text-sm text-gray-400">End Date & Time</p>
-                                        <p>Thu, Feb 27, 2025, 05:30 PM</p>
+                                        <p className='text-sm'>{moment(eventInfo.endDate).format("ddd, MMM Do, YYYY, hh:mm A")}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-semibold mb-2">Ticket Sales Period</h3>
-                            <div className="space-y-3">
+                            <h3 className="text-base font-medium mb-2">Ticket Sales Period</h3>
+                            <div className="space-y-4">
                                 <div className="flex items-start">
-                                    <Icons.Sun className="h-5 w-5 mr-2 text-purple-400 mt-1" />
+                                    <span className='w-10 h-10 mr-2 bg-white/10 rounded-full grid place-items-center'>
+                                        <Icons.Calender width={18} height={18} fill='#fff' />
+                                    </span>
                                     <div>
                                         <p className="text-sm text-gray-400">Sales Start</p>
-                                        <p>Mon, Feb 24, 2025, 01:00 AM</p>
+                                        <p className='text-sm'>{moment(eventInfo.purchaseStartDate).format("ddd, MMM Do, YYYY, hh:mm A")}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start">
-                                    <Icons.Sun className="h-5 w-5 mr-2 text-purple-400 mt-1" />
+                                    <span className='w-10 h-10 mr-2 bg-white/10 rounded-full grid place-items-center'>
+                                        <Icons.Calender width={18} height={18} fill='#fff' />
+                                    </span>
                                     <div>
                                         <p className="text-sm text-gray-400">Sales End</p>
-                                        <p>Mon, Feb 24, 2025, 01:00 AM</p>
+                                        <p className='text-sm'>{moment(eventInfo.purchaseEndDate).format("ddd, MMM Do, YYYY, hh:mm A")}</p>
                                     </div>
                                 </div>
                             </div>
@@ -63,12 +77,12 @@ export default function OverviewSection({ }: Props) {
                     </div>
 
                     <div className="mt-4">
-                        <h3 className="text-lg font-semibold mb-2">Tags</h3>
+                        <h3 className="text-base font-medium mb-2">Tags</h3>
                         <div className="flex flex-wrap gap-2">
-                            {["bustic", "conference"].map((tag, index) => (
+                            {eventInfo.tags.map((tag, index) => (
                                 <span
                                     key={index}
-                                    className="bg-purple-900/30 text-purple-300 border-purple-700"
+                                    className="bg-primary-color-sub/20 p-1 px-2 rounded text-purple-300 border-purple-700"
                                 >
                                     {tag}
                                 </span>
@@ -79,83 +93,71 @@ export default function OverviewSection({ }: Props) {
             </div>
 
             <div>
-                <div className="bg-[#1e1e1e] border-gray-700 mb-6">
-                    <div>
-                        <h4>Event Stats</h4>
+                <div className="bg-[#1e1e1e] border-[2px] border-container-grey rounded-xl p-5 mb-6">
+                    <div className='mb-5'>
+                        <h4 className='text-xl font-medium'>Event Stats</h4>
                     </div>
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                            <div className="flex items-center">
-                                <Icons.Sun className="h-5 w-5 mr-2 text-purple-400" />
+                            <div className="flex items-center space-x-2">
+                                <Icons.QuickTicketBooking fill='#ceb0fa' className="h-5 w-5" />
                                 <span>Tickets Sold</span>
                             </div>
-                            <span className="font-bold">100</span>
+                            <span className="font-bold">{eventInfo.ticketOrdersCount}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <div className="flex items-center">
-                                <Icons.Sun className="h-5 w-5 mr-2 text-purple-400" />
+                            <div className="flex items-center space-x-2">
+                                <Icons.Like isLiked className="h-5 w-5" />
                                 <span>Favorites</span>
                             </div>
-                            <span className="font-bold">100</span>
+                            <span className="font-bold">{eventInfo.favoritesCount}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <div className="flex items-center">
-                                <Icons.Sun className="h-5 w-5 mr-2 text-purple-400" />
+                            <div className="flex items-center space-x-2">
+                                <Icons.Bookmark className="h-5 w-5 text-purple-400" />
                                 <span>Bookmarks</span>
                             </div>
-                            <span className="font-bold">100</span>
+                            <span className="font-bold">{eventInfo.bookmarksCount}</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-[#1e1e1e] border-gray-700">
-                    <div>
-                        <h4>Event Information</h4>
+                <div className="bg-[#1e1e1e] border-[2px] border-container-grey rounded-xl p-5">
+                    <div className='mb-5'>
+                        <h4 className='text-xl font-medium'>Event Information</h4>
                     </div>
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                            <div className="flex items-center">
-                                <Icons.Sun className="h-5 w-5 mr-2 text-purple-400" />
-                                <span>Category</span>
-                            </div>
-                            <span className="bg-purple-700">Freaka</span>
+                            <span className='text-sm'>Category</span>
+                            <span className="bg-primary-color-sub/20 p-2 px-3 rounded-lg text-sm text-white">{eventInfo.category}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <div className="flex items-center">
-                                <Icons.Profile className="h-5 w-5 mr-2 text-purple-400" />
-                                <span>Guest Type</span>
-                            </div>
-                            <span>Type allowed</span>
+                            <span className='text-sm'>Guest Type</span>
+                            <span>{eventInfo.allowedGuestType}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <div className="flex items-center">
-                                <Icons.Sun className="h-5 w-5 mr-2 text-purple-400" />
-                                <span>Currency</span>
-                            </div>
-                            <span>NGN</span>
+                            <span className='text-sm'>Currency</span>
+                            <span>{eventInfo.currency}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <div className="flex items-center">
-                                <Icons.Sun className="h-5 w-5 mr-2 text-purple-400" />
-                                <span>Organizer Pays Fee</span>
-                            </div>
-                            {/* <Switch checked={mockEvent.organizerPaysFee} /> */}
+                            <span className='text-sm'>Organizer Pays Fee</span>
+                            <Toggler
+                                checkboxValue={eventInfo.organizerPaysFee}
+                                setCheckboxValue={() => { }}
+                            />
                         </div>
                         <div className="flex justify-between items-center">
-                            <div className="flex items-center">
-                                <Icons.Sun className="h-5 w-5 mr-2 text-purple-400" />
-                                <span>Visibility</span>
-                            </div>
-                            <span className={true ? "bg-green-700" : "bg-gray-700"}>
-                                {true ? "Public" : "Private"}
+                            <span className='text-sm'>Visibility</span>
+                            <span className={`bg-primary-color-sub/20 p-2 px-3 rounded-lg text-sm text-white ${eventInfo.visibility ? "bg-green-500" : "bg-red-500"}`}>
+                                {eventInfo.visibility ? "Public" : "Private"}
                             </span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <div className="flex items-center">
-                                <Icons.Delete className="h-5 w-5 mr-2 text-purple-400" />
-                                <span>Archived</span>
-                            </div>
-                            {/* <Toggler checkboxValue={true} /> */}
+                            <span className='text-sm'>Archived</span>
+                            <Toggler
+                                checkboxValue={eventInfo.isArchived}
+                                setCheckboxValue={setIsArchived}
+                            />
                         </div>
                     </div>
                 </div>
