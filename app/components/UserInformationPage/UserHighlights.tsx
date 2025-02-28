@@ -52,9 +52,9 @@ const UserHighlights: FunctionComponent<UserHighlightsProps> = ({ userInformatio
                     userEvents && userEvents.length > 0 && userEvents.map((event, index) =>
                         <EventCard
                             event={event}
-                            mobileAndActionButtonDismiss
+                            // mobileAndActionButtonDismiss
                             key={index}
-                            gridDisplay={true}
+                            // gridDisplay={true}
                         />
                     )
                 }
