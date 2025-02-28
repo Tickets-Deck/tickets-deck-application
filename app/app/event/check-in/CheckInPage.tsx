@@ -17,13 +17,11 @@ interface CheckInPageProps {
 const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
 
     const checkInTicketOrder = useCheckInTicketOrder();
+    const {data: session} = useSession();
 
     const searchParams = useSearchParams();
     const eventId = searchParams.get('id');
     const eventTitle = searchParams.get('name')?.replace(/-/g, ' ');
-
-    const { data: session } = useSession();
-    const user = session?.user;
 
     const [multipleCheckInModalVisibility, setMultipleCheckInModalVisibility] = useState(false);
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -42,7 +40,7 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
         setIsCheckingIn(true);
         setTicketOrderAccessCode(scannedAccessCode);
 
-        await checkInTicketOrder(scannedAccessCode as string, eventId as string)
+        await checkInTicketOrder(session?.user.token as string, scannedAccessCode as string, eventId as string)
             .then((response) => {
                 console.log("Check in response: ", response);
                 if (response.data) {
