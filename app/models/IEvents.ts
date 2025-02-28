@@ -77,7 +77,7 @@ export type EventResponse = {
   favoritesCount: number;
 //   bookmarks: Bookmarks[];
 //   favorites: Favourites[];
-  ticketsPurchasedCount: number;
+  ticketOrdersCount: number;
   ticketsPurchased: TicketPurchased[];
   organizerPaysFee: boolean;
 };
@@ -86,3 +86,28 @@ export enum EventFavoriteAction {
   Like = "like",
   Unlike = "unlike",
 }
+
+export type UpdateEventRequest = {
+    eventId: string;
+    publisherId: string;
+  
+    title: string | null;
+    description: string | null;
+    location: Location | null;
+    venue: string | null;
+    startDate: Date | string | null;
+    endDate: Date | string | null;
+    categoryId: string | null;
+    tags: string[] | null;
+    visibility: EventVisibility | null;
+  
+    // mainImageBase64Url: string | null;
+    // images: EventImages[] | null;
+  
+    currency: string | null;
+    tickets: TicketRequest[] | null;
+    organizerPaysFee: boolean | null;
+    purchaseStartDate: Date | string | null;
+    purchaseEndDate: Date | string | null;
+    allowedGuestType: string | null;
+  };
