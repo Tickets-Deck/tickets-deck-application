@@ -25,6 +25,7 @@
         "axios": "^1.6.2",
         "bcryptjs": "^2.4.3",
         "canvas": "^2.11.2",
+        "chart.js": "^4.4.8",
         "cheerio": "^1.0.0",
         "cloudinary": "^1.41.2",
         "date-fns": "^3.6.0",
