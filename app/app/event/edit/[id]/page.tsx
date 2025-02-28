@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Icons } from "@/app/components/ui/icons";
 import { RetrievedTicketResponse, TicketResponse } from "@/app/models/ITicket";
-import { EventRequest, EventResponse } from "@/app/models/IEvents";
+import { EventRequest, EventResponse, UpdateEventRequest } from "@/app/models/IEvents";
 import {
     useDeleteTicketById,
     useFetchEventById,
@@ -37,6 +37,7 @@ import { formattedDateForApi } from "@/utils/dateformatter";
 import { timePickerStyles } from "@/app/styles/timePicker";
 import moment from "moment";
 import { ToastContext } from "@/app/context/ToastCardContext";
+import { useSession } from "next-auth/react";
 
 interface EventDetailsProps {
     params: { id: string };
@@ -46,6 +47,8 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({
     params,
 }): ReactElement => {
     const router = useRouter();
+    const {data: session} = useSession();
+    const user = session?.user;
     const toasthandler = useContext(ToastContext);
     const fetchEventInfo = useFetchEventById();
     const deleteTicketById = useDeleteTicketById();
@@ -240,8 +243,8 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({
         // Set running flag
         setIsUpdatingEvent(true);
 
-        await updateEventById(eventInfo?.id as string, {
-            ...(eventRequest as EventRequest),
+        await updateEventById(user?.token as string, eventInfo?.id as string, {
+            ...(eventRequest as UpdateEventRequest),
             eventId: eventInfo?.eventId as string,
             publisherId: eventInfo?.publisherId as string,
         })
