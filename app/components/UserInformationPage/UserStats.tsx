@@ -19,7 +19,7 @@ const UserStats: FunctionComponent<UserStatsProps> = ({ userInformation }): Reac
             </div>
             {/* <div className={styles.stat}>
                                 <p className={styles.stat__number}>
-                                    {userInformation.ticketsPurchasedCount}
+                                    {userInformation.ticketOrdersCount}
                                 </p>
                                 <p className={styles.stat__label}>
                                     Tickets
