@@ -12,6 +12,7 @@ import { EventResponse } from "@/app/models/IEvents";
 import ComponentLoader from "../Loader/ComponentLoader";
 import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import UserEventCard from "../Event/UserEventCard";
 
 interface EventsGroupProps {
     title: string;
@@ -86,7 +87,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = ({
             >
                 <div
                     className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
-                    // "[grid-template-columns:_repeat(auto-fill,_minmax(200px,_1fr))] min-[550px]:[[grid-template-columns:_repeat(auto-fill,_minmax(250px,_1fr))]]"
+                // "[grid-template-columns:_repeat(auto-fill,_minmax(200px,_1fr))] min-[550px]:[[grid-template-columns:_repeat(auto-fill,_minmax(250px,_1fr))]]"
                 >
                     {!isFetchingEvents &&
                         eventsData &&
@@ -101,19 +102,17 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = ({
                             )
                             .map((event, index) => {
                                 console.log("🚀 ~ .map ~ event:", event)
-                                return (
+                                return consoleDisplay ? (
+                                    <UserEventCard
+                                        event={event}
+                                        key={index}
+                                    />
+                                ) : (
                                     <EventCard
                                         event={event}
-                                        // mobileAndActionButtonDismiss
                                         key={index}
-                                        // gridDisplay={true}
-                                        // consoleDisplay={consoleDisplay}
-                                        // setIsDeleteConfirmationModalVisible={
-                                        //     setIsDeleteConfirmationModalVisible
-                                        // }
-                                        // setSelectedEvent={setSelectedEvent}
                                     />
-                                )
+                                );
                             })}
                 </div>
                 {isFetchingEvents && (
