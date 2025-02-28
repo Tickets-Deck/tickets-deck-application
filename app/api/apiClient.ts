@@ -7,7 +7,7 @@ import {
   UserCredentialsUpdateRequest,
   UsernameRequest,
 } from "../models/IUser";
-import { EventRequest } from "../models/IEvents";
+import { EventRequest, UpdateEventRequest } from "../models/IEvents";
 import { TicketOrderRequest } from "../models/ITicketOrder";
 import { InitializePayStack } from "../models/IInitializePayStack";
 import { TicketCategory } from "../enums/ITicket";
@@ -142,10 +142,8 @@ export function useFetchEventsByTags() {
 }
 
 export function useCheckInTicketOrder() {
-  async function checkInTicketOrder(ticketOrderId: string, eventId: string) {
-    return API.post(
-      `${ApiRoutes.CheckInTicketOrder}?ticketOrderId=${ticketOrderId}&eventId=${eventId}`
-    );
+  async function checkInTicketOrder(token: string, ticketOrderId: string, eventId: string) {
+    return API.post(ApiRoutes.CheckInTicketOrder(ticketOrderId, eventId), {}, getApiConfig(token));
   }
 
   return checkInTicketOrder;
@@ -167,8 +165,8 @@ export function useCheckInMultipleTicketOrders() {
 }
 
 export function useUpdateEventById() {
-  async function updateEventById(id: string, data: EventRequest) {
-    return API.put(`${ApiRoutes.Events}?id=${id}`, data);
+  async function updateEventById(token: string, eventId: string, data: UpdateEventRequest) {
+    return API.put(`${ApiRoutes.Events}/${eventId}`, data, getApiConfig(token));
   }
 
   return updateEventById;
