@@ -58,6 +58,11 @@ export class ApplicationRoutes {
   static readonly GeneralEvent = "/event/"; // Intentionally left without a closing slash to allow for dynamic event IDs
 
   /**
+   * The route to the user event page
+   */
+  static readonly UserEventDetails = (eventId: string) => `/app/event/${eventId}`;
+
+  /**
    * The route to the verify payment page
    */
   static readonly VerifyPayment = "/verify-payment";
