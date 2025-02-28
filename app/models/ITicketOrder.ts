@@ -1,4 +1,3 @@
-import { EventVisibility } from "../enums/IEventVisibility";
 import { OrderStatus } from "../enums/IOrderStatus";
 
 export interface SingleTicketOrderRequest {
@@ -25,7 +24,6 @@ export interface TicketEventOrderResponse {
     title: string;
     venue: string;
     startDate: string;
-    time: string;
     mainImageUrl: string;
 }
 
