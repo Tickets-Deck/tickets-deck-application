@@ -4,23 +4,24 @@ import styles from "@/app/styles/components/toggler.module.scss";
 interface TogglerProps {
     setCheckboxValue: Dispatch<SetStateAction<boolean>>
     checkboxValue: boolean
-    mainColor?: string;
-    disabledColor?: string;
-    togglerIndicatorColor?: string;
 }
 
 const Toggler: FunctionComponent<TogglerProps> = (
-    { mainColor, disabledColor, togglerIndicatorColor, setCheckboxValue, checkboxValue }): ReactElement => {
-
-    // const [checkboxValue, setCheckboxValue] = useState(false);
+    { setCheckboxValue, checkboxValue }): ReactElement => {
 
     return (
-        <div
-            className={styles.togglerContainer}
-            style={{ '--main-color': `#${mainColor}`, '--disabled-color': `#${disabledColor}`, '--toggler-indicator-color': `#${togglerIndicatorColor}` } as CSSProperties}>
-            <input type='checkbox' name="checkbox" checked={checkboxValue} onChange={(e) => setCheckboxValue(e.currentTarget.checked)} />
-            <span className={styles.toggler}>
-                <span className={styles.togglerIndicator}></span>
+        <div className={`w-fit relative ${checkboxValue ? 'opacity-100' : 'opacity-80'}`}>
+            <input
+                type='checkbox'
+                name="checkbox"
+                checked={checkboxValue}
+                onChange={(e) => setCheckboxValue(e.currentTarget.checked)}
+                className="absolute size-full top-0 left-0 opacity-0 z-30 cursor-pointer peer"
+            />
+            <span className="bg-[#dadada] w-11 h-6 rounded-xl relative block transition-all duration-300 ease-in-out peer-checked:bg-white">
+                <span className={`size-5 rounded-full absolute top-[calc(50%-1px)] transform -translate-y-1/2 block z-20 cursor-pointer transition-all duration-300 ease-in-out animate-sqwish
+                    ${checkboxValue ? 'left-[calc(100%-22px)] bg-green-500' : 'left-[2px] bg-[#858585]'}
+                    `}></span>
             </span>
         </div>
     );
