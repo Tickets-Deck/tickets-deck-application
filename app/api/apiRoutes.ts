@@ -70,7 +70,11 @@ export class ApiRoutes {
   /**
    * The route to Check-in an order
    */
-  static CheckInTicketOrder: string = "api/events/check-in";
+  static CheckInTicketOrder: (
+    ticketOrderAccessCode: string,
+    eventId: string
+  ) => string = (ticketOrderAccessCode: string, eventId: string) =>
+    `events/${eventId}/check-in/${ticketOrderAccessCode}`;
 
   /**
    * The route to Check-in multiple orders
