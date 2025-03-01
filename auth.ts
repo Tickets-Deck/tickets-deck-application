@@ -21,6 +21,7 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
+      id: "credentials",
       name: "Sign in",
       credentials: {
         username: {
@@ -70,18 +71,61 @@ export const authOptions: NextAuthOptions = {
         return null;
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      authorization: {
-        params: {
-          redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`, // Make sure this matches the URI in the Google Developer Console
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
+    CredentialsProvider({
+      id: "google-oauth",
+      name: "Google",
+      credentials: {
+        token: { label: "Token", type: "text" }, // Accept the token
+      },
+      async authorize(credentials) {
+        console.log("🚀 ~ authorize ~ credentials:", credentials);
+        // const res = await fetch(
+        //   `${ApiRoutes.BASE_URL}${ApiRoutes.VerifyOAuthToken}`,
+        //   {
+        //     method: "GET",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({ token: credentials?.token }),
+        //   }
+        // );
+
+        const token = await requestToken();
+
+        const res = await fetch(`${API_BASE_URL}${ApiRoutes.VerifyOAuthToken}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token.data.token || ""}`,
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
+            credentials: "include", // allow cookies to be sent
+          },
+          body: JSON.stringify({ token: credentials?.token }),
+        });
+
+        const user = await res.json();
+        console.log("🚀 ~ authorize ~ res:", res);
+        console.log("🚀 ~ authorize ~ user:", user);
+
+        if (res.ok && user) {
+          return user; // This object will be passed into the session callback
+        }
+
+        throw new Error("Invalid token");
       },
     }),
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID as string,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    //   authorization: {
+    //     params: {
+    //       redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`, // Make sure this matches the URI in the Google Developer Console
+    //       prompt: "consent",
+    //       access_type: "offline",
+    //       response_type: "code",
+    //     },
+    //   },
+    // }),
   ],
   secret: process.env.SECRET,
   callbacks: {
@@ -103,12 +147,26 @@ export const authOptions: NextAuthOptions = {
       return process.env.NEXTAUTH_URL as string;
     },
     // Create and manage JWTs here
-    jwt: async ({ token, user, trigger, session }) => {
+    jwt: async ({ token, user, trigger, account }) => {
       console.log("🚀 ~ jwt: ~ user:", user);
       console.log("🚀 ~ jwt: ~ token:", token);
       const customToken = token as Token;
 
       if (user) {
+        if (account?.provider === "google") {
+          // For Google sign-ins, use the Google-provided tokens
+          return {
+            ...token,
+            id: user.id,
+            accessToken: account.access_token,
+            refreshToken: account.refresh_token,
+            accessTokenExpires: account.expires_at
+              ? account.expires_at * 1000 // Convert from seconds to ms
+              : Date.now() + 60 * 60 * 1000, // Default to 1 hour if missing
+            provider: "google",
+          };
+        }
+
         return {
           ...customToken,
           id: user.id,
@@ -152,9 +210,10 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: customToken.id,
-          token: customToken.token,
+          token: customToken.token || customToken.accessToken,
           refreshToken: customToken.refreshToken,
           accessTokenExpires: customToken.accessTokenExpires,
+          provider: token.provider,
         },
       };
     },
