@@ -16,7 +16,7 @@ export class ApiRoutes {
   /**
    * The live base url for the application
    */
-  static BASE_URL_LIVE: string = "https://events.ticketsdeck.com";
+  static BASE_URL_LIVE: string = "https://events.ticketsdeck.com/";
 
   /**
    * The base url being used for the application
@@ -37,6 +37,16 @@ export class ApiRoutes {
    * The route to User Login Token endpoint
    */
   static UserLogin: string = "auth/login";
+
+  /**
+   * The route to Google Login Token endpoint
+   */
+  static GoogleLogin: string = "auth/callback/google";
+
+  /**
+   * The route to OAuth Token Verification endpoint
+   */
+  static VerifyOAuthToken: string = "auth/verify-oauth-token";
 
   /**
    * The route to CreateNewsletterSubscriber endpoint
@@ -100,6 +110,13 @@ export class ApiRoutes {
     `users/id/${userId}`;
 
   /**
+   * The route to Fetch User By Username
+   */
+  static FetchUserByUsername: (username: string) => string = (
+    username: string
+  ) => `users/username/${username}`;
+
+  /**
    * The route to VerifyUserEmail endpoint
    */
   static VerifyUserEmail: string = "api/users/verify";
@@ -146,6 +163,13 @@ export class ApiRoutes {
    */
   static FetchTicketsBought: (userId: string) => string = (userId: string) =>
     `users/${userId}/bought-tickets`;
+
+  /**
+   * The route to Tickets Sold endpoint
+   */
+  static FetchTicketsSold: (publisherId: string) => string = (
+    publisherId: string
+  ) => `users/${publisherId}/sold-tickets`;
 
   /**
    * The route to Tickets endpoint
