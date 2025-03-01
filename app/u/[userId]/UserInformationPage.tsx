@@ -48,7 +48,7 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ iden
         // Show loading indicator
         !hideLoader && setIsFetchingUserInformation(true);
 
-        await fetchUserInformationByUsername(userId ? { userId } : username ? { username } : {})
+        await fetchUserInformationByUsername(username as string)
             .then((response) => {
                 // console.log(response.data);
                 setUserInformation(response.data);
@@ -111,7 +111,7 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ iden
     }, [identifier]);
 
     useEffect(() => {
-        if(userInformation) {
+        if (userInformation) {
             handleFetchUserFollowMetrics();
         }
     }, [userInformation]);
