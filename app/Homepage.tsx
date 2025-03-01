@@ -8,128 +8,153 @@ import { useFetchEvents, useFetchFeaturedEvents } from "./api/apiClient";
 import { EventResponse } from "./models/IEvents";
 import BetaTestModal from "./components/Modal/BetaTestModal";
 import { ImageWithPlaceholder } from "./models/IImage";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 interface HomepageProps {
-  imageWithPlaceholder: ImageWithPlaceholder[];
+    imageWithPlaceholder: ImageWithPlaceholder[];
 }
 
 const Homepage: FunctionComponent<HomepageProps> = ({
-  imageWithPlaceholder,
+    imageWithPlaceholder,
 }): ReactElement => {
-  const fetchFeaturedEvents = useFetchFeaturedEvents();
-  const fetchEvents = useFetchEvents();
+    const fetchFeaturedEvents = useFetchFeaturedEvents();
+    const fetchEvents = useFetchEvents();
+    const { refresh } = useRouter();
+    const searchParams = useSearchParams();
+    const authToken = searchParams.get('g-oauth-token');
 
-  const [featuredEvents, setFeaturedEvents] = useState<EventResponse[]>([]);
-  const [events, setEvents] = useState<EventResponse[]>([]);
-  const [isFetchingFeaturedEvents, setIsFetchingFeaturedEvents] =
-    useState(true);
-  const [isFetchingEvents, setIsFetchingEvents] = useState(true);
-  const [showBetaTestModal, setShowBetaTestModal] = useState(false);
+    const [featuredEvents, setFeaturedEvents] = useState<EventResponse[]>([]);
+    const [events, setEvents] = useState<EventResponse[]>([]);
+    const [isFetchingFeaturedEvents, setIsFetchingFeaturedEvents] =
+        useState(true);
+    const [isFetchingEvents, setIsFetchingEvents] = useState(true);
+    const [showBetaTestModal, setShowBetaTestModal] = useState(false);
 
-  // function retrieveEventsFromDb() {
-  //     const _retrievedEvents = sessionStorage.getItem(StorageKeys.Events);
+    // function retrieveEventsFromDb() {
+    //     const _retrievedEvents = sessionStorage.getItem(StorageKeys.Events);
 
-  //     if (!_retrievedEvents || _retrievedEvents === 'undefined') {
-  //         return;
-  //     }
+    //     if (!_retrievedEvents || _retrievedEvents === 'undefined') {
+    //         return;
+    //     }
 
-  //     const retrievedEvents = JSON.parse(_retrievedEvents);
+    //     const retrievedEvents = JSON.parse(_retrievedEvents);
 
-  //     return retrievedEvents;
-  // }
+    //     return retrievedEvents;
+    // }
 
-  async function handleFetchFeaturedEvents() {
-    // Fetch events
-    await fetchFeaturedEvents()
-      .then((response) => {
-        if (response) {
-          // console.log(response.data);
-          setFeaturedEvents(response.data);
+    async function handleFetchFeaturedEvents() {
+        // Fetch events
+        await fetchFeaturedEvents()
+            .then((response) => {
+                if (response) {
+                    // console.log(response.data);
+                    setFeaturedEvents(response.data);
 
-          // Save events to session storage
-          // sessionStorage.setItem(StorageKeys.Events, JSON.stringify(response.data));
+                    // Save events to session storage
+                    // sessionStorage.setItem(StorageKeys.Events, JSON.stringify(response.data));
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                // toasthandler?.logError('Error', 'An error occurred while fetching events.');
+            })
+            .finally(() => {
+                // Stop loader
+                setIsFetchingFeaturedEvents(false);
+            });
+    }
+
+    async function handleFetchEvents() {
+        // Fetch events
+        await fetchEvents()
+            .then((response) => {
+                if (response) {
+                    // console.log(response.data);
+                    setEvents(response.data);
+
+                    // Save events to session storage
+                    // sessionStorage.setItem(StorageKeys.Events, JSON.stringify(response.data));
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                // toasthandler?.logError('Error', 'An error occurred while fetching events.');
+            })
+            .finally(() => {
+                // Stop loader
+                setIsFetchingEvents(false);
+            });
+    }
+
+    useEffect(() => {
+        handleFetchFeaturedEvents();
+        handleFetchEvents();
+    }, []);
+
+    useEffect(() => {
+        if (authToken) {
+            console.log("🚀 ~ useEffect ~ authToken:", authToken)
+            const login = async () => {
+                await signIn('google-oauth', {
+                    token: authToken,
+                    callbackUrl: '/',
+                    // redirect: false
+                })
+                    .then((response) => {
+                        console.log("🚀 ~ .then ~ response:", response)
+                        // refresh the page  
+                        // window.location.reload();
+                    })
+            }
+
+            login();
         }
-      })
-      .catch((err) => {
-        console.log(err);
-        // toasthandler?.logError('Error', 'An error occurred while fetching events.');
-      })
-      .finally(() => {
-        // Stop loader
-        setIsFetchingFeaturedEvents(false);
-      });
-  }
+    }, [authToken]);
 
-  async function handleFetchEvents() {
-    // Fetch events
-    await fetchEvents()
-      .then((response) => {
-        if (response) {
-          // console.log(response.data);
-          setEvents(response.data);
+    // Show beta test modal after 5 seconds, and only once
+    // useEffect(() => {
+    //     // Check if beta test modal has been viewed
+    //     const viewed = localStorage.getItem(StorageKeys.BetaTestModalViewed);
 
-          // Save events to session storage
-          // sessionStorage.setItem(StorageKeys.Events, JSON.stringify(response.data));
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        // toasthandler?.logError('Error', 'An error occurred while fetching events.');
-      })
-      .finally(() => {
-        // Stop loader
-        setIsFetchingEvents(false);
-      });
-  }
+    //     // If it has been viewed, stop execution
+    //     if (viewed) {
+    //         return;
+    //     }
 
-  useEffect(() => {
-    handleFetchFeaturedEvents();
-    handleFetchEvents();
-  }, []);
+    //     // Show beta test modal after 5 seconds
+    //     const timer = setTimeout(() => {
+    //         setShowBetaTestModal(true);
 
-  // Show beta test modal after 5 seconds, and only once
-  // useEffect(() => {
-  //     // Check if beta test modal has been viewed
-  //     const viewed = localStorage.getItem(StorageKeys.BetaTestModalViewed);
+    //         // Save to local storage
+    //         localStorage.setItem(StorageKeys.BetaTestModalViewed, 'true');
+    //     }, 5000);
 
-  //     // If it has been viewed, stop execution
-  //     if (viewed) {
-  //         return;
-  //     }
+    //     return () => clearTimeout(timer);
+    // }, []);
 
-  //     // Show beta test modal after 5 seconds
-  //     const timer = setTimeout(() => {
-  //         setShowBetaTestModal(true);
-
-  //         // Save to local storage
-  //         localStorage.setItem(StorageKeys.BetaTestModalViewed, 'true');
-  //     }, 5000);
-
-  //     return () => clearTimeout(timer);
-  // }, []);
-
-  return (
-    <>
-      <BetaTestModal
-        forGeneralMessage
-        visibility={showBetaTestModal}
-        setVisibility={setShowBetaTestModal}
-      />
-      <div className='bg-dark-grey text-white'>
-        <HeroSection
-          isFetchingEvents={isFetchingEvents}
-          events={events}
-          imageWithPlaceholder={imageWithPlaceholder}
-        />
-        <FeaturedEvents
-          isFetchingEvents={isFetchingFeaturedEvents}
-          featuredEvents={featuredEvents}
-        />
-        <Services />
-        <CreateEvent />
-      </div>
-    </>
-  );
+    return (
+        <>
+            <BetaTestModal
+                forGeneralMessage
+                visibility={showBetaTestModal}
+                setVisibility={setShowBetaTestModal}
+            />
+            <div className='bg-dark-grey text-white'>
+                <HeroSection
+                    isFetchingEvents={isFetchingEvents}
+                    events={events}
+                    imageWithPlaceholder={imageWithPlaceholder}
+                />
+                <FeaturedEvents
+                    isFetchingEvents={isFetchingFeaturedEvents}
+                    featuredEvents={featuredEvents}
+                />
+                <Services />
+                <CreateEvent />
+            </div>
+        </>
+    );
 };
 
 export default Homepage;
