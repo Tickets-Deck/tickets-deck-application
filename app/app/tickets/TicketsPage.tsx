@@ -10,7 +10,7 @@ import {
     useState,
 } from "react";
 import DynamicTab from "@/app/components/custom/DynamicTab";
-import { useFetchUserBoughtTickets } from "@/app/api/apiClient";
+import { useFetchUserBoughtTickets, useFetchUserSoldTickets } from "@/app/api/apiClient";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { catchError } from "@/app/constants/catchError";
@@ -38,6 +38,7 @@ export enum TicketTab {
 const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
 
     const fetchUserBoughtTickets = useFetchUserBoughtTickets();
+    const fetchUserSoldTickets = useFetchUserSoldTickets();
     const toast = useContext(ToastContext);
 
     const { data: session } = useSession();
@@ -99,6 +100,27 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
 
         if (selectedTicketTab === TicketTab.Bought) {
             await fetchUserBoughtTickets(user?.token as string, userInfo?.id as string)
+                .then((response) => {
+                    // Log response
+                    console.log("🚀 ~ .then ~ response:", response);
+
+                    // Update state
+                    setUserTicketOrders(response.data);
+                })
+                .catch((error) => {
+                    // Display error
+                    toast?.logError(`Error`, `An error occurred while fetching your ticket orders`);
+
+                    // Catch error
+                    catchError(error);
+                })
+                .finally(() => {
+                    // Close loader
+                    setIsFetchingUserTicketOrders(false);
+                })
+        }
+        else if (selectedTicketTab === TicketTab.Sold) {
+            await fetchUserSoldTickets(user?.token as string, userInfo?.id as string)
                 .then((response) => {
                     // Log response
                     console.log("🚀 ~ .then ~ response:", response);
@@ -293,12 +315,9 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                                         </td>
                                         <td>
                                             <a
-                                                href={`mailto:${userTicketOrder.associatedEmail ??
-                                                    userTicketOrder.contactEmail
-                                                    }`}
+                                                href={`mailto:${userTicketOrder.associatedEmail || userTicketOrder.contactEmail}`}
                                             >
-                                                {userTicketOrder.associatedEmail ??
-                                                    userTicketOrder.contactEmail}
+                                                {userTicketOrder.associatedEmail || userTicketOrder.contactEmail}
                                             </a>
                                         </td>
                                         <td>
