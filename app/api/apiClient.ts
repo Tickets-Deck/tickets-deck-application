@@ -40,16 +40,6 @@ export function useRequestCredentialToken() {
   return requestToken;
 }
 
-export function useGoogleLoginToken() {
-  const requestToken = useRequestCredentialToken();
-  async function googleLoginToken() {
-    const token = await requestToken();
-    return API.get(ApiRoutes.GoogleLogin, getApiConfig(token.data.token));
-  }
-
-  return googleLoginToken;
-}
-
 export function useCreateNewsletterSubscriber() {
   async function createNewsletterSubscriber(email: string) {
     return API.post(
