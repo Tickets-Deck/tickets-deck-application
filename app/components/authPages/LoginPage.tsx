@@ -18,6 +18,7 @@ import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
 import { useFetchUserInformation } from "@/app/api/apiClient";
 import { useDispatch } from "react-redux";
 import { Icons } from "../ui/icons";
+import { ApiRoutes } from "@/app/api/apiRoutes";
 
 interface LoginProps { }
 
@@ -38,6 +39,11 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
     const [passwordErrorMsg, setPasswordErrorMsg] = useState(false);
 
     const [message, setMessage] = useState("");
+    
+    const handleOauthLogin = async (event: any) => {
+        event.preventDefault();
+        window.location.href = `${ApiRoutes.BASE_URL}auth/callback/google`;
+    };
 
     function retrieveNewlyCreatedUserEmail() {
         const newlyCreatedUserEmail = sessionStorage.getItem(
@@ -162,7 +168,8 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                     <div className='flex gap-1'>
                         <div
                             className='w-full flex flex-col gap-1 items-center rounded-[1rem] p-2 cursor-pointer hover:bg-white/10'
-                            onClick={async () => await signIn("google")}
+                            onClick={handleOauthLogin}
+                        // onClick={async () => await signIn("google")}
                         >
                             <span className='size-[2.5rem] grid place-items-center [&_svg]:size-8'>
                                 <Icons.Google />
