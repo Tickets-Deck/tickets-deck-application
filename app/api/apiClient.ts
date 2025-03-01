@@ -10,7 +10,6 @@ import {
 import { EventRequest, UpdateEventRequest } from "../models/IEvents";
 import { TicketOrderRequest } from "../models/ITicketOrder";
 import { InitializePayStack } from "../models/IInitializePayStack";
-import { TicketCategory } from "../enums/ITicket";
 import { TicketRequest, TicketResponse } from "../models/ITicket";
 import { FollowsActionType } from "../models/IFollows";
 import { CustomerEnquiry } from "../models/ICustomerEnquiries";
@@ -39,6 +38,16 @@ export function useRequestCredentialToken() {
   }
 
   return requestToken;
+}
+
+export function useGoogleLoginToken() {
+  const requestToken = useRequestCredentialToken();
+  async function googleLoginToken() {
+    const token = await requestToken();
+    return API.get(ApiRoutes.GoogleLogin, getApiConfig(token.data.token));
+  }
+
+  return googleLoginToken;
 }
 
 export function useCreateNewsletterSubscriber() {
@@ -142,8 +151,16 @@ export function useFetchEventsByTags() {
 }
 
 export function useCheckInTicketOrder() {
-  async function checkInTicketOrder(token: string, ticketOrderId: string, eventId: string) {
-    return API.post(ApiRoutes.CheckInTicketOrder(ticketOrderId, eventId), {}, getApiConfig(token));
+  async function checkInTicketOrder(
+    token: string,
+    ticketOrderId: string,
+    eventId: string
+  ) {
+    return API.post(
+      ApiRoutes.CheckInTicketOrder(ticketOrderId, eventId),
+      {},
+      getApiConfig(token)
+    );
   }
 
   return checkInTicketOrder;
@@ -165,7 +182,11 @@ export function useCheckInMultipleTicketOrders() {
 }
 
 export function useUpdateEventById() {
-  async function updateEventById(token: string, eventId: string, data: UpdateEventRequest) {
+  async function updateEventById(
+    token: string,
+    eventId: string,
+    data: UpdateEventRequest
+  ) {
     return API.put(`${ApiRoutes.Events}/${eventId}`, data, getApiConfig(token));
   }
 
@@ -206,14 +227,12 @@ export function useFetchUserInformation() {
 }
 
 export function useFetchUserInformationByUserName() {
-  async function fetchUserInformationByUserName(data: {
-    username?: string;
-    userId?: string;
-  }) {
+  const requestToken = useRequestCredentialToken();
+  async function fetchUserInformationByUserName(username: string) {
+    const token = await requestToken();
     return API.get(
-      `${ApiRoutes.Users}${data.username ? `?userName=${data.username}` : ""}${
-        data.userId ? `?userId=${data.userId}` : ""
-      }`
+      ApiRoutes.FetchUserByUsername(username),
+      getApiConfig(token.data.token)
     );
   }
 
@@ -340,25 +359,23 @@ export function useFetchDashboardInfo() {
   return fetchDashboardInfo;
 }
 
-export function useFetchUserTicketOrders() {
-  async function fetchUserTicketOrders(
-    userId: string,
-    category?: TicketCategory
-  ) {
-    return API.get(
-      `${ApiRoutes.FetchTicketsBought}?userId=${userId}&category=${category}`
-    );
-  }
-
-  return fetchUserTicketOrders;
-}
-
 export function useFetchUserBoughtTickets() {
   async function fetchUserBoughtTickets(token: string, userId: string) {
     return API.get(ApiRoutes.FetchTicketsBought(userId), getApiConfig(token));
   }
 
   return fetchUserBoughtTickets;
+}
+
+export function useFetchUserSoldTickets() {
+  async function fetchUserSoldTickets(token: string, publisherId: string) {
+    return API.get(
+      ApiRoutes.FetchTicketsSold(publisherId),
+      getApiConfig(token)
+    );
+  }
+
+  return fetchUserSoldTickets;
 }
 
 export function useFetchOrderInformationById() {
