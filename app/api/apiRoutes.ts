@@ -64,11 +64,24 @@ export class ApiRoutes {
   static Events: string = "events";
 
   /**
+   * The route to Fetch Event Information endpoint for the publisher's use only
+   */
+  static FetchOrganizerEvent: (eventId: string) => string = (eventId: string) =>
+    `events/${eventId}/publisher`;
+
+  /**
    * The route to Fetch Organizer Events endpoint
    */
   static FetchOrganizerEvents: (organizerId: string) => string = (
     organizerId: string
   ) => `events/organizer/${organizerId}`;
+
+  /**
+   * The route to Fetch Events By Publisher Id endpoint
+   */
+  static FetchEventsByPublisherId: (publisherId: string) => string = (
+    publisherId: string
+  ) => `events/publisher/${publisherId}`;
 
   /**
    * The route to FetchOrderInformation endpoint
@@ -89,7 +102,11 @@ export class ApiRoutes {
   /**
    * The route to Check-in multiple orders
    */
-  static CheckInMultipleTicketOrder: string = "api/events/check-in/multiple";
+  static CheckInMultipleTicketOrder: (
+    ticketOrderAccessCode: string,
+    eventId: string
+  ) => string = (ticketOrderAccessCode: string, eventId: string) =>
+    `events/${eventId}/check-in-multiple/${ticketOrderAccessCode}`;
 
   /**
    * The route to Users endpoint
@@ -174,7 +191,22 @@ export class ApiRoutes {
   /**
    * The route to Tickets endpoint
    */
-  static Tickets: string = "api/events/tickets";
+  static Tickets: string = "tickets";
+
+  /**
+   * The route to FetchEventTickets endpoint
+   */
+  static FetchEventTickets: (eventId: string) => string = (eventId: string) => `events/${eventId}/tickets`;
+
+  /**
+   * The route to UpdateTicket endpoint
+   */
+  static UpdateTicket: (ticketId: string) => string = (ticketId: string) => `tickets/${ticketId}`;
+
+  /**
+   * The route to DeleteTicket endpoint
+   */
+  static DeleteTicket: (ticketId: string) => string = (ticketId: string) => `tickets/${ticketId}`;
 
   /**
    * The route to Fetch Dashboard Information endpoint
@@ -220,13 +252,12 @@ export class ApiRoutes {
   /**
    * The route to Request User Password Reset Link endpoint
    */
-  static UserPasswordResetLink: string =
-    "api/users/password/request-reset-link";
+  static UserPasswordResetLink: string = "auth/request-password-reset-link";
 
   /**
    * The route to User Password Reset endpoint
    */
-  static UserPasswordReset: string = "api/users/password/reset";
+  static UserPasswordReset: string = "auth/reset-password";
 
   /**
    * The route to User Password Change endpoint
