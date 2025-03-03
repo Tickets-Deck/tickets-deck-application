@@ -1,5 +1,5 @@
 "use client";
-import { FunctionComponent, ReactElement, useState } from "react";
+import { FunctionComponent, ReactElement, useContext, useState } from "react";
 import { Icons } from "../ui/icons";
 import ComponentLoader from "../Loader/ComponentLoader";
 import {
@@ -7,8 +7,8 @@ import {
 } from "@/app/models/IPassword";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useResetPassword } from "@/app/api/apiClient";
-import { toast } from "sonner";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { ToastContext, useToast } from "@/app/context/ToastCardContext";
 
 interface ResetPasswordPageProps { }
 
@@ -22,11 +22,13 @@ const ResetPasswordPage: FunctionComponent<
 > = (): ReactElement => {
     const resetPassword = useResetPassword();
     const { push } = useRouter();
+    const toast = useToast();
 
     // Get the url query params
     const searchParams = useSearchParams();
     // Get the token from the search params
     const token = searchParams.get("token");
+    const userId = searchParams.get("userId");
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [passwordErrorMsg, setPasswordErrorMsg] = useState(false);
@@ -74,7 +76,8 @@ const ResetPasswordPage: FunctionComponent<
         // Create request object
         const data: PasswordResetRequest = {
             token: token as string,
-            newPassword: password,
+            password,
+            userId: userId as string,
         };
 
         // Show loader
@@ -90,8 +93,9 @@ const ResetPasswordPage: FunctionComponent<
                     setConfirmPassword("");
 
                     // Display success message
-                    toast.success(
-                        "Password reset successful. You can now login with your new password."
+                    toast.logSuccess(
+                        "Password reset successful",
+                        "We are redirecting you to the login page"
                     );
 
                     // Redirect to login page
@@ -120,11 +124,10 @@ const ResetPasswordPage: FunctionComponent<
                     "An error occurred while resetting your password.",
                     MessageStatus.Error,
                 ]);
-            })
-            .finally(() => {
+
                 // Hide loader
                 setIsLoading(false);
-            });
+            })
     }
 
     return (

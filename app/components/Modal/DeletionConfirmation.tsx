@@ -9,19 +9,20 @@ interface DeletionConfirmationModalProps {
     setVisibility: Dispatch<SetStateAction<boolean>>
     deleteFunction: () => Promise<void>
     isLoading: boolean
+    title?: string
     actionText?: string
 }
 
 const DeletionConfirmationModal: FunctionComponent<DeletionConfirmationModalProps> = (
     { visibility, setVisibility, deleteFunction, 
-        isLoading, actionText }): ReactElement => {
+        isLoading, actionText, title }): ReactElement => {
 
     return (
         <ModalWrapper disallowOverlayFunction visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
             <div className={styles.deletionConfirmationModal}>
                 <div className={styles.topAreaSection}>
                     <div className={styles.topArea}>
-                        <h3>Are you sure?</h3>
+                        <h3>{title ?? 'Are you sure?'}</h3>
                         <p>This action cannot be reversed.</p>
                     </div>
                     <span className={styles.closeIcon} onClick={() => setVisibility(false)}><Icons.Close /></span>

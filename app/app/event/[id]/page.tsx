@@ -8,12 +8,11 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { Link as ScrollLink } from "react-scroll";
-import { RetrievedTicketResponse } from "@/app/models/ITicket";
+import { TicketResponse } from "@/app/models/ITicket";
 import { EventRequest, EventResponse, UpdateEventRequest } from "@/app/models/IEvents";
-import { useFetchEventById, useUpdateEventById } from "@/app/api/apiClient";
+import { useDeleteEvent, useDeleteTicket, useFetchEventTickets, useFetchPublisherEventById, useUpdateEventById } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
-import { toast } from "sonner";
 import { ToastContext } from "@/app/context/ToastCardContext";
 import { EventInformationTab } from "@/app/enums/EventInformationTab";
 import { serializeEventInformationTab } from "@/app/constants/serializer";
@@ -26,6 +25,12 @@ import Tooltip from "@/app/components/custom/Tooltip";
 import { CheckInArea } from "@/app/components/Event/View/Publisher/CheckIn/CheckInArea";
 import { FullPageLoader } from "@/app/components/Loader/ComponentLoader";
 import { useSession } from "next-auth/react";
+import TicketUpdateModal from "@/app/components/Event/Edit/TicketsUpdate/TicketUpdateModal";
+import DeletionConfirmationModal from "@/app/components/Modal/DeletionConfirmation";
+import moment from "moment";
+import TicketCreationModal from "@/app/components/Event/Create/TicketsCreation/TicketCreationModal";
+import SharePopup from "@/app/components/custom/SharePopup";
+import { EditEventModal } from "@/app/components/Event/Edit/EventUpdateModal";
 
 interface EventDetailsProps {
     params: { id: string };
@@ -33,8 +38,11 @@ interface EventDetailsProps {
 
 const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactElement => {
 
-    const fetchEventInfo = useFetchEventById();
+    const fetchEventInfo = useFetchPublisherEventById();
+    const fetchEventTickets = useFetchEventTickets();
     const updateEventById = useUpdateEventById();
+    const deleteTicketById = useDeleteTicket();
+    const deleteEvent = useDeleteEvent();
     const toasthandler = useContext(ToastContext);
     const router = useRouter();
     const { data: session } = useSession();
@@ -44,17 +52,20 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
     const id = params.id;
 
     const [eventInfo, setEventInfo] = useState<EventResponse>();
-    const [updatedEventInfo, setUpdatedEventInfo] = useState<UpdateEventRequest>();
-    const [eventTicketTypes, setEventTicketTypes] = useState<RetrievedTicketResponse[]>();
-
-    const [isFetchingEventInfo, setIsFetchingEventInfo] = useState(true);
-    const [isUpdatingEventInfo, setIsUpdatingEventInfo] = useState(false);
+    const [eventTickets, setEventTickets] = useState<TicketResponse[]>();
+    const [selectedTicket, setSelectedTicket] = useState<TicketResponse>();
     const [selectedInfoTab, setSelectedInfoTab] = useState(EventInformationTab.Overview);
 
-    const [
-        ticketsSelectionContainerIsVisible,
-        setTicketsSelectionContainerIsVisible,
-    ] = useState(false);
+    const [isEventUpdateModalVisible, setIsEventUpdateModalVisible] = useState(false);
+    const [isTicketCreateModalVisible, setIsTicketCreateModalVisible] = useState(false);
+    const [isTicketUpdateModalVisible, setIsTicketUpdateModalVisible] = useState(false);
+    const [isTicketDeleteModalVisible, setIsTicketDeleteModalVisible] = useState(false);
+    const [isEventDeletionConfirmationModalVisible, setIsEventDeletionConfirmationModalVisible] = useState(false);
+
+    const [isFetchingEventInfo, setIsFetchingEventInfo] = useState(true);
+    const [isFetchingEventTickets, setIsFetchingEventTickets] = useState(true);
+    const [isDeletingEvent, setIsDeletingEvent] = useState(false);
+    const [isDeletingTicket, setIsDeletingTicket] = useState(false);
 
     function shareEvent() {
         const eventUrl = `${window.location.origin + ApplicationRoutes.GeneralEvent + eventInfo?.id
@@ -63,10 +74,10 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
         navigator.clipboard
             .writeText(`${eventInfo?.title} - Ticketsdeck Events: ${eventUrl}`)
             .then(() => {
-                toast.success(`The link to ${eventInfo?.title} has been copied.`);
+                toasthandler?.logSuccess("Success", `The link to ${eventInfo?.title} has been copied.`)
             })
             .catch((error) => {
-                toast.error("Failed to copy event link. Please try again.");
+                toasthandler?.logError("Error copying link", "Failed to copy event link. Please try again.")
             });
     }
 
@@ -85,7 +96,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
         // Set running flag
         setIsFetchingEventInfo(true);
 
-        await fetchEventInfo(id)
+        await fetchEventInfo(user?.token as string, id)
             .then((response) => {
                 // Log the result
                 console.log("🚀 ~ .then ~ event info response:", response)
@@ -115,72 +126,155 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                 // Unset running flag
                 setIsFetchingEventInfo(false);
             })
+    };
+
+    async function handleFetchEventTickets() {
+        await fetchEventTickets(user?.token as string, eventInfo?.id as string)
+            .then((response) => {
+                setEventTickets(response.data);
+            })
+            .catch((error) => { })
+            .finally(() => {
+                setIsFetchingEventTickets(false);
+            })
     }
 
-    async function handleUpdateEventInfo(updatedEventInfo: UpdateEventRequest) {
+    async function handleDeleteEvent(eventId: string) {
+        // Start deleting event
+        setIsDeletingEvent(true);
+
+        await deleteEvent(user?.token as string, eventId)
+            .then((response) => {
+                console.log("🚀 ~ .then ~ response:", response);
+                // Route to the events page
+                router.push(ApplicationRoutes.Events);
+
+                // Close modal after deleting event
+                setIsEventDeletionConfirmationModalVisible(false);
+            })
+            .catch((error) => {
+                catchError(error);
+                toasthandler?.logError("Error deleting ticket", "Failed to delete event. Please try again later.")
+            })
+            .finally(() => {
+                // Stop deleting event
+                setIsDeletingEvent(false);
+            });
+    }
+
+    async function handleDeleteTicket() {
+        // Show loader
+        setIsDeletingTicket(true);
+
+        await deleteTicketById(user?.token as string, selectedTicket?.id as string)
+            .then(async () => {
+                // Close the modal
+                setIsTicketDeleteModalVisible(false);
+                // Fetch event info
+                await handleFetchEventTickets();
+
+                // Display success
+                toasthandler?.logSuccess("Success", "Ticket deleted successfully.");
+            })
+            .catch((error) => {
+                // Display error
+                toasthandler?.logError("Error deleting ticket.", "We encountered an error while deleting the ticket. Please try again.");
+
+                // Catch error
+                catchError(error);
+            })
+            .finally(() => {
+                setIsDeletingTicket(false);
+            });
+    }
+
+    async function handleUpdateEventInfo(updatedEventInfo: UpdateEventRequest, toastMessage?: string) {
         await updateEventById(user?.token as string, id, updatedEventInfo)
             .then(async (response) => {
                 // toasthandler?.logSuccess("Success", "Event information updated successfully.");
                 await handleFetchEventInfo();
+
+                // Display success
+                toasthandler?.logSuccess("Success", toastMessage ?? "Event information updated successfully.");
             })
-            .catch((error) => { 
+            .catch((error) => {
                 toasthandler?.logError("Error updating event information.", "We encountered an error while updating event information. Please try again.");
                 catchError(error);
             })
-            // .finally(() => {
-
-            // });
     };
 
     useEffect(() => {
         // Clear previous info
         setEventInfo(undefined);
-        setEventTicketTypes(undefined);
-        setTicketsSelectionContainerIsVisible(false);
 
         if (params && params.id) {
             console.log("Fetching info based on Event ID:", id);
             handleFetchEventInfo();
-        } else {
-            // Route to flight not-found page
-            router.push(`/event/not-found`);
         }
-    }, [params]);
+    }, [params, session]);
 
     useEffect(() => {
-        if (eventInfo && eventInfo.tickets !== null) {
-            const updatedTicketTypes = eventInfo.tickets.map((ticket) => ({
-                ...ticket,
-                isSelected: false,
-                selectedTickets: 0,
-            }));
-            setEventTicketTypes(updatedTicketTypes);
-            console.log(eventTicketTypes);
+        if (eventInfo) {
+            handleFetchEventTickets()
         }
-    }, [eventInfo]);
+    }, [eventInfo])
 
     return (
         <div className='text-white bg-dark-grey min-h-full h-fit'>
+
+            {
+                eventInfo &&
+                <EditEventModal
+                    initialData={eventInfo as UpdateEventRequest}
+                    modalVisibility={isEventUpdateModalVisible}
+                    setModalVisibility={setIsEventUpdateModalVisible}
+                    handleUpdateEventInfo={handleUpdateEventInfo}
+                />
+            }
+
+            <TicketUpdateModal
+                modalVisibility={isTicketUpdateModalVisible}
+                setModalVisibility={setIsTicketUpdateModalVisible}
+                selectedTicket={selectedTicket}
+                handleFetchEventTickets={handleFetchEventTickets}
+            />
+
+            <TicketCreationModal
+                modalVisibility={isTicketCreateModalVisible}
+                setModalVisibility={setIsTicketCreateModalVisible}
+                handleFetchEventTickets={handleFetchEventTickets}
+                forExistingEvent
+                eventId={eventInfo?.id}
+            />
+
+            <DeletionConfirmationModal
+                visibility={isTicketDeleteModalVisible}
+                setVisibility={setIsTicketDeleteModalVisible}
+                deleteFunction={handleDeleteTicket}
+                isLoading={isDeletingTicket}
+                title="Are you sure you want to delete this ticket?"
+            />
+
+            <DeletionConfirmationModal
+                visibility={isEventDeletionConfirmationModalVisible}
+                setVisibility={setIsEventDeletionConfirmationModalVisible}
+                deleteFunction={() => handleDeleteEvent(id)}
+                isLoading={isDeletingEvent}
+            />
+
             {!isFetchingEventInfo && eventInfo &&
                 <section className='p-[1.25rem]'>
                     <div className="flex flex-row justify-between items-center gap-4 mb-10">
                         <div>
                             <h4 className="mb-1">Event Information</h4>
-                            <h2 className="text-3xl font-medium">Tour To Canada</h2>
-                            <p className="text-sm text-white/60">Posted on: Thu, Feb 20, 2025, 11:15 AM | 143</p>
+                            <h2 className="text-3xl font-medium">{eventInfo.title}</h2>
+                            <p className="text-sm text-white/60">Posted on: {moment(eventInfo.createdAt).format("ddd, MMM Do, YYYY, hh:mm A")} | 143</p>
                         </div>
                         <div className="flex flex-row items-center gap-4">
-                            <Tooltip
-                                position={"left"}
-                                tooltipText='Share event'>
-                                <div
-                                    className="w-10 h-10 rounded-full bg-[#D5542A] grid place-items-center cursor-pointer"
-                                    onClick={() => shareEvent()}>
-                                    <Icons.Share />
-                                </div>
-                            </Tooltip>
-                            {/* <button className="primaryButton flex flex-row items-center">Edit Event</button>
-                            <button className="primaryButton flex flex-row items-center !bg-white !text-black">Publish Updates</button> */}
+                            <SharePopup
+                                url={`${window.location.origin + ApplicationRoutes.GeneralEvent + eventInfo?.id
+                                    }`}
+                            />
                         </div>
                     </div>
 
@@ -190,7 +284,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                         {isEventLive() && (
                             <div className="mb-8">
                                 <CheckInArea
-                                    eventId={eventInfo.eventId}
+                                    eventId={eventInfo.id}
                                     isLive={true}
                                 />
                             </div>
@@ -224,13 +318,19 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                             <OverviewSection
                                 eventInfo={eventInfo}
                                 handleUpdateEventInfo={handleUpdateEventInfo}
+                                setIsEventUpdateModalVisible={setIsEventUpdateModalVisible}
                             />
                         }
                         {
                             selectedInfoTab == EventInformationTab.Tickets &&
                             <TicketsSection
                                 eventInfo={eventInfo}
-                                handleUpdateEventInfo={handleUpdateEventInfo}
+                                setSelectedTicket={setSelectedTicket}
+                                setIsTicketUpdateModalVisible={setIsTicketUpdateModalVisible}
+                                eventTickets={eventTickets}
+                                isFetchingEventTickets={isFetchingEventTickets}
+                                setIsTicketCreateModalVisible={setIsTicketCreateModalVisible}
+                                setIsTicketDeleteModalVisible={setIsTicketDeleteModalVisible}
                             />
                         }
                         {
@@ -238,6 +338,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                             <SettingsSection
                                 eventInfo={eventInfo}
                                 handleUpdateEventInfo={handleUpdateEventInfo}
+                                setIsDeletionConfirmationModalVisible={setIsEventDeletionConfirmationModalVisible}
                             />
                         }
                         {

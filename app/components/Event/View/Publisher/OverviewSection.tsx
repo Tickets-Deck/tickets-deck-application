@@ -1,24 +1,32 @@
 import Toggler from '@/app/components/custom/Toggler'
 import { Icons } from '@/app/components/ui/icons'
-import { EventRequest, EventResponse } from '@/app/models/IEvents'
+import { EventVisibility } from '@/app/enums/IEventVisibility'
+import { EventResponse, UpdateEventRequest } from '@/app/models/IEvents'
 import moment from 'moment'
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 
 type Props = {
     eventInfo: EventResponse
-    handleUpdateEventInfo(updatedEventInfo: EventRequest): Promise<void>
+    handleUpdateEventInfo(updatedEventInfo: UpdateEventRequest): Promise<void>
+    setIsEventUpdateModalVisible: Dispatch<SetStateAction<boolean>>
 }
 
-export default function OverviewSection({ eventInfo, handleUpdateEventInfo }: Props) {
-console.log("🚀 ~ OverviewSection ~ eventInfo:", eventInfo)
+export default function OverviewSection({ eventInfo, handleUpdateEventInfo, setIsEventUpdateModalVisible }: Props) {
 
-    const [isArchived, setIsArchived] = React.useState(false);
+    const [eventVisibility, setEventVisibility] = React.useState(eventInfo.visibility == EventVisibility.PUBLIC);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2 rounded-xl p-5 pb-8 bg-[#1e1e1e] border-[2px] border-container-grey h-fit">
-                <div className='mb-5'>
+                <div className='mb-5 flex flex-row justify-between items-center'>
                     <h4 className='text-2xl font-medium'>Event Details</h4>
+
+                    <button
+                        onClick={() => setIsEventUpdateModalVisible(true)}
+                        className='tertiaryButton !px-4 !py-2'>
+                        <Icons.Edit className='[&_path]:!fill-black' />
+                        Edit Event
+                    </button>
                 </div>
                 <div className="space-y-6">
                     <div>
@@ -78,16 +86,23 @@ console.log("🚀 ~ OverviewSection ~ eventInfo:", eventInfo)
 
                     <div className="mt-4">
                         <h3 className="text-base font-medium mb-2">Tags</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {eventInfo.tags.map((tag, index) => (
-                                <span
-                                    key={index}
-                                    className="bg-primary-color-sub/20 p-1 px-2 rounded text-purple-300 border-purple-700"
-                                >
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
+                        {
+                            eventInfo.tags.length > 1 &&
+                            <div className="flex flex-wrap gap-2">
+                                {eventInfo.tags.map((tag, index) => (
+                                    <span
+                                        key={index}
+                                        className="bg-primary-color-sub/20 p-1 px-2 rounded text-purple-300 border-purple-700"
+                                    >
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        }
+                        {
+                            eventInfo.tags.length == 0 &&
+                            <p className='text-sm text-gray-300'>No tags provided for this event.</p>
+                        }
                     </div>
                 </div>
             </div>
@@ -148,17 +163,18 @@ console.log("🚀 ~ OverviewSection ~ eventInfo:", eventInfo)
                         </div>
                         <div className="flex justify-between items-center">
                             <span className='text-sm'>Visibility</span>
-                            <span className={`bg-primary-color-sub/20 p-2 px-3 rounded-lg text-sm text-white ${eventInfo.visibility ? "bg-green-500" : "bg-red-500"}`}>
-                                {eventInfo.visibility ? "Public" : "Private"}
+                            <span
+                                className={`p-2 px-3 rounded-lg text-sm text-white ${eventVisibility ? "bg-green-500" : "bg-red-500"}`}>
+                                {eventVisibility ? "Public" : "Private"}
                             </span>
                         </div>
-                        <div className="flex justify-between items-center">
+                        {/* <div className="flex justify-between items-center">
                             <span className='text-sm'>Archived</span>
                             <Toggler
                                 checkboxValue={eventInfo.isArchived}
                                 setCheckboxValue={setIsArchived}
                             />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

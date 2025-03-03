@@ -11,7 +11,7 @@ const UserStats: FunctionComponent<UserStatsProps> = ({ userInformation }): Reac
         <div className={styles.userStats}>
             <div className={styles.stat}>
                 <p className={styles.stat__number}>
-                    {userInformation.eventsCount}
+                    {userInformation.stats.eventsCount}
                 </p>
                 <p className={styles.stat__label}>
                     Events
@@ -27,15 +27,15 @@ const UserStats: FunctionComponent<UserStatsProps> = ({ userInformation }): Reac
                             </div> */}
             <div className={styles.stat}>
                 <p className={styles.stat__number}>
-                    {userInformation.followersCount}
+                    {userInformation.stats.followersCount}
                 </p>
                 <p className={styles.stat__label}>
-                    {userInformation.followersCount > 1 ? "Followers" : "Follower"}
+                    {userInformation.stats.followersCount > 1 ? "Followers" : "Follower"}
                 </p>
             </div>
             <div className={styles.stat}>
                 <p className={styles.stat__number}>
-                    {userInformation.followingCount}
+                    {userInformation.stats.followingCount}
                 </p>
                 <p className={styles.stat__label}>
                     Following

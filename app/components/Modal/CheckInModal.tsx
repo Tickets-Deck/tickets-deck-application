@@ -3,8 +3,9 @@ import ModalWrapper from "./ModalWrapper";
 import { Icons } from "../ui/icons";
 import { MultipleTickets } from "@/app/models/ICheckIn";
 import { useCheckInMultipleTicketOrders } from "@/app/api/apiClient";
-import { toast } from "sonner";
 import Button from "../ui/button";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/app/context/ToastCardContext";
 
 interface CheckInModalProps {
     visibility: boolean
@@ -18,21 +19,25 @@ const CheckInModal: FunctionComponent<CheckInModalProps> = (
     { visibility, setVisibility, multipleTickets, ticketOrderAccessCode, eventId }): ReactElement => {
 
     const checkInMultipleTicketOrders = useCheckInMultipleTicketOrders();
+    const { data: session } = useSession();
+    const user = session?.user;
+
+    const toasthandler = useToast();
 
     const [selectedTickets, setSelectedTickets] = useState<string[]>([]);
     const [isCheckingIn, setIsCheckingIn] = useState(false);
 
     const handleCheckInMultipleTicketOrders = async () => {
         if (selectedTickets.length === 0) {
-            toast.error("Please select at least one ticket to check in");
+            toasthandler.logError("No ticket selected", "Please select at least one ticket to check in");
             return;
         }
 
         setIsCheckingIn(true);
 
-        await checkInMultipleTicketOrders(ticketOrderAccessCode as string, eventId as string, selectedTickets)
+        await checkInMultipleTicketOrders(user?.token as string, ticketOrderAccessCode as string, eventId as string, selectedTickets)
             .then((response) => {
-                toast.success(selectedTickets.length > 1 ? "Tickets checked in successfully" : "Ticket checked in successfully");
+                toasthandler.logSuccess("Check In Successful", selectedTickets.length > 1 ? "Tickets checked in successfully" : "Ticket checked in successfully");
                 setSelectedTickets([]);
                 setVisibility(false);
             })

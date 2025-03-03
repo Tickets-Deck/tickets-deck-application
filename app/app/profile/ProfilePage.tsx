@@ -113,9 +113,9 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
             phone: retrievedUserInformation?.phone || null,
             socialLinks: {
 
-                facebookUrl: retrievedUserInformation?.facebookUrl || null,
-                instagramUrl: retrievedUserInformation?.instagramUrl || null,
-                twitterUrl: retrievedUserInformation?.twitterUrl || null,
+                facebookUrl: retrievedUserInformation?.socialLinks?.facebookUrl || null,
+                instagramUrl: retrievedUserInformation?.socialLinks?.instagramUrl || null,
+                twitterUrl: retrievedUserInformation?.socialLinks?.twitterUrl || null,
             }
         };
         // console.log("🚀 ~ handleUpdateUserInformation ~ data:", data);
@@ -235,7 +235,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                         Events
                                     </p>
                                     <span className='font-medium'>
-                                        {userInformation?.eventsCount}
+                                        {userInformation?.stats.eventsCount}
                                     </span>
                                 </Link>
                                 <Link
@@ -246,7 +246,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                         Tickets Sold
                                     </p>
                                     <span className='font-medium'>
-                                        {userInformation.ticketsSold}
+                                        {userInformation.stats.ticketsSold}
                                     </span>
                                 </Link>
                                 <div className='flex items-center justify-between py-2 px-4 border-y border-dark-grey/10 cursor-pointer hover:bg-dark-grey/[0.035]'>
@@ -331,10 +331,10 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                     />
                                 )}
 
-                                {isFormFieldsEditable && (
+                                {isFormFieldsEditable && currentTab === ProfilePageTab.BasicInformation && (
                                     <div className='flex justify-start gap-4 mt-8'>
                                         <button
-                                            className='primaryButton hover:!bg-[darken(#8133f1,_amount:_10%)] !text-white'
+                                            className='primaryButton hover:!bg-[darken(#8133f1,_amount:_10%)] !text-white hover:!text-primary-color'
                                             disabled={isUpdatingUserInformation}
                                             onClick={handleUpdateUserInformation}
                                         >

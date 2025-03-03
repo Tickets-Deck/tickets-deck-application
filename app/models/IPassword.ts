@@ -1,9 +1,9 @@
 export interface PasswordResetLinkRequest {
   email: string;
-  // hostUrl: string
 }
 
 export interface PasswordResetRequest {
+  userId: string;
+  password: string;
   token: string;
-  newPassword: string;
 }

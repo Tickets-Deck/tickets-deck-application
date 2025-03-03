@@ -16,7 +16,7 @@ import { Icons } from "@/app/components/ui/icons";
 import { RetrievedTicketResponse, TicketResponse } from "@/app/models/ITicket";
 import { EventRequest, EventResponse, UpdateEventRequest } from "@/app/models/IEvents";
 import {
-    useDeleteTicketById,
+    useDeleteTicket,
     useFetchEventById,
     useUpdateEventById,
 } from "@/app/api/apiClient";
@@ -47,11 +47,11 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({
     params,
 }): ReactElement => {
     const router = useRouter();
-    const {data: session} = useSession();
+    const { data: session } = useSession();
     const user = session?.user;
     const toasthandler = useContext(ToastContext);
     const fetchEventInfo = useFetchEventById();
-    const deleteTicketById = useDeleteTicketById();
+    const deleteTicketById = useDeleteTicket();
     const updateEventById = useUpdateEventById();
 
     const id = params.id;
@@ -244,7 +244,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({
         setIsUpdatingEvent(true);
 
         await updateEventById(user?.token as string, eventInfo?.id as string, {
-            ...(eventRequest as UpdateEventRequest),
+            ...({ ...eventRequest as EventRequest, isArchived: eventInfo?.isArchived } as UpdateEventRequest),
             eventId: eventInfo?.eventId as string,
             publisherId: eventInfo?.publisherId as string,
         })

@@ -15,7 +15,7 @@
 }
 
 .profilePage {
-    background-color: $dark-grey-2;
+    background-color: $dark-grey;
     color: $white;
 
     &__loader {
@@ -44,6 +44,7 @@
                 &__name {
                     font-size: $font-size-24;
                     font-weight: 500;
+                    text-transform: capitalize;
                 }
                 &__username {
                     font-size: $font-size-16;

@@ -30,19 +30,8 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   occupation: string | undefined;
   bio: string | undefined;
 
-  facebookUrl: string | undefined;
-  twitterUrl: string | undefined;
-  instagramUrl: string | undefined;
-  linkedinUrl: string | undefined;
-
-  followersCount: number;
-  followingCount: number;
-  eventsCount: number;
-  bookmarksCount: number;
-  favoritesCount: number;
-  ticketsBought: number;
-  ticketsSold: number;
-  totalRevenue: number;
+  socialLinks: SocialLinks | null;
+  stats: UserStats;
 
   bookmarks: Bookmarks[];
   favorites: Favourites[];
@@ -71,10 +60,21 @@ export type UsernameRequest = {
   username: string;
 };
 
-type SocialLinks = {
+export type SocialLinks = {
   facebookUrl: string | null;
   twitterUrl: string | null;
   instagramUrl: string | null;
+};
+
+type UserStats = {
+  followersCount: number;
+  followingCount: number;
+  eventsCount: number;
+  bookmarksCount: number;
+  favoritesCount: number;
+  ticketsBought: number;
+  ticketsSold: number;
+  totalRevenue: number;
 };
 
 export type UserCredentialsUpdateRequest = {

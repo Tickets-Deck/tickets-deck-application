@@ -33,7 +33,6 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
 }): ReactElement => {
     const { data: session } = useSession();
     const user = session?.user;
-    console.log("🚀 ~ user:", user)
 
     const likeEvent = useLikeEvent();
     const unlikeEvent = useUnlikeEvent();
@@ -60,11 +59,8 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
         setIsEventLiked(true);
 
         await likeEvent(user?.token as string, user?.id as string, eventId)
-            .then((response) => {
-                console.log("🚀 ~ .then ~ like event response:", response)
-            })
+            .then(() => {})
             .catch((error) => {
-                console.log("🚀 ~ handleLikeEvent ~ error:", error)
                 catchError(error);
                 // Revert the event's like status
                 setIsEventLiked(false);

@@ -80,8 +80,8 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
             handleFetchUserInformation();
         }
         if (session?.error === 'RefreshAccessTokenError') {
-            console.log("🚀 ~ useEffect ~ session:", session)
-            signOut(); // Force user to re-auth if refresh fails
+            // Force user to re-auth if refresh fails
+            signOut({ redirect: false });
         }
     }, [session, status])
 

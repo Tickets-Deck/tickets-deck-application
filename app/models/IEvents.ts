@@ -107,6 +107,7 @@ export type UpdateEventRequest = {
     currency: string | null;
     tickets: TicketRequest[] | null;
     organizerPaysFee: boolean | null;
+    isArchived: boolean | null;
     purchaseStartDate: Date | string | null;
     purchaseEndDate: Date | string | null;
     allowedGuestType: string | null;

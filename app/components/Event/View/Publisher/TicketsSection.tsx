@@ -1,22 +1,66 @@
+import Pulse from '@/app/components/custom/animation/Pulse';
 import { Icons } from '@/app/components/ui/icons'
-import { EventRequest, EventResponse } from '@/app/models/IEvents';
+import { EventResponse } from '@/app/models/IEvents';
+import { TicketResponse } from '@/app/models/ITicket';
 import moment from 'moment';
-import React, { useEffect } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 type Props = {
     eventInfo: EventResponse
-    handleUpdateEventInfo(updatedEventInfo: EventRequest): Promise<void>
+    setSelectedTicket: Dispatch<SetStateAction<TicketResponse | undefined>>
+    setIsTicketUpdateModalVisible: Dispatch<SetStateAction<boolean>>
+    eventTickets: TicketResponse[] | undefined
+    isFetchingEventTickets: boolean
+    setIsTicketCreateModalVisible: Dispatch<SetStateAction<boolean>>
+    setIsTicketDeleteModalVisible: Dispatch<SetStateAction<boolean>>
 }
 
-export default function TicketsSection({ eventInfo, handleUpdateEventInfo }: Props) {
+export default function TicketsSection(
+    { eventInfo, setIsTicketUpdateModalVisible, setSelectedTicket,
+        eventTickets, isFetchingEventTickets, setIsTicketCreateModalVisible, setIsTicketDeleteModalVisible }: Props) {
+
+    const [timer, setTimer] = React.useState<string | undefined>(undefined);
+
     // Current date
     const now = moment();
     const daysUntilPurchase = moment(eventInfo.purchaseStartDate).diff(now, 'days');
 
-    const [timer, setTimer] = React.useState<string | undefined>(undefined);
-
     const futureDateTime = moment(eventInfo.purchaseStartDate);
     const duration = moment.duration(futureDateTime.diff(now));
+    const [progress, setProgress] = useState(0);
+    console.log("🚀 ~ progress:", progress)
+
+    const startDate = eventInfo.purchaseStartDate;
+    const endDate = eventInfo.purchaseEndDate;
+
+    useEffect(() => {
+        const updateProgress = () => {
+            const now = moment();
+            const start = moment(startDate);
+            const end = moment(endDate);
+
+            if (now.isBefore(start)) {
+                setProgress(0); // Event hasn’t started yet
+                return;
+            }
+
+            if (now.isAfter(end)) {
+                setProgress(100); // Event has finished
+                return;
+            }
+
+            const totalDuration = end.diff(start);
+            const timePassed = now.diff(start);
+            const percentage = (timePassed / totalDuration) * 100;
+
+            setProgress(Number(percentage.toFixed(2))); // Limit decimal places
+        };
+
+        updateProgress();
+        const interval = setInterval(updateProgress, 1000); // Update every second
+
+        return () => clearInterval(interval);
+    }, [startDate, endDate]);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -71,31 +115,75 @@ export default function TicketsSection({ eventInfo, handleUpdateEventInfo }: Pro
                 </div>
 
                 <div className="space-y-6">
-                    {eventInfo.tickets.map((ticket) => (
-                        <div key={ticket.id} className="p-4 border border-gray-700 rounded-lg">
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <h3 className="text-lg font-medium">{ticket.name}</h3>
-                                    <p className="text-gray-400 text-sm">ID: {ticket.id}</p>
+                    {
+                        !isFetchingEventTickets && eventTickets &&
+                        eventTickets.map((ticket) => (
+                            <div key={ticket.id} className="p-4 border border-gray-700 rounded-lg">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <div className='flex flex-row items-center space-x-3'>
+                                            <h3 className="text-lg font-medium">{ticket.name}</h3>
+                                            <div className='flex flex-row items-center space-x-2'>
+                                                <Pulse type={ticket.visibility} />
+                                                <span className='text-xs text-gray-200'>{ticket.visibility ? 'Active' : 'Not active'}</span>
+                                            </div>
+                                        </div>
+                                        <p className="text-gray-400 text-sm">Ticket admits {ticket.numberOfUsers} {ticket.numberOfUsers > 1 ? 'people' : 'person'}</p>
+                                        <p className="text-gray-200 text-sm">{ticket.remainingTickets} {ticket.remainingTickets > 1 ? 'tickets' : 'ticket'} left</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <h4 className="text-xl font-semibold font-Mona-Sans-Wide">
+                                            {eventInfo.currency} {ticket.price.toLocaleString()}
+                                        </h4>
+                                        <p className="text-base text-gray-400">{ticket.ticketOrdersCount} sold</p>
+                                    </div>
                                 </div>
-                                <div className="text-right">
-                                    <h4 className="text-xl font-semibold font-Mona-Sans-Wide">
-                                        {eventInfo.currency} {ticket.price.toLocaleString()}
-                                    </h4>
-                                    <p className="text-base text-gray-400">{ticket.ticketOrdersCount} sold</p>
+                                <div className="mt-4 flex justify-between items-center">
+                                    <div className="text-sm text-gray-400">
+                                        Created: {new Date(ticket.createdAt).toLocaleDateString()}
+                                    </div>
+                                    <div className='flex flex-row space-x-2'>
+                                        <button
+                                            onClick={() => {
+                                                setSelectedTicket(ticket);
+                                                setIsTicketUpdateModalVisible(true);
+                                            }}
+                                            className='tertiaryButton !rounded-lg !py-2 !px-4'>
+                                            Edit Ticket
+                                        </button>
+                                        {
+                                            ticket.ticketOrdersCount === 0 &&
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedTicket(ticket);
+                                                    setIsTicketDeleteModalVisible(true);
+                                                }}
+                                                className='tertiaryButton !bg-failed-color !text-white !rounded-lg !py-2 !px-4'>
+                                                <Icons.Delete className='!w-5 h-5' />
+                                            </button>
+                                        }
+                                    </div>
                                 </div>
                             </div>
-                            <div className="mt-4 flex justify-between items-center">
-                                <div className="text-sm text-gray-400">
-                                    Created: {new Date(ticket.createdAt).toLocaleDateString()}
-                                </div>
-                                <button className='tertiaryButton !rounded-lg !py-2 !px-4'>Edit Ticket</button>
-                            </div>
-                        </div>
-                    ))}
+                        ))
+                    }
+                    {
+                        isFetchingEventTickets && !eventTickets &&
+                        <p>
+                            Fetching event tickets.
+                        </p>
+                    }
+                    {
+                        !isFetchingEventTickets && !eventTickets &&
+                        <p>
+                            There are no tickets available for this event.
+                        </p>
+                    }
 
                     <div className="mt-6">
-                        <button className="bg-primary-color hover:opacity-80 flex flex-row items-center space-x-2 p-2 px-3 rounded-md">
+                        <button
+                            onClick={() => setIsTicketCreateModalVisible(true)}
+                            className="bg-primary-color hover:opacity-80 flex flex-row items-center space-x-2 p-2 px-3 rounded-md">
                             <Icons.Add
                                 className="h-4 w-4 mr-2"
                                 fill='#fff'
@@ -120,13 +208,14 @@ export default function TicketsSection({ eventInfo, handleUpdateEventInfo }: Pro
                         </span>
                         <div className="text-right">
                             <span className="text-xs font-semibold inline-block text-purple-200">
-                                {!timer ? "Active" : `Starting in ${timer}`}
+                                {!timer ? "Active" : `${timer}`}
                             </span>
                         </div>
                     </div>
                     <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-700">
                         <div
-                            style={{ width: duration.asMilliseconds() <= 0 ? "100%" : "0%" }}
+                            style={{ width: `${progress}%` }}
+                            // style={{ width: duration.asMilliseconds() <= 0 ? "100%" : "0%" }}
                             className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-500"
                         ></div>
                     </div>
@@ -136,6 +225,6 @@ export default function TicketsSection({ eventInfo, handleUpdateEventInfo }: Pro
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

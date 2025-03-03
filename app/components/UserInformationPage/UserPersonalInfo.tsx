@@ -8,6 +8,7 @@ interface UserPersonalInfoProps {
 }
 
 const UserPersonalInfo: FunctionComponent<UserPersonalInfoProps> = ({ userInformation }): ReactElement => {
+    console.log("🚀 ~ userInformation:", userInformation);
     return (
         <div className={styles.userPersonalInfo}>
             <div className={styles.userPersonalInfo__avatar}>

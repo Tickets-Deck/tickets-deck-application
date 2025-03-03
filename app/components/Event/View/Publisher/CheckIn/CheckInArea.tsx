@@ -10,6 +10,7 @@ import { ToastContext } from "@/app/context/ToastCardContext"
 import jsQR from 'jsqr';
 import { FullPageLoader } from "@/app/components/Loader/ComponentLoader"
 import { useSession } from "next-auth/react"
+import CheckInModal from "@/app/components/Modal/CheckInModal"
 
 interface Attendee {
     id: string
@@ -30,11 +31,10 @@ export function CheckInArea({ eventId, isLive }: CheckInAreaProps) {
     const checkInTicketOrder = useCheckInTicketOrder();
     const toasthandler = useContext(ToastContext);
     const { data: session } = useSession();
-    console.log("🚀 ~ CheckInArea ~ session:", session?.user)
 
     // const [searchQuery, setSearchQuery] = useState("")
     const [showScanner, setShowScanner] = useState(false)
-    const [recentCheckIns, setRecentCheckIns] = useState<Attendee[]>([])
+    // const [recentCheckIns, setRecentCheckIns] = useState<Attendee[]>([])
     const [checkInSuccess, setCheckInSuccess] = useState<boolean | null>(null)
 
     const [multipleCheckInModalVisibility, setMultipleCheckInModalVisibility] = useState(false);
@@ -79,6 +79,7 @@ export function CheckInArea({ eventId, isLive }: CheckInAreaProps) {
                     setMultipleTickets(response.data);
                     return;
                 }
+                setCheckInSuccess(true);
                 toasthandler?.logSuccess("Success!", "Check-in successful");
             })
             .catch((error) => {
@@ -324,7 +325,7 @@ export function CheckInArea({ eventId, isLive }: CheckInAreaProps) {
                     </div>
 
                     {/* Recent Check-ins */}
-                    {recentCheckIns.length > 0 && (
+                    {/* {recentCheckIns.length > 0 && (
                         <div className="mt-6">
                             <h3 className="text-sm font-medium text-gray-400 mb-3">Recent Check-ins</h3>
                             <div className="space-y-2">
@@ -344,7 +345,7 @@ export function CheckInArea({ eventId, isLive }: CheckInAreaProps) {
                                 ))}
                             </div>
                         </div>
-                    )}
+                    )} */}
                 </div>
             </div>
 
@@ -373,6 +374,14 @@ export function CheckInArea({ eventId, isLive }: CheckInAreaProps) {
                     </div>
                 </div>
             )}
+
+            <CheckInModal
+                visibility={multipleCheckInModalVisibility}
+                setVisibility={setMultipleCheckInModalVisibility}
+                multipleTickets={multipleTickets}
+                ticketOrderAccessCode={ticketOrderAccessCode}
+                eventId={eventId}
+            />
         </div>
     )
 }

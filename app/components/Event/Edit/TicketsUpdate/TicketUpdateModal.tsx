@@ -1,10 +1,11 @@
-import { useUpdateTicketInformationById } from "@/app/api/apiClient";
+import { useUpdateTicketInformation } from "@/app/api/apiClient";
 import ModalWrapper from "@/app/components/Modal/ModalWrapper";
 import { Icons } from "@/app/components/ui/icons";
 import { catchError } from "@/app/constants/catchError";
 import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
 import { TicketRequest, TicketResponse } from "@/app/models/ITicket";
 import styles from '@/app/styles/CreateEvent.module.scss';
+import { useSession } from "next-auth/react";
 import { ReactElement, FunctionComponent, Dispatch, SetStateAction, ChangeEvent, useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 
@@ -12,22 +13,24 @@ interface TicketUpdateModalProps {
     modalVisibility: boolean;
     setModalVisibility: Dispatch<SetStateAction<boolean>>
     selectedTicket: TicketResponse | undefined
-    handleFetchEventInfo: () => Promise<void>
+    handleFetchEventTickets: () => Promise<void>
     // eventRequest: EventRequest | undefined
     // setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
 }
 
 const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = (
-    { modalVisibility, setModalVisibility, selectedTicket, handleFetchEventInfo }): ReactElement => {
+    { modalVisibility, setModalVisibility, selectedTicket, handleFetchEventTickets }): ReactElement => {
 
-    const updateTicketInformationById = useUpdateTicketInformationById();
+    const updateTicketInformation = useUpdateTicketInformation();
+    const { data: session } = useSession();
+    const user = session?.user;
 
     const [isUpdatingTicketInfo, setIsUpdatingTicketInfo] = useState(false);
     const [ticketFormRequest, setTicketFormRequest] = useState<TicketRequest>();
 
     const [ticketNameErrorMsg, setTicketNameErrorMsg] = useState<FormFieldResponse>();
     const [ticketPriceErrorMsg, setTicketPriceErrorMsg] = useState<FormFieldResponse>();
-    const [ticketQuantityErrorMsg, setTicketQuantityErrorMsg] = useState<FormFieldResponse>();
+    const [ticketRemainingErrorMsg, setTicketRemainingErrorMsg] = useState<FormFieldResponse>();
     const [ticketNumberOfUsersErrorMsg, setTicketNumberOfUsersErrorMsg] = useState<FormFieldResponse>();
     const [ticketDescriptionErrorMsg, setTicketDescriptionErrorMsg] = useState<FormFieldResponse>();
 
@@ -37,7 +40,7 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = (
         // Desctructure the name and value from the event target
         const { name, value } = e.target;
 
-        if (name == "numberOfUsers" || name == "quantity") {
+        if (name == "numberOfUsers" || name == "remainingTickets" || name == "quantity") {
             // Update the state
             setTicketFormRequest({ ...ticketFormRequest as TicketRequest, [name]: Number(value) });
 
@@ -60,66 +63,65 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = (
     /**
      * Function to validate the form
      */
-    function validateForm() {
+    // function validateForm() {
 
-        if (ticketFormRequest && ticketFormRequest.name && ticketFormRequest.price && ticketFormRequest.quantity && ticketFormRequest.numberOfUsers) {
-            return true;
-        }
-        else {
-            console.log(ticketFormRequest)
+    //     if (ticketFormRequest && ticketFormRequest.name && ticketFormRequest.price && ticketFormRequest.remainingTickets && ticketFormRequest.numberOfUsers) {
+    //         return true;
+    //     }
+    //     else {
+    //         console.log(ticketFormRequest)
 
-            // Validate the ticket name
-            if (!ticketFormRequest?.name) {
-                setTicketNameErrorMsg({ message: "Please enter ticket name", status: DefaultFormResponseStatus.Failed });
-            } else {
-                setTicketNameErrorMsg(undefined);
-            }
+    //         // Validate the ticket name
+    //         if (!ticketFormRequest?.name) {
+    //             setTicketNameErrorMsg({ message: "Please enter ticket name", status: DefaultFormResponseStatus.Failed });
+    //         } else {
+    //             setTicketNameErrorMsg(undefined);
+    //         }
 
-            // Validate the ticket price
-            if (!ticketFormRequest?.price) {
-                setTicketPriceErrorMsg({ message: "Please enter ticket price", status: DefaultFormResponseStatus.Failed });
-            } else {
-                if (Number(ticketFormRequest?.price) > 0 && Number(ticketFormRequest?.price) < 1000) {
-                    setTicketPriceErrorMsg({ message: "Ticket price cannot be less than 1000", status: DefaultFormResponseStatus.Failed });
-                    return false;
-                }
-                setTicketPriceErrorMsg(undefined);
-            }
+    //         // Validate the ticket price
+    //         if (!ticketFormRequest?.price) {
+    //             setTicketPriceErrorMsg({ message: "Please enter ticket price", status: DefaultFormResponseStatus.Failed });
+    //         } else {
+    //             if (Number(ticketFormRequest?.price) > 0 && Number(ticketFormRequest?.price) < 1000) {
+    //                 setTicketPriceErrorMsg({ message: "Ticket price cannot be less than 1000", status: DefaultFormResponseStatus.Failed });
+    //                 return false;
+    //             }
+    //             setTicketPriceErrorMsg(undefined);
+    //         }
 
-            // Validate the ticket quantity
-            if (!ticketFormRequest?.quantity) {
-                setTicketQuantityErrorMsg({ message: "Please enter ticket quantity", status: DefaultFormResponseStatus.Failed });
-            } else {
-                if (Number(ticketFormRequest?.quantity < 1)) {
-                    console.log("Less than 1")
-                    setTicketQuantityErrorMsg({ message: "Ticket quantity cannot be less than 1", status: DefaultFormResponseStatus.Failed });
-                    return false;
-                }
-                setTicketQuantityErrorMsg(undefined);
-            }
+    //         // Validate the ticket remainingTickets
+    //         if (!ticketFormRequest?.remainingTickets) {
+    //             setTicketRemainingErrorMsg({ message: "Please enter remaining tickets", status: DefaultFormResponseStatus.Failed });
+    //         } else {
+    //             if (Number(ticketFormRequest?.remainingTickets < 0)) {
+    //                 setTicketRemainingErrorMsg({ message: "Remaining tickets cannot be less than 0", status: DefaultFormResponseStatus.Failed });
+    //                 return false;
+    //             }
+    //             setTicketRemainingErrorMsg(undefined);
+    //         }
 
-            // Validate the ticket number of users
-            if (!ticketFormRequest?.numberOfUsers) {
-                setTicketNumberOfUsersErrorMsg({ message: "Please enter number of users", status: DefaultFormResponseStatus.Failed });
-            } else {
-                if (Number(ticketFormRequest?.numberOfUsers < 1)) {
-                    console.log("Less than 1")
-                    setTicketNumberOfUsersErrorMsg({ message: "Number of users cannot be less than 1", status: DefaultFormResponseStatus.Failed });
-                    return false;
-                }
-                setTicketNumberOfUsersErrorMsg(undefined);
-            }
+    //         // Validate the ticket number of users
+    //         if (!ticketFormRequest?.numberOfUsers) {
+    //             setTicketNumberOfUsersErrorMsg({ message: "Please enter number of users", status: DefaultFormResponseStatus.Failed });
+    //         } else {
+    //             if (Number(ticketFormRequest?.numberOfUsers < 1)) {
+    //                 console.log("Less than 1")
+    //                 setTicketNumberOfUsersErrorMsg({ message: "Number of users cannot be less than 1", status: DefaultFormResponseStatus.Failed });
+    //                 return false;
+    //             }
+    //             setTicketNumberOfUsersErrorMsg(undefined);
+    //         }
 
-            // Validate the ticket description
-            // if (!ticketFormRequest?.description) {
-            //     setTicketDescriptionErrorMsg({ message: "Please enter ticket description", status: DefaultFormResponseStatus.Failed });
-            // } else {
-            //     setTicketDescriptionErrorMsg(undefined);
-            // }
+    //         // Validate the ticket description
+    //         // if (!ticketFormRequest?.description) {
+    //         //     setTicketDescriptionErrorMsg({ message: "Please enter ticket description", status: DefaultFormResponseStatus.Failed });
+    //         // } else {
+    //         //     setTicketDescriptionErrorMsg(undefined);
+    //         // }
 
-            return false;
-        }
-    };
+    //         return false;
+    //     }
+    // };
 
     useEffect(() => {
         if (selectedTicket) {
@@ -128,20 +130,14 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = (
     }, [selectedTicket]);
 
     async function handleUpdateTicketInformation() {
-        // if (!validateForm()) {
-        //     return;
-        // }
-
-        // console.log({ ticketFormRequest });
+        console.log({ ticketFormRequest });
 
         // Show loader
         setIsUpdatingTicketInfo(true);
 
-        await updateTicketInformationById(selectedTicket?.id as string, ticketFormRequest as TicketResponse)
-            .then(async (response) => {
-                // console.log("response after updating ticket ", response);
-
-                await handleFetchEventInfo();
+        await updateTicketInformation(user?.token as string, selectedTicket?.id as string, ticketFormRequest as TicketResponse)
+            .then(async () => {
+                await handleFetchEventTickets();
 
                 // Clear all fields
                 setTicketFormRequest({} as TicketRequest);
@@ -257,26 +253,26 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = (
                         }
                     </div>
                     <div className={styles.formField}>
-                        <label htmlFor="quantity">Number of available tickets</label>
+                        <label htmlFor="remainingTickets">Number of remaining tickets</label>
                         <input
                             type="text"
-                            name="quantity"
-                            value={ticketFormRequest?.quantity ?? selectedTicket?.quantity}
-                            placeholder="Number of available tickets"
+                            name="remainingTickets"
+                            value={ticketFormRequest?.remainingTickets ?? selectedTicket?.remainingTickets}
+                            placeholder="Number of remaining tickets"
                             onChange={(e) => {
                                 if (Number(e.target.value) == 0) {
-                                    onFormValueChange(e, setTicketQuantityErrorMsg);
+                                    onFormValueChange(e, setTicketRemainingErrorMsg);
                                     return;
                                 }
                                 if (!Number(e.target.value)) {
                                     return;
                                 }
 
-                                onFormValueChange(e, setTicketQuantityErrorMsg);
+                                onFormValueChange(e, setTicketRemainingErrorMsg);
                             }}
                             onKeyUp={(e) => {
-                                if (Number(ticketFormRequest?.quantity) < 0 && e.currentTarget.value != "") {
-                                    setTicketQuantityErrorMsg({ message: "The minimum number of available tickets cannot be less than 0", status: DefaultFormResponseStatus.Failed });
+                                if (Number(ticketFormRequest?.remainingTickets) < 0 && e.currentTarget.value != "") {
+                                    setTicketRemainingErrorMsg({ message: "The minimum number of remaining tickets cannot be less than 0", status: DefaultFormResponseStatus.Failed });
                                 }
                             }}
                             onKeyDown={(e) => {
@@ -287,8 +283,8 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = (
                             }}
                         />
                         {
-                            ticketQuantityErrorMsg && ticketQuantityErrorMsg.status == DefaultFormResponseStatus.Failed &&
-                            <span className={styles.errorMsg}>{ticketQuantityErrorMsg.message}</span>
+                            ticketRemainingErrorMsg && ticketRemainingErrorMsg.status == DefaultFormResponseStatus.Failed &&
+                            <span className={styles.errorMsg}>{ticketRemainingErrorMsg.message}</span>
                         }
                     </div>
                     <div className={styles.formField}>

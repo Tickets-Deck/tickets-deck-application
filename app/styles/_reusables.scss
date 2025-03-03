@@ -152,6 +152,8 @@
             fill: $color;
         }
     }
+
+    // ml-auto w-8 h-8 min-w-8 min-h-8 rounded-full grid place-items-center cursor-pointer hover:bg-gray-100 [&_svg_path]:stroke-[#000] fill-[#000]
 }
 
 // Input field

@@ -10,9 +10,10 @@ import { ToastContext } from "@/app/context/ToastCardContext";
 
 interface EventCardProps {
     event: EventResponse;
+    skipLikeStatusFetch?: boolean;
 }
 
-const EventCard: FunctionComponent<EventCardProps> = ({ event }): ReactElement => {
+const EventCard: FunctionComponent<EventCardProps> = ({ event, skipLikeStatusFetch }): ReactElement => {
 
     const toast = useContext(ToastContext);
 
@@ -64,7 +65,7 @@ const EventCard: FunctionComponent<EventCardProps> = ({ event }): ReactElement =
                         <EventLikeButton
                             eventInfo={event}
                             forEventCard
-                            // skipFetch={forFeaturedEvents}
+                            skipFetch={skipLikeStatusFetch}
                         />
                         <button
                             className='size-[1.875rem] rounded-full grid place-items-center cursor-pointer bg-[#d5542a] hover:bg-[darken(#d5542a,_amount:10%)]'

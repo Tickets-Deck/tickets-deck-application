@@ -1,13 +1,10 @@
 "use client";
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import styles from "../../styles/Events.module.scss";
-import useResponsive from "../../hooks/useResponsiveness";
 import EventsGroup from "../../components/events/EventsGroup";
 import {
     useDeleteEvent,
-    useFetchEventsByPublisherId,
+    useFetchOrganizerEvents,
 } from "@/app/api/apiClient";
-import { useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
 import { useRouter } from "next/navigation";
 import { EventResponse } from "@/app/models/IEvents";
@@ -23,13 +20,11 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({
     session,
 }): ReactElement => {
     const deleteEvent = useDeleteEvent();
-    const fetchEventsByPublisherId = useFetchEventsByPublisherId();
+    const fetchOrganizerEvents = useFetchOrganizerEvents();
 
     const user = session?.user;
 
     const router = useRouter();
-    const windowRes = useResponsive();
-    // const { data: session } = useSession();
 
     const [isFetchingEvents, setIsFetchingEvents] = useState(true);
     const [events, setEvents] = useState<EventResponse[]>();
@@ -41,14 +36,14 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({
     const [isDeletingEvent, setIsDeletingEvent] = useState(false);
     const [isEventDeleted, setIsEventDeleted] = useState(false);
 
-    async function handleFetchEventsByPublisherId() {
+    async function handleFetchOrganizerEvents() {
         // Reset events
         setEvents(undefined);
 
         // Start fetching events
         setIsFetchingEvents(true);
 
-        await fetchEventsByPublisherId(user?.token as string, user?.id as string)
+        await fetchOrganizerEvents(user?.token as string, user?.id as string)
             .then((response) => {
                 // Set events
                 setEvents(response.data);
@@ -72,7 +67,7 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({
             .then((response) => {
                 console.log("🚀 ~ .then ~ response:", response);
                 // Fetch events again
-                handleFetchEventsByPublisherId();
+                handleFetchOrganizerEvents();
                 // Set event deleted state
                 setIsEventDeleted(true);
                 // Close modal after deleting event
@@ -93,11 +88,11 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({
             router.push("/auth/signin");
             return;
         }
-        handleFetchEventsByPublisherId();
+        handleFetchOrganizerEvents();
     }, [session]);
 
     useEffect(() => {
-        if (isEventDeleted) handleFetchEventsByPublisherId();
+        if (isEventDeleted) handleFetchOrganizerEvents();
     }, [isEventDeleted]);
 
     return (

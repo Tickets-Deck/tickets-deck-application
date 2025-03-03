@@ -5,7 +5,7 @@ import {
     SetStateAction,
     useState,
 } from "react";
-import { UserCredentialsResponse } from "@/app/models/IUser";
+import { SocialLinks, UserCredentialsResponse } from "@/app/models/IUser";
 
 interface AccountSettingsFormContainerProps {
     retrievedUserInformation: UserCredentialsResponse | undefined;
@@ -79,7 +79,7 @@ const AccountSettingsFormContainer: FunctionComponent<
 
         function validateTwitterUrl(url: string): boolean {
             const twitterRegex =
-                /^(https?:\/\/)?(www\.)?twitter.com\/[a-zA-Z0-9_]+\/?$/;
+                /^(https?:\/\/)?(www\.)?x.com\/[a-zA-Z0-9_]+\/?$/;
             return twitterRegex.test(url);
         }
 
@@ -205,12 +205,12 @@ const AccountSettingsFormContainer: FunctionComponent<
                             type='text'
                             name='facebookUrl'
                             className='input !rounded-lg !w-full !bg-dark-grey/5 font-normal placeholder-dark-grey-85 !text-sm disabled:opacity-65 !text-dark-grey'
-                            value={retrievedUserInformation?.facebookUrl}
+                            value={retrievedUserInformation?.socialLinks?.facebookUrl ?? ""}
                             placeholder='Enter link to your Facebook profile'
                             onChange={(e) => {
                                 setRetrievedUserInformation({
                                     ...(retrievedUserInformation as UserCredentialsResponse),
-                                    facebookUrl: e.target.value,
+                                    socialLinks: { ...(retrievedUserInformation?.socialLinks as SocialLinks), facebookUrl: e.target.value },
                                 });
                             }}
                             onKeyUp={(e) => {
@@ -241,12 +241,12 @@ const AccountSettingsFormContainer: FunctionComponent<
                             type='text'
                             name='twitterUrl'
                             className='input !rounded-lg !w-full !bg-dark-grey/5 font-normal placeholder-dark-grey-85 !text-sm disabled:opacity-65 !text-dark-grey'
-                            value={retrievedUserInformation?.twitterUrl}
+                            value={retrievedUserInformation?.socialLinks?.twitterUrl ?? ""}
                             placeholder='Enter link to your Twitter profile'
                             onChange={(e) => {
                                 setRetrievedUserInformation({
                                     ...(retrievedUserInformation as UserCredentialsResponse),
-                                    twitterUrl: e.target.value,
+                                    socialLinks: { ...(retrievedUserInformation?.socialLinks as SocialLinks), twitterUrl: e.target.value },
                                 });
                             }}
                             onKeyUp={(e) => {
@@ -265,7 +265,7 @@ const AccountSettingsFormContainer: FunctionComponent<
                         />
                         {isTwitterUrlValid === false && (
                             <span className='text-sm text-failed-color'>
-                                Please input a valid twitter url
+                                Please input a valid x url
                             </span>
                         )}
                     </div>
@@ -278,12 +278,12 @@ const AccountSettingsFormContainer: FunctionComponent<
                         type='text'
                         name='instagramUrl'
                         className='input !rounded-lg !w-[45%] !bg-dark-grey/5 font-normal placeholder-dark-grey-85 !text-sm disabled:opacity-65 !text-dark-grey'
-                        value={retrievedUserInformation?.instagramUrl}
+                        value={retrievedUserInformation?.socialLinks?.instagramUrl ?? ""}
                         placeholder='Enter link to your Instagram profile'
                         onChange={(e) => {
                             setRetrievedUserInformation({
                                 ...(retrievedUserInformation as UserCredentialsResponse),
-                                instagramUrl: e.target.value,
+                                socialLinks: { ...(retrievedUserInformation?.socialLinks as SocialLinks), instagramUrl: e.target.value },
                             });
                         }}
                         onKeyUp={(e) => {

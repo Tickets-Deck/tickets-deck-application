@@ -10,6 +10,10 @@ interface UserSocialsProps {
 
 const UserSocials: FunctionComponent<UserSocialsProps> = ({ userInformation }): ReactElement => {
 
+    const facebookUrl = userInformation.socialLinks?.facebookUrl;
+    const instagramUrl = userInformation.socialLinks?.instagramUrl;
+    const twitterUrl = userInformation.socialLinks?.twitterUrl;
+
     const linkStartsWithHttp = (link: string) => {
         if (link.startsWith("https")) {
             return link;
@@ -20,20 +24,20 @@ const UserSocials: FunctionComponent<UserSocialsProps> = ({ userInformation }): 
     return (
         <div className={styles.userSocials}>
             {
-                userInformation.facebookUrl &&
-                <Link href={linkStartsWithHttp(userInformation.facebookUrl)} target="_blank">
+                facebookUrl &&
+                <Link href={linkStartsWithHttp(facebookUrl)} target="_blank">
                     <span><Icons.Facebook /></span>
                 </Link>
             }
             {
-                userInformation.instagramUrl &&
-                <Link href={linkStartsWithHttp(userInformation.instagramUrl)} target="_blank">
+                instagramUrl &&
+                <Link href={linkStartsWithHttp(instagramUrl)} target="_blank">
                     <span><Icons.Instagram /></span>
                 </Link>
             }
             {
-                userInformation.twitterUrl &&
-                <Link href={linkStartsWithHttp(userInformation.twitterUrl)} target="_blank">
+                twitterUrl &&
+                <Link href={linkStartsWithHttp(twitterUrl)} target="_blank">
                     <span><Icons.Twitter /></span>
                 </Link>
             }

@@ -23,13 +23,12 @@ interface UserInformationPageProps {
 
 const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ identifier, session }): ReactElement => {
 
-    // const fetchUserInformation = useFetchUserInformation();
     const followUser = useFollowUser();
     const fetchUserFollowMetrics = useFetchUserFollowMetrics();
     const fetchUserInformationByUsername = useFetchUserInformationByUserName();
+
     const [userInformation, setUserInformation] = useState<UserCredentialsResponse>();
     const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(true);
-    const [isPhotoUploadModalVisible, setIsPhotoUploadModalVisible] = useState(false);
     const [isInteractingWithUserProfile, setIsInteractingWithUserProfile] = useState(false);
     const [isFollowingUser, setIsFollowingUser] = useState<boolean | null>(null);
 
@@ -50,6 +49,7 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({ iden
 
         await fetchUserInformationByUsername(username as string)
             .then((response) => {
+                console.log("🚀 ~ .then ~ response:", response)
                 // console.log(response.data);
                 setUserInformation(response.data);
             })

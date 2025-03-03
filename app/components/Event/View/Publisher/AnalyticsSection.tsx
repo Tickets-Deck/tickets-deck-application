@@ -1,11 +1,11 @@
 import EventSalesTrendChart, { generateMockSalesData } from '@/app/components/charts/EventSalesTrend'
 import TicketDistributionChart, { generateTicketDistributionData } from '@/app/components/charts/TicketDistribution'
-import { EventRequest, EventResponse } from '@/app/models/IEvents'
+import { EventResponse, UpdateEventRequest } from '@/app/models/IEvents'
 import React from 'react'
 
 type Props = {
     eventInfo: EventResponse
-    handleUpdateEventInfo(updatedEventInfo: EventRequest): Promise<void>
+    handleUpdateEventInfo(updatedEventInfo: UpdateEventRequest): Promise<void>
 }
 
 export default function AnalyticsSection({ eventInfo, handleUpdateEventInfo }: Props) {

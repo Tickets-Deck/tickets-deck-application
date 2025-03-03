@@ -2,7 +2,7 @@
 import { ReactElement, FunctionComponent, useState, useEffect } from "react";
 import styles from "@/app/styles/UserInformationPage.module.scss";
 import { UserCredentialsResponse } from "@/app/models/IUser";
-import { useFetchUserEventsByUserId } from "@/app/api/apiClient";
+import { useFetchEventsByPublisherId } from "@/app/api/apiClient";
 import { EventResponse } from "@/app/models/IEvents";
 import { catchError } from "@/app/constants/catchError";
 import EventCard from "../Event/EventCard";
@@ -14,14 +14,14 @@ interface UserHighlightsProps {
 
 const UserHighlights: FunctionComponent<UserHighlightsProps> = ({ userInformation }): ReactElement => {
 
-    const fetchUserEventsByUserId = useFetchUserEventsByUserId();
+    const fetchUserEventsByPublisherId = useFetchEventsByPublisherId();
 
     const [userEvents, setUserEvents] = useState<EventResponse[]>([]);
     const [isFetchingUserEvents, setIsFetchingUserEvents] = useState(true);
 
-    async function handleFetchUserEventsByUserId() {
+    async function handleFetchUserEventsByPublisherId() {
 
-        await fetchUserEventsByUserId(userInformation.id)
+        await fetchUserEventsByPublisherId(userInformation.id)
             .then((response) => {
                 // console.log(response.data);
                 // Update the state
@@ -40,7 +40,7 @@ const UserHighlights: FunctionComponent<UserHighlightsProps> = ({ userInformatio
 
     useEffect(() => {
         if (userInformation) {
-            handleFetchUserEventsByUserId();
+            handleFetchUserEventsByPublisherId();
         }
     }, [userInformation]);
 
@@ -54,6 +54,7 @@ const UserHighlights: FunctionComponent<UserHighlightsProps> = ({ userInformatio
                             event={event}
                             // mobileAndActionButtonDismiss
                             key={index}
+                            skipLikeStatusFetch
                             // gridDisplay={true}
                         />
                     )

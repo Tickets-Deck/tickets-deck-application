@@ -6,26 +6,31 @@ import { EventRequest } from "@/app/models/IEvents";
 import { DefaultFormResponseStatus, FormFieldResponse } from "@/app/models/IFormField";
 import { TicketRequest } from "@/app/models/ITicket";
 import styles from '@/app/styles/CreateEvent.module.scss';
+import { useSession } from "next-auth/react";
 import { ReactElement, FunctionComponent, Dispatch, SetStateAction, ChangeEvent, useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 interface TicketCreationModalProps {
     modalVisibility: boolean;
     setModalVisibility: Dispatch<SetStateAction<boolean>>
-    eventRequest: EventRequest | undefined
-    setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
+    eventRequest?: EventRequest | undefined
+    setEventRequest?: Dispatch<SetStateAction<EventRequest | undefined>>
     forExistingEvent?: boolean
     eventId?: string
     handleFetchEventInfo?: () => Promise<void>
+    handleFetchEventTickets?: () => Promise<void>
+
     isEditingTicket?: boolean
     selectedTicketIndex?: number
 }
 
 const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
-    { modalVisibility, setModalVisibility, eventRequest, isEditingTicket,
-        setEventRequest, forExistingEvent, eventId, handleFetchEventInfo, selectedTicketIndex }): ReactElement => {
+    { modalVisibility, setModalVisibility, isEditingTicket, eventRequest, setEventRequest,
+        forExistingEvent, eventId, handleFetchEventInfo, handleFetchEventTickets, selectedTicketIndex }): ReactElement => {
 
     const createTicketForSpecifiedEvent = useCreateTicketForSpecifiedEvent();
+    const { data: session } = useSession();
+    const user = session?.user;
 
     const [ticketFormRequest, setTicketFormRequest] = useState<TicketRequest>();
     const [isCreatingNewTicket, setIsCreatingNewTicket] = useState(false);
@@ -69,7 +74,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
 
         if (ticketFormRequest && ticketFormRequest.name && ticketFormRequest.price && (ticketFormRequest.price == 0 || ticketFormRequest.price > 1000) && ticketFormRequest.quantity && ticketFormRequest.numberOfUsers) {
             return true;
-        } 
+        }
         else {
             console.log(ticketFormRequest)
 
@@ -135,14 +140,14 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
         // return;
 
         // If there are created tickets...
-        if (eventRequest?.tickets) {
-            setEventRequest({
+        if (eventRequest && eventRequest?.tickets) {
+            setEventRequest && setEventRequest({
                 ...eventRequest as EventRequest,
                 tickets: [...eventRequest?.tickets as TicketRequest[], ticketFormRequest as TicketRequest]
             });
         } else {
             // If there are no existing tickets...
-            setEventRequest({
+            setEventRequest && setEventRequest({
                 ...eventRequest as EventRequest,
                 tickets: [ticketFormRequest as TicketRequest]
             });
@@ -168,7 +173,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
                 return ticket;
             });
 
-            setEventRequest({
+            setEventRequest && setEventRequest({
                 ...eventRequest as EventRequest,
                 tickets: updatedTickets
             });
@@ -191,10 +196,13 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
         // Show loader
         setIsCreatingNewTicket(true);
 
-        await createTicketForSpecifiedEvent(eventId as string, ticketFormRequest as TicketRequest)
+        await createTicketForSpecifiedEvent(user?.token as string, eventId as string, { ...ticketFormRequest as TicketRequest, visibility: ticketFormRequest?.visibility ?? false, remainingTickets: ticketFormRequest?.quantity as number})
             .then(async (response) => {
+                console.log("🚀 ~ .then ~ response:", response)
 
                 handleFetchEventInfo && await handleFetchEventInfo();
+
+                handleFetchEventTickets && await handleFetchEventTickets();
 
                 // Clear all fields
                 setTicketFormRequest({} as TicketRequest);
@@ -215,12 +223,12 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
             })
     };
 
-    useEffect(() => {
-        // If we are editing a ticket, set the ticket form request to the selected ticket
-        if (isEditingTicket && eventRequest?.tickets && selectedTicketIndex != undefined) {
-            setTicketFormRequest(eventRequest?.tickets[selectedTicketIndex]);
-        }
-    }, [selectedTicketIndex]);
+    // useEffect(() => {
+    //     // If we are editing a ticket, set the ticket form request to the selected ticket
+    //     if (isEditingTicket && eventRequest?.tickets && selectedTicketIndex != undefined) {
+    //         setTicketFormRequest(eventRequest?.tickets[selectedTicketIndex]);
+    //     }
+    // }, [selectedTicketIndex]);
 
     return (
         <ModalWrapper visibility={modalVisibility} setVisibility={setModalVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
@@ -374,6 +382,20 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
                             ticketDescriptionErrorMsg && ticketDescriptionErrorMsg.status == DefaultFormResponseStatus.Failed &&
                             <span className={styles.errorMsg}>{ticketDescriptionErrorMsg.message}</span>
                         }
+                    </div><div>
+                        <span>Status</span>
+                        <div className="flex flex-row items-center justify-start gap-2 w-fit">
+                            <button
+                                onClick={() => setTicketFormRequest({ ...ticketFormRequest as TicketRequest, visibility: true })}
+                                className={!ticketFormRequest?.visibility ? '!bg-white/10 !text-white' : ''}>
+                                Active
+                            </button>
+                            <button
+                                onClick={() => setTicketFormRequest({ ...ticketFormRequest as TicketRequest, visibility: false })}
+                                className={ticketFormRequest?.visibility ? '!bg-white/10 !text-white' : ''}>
+                                Inactive
+                            </button>
+                        </div>
                     </div>
                     <button
                         type="button"

@@ -20,29 +20,32 @@ import { useDispatch } from "react-redux";
 import { Icons } from "../ui/icons";
 import { ApiRoutes } from "@/app/api/apiRoutes";
 
-interface LoginProps { }
+type LoginProps = {}
 
 const Login: FunctionComponent<LoginProps> = (): ReactElement => {
     const fetchUserInformation = useFetchUserInformation();
     const dispatch = useDispatch();
 
+    // const [loginMethod, setLoginMethod] = useState<LoginMethod>(LoginMethod.Email);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const router = useRouter();
     const { data: session, status } = useSession();
 
-    const [email, setEmail] = useState(retrieveNewlyCreatedUserEmail() ?? "");
+    const [emailOrUsername, setEmailOrUsername] = useState(retrieveNewlyCreatedUserEmail() ?? "");
+    // const [emailOrUsername, setEmailOrUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const [emailErrorMsg, setEmailErrorMsg] = useState(false);
+    // const [usernameErrorMsg, setUsernameErrorMsg] = useState(false);
     const [passwordErrorMsg, setPasswordErrorMsg] = useState(false);
 
     const [message, setMessage] = useState("");
-    
+
     const handleOauthLogin = async (event: any) => {
         event.preventDefault();
-        window.location.href = `${ApiRoutes.BASE_URL}auth/callback/google`;
+        window.location.href = `${ApiRoutes.BASE_URL}auth/google/callback`;
     };
 
     function retrieveNewlyCreatedUserEmail() {
@@ -78,19 +81,11 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         // Unset message
         setMessage("");
 
-        if (!email || !password) {
-            if (!email) {
-                setEmailErrorMsg(true);
-            } else {
-                setEmailErrorMsg(false);
-            }
-            if (!password) {
-                setPasswordErrorMsg(true);
-            } else {
-                setPasswordErrorMsg(false);
-            }
-            return;
+        if (!password || !emailOrUsername) {
+            if (!emailOrUsername) setEmailErrorMsg(true);
+            if (!password) setPasswordErrorMsg(true);
         }
+
         setEmailErrorMsg(false);
         setPasswordErrorMsg(false);
 
@@ -98,14 +93,11 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         setIsLoading(true);
 
         const userInformation = {
-            username: email,
+            emailOrUsername,
             password,
-            redirect: false,
-        };
+        }
 
-        // console.log(userInformation);
-
-        await signIn("credentials", { ...userInformation })
+        await signIn("credentials", { ...userInformation, redirect: false })
             .then(async (response) => {
                 // console.log("login response: ", response);
 
@@ -151,27 +143,20 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         }
     }, [status]);
 
-    // useEffect(() => {
-    //     if (retrieveNewlyCreatedUserEmail()) {
-    //         setEmail(retrieveNewlyCreatedUserEmail() as string);
-    //     }
-    // }, [retrieveNewlyCreatedUserEmail()])
-
     return (
         <div className='max-[768px]:sectionPadding flex md:grid place-items-center py-[5rem] min-h-[90vh] bg-dark-grey'>
             <div className='bg-dark-grey-2 text-white rounded-[1.25rem] flex w-screen max-w-[500px] max-h-none md:mx-auto md:max-h-fit md:w-[70vw] xl:w-[35vw] h-fit overflow-hidden'>
                 <div className='py-6 flex px-5 w-full flex-col gap-6'>
-                    <div className='flex items-center flex-col gap-1 mb-2'>
-                        <h3 className='font-semibold'>Welcome</h3>
-                        <p className='text-center text-lg'>Log into your account</p>
+                    <div className='flex items-center flex-col gap-0 mb-2'>
+                        <h3 className='font-semibold text-xl'>Welcome</h3>
+                        <p className='text-center text-base'>Log into your account</p>
                     </div>
                     <div className='flex gap-1'>
                         <div
-                            className='w-full flex flex-col gap-1 items-center rounded-[1rem] p-2 cursor-pointer hover:bg-white/10'
+                            className='w-full flex flex-flex-row gap-1 items-center justify-center rounded-lg p-2 cursor-pointer border-[1px] border-container-grey-20/60 hover:bg-white/10'
                             onClick={handleOauthLogin}
-                        // onClick={async () => await signIn("google")}
                         >
-                            <span className='size-[2.5rem] grid place-items-center [&_svg]:size-8'>
+                            <span className='size-7 grid place-items-center [&_svg]:size-6'>
                                 <Icons.Google />
                             </span>
                             <p className='text-sm font-light'>Google</p>
@@ -186,44 +171,100 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                     <span className='text-center text-sm relative block w-full after:w-[45%] after:h-[0.0313rem] after:bg-white/50 after:absolute after:top-[50%] after:left-auto after:right-0 after:translate-y-1/2 before:w-[45%] before:h-[0.0313rem] before:bg-white/50 before:absolute before:top-1/2 before:left-0 before:translate-y-1/2'>
                         OR
                     </span>
+                    {/* <div className="flex fler-row border-[1px] border-container-grey-20/60">
+                        <div
+                            className={`w-full flex flex-row gap-1 items-center justify-center rounded-lg p-2 cursor-pointer hover:bg-white/10 ${loginMethod === LoginMethod.Email ? 'bg-white/10' : ''}`}
+                            onClick={() => setLoginMethod(LoginMethod.Email)}>
+                            <span><Icons.Email /></span>
+                            <p>Email</p>
+                        </div>
+                        <div
+                            className={`w-full flex flex-row gap-1 items-center justify-center rounded-lg p-2 cursor-pointer hover:bg-white/10 ${loginMethod === LoginMethod.Username ? 'bg-white/10' : ''}`}
+                            onClick={() => setLoginMethod(LoginMethod.Username)}>
+                            <span><Icons.User /></span>
+                            <p>Username</p>
+                        </div>
+                    </div> */}
                     <form
                         className='flex flex-col gap-4 w-full min-w-[auto] md:min-w-[25rem]'
                         onSubmit={(e) => handleSubmit(e)}
                     >
-                        <div className='flex flex-col gap-1'>
-                            <label htmlFor='email' className='text-sm font-light'>
-                                Email address
-                            </label>
-                            <div className='flex rounded-lg overflow-hidden'>
-                                <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
-                                    <Icons.Email />
-                                </span>
-                                <input
-                                    // type='email'
-                                    name='email'
-                                    placeholder='email@example.com'
-                                    value={email}
-                                    className='w-full outline-none border-none text-white bg-white/10 text-base'
-                                    onChange={(e) => {
-                                        // If we have a value, clear email error message
-                                        if (e.target.value) {
-                                            setEmailErrorMsg(false);
-                                            setMessage("");
-                                        }
-                                        setEmail(e.target.value);
-                                    }}
-                                />
+                        {/* {
+                            loginMethod === LoginMethod.Email && */}
+                            <div className='flex flex-col gap-1'>
+                                <label htmlFor='email' className='text-sm font-light'>
+                                    Email address / Username
+                                </label>
+                                <div className='flex rounded-lg overflow-hidden'>
+                                    <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
+                                        <Icons.User />
+                                    </span>
+                                    <input
+                                        // type='email'
+                                        name='email'
+                                        placeholder='Enter your email or username'
+                                        value={emailOrUsername}
+                                        className='w-full outline-none border-none text-white bg-white/10 text-base'
+                                        onChange={(e) => {
+                                            // If we have a value, clear email error message
+                                            if (e.target.value) {
+                                                setEmailErrorMsg(false);
+                                                setMessage("");
+                                            }
+                                            setEmailOrUsername(e.target.value);
+                                        }}
+                                    />
+                                </div>
+                                {emailErrorMsg && (
+                                    <span className='text-failed-color text-xs'>
+                                        Please enter your email address
+                                    </span>
+                                )}
                             </div>
-                            {emailErrorMsg && (
-                                <span className='text-failed-color text-xs'>
-                                    Please enter your email address
-                                </span>
-                            )}
-                        </div>
+                        {/* } */}
+                        {/* {
+                            loginMethod === LoginMethod.Username &&
+                            <div className='flex flex-col gap-1'>
+                                <label htmlFor='username' className='text-sm font-light'>
+                                    Username
+                                </label>
+                                <div className='flex rounded-lg overflow-hidden'>
+                                    <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
+                                        <Icons.User />
+                                    </span>
+                                    <input
+                                        name='username'
+                                        placeholder='username'
+                                        className='w-full outline-none border-none text-white bg-white/10 text-base'
+                                        onChange={(e) => {
+                                            // If we have a value, clear email error message
+                                            if (e.target.value) {
+                                                setUsernameErrorMsg(false);
+                                                setMessage("");
+                                            }
+                                            setUsername(e.target.value);
+                                        }}
+                                    />
+                                </div>
+                                {usernameErrorMsg && (
+                                    <span className='text-failed-color text-xs'>
+                                        Please enter your username
+                                    </span>
+                                )}
+                            </div>
+                        } */}
                         <div className='flex flex-col gap-1'>
-                            <label htmlFor='password' className='text-sm font-light'>
-                                Password
-                            </label>
+                            <div className="flex flex-row justify-between items-center">
+                                <label htmlFor='password' className='text-sm font-light'>
+                                    Password
+                                </label>
+                                <Link
+                                    className='text-sm font-light w-fit text-primary-color-sub ml-auto'
+                                    href={ApplicationRoutes.ForgotPassword}
+                                >
+                                    Forgot password?
+                                </Link>
+                            </div>
                             <div className='flex rounded-lg overflow-hidden'>
                                 <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
                                     <Icons.Password />
@@ -231,7 +272,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                                 <input
                                     type={isPasswordVisible ? "text" : "password"}
                                     name='password'
-                                    placeholder='password'
+                                    placeholder='Password'
                                     className='w-full outline-none border-none text-white bg-white/10 text-base'
                                     onChange={(e) => {
                                         // If we have a value, clear email error message
@@ -255,12 +296,6 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                                 </span>
                             )}
                         </div>
-                        <Link
-                            className='text-sm font-light w-fit text-primary-color-sub ml-auto'
-                            href={ApplicationRoutes.ForgotPassword}
-                        >
-                            Forgot password?
-                        </Link>
                         {message && (
                             <span className='text-failed-color text-xs'>{message}</span>
                         )}

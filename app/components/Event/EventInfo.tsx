@@ -116,7 +116,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                         <div className="w-10 h-10 rounded-full overflow-hidden relative">
                             <Image src={eventInfo.publisher.profilePhoto || images.user_avatar} alt='Avatar' fill className="object-cover" />
                         </div>
-                        <span className="text-white text-sm font-medium">{`${eventInfo?.publisher.firstName} ${eventInfo?.publisher.lastName}`}</span>
+                        <span className="text-white text-sm font-medium capitalize">{`${eventInfo?.publisher.firstName} ${eventInfo?.publisher.lastName}`}</span>
                     </Link>
                     <div className="flex items-center gap-3 text-white">
                         <h4>{moment(eventInfo?.startDate).format("MMM. Do YYYY")}</h4>

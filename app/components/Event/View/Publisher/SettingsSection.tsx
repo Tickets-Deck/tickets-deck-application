@@ -1,23 +1,49 @@
 import Toggler from '@/app/components/custom/Toggler'
 import { EventVisibility } from '@/app/enums/IEventVisibility'
 import { EventResponse, UpdateEventRequest } from '@/app/models/IEvents'
-import React, { useEffect } from 'react'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
 
 type Props = {
     eventInfo: EventResponse
-    handleUpdateEventInfo(updatedEventInfo: UpdateEventRequest): Promise<void>
+    handleUpdateEventInfo(updatedEventInfo: UpdateEventRequest, toastMessage?: string): Promise<void>
+    setIsDeletionConfirmationModalVisible: Dispatch<SetStateAction<boolean>>
 }
 
-export default function SettingsSection({ eventInfo, handleUpdateEventInfo }: Props) {
+export default function SettingsSection({ eventInfo, handleUpdateEventInfo, setIsDeletionConfirmationModalVisible }: Props) {
 
     const [eventVisibility, setEventVisibility] = React.useState<boolean>(eventInfo.visibility === EventVisibility.PUBLIC);
+    const [organizerPaysFee, setOrganizerPaysFee] = React.useState<boolean>(eventInfo.organizerPaysFee);
+    const [isInitialized, setIsInitialized] = React.useState(false);
+    const postUpdateMessage = () => {
+        if (eventVisibility && eventInfo.visibility === EventVisibility.PRIVATE) {
+            return "Event is now public";
+        }
+        if (!eventVisibility && eventInfo.visibility === EventVisibility.PUBLIC) {
+            return "Event is now private";
+        }
+        if (organizerPaysFee && !eventInfo.organizerPaysFee) {
+            return "Organizer now pays fees";
+        }
+        if (!organizerPaysFee && eventInfo.organizerPaysFee) {
+            return "Attendees now pay fees";
+        }
+    }
 
     useEffect(() => {
-        handleUpdateEventInfo({
-            ...eventInfo as UpdateEventRequest,
-            visibility: eventInfo.visibility === EventVisibility.PUBLIC ? EventVisibility.PRIVATE : EventVisibility.PUBLIC
-        })
-    }, [eventVisibility])
+        if (!isInitialized) {
+            setIsInitialized(true);
+            return;
+        }
+
+        handleUpdateEventInfo(
+            {
+                ...eventInfo as UpdateEventRequest,
+                visibility: eventVisibility ? EventVisibility.PUBLIC : EventVisibility.PRIVATE,
+                organizerPaysFee
+            },
+            postUpdateMessage()
+        )
+    }, [eventVisibility, organizerPaysFee]);
 
     return (
         <div className="bg-[#1e1e1e] border-[2px] border-container-grey p-5 rounded-xl">
@@ -45,29 +71,30 @@ export default function SettingsSection({ eventInfo, handleUpdateEventInfo }: Pr
 
                     <div className="flex items-center justify-between">
                         <div>
-                            <h3 className="font-medium">Archive Event</h3>
-                            <p className="text-sm text-gray-400">Hide the event but keep all data</p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <span className="text-sm">{eventInfo.isArchived ? "Archived" : "Active"}</span>
-                            <Toggler
-                                checkboxValue={eventInfo.isArchived}
-                                setCheckboxValue={() => { }}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                        <div>
                             <h3 className="font-medium">Organizer Pays Fee</h3>
                             <p className="text-sm text-gray-400">You cover transaction fees instead of attendees</p>
                         </div>
                         <div className="flex items-center space-x-2">
                             <span className="text-sm">{eventInfo.organizerPaysFee ? "Yes" : "No"}</span>
                             <Toggler
-                                checkboxValue={eventInfo.organizerPaysFee}
-                                setCheckboxValue={() => { }}
+                                checkboxValue={organizerPaysFee}
+                                setCheckboxValue={setOrganizerPaysFee}
                             />
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="font-medium">Archive Event</h3>
+                            <p className="text-sm text-gray-400">Hide the event but keep all data</p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            {/* <span className="text-sm">{eventInfo.isArchived ? "Archived" : "Active"}</span> */}
+                            <button
+                                onClick={() => setIsDeletionConfirmationModalVisible(true)}
+                                className="primaryButton !bg-failed-color hover:!text-white hover:!opacity-50">
+                                Archive
+                            </button>
                         </div>
                     </div>
 
