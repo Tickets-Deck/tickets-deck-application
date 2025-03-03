@@ -81,6 +81,40 @@ export function useFetchEvents() {
   return fetchEvents;
 }
 
+export function useFetchEventsByPublisherId() {
+  const requestToken = useRequestCredentialToken();
+  async function fetchEventsByPublisherId(publisherId: string) {
+    const token = await requestToken();
+    return API.get(
+      ApiRoutes.FetchEventsByPublisherId(publisherId),
+      getApiConfig(token.data.token)
+    );
+  }
+
+  return fetchEventsByPublisherId;
+}
+
+export function useFetchOrganizerEvents() {
+  async function fetchOrganizerEvents(token: string, publisherId: string) {
+    return API.get(
+      ApiRoutes.FetchOrganizerEvents(publisherId),
+      getApiConfig(token)
+    );
+  }
+
+  return fetchOrganizerEvents;
+}
+
+export function useFetchEventsByTags() {
+  async function fetchEventsByPublisherId(tags: string[], eventId: string) {
+    return API.get(
+      `${ApiRoutes.Events}?tags=${tags.join(",")}&eventId=${eventId}`
+    );
+  }
+
+  return fetchEventsByPublisherId;
+}
+
 export function useFetchFeaturedEvents() {
   // Request token
   const requestToken = useRequestCredentialToken();
@@ -103,41 +137,12 @@ export function useFetchEventById() {
   return fetchEvent;
 }
 
-export function useFetchUserEventsByUserId() {
-  async function fetchUserEventsByUserId(userId: string) {
-    return API.get(`${ApiRoutes.Events}?publisherId=${userId}`);
+export function useFetchPublisherEventById() {
+  async function fetchEvent(token: string, id: string) {
+    return API.get(ApiRoutes.FetchOrganizerEvent(id), getApiConfig(token));
   }
 
-  return fetchUserEventsByUserId;
-}
-
-export function useFetchEventByEventId() {
-  async function fetchEventsByEventId(eventId: string) {
-    return API.get(`${ApiRoutes.Events}?eventId=${eventId}`);
-  }
-
-  return fetchEventsByEventId;
-}
-
-export function useFetchEventsByPublisherId() {
-  async function fetchEventsByPublisherId(token: string, publisherId: string) {
-    return API.get(
-      ApiRoutes.FetchOrganizerEvents(publisherId),
-      getApiConfig(token)
-    );
-  }
-
-  return fetchEventsByPublisherId;
-}
-
-export function useFetchEventsByTags() {
-  async function fetchEventsByPublisherId(tags: string[], eventId: string) {
-    return API.get(
-      `${ApiRoutes.Events}?tags=${tags.join(",")}&eventId=${eventId}`
-    );
-  }
-
-  return fetchEventsByPublisherId;
+  return fetchEvent;
 }
 
 export function useCheckInTicketOrder() {
@@ -158,13 +163,15 @@ export function useCheckInTicketOrder() {
 
 export function useCheckInMultipleTicketOrders() {
   async function checkInMultipleTicketOrders(
+    token: string,
     ticketOrderId: string,
     eventId: string,
-    orderIds: string[]
+    orderedTicketIds: string[]
   ) {
     return API.post(
-      `${ApiRoutes.CheckInMultipleTicketOrder}?ticketOrderId=${ticketOrderId}&eventId=${eventId}`,
-      { orderIds }
+      ApiRoutes.CheckInMultipleTicketOrder(ticketOrderId, eventId),
+      { orderedTicketIds },
+      getApiConfig(token)
     );
   }
 
@@ -383,32 +390,46 @@ export function useFetchOrderInformationById() {
 
 export function useCreateTicketForSpecifiedEvent() {
   async function createTicketForSpecifiedEvent(
-    id: string,
+    token: string,
+    eventId: string,
     data: TicketRequest
   ) {
-    return API.post(`${ApiRoutes.Tickets}?id=${id}`, data);
+    return API.post(
+      `${ApiRoutes.Tickets}/${eventId}`,
+      data,
+      getApiConfig(token)
+    );
   }
 
   return createTicketForSpecifiedEvent;
 }
 
-export function useUpdateTicketInformationById() {
-  async function updateTicketInformationById(
+export function useFetchEventTickets() {
+  async function fetchEventTickets(token: string, eventId: string) {
+    return API.get(ApiRoutes.FetchEventTickets(eventId), getApiConfig(token));
+  }
+
+  return fetchEventTickets;
+}
+
+export function useUpdateTicketInformation() {
+  async function updateTicketInformation(
+    token: string,
     ticketId: string,
     data: TicketResponse
   ) {
-    return API.put(`${ApiRoutes.Tickets}?ticketId=${ticketId}`, data);
+    return API.put(ApiRoutes.UpdateTicket(ticketId), data, getApiConfig(token));
   }
 
-  return updateTicketInformationById;
+  return updateTicketInformation;
 }
 
-export function useDeleteTicketById() {
-  async function deleteTicketById(ticketId: string) {
-    return API.delete(`${ApiRoutes.Tickets}?ticketId=${ticketId}`);
+export function useDeleteTicket() {
+  async function deleteTicket(token: string, ticketId: string) {
+    return API.delete(ApiRoutes.DeleteTicket(ticketId), getApiConfig(token));
   }
 
-  return deleteTicketById;
+  return deleteTicket;
 }
 
 export function useFollowUser() {
@@ -499,16 +520,28 @@ export function useUnlikeEvent() {
 }
 
 export function useRequestPasswordResetLink() {
+  const requestToken = useRequestCredentialToken();
   async function requestPasswordResetLink(data: PasswordResetLinkRequest) {
-    return API.post(ApiRoutes.UserPasswordResetLink, data);
+    const token = await requestToken();
+    return API.post(
+      ApiRoutes.UserPasswordResetLink,
+      data,
+      getApiConfig(token.data.token)
+    );
   }
 
   return requestPasswordResetLink;
 }
 
 export function useResetPassword() {
+  const requestToken = useRequestCredentialToken();
   async function resetPassword(data: PasswordResetRequest) {
-    return API.post(ApiRoutes.UserPasswordReset, data);
+    const token = await requestToken();
+    return API.post(
+      ApiRoutes.UserPasswordReset,
+      data,
+      getApiConfig(token.data.token)
+    );
   }
 
   return resetPassword;
