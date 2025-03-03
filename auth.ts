@@ -24,16 +24,16 @@ export const authOptions: NextAuthOptions = {
       id: "credentials",
       name: "Sign in",
       credentials: {
-        username: {
-          label: "Username",
-          type: "username",
+        emailOrUsername: {
+          label: "Email address / username",
+          type: "email",
           placeholder: "hello@example.com",
         },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         // If email or password is missing, return null to display an error
-        if (!credentials?.username || !credentials.password) {
+        if (!credentials?.emailOrUsername || !credentials.password) {
           // Throw an error to display an error message
           throw new Error("Please provide username and password");
         }
