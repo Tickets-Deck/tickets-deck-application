@@ -245,7 +245,7 @@ a {
   }
 
   .tertiaryButton {
-    @apply w-fit rounded-[3.125rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-white text-dark-grey flex items-center gap-2 [&_svg]:text-white [&_svg]:w-3 [&_svg_path]:fill-white hover:opacity-60;
+    @apply w-fit rounded-[3.125rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-white text-dark-grey flex flex-row items-center gap-2 [&_svg]:text-white [&_svg]:w-3 [&_svg_path]:fill-white hover:opacity-60;
   }
 
   .tableConatiner {
