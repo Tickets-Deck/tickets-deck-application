@@ -129,7 +129,7 @@ const ToastCard: FunctionComponent<ToastCardProps> = ({ messageType, description
                 right: position.includes('right') ? '12rem' : undefined,
                 margin: position.includes('center') ? '0 auto' : undefined,
             }}
-            className='fixed top-5 right-1/2 w-[360px] translate-y-0 z-[999] transition-all duration-300 ease-in flex flex-col gap-4 -mr-[180px]'>
+            className='fixed top-5 right-1/2 w-[93%] max-w-[350px] md:w-[360px] translate-y-0 z-[999] transition-all duration-300 ease-in flex flex-col gap-4 -mr-[180px]'>
             <div
                 className={`p-3 flex bg-white rounded  gap-[10px] relative shadow-[0px_8px_24px_rgba(0,0,0,0.06)] transition-all duration-300 ease-in 
                     ${setCardStyle()} 
@@ -146,7 +146,7 @@ const ToastCard: FunctionComponent<ToastCardProps> = ({ messageType, description
                     </div>
                     <div className='w-full'>
                         <h4 className={`font-medium text-base ${indicatorTitle()}`}>{title}</h4>
-                        <p className='text-[10px] md:text-xs font-normal text-gray-800'>
+                        <p className='text-sm md:text-xs font-normal text-gray-800'>
                             {description}
                         </p>
                     </div>
