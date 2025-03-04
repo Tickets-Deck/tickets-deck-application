@@ -85,7 +85,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
 
     return (
         <>
-            <section className={"pt-[6.5rem] flex sectionPadding pb-[4.5rem] flex-col sm:flex-row sm:py-[4.5rem] gap-8 bg-dark-grey items-center relative"}>
+            <section className={"sectionPadding !pt-[6.5rem] !pb-[4.5rem] flex flex-col md:flex-row gap-8 bg-dark-grey items-center relative"}>
                 <div className='absolute size-full top-0 left-0 [&_img]:object-cover after:absolute after:size-full after:top-0 after:left-0 after:bg-[linear-gradient(180deg,_rgba(27,27,27,0.4)_0%,_rgba(27,27,27,0.7)_100%)]'>
                     <Image
                         src={imageWithPlaceholder[heroSectionImgIndex].src}
@@ -99,7 +99,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                 </div>
                 <div className='flex flex-col gap-5 !basis-1/2 !z-[2]'>
                     <div className='flex flex-col gap-2'>
-                        <h2 className='font-Mona-Sans-Wide font-medium text-[35px] text-white'>
+                        <h2 className='font-Mona-Sans-Wide font-medium text-[35px] md:text-[40px] leading-[40px] md:leading-[42px] bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300'>
                             Find The Next Big <br />
                             Event To{" "}
                             <span className='relative bg-clip-text text-transparent bg-[linear-gradient(90deg,_rgba(253,253,255,100)_100%,_rgba(253,253,255,0)_100%)]'>
@@ -148,7 +148,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                         )}
                     </div>
                 </div>
-                <div className='basis-full w-full mt-3 mb-0 mx-auto sm:basis-[35%] sm:ml-auto z-[2]'>
+                <div className='basis-full w-full mt-3 mb-0 mx-auto md:mx-0 md:basis-[35%] md:ml-auto z-[2]'>
                     <HeroSearchSection
                         isFetchingEvents={isFetchingEvents}
                         events={events}
