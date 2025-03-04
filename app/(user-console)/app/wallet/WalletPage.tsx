@@ -2,7 +2,6 @@
 import { useFetchUserWalletBalance } from "@/app/api/apiClient";
 import BetaTestModal from "@/app/components/Modal/BetaTestModal";
 import { catchError } from "@/app/constants/catchError";
-import { OrderStatus } from "@/app/enums/IOrderStatus";
 import { RootState } from "@/app/redux/store";
 import { FunctionComponent, ReactElement, useMemo, useState } from "react";
 import { useSelector } from "react-redux";

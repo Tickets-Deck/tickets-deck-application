@@ -102,14 +102,14 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                 // console.log("login response: ", response);
 
                 // If we have an error
-                if (
-                    response?.error
-                ) {
-                    setMessage(response.error);
-                    // Close loader
-                    setIsLoading(false);
-                    return;
-                }
+                // if (
+                //     response?.error
+                // ) {
+                //     setMessage(response.error);
+                //     // Close loader
+                //     setIsLoading(false);
+                //     return;
+                // }
 
                 if (response && response.status == StatusCodes.Unauthorized) {
                     // Close loader

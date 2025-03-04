@@ -125,27 +125,20 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                         timeout={toastContext?.toastOptions?.timeout ?? 0.01}
                         position="top-right"
                     />
-                    
-                    {/* <Toaster
-                        position="top-center"
-                        richColors
-                        closeButton
-                        toastOptions={{
-                            duration: 3000,
-                            unstyled: false,
-                        }}
-                    /> */}
+
                     {
-                        !isAppPage && <>
-                            <Navbar
-                                setSelectedTheme={setSelectedTheme}
-                                session={session}
-                            />
-                            {children}
-                            <Footer />
-                        </>
+                        !isAppPage &&
+                        <Navbar
+                            setSelectedTheme={setSelectedTheme}
+                            session={session}
+                        />
                     }
+                    {children}
                     {
+                        !isAppPage &&
+                        <Footer />
+                    }
+                    {/* {
                         isAppPage &&
                         <div className="appLayout">
                             <Topbar
@@ -162,11 +155,12 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                                 </div>
                             </div>
                         </div>
-                    }
+                    } */}
                 </>
             }
             {
-                loaderIsVisible && <div className="splashScreen">
+                loaderIsVisible &&
+                <div className="splashScreen">
                     <div className="image">
                         <Image src={images.logoWhite} priority alt='logo' />
                     </div>

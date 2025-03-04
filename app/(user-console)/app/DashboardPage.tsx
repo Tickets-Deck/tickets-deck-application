@@ -1,22 +1,22 @@
 "use client";
 import { ReactElement, FunctionComponent, useEffect, useState } from "react";
-import { Icons } from "../components/ui/icons";
+import { Icons } from "@/app/components/ui/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   useFetchDashboardInfo,
   useFetchUserRecentTransactions,
-} from "../api/apiClient";
-import { DashboardInfoResponse } from "../models/IDashboardInfoResponse";
-import { catchError } from "../constants/catchError";
-import ComponentLoader from "../components/Loader/ComponentLoader";
-import { ApplicationRoutes } from "../constants/applicationRoutes";
-import { UserRecentTransaction } from "../models/IUserRecentTransaction";
+} from "@/app/api/apiClient";
+import { DashboardInfoResponse } from "@/app/models/IDashboardInfoResponse";
+import { catchError } from "@/app/constants/catchError";
+import ComponentLoader from "@/app/components/Loader/ComponentLoader";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { UserRecentTransaction } from "@/app/models/IUserRecentTransaction";
 import moment from "moment";
-import { serializeOrderStatus } from "../constants/serializer";
-import { OrderStatus } from "../enums/IOrderStatus";
-import { RootState } from "../redux/store";
+import { serializeOrderStatus } from "@/app/constants/serializer";
+import { OrderStatus } from "@/app/enums/IOrderStatus";  
+import { RootState } from "@/app/redux/store";
 import { useSelector } from "react-redux";
 
 interface DashboardPageProps {}
@@ -119,7 +119,7 @@ const DashboardPage: FunctionComponent<
   }, [status]);
 
   return (
-    <div className='max-[768px]:h-screen max-[768px]:w-full max-[768px]:p-4 '>
+    <div className='h-screen w-full p-6 py-7'>
       {userInfo && (
         <div className='mt-4 flex flex-col gap-1 bg-dark-grey-2 mb-6'>
           <p className='text-sm text-white/50'>

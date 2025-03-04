@@ -1,6 +1,6 @@
 "use client";
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import EventsGroup from "../../components/events/EventsGroup";
+import EventsGroup from "../../../components/events/EventsGroup";
 import {
     useDeleteEvent,
     useFetchOrganizerEvents,

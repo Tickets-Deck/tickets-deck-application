@@ -6,7 +6,7 @@ import React, {
     FormEvent,
     useEffect,
 } from "react";
-import CreateEventProgressBar from "../../../components/shared/CreateEventProgressBar";
+import CreateEventProgressBar from "../../../../components/shared/CreateEventProgressBar";
 import { Icons } from "@/app/components/ui/icons";
 import { EventRequest, EventResponse } from "@/app/models/IEvents";
 import { EventVisibility } from "@/app/enums/IEventVisibility";
@@ -15,7 +15,7 @@ import { ValidationStatus } from "@/app/enums/BasicInfoFormValidationStatus";
 import { EventCreationStage } from "@/app/enums/EventCreationStage";
 import ImageUploadSection from "@/app/components/Event/Create/ImageUploadSection";
 import TicketDetailsSection from "@/app/components/Event/Create/TicketDetailsSection";
-import ConfirmationSection from "../../../components/Event/Create/ConfirmationSection";
+import ConfirmationSection from "../../../../components/Event/Create/ConfirmationSection";
 import { useCreateEvent } from "@/app/api/apiClient";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { useSession } from "next-auth/react";

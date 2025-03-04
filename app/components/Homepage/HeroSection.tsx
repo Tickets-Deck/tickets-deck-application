@@ -155,7 +155,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                     />
                 </div>
                 <div className='absolute size-full overflow-hidden top-0 left-0 opacity-10 mix-blend-hard-light [&_span]:absolute'>
-                    <span className='bg-[#ff2929] -top-1/2 left-[-40%] blur-[200px] w-[765px] h-[392px] moveFirstAnimation'></span>
+                    <span className='bg-[#29c2ff] -top-1/2 left-[-40%] blur-[200px] w-[765px] h-[392px] moveFirstAnimation'></span>
                     <span className='moveSecondAnimation rounded-[765px] blur-[200px] bg-[#ffcc1c] -top-1/2 left-[80%] w-[765px] h-[392px]'></span>
                     <span className='moveThirdAnimation top-0 left-0 translate-x-1/2 translate-y-1/2 w-[700px] h-[350px] blur-[200px]'></span>
                     <span className='moveFourthAnimation rounded-[503px] bg-[#74ffd5] top-0 left-0 translate-x-[250%] translate-y-1/2 w-[503px] h-[258px]  blur-[250px]'></span>
