@@ -82,7 +82,7 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({
   useOuterClick(inputAreaContainerRef, setSearchResultsIsVisible);
 
   return (
-    <form className='w-full after:absolute after:z-[-1] before:absolute before:z-[-1] py-6 px-5 rounded-[1.5rem] bg-[#1111114d] backdrop-blur-[0.469rem] sm:p-5 border-t-[1.5px] border-white/80 relative flex flex-col gap-4 items-center justify-center shadow-[0px_10px_24px_2px_rgba(83,215,255,0.15)] [&_button]:primaryButton [&_button]:w-full [&_button]:justify-center'>
+    <form className='after:absolute py-6 px-5 rounded-[1.5rem] bg-[#1111114d] backdrop-blur-[0.469rem] sm:p-5 border-t-[1.5px] border-white relative flex flex-col gap-4 items-center justify-center shadow-[0px_10px_24px_2px_rgba(83,215,255,0.15)] [&_button]:primaryButton [&_button]:w-full [&_button]:justify-center'>
       <div className='flex flex-col text-center sm:text-left gap-1'>
         <p className='text-lg sm:text-base [&_span]:text-secondary-color'>
           <span>Catch the train,</span> before those tickets get sold out.
@@ -96,7 +96,7 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({
           <input
             type='text'
             value={eventName}
-            className='py-[0.8rem] px-[0.65rem] sm:p-2 bg-black/30 border rounded-xl outline-none text-white'
+            className='py-[0.8rem] px-[0.65rem] sm:p-2 bg-black/30 border border-white/30 focus-within:border-white/60 rounded-xl outline-none text-white'
             placeholder='Event name'
             onClick={() => onMobile && scrollWindow(160)}
             onChange={(e) => {
