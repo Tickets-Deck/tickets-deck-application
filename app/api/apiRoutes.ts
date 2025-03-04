@@ -21,7 +21,7 @@ export class ApiRoutes {
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
+  static BASE_URL: string = ApiRoutes.BASE_URL_DEV;
 
   /**
    * The route to Request Credential Token endpoint
@@ -37,11 +37,6 @@ export class ApiRoutes {
    * The route to User Login Token endpoint
    */
   static UserLogin: string = "auth/login";
-
-  /**
-   * The route to Google Login Token endpoint
-   */
-  static GoogleLogin: string = "auth/callback/google";
 
   /**
    * The route to OAuth Token Verification endpoint
