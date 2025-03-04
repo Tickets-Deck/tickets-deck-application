@@ -13,7 +13,6 @@ import { useFetchUserInformation } from '../api/apiClient';
 import { useDispatch } from 'react-redux';
 import { updateUserCredentials } from '../redux/features/user/userSlice';
 import { catchError } from '../constants/catchError';
-import { Toaster } from "sonner";
 import { signOut, useSession } from 'next-auth/react';
 import { Theme } from '../enums/Theme';
 import NextTopLoader from 'nextjs-toploader';
