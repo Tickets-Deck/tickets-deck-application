@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "react-quill/dist/quill.snow.css";
 import "./styles/globals.scss";
-import "./globals.css";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import dynamic from "next/dynamic";
