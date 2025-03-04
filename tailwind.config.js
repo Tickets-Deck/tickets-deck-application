@@ -1,11 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+    mode: 'jit',
     darkMode: ["class"],
     content: [
         "./app/**/*.{js,ts,jsx,tsx}",
         "./pages/**/*.{js,ts,jsx,tsx}",
-        "./components/**/*.{js,ts,jsx,tsx}",
-        "./app/global.css",
+        "./components/**/*.{js,ts,jsx,tsx}"
     ],
     theme: {
     	extend: {
@@ -220,4 +220,8 @@ module.exports = {
     	}
     },
     plugins: [require("tailwindcss-animate")],
+    important: true,
+    corePlugins: {
+        preflight: false,
+    }
 };
