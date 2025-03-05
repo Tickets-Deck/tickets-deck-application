@@ -1,8 +1,13 @@
+import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
-const TokenSync = () => {
-    const { data: session, update } = useSession();
+type TokenSyncProps = {
+    session: Session | null
+}
+
+const TokenSync = ({ session }: TokenSyncProps) => {
+    const { update } = useSession();
 
     useEffect(() => {
         const interval = setInterval(async () => {
