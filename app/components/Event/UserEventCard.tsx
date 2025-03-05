@@ -87,14 +87,14 @@ const UserEventCard: FunctionComponent<UserEventCardProps> = ({ event }): ReactE
                         View details
                     </button>
                 </Link>
-                <Link
+                {/* <Link
                     className='z-[2] primaryButton !w-full justify-center !bg-white !text-primary-color hover:!bg-container-grey [&_button]:hover:!text-white transition-all'
                     href={ApplicationRoutes.UserEventDetails(event.id)}
                 >
                     <button className='text-sm cursor-pointer bg-transparent border-none outline-none mt-auto'>
                         Check In
                     </button>
-                </Link>
+                </Link> */}
             </div>
         </div>
     );
