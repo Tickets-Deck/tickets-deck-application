@@ -22,6 +22,7 @@ import ToastCard from './Card/ToastCard';
 import { ToastMessageType } from '../enums/ToastMessageType';
 import { ToastContext } from '../context/ToastCardContext';
 import TokenSync from './Auth/TokenSync';
+import { UserCredentialsResponse } from '../models/IUser';
 
 export const metadata: Metadata = {
     title: 'Ticketsdeck Events',
@@ -31,9 +32,10 @@ export const metadata: Metadata = {
 interface LayoutProps {
     children?: ReactNode;
     session: Session | null
+    userData: UserCredentialsResponse | null
 }
 
-const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactElement => {
+const Layout: FunctionComponent<LayoutProps> = ({ children, session, userData }): ReactElement => {
 
     const { status } = useSession();
     const toastContext = useContext(ToastContext);
@@ -67,7 +69,6 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
             })
     };
 
-
     useEffect(() => {
         if (typeof window !== "undefined") {
             setLoaderIsVisible(false);
@@ -75,9 +76,16 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     }, [iswindow]);
 
     useEffect(() => {
-        if (session && status === 'authenticated') {
-            handleFetchUserInformation();
+        if (userData) {
+            dispatch(updateUserCredentials(userData));
+        } else {
+            if (session && status === 'authenticated') {
+                handleFetchUserInformation();
+            }
         }
+    }, [userData, session, status]);
+
+    useEffect(() => {
         if (session?.error === 'RefreshAccessTokenError') {
             // Force user to re-auth if refresh fails
             signOut({ redirect: false });
@@ -86,14 +94,9 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
 
     const pathname = usePathname();
 
-    // const toastContext = useContext(ToastContext);
-    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
     const { isUserLoginPromptVisible, toggleUserLoginPrompt } = useContext(ApplicationContext) as ApplicationContextData;
 
     const isAppPage = pathname.includes('/app');
-    const isEventsPage = pathname == '/app/events';
-    const isFavoritesPage = pathname == '/app/favourite-events';
-    const isViewEventPage = pathname.startsWith('/app/event') && !pathname.includes('/create');
 
     return (
         <>
@@ -112,7 +115,9 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
                 visibility={isUserLoginPromptVisible}
                 setVisibility={toggleUserLoginPrompt}
             />
-            <TokenSync />
+            <TokenSync
+                session={session}
+            />
 
             {
                 !loaderIsVisible &&
