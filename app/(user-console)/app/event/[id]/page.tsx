@@ -290,27 +290,29 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
                             </div>
                         )}
 
-                        <div className="flex flex-row justify-start items-center gap-3 bg-container-grey rounded-xl p-4">
-                            {
-                                Object.values(EventInformationTab).map((tab) => {
-                                    if (isNaN(Number(tab))) {
-                                        return;
-                                    }
-                                    return (
-                                        <ScrollLink
-                                            to={tab as string}
-                                            smooth={true}
-                                            duration={500}
-                                            className={`cursor-pointer rounded-md hover:bg-white/10 ${selectedInfoTab == tab ? "bg-white text-black pointer-events-none" : "text-white"}`}
-                                            onClick={() => setSelectedInfoTab(Number(tab))}
-                                        >
-                                            <div className={`flex items-center gap-2 p-1 px-2`}>
-                                                <span>{serializeEventInformationTab(Number(tab))}</span>
-                                            </div>
-                                        </ScrollLink>
-                                    )
-                                })
-                            }
+                        <div className="w-full overflow-x-auto md:overflow-auto">
+                            <div className="flex flex-row justify-start items-center gap-3 bg-container-grey rounded-xl p-4">
+                                {
+                                    Object.values(EventInformationTab).map((tab) => {
+                                        if (isNaN(Number(tab))) {
+                                            return;
+                                        }
+                                        return (
+                                            <ScrollLink
+                                                to={tab as string}
+                                                smooth={true}
+                                                duration={500}
+                                                className={`cursor-pointer rounded-md hover:bg-white/10 ${selectedInfoTab == tab ? "bg-white text-black pointer-events-none" : "text-white"}`}
+                                                onClick={() => setSelectedInfoTab(Number(tab))}
+                                            >
+                                                <div className={`flex items-center gap-2 p-1 px-2`}>
+                                                    <span>{serializeEventInformationTab(Number(tab))}</span>
+                                                </div>
+                                            </ScrollLink>
+                                        )
+                                    })
+                                }
+                            </div>
                         </div>
 
                         {
