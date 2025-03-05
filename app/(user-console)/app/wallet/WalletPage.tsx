@@ -57,7 +57,7 @@ const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
                 visibility={showBetaTestModal}
                 setVisibility={setShowBetaTestModal}
             />
-            <main className="px-4 py-8 min-h-screen">
+            <main className="px-4 py-8 min-h-screen text-white">
                 <div className="mb-4 flex flex-row justify-between w-full">
                     <h2 className="text-2xl font-medium text-gray-300">Wallet page</h2>
                     <button className="w-fit h-fit rounded-full cursor-pointer text-sm p-4 py-2 border-none bg-primary-color text-white hover:bg-white hover:text-primary-color" onClick={() => setShowBetaTestModal(true)}>Request payment</button>

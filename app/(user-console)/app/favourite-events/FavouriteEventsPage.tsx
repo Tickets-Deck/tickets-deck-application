@@ -44,7 +44,7 @@ const FavouriteEventsPage: FunctionComponent<FavouriteEventsPageProps> = (): Rea
     }, [status]);
 
     return (
-        <main className={`${sectionPadding} flex-col gap-8 py-16 bg-dark-grey flex md:flow-row items-start relative min-h-[calc(100vh_-_56px)]`}>
+        <main className={`${sectionPadding} flex-col gap-8 py-16 bg-dark-grey text-white flex md:flow-row items-start relative min-h-[calc(100vh_-_56px)]`}>
             <div className="flex flex-col items-start justify-between w-full">
                 <h1 className="text-xl font-medium md:text-3xl">Favourite Events</h1>
                 <p className="text-text-grey text-sm">
