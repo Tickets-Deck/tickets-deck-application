@@ -15,12 +15,10 @@ export default function Layout({ children, session }: Props) {
 
     return (
         <div className="flex h-screen flex-col md:overflow-hidden bg-dark-grey-2">
-            {/* <div className="w-full flex-none md:w-64"> */}
             <Topbar
                 isMobileSidebarOpen={isMobileSidebarOpen}
                 setIsMobileSidebarOpen={setIsMobileSidebarOpen}
             />
-            {/* </div> */}
             <div className="flex-grow flex flex-row md:overflow-y-auto">
                 <Sidebar
                     isMobileSidebarOpen={isMobileSidebarOpen}
