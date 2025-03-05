@@ -7,6 +7,8 @@ import dynamic from "next/dynamic";
 import GlobalProvider from "./components/Provider";
 import Head from "next/head";
 import { initializeIcons, loadTheme } from "@fluentui/react";
+import { UserCredentialsResponse } from "./models/IUser";
+import { useFetchUserInformation } from "./api/apiClient";
 
 const Layout = dynamic(() => import("./components/Layout"), { ssr: false });
 
@@ -59,6 +61,19 @@ export default async function RootLayout({
     children: React.ReactNode;
 }) {
     const session = await getServerSession(authOptions);
+    
+    const fetchUserInformation = useFetchUserInformation();
+
+    let userData: UserCredentialsResponse | null = null;
+
+    if (session?.user?.id) {
+        try {
+            const response = await fetchUserInformation(session.user.id);
+            userData = response.data;
+        } catch (error) {
+            console.error('Failed to fetch user data:', error);
+        }
+    }
 
     return (
         <GlobalProvider>
@@ -136,7 +151,11 @@ export default async function RootLayout({
                 <meta name="twitter:image" content="https://res.cloudinary.com/doklhs4em/image/upload/v1711460397/External/bablo_meta_img.jpg" /> */}
 
                 <body>
-                    <Layout children={children} session={session} />
+                    <Layout
+                        children={children}
+                        session={session}
+                        userData={userData}
+                    />
                 </body>
             </html>
         </GlobalProvider>
