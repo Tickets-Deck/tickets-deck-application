@@ -99,7 +99,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
         setUserTicketOrders([]);
 
         if (selectedTicketTab === TicketTab.Bought) {
-            await fetchUserBoughtTickets(user?.token as string, userInfo?.id as string)
+            await fetchUserBoughtTickets(user?.token as string, user?.id as string)
                 .then((response) => {
                     // Log response
                     console.log("🚀 ~ .then ~ response:", response);
@@ -217,10 +217,10 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
     }, [selectedTicketOrderInfo, isDownloadingPdf]);
 
     useEffect(() => {
-        if (userInfo) {
+        if (user) {
             handleFetchUserTicketOrders();
         }
-    }, [userInfo, selectedTicketTab]);
+    }, [user, selectedTicketTab]);
 
     // useEffect(() => {
     //     if (!isFetchingUserTicketOrders) {
@@ -272,7 +272,7 @@ const TicketsPage: FunctionComponent<TicketsPageProps> = (): ReactElement => {
                     } */}
                 </div>
             </ModalWrapper>
-            <div className='flex flex-col'>
+            <div className='flex flex-col p-6 py-7'>
                 <div className='flex items-center justify-between'>
                     <h3 className='text-[30px] text-white'>Tickets page</h3>
                 </div>
