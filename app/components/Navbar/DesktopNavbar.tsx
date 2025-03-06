@@ -1,5 +1,5 @@
 "use client";
-import { FunctionComponent, ReactElement, useRef, useState } from "react";
+import { FunctionComponent, ReactElement, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import Image from "next/image";
@@ -27,14 +27,32 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ session, appThem
         (state: RootState) => state.userCredentials.userInfo
     );
 
+    const [isScrolled, setIsScrolled] = useState(false)
     const [navbarDropdownIsVisible, setNavbarDropdownIsVisible] = useState(false);
+
+    // Handle scroll effect for sticky header
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 50) {
+                setIsScrolled(true)
+            } else {
+                setIsScrolled(false)
+            }
+        }
+        window.addEventListener("scroll", handleScroll)
+        return () => window.removeEventListener("scroll", handleScroll)
+    }, [])
 
     const navbarDropdownRef = useRef<HTMLDivElement>(null);
 
     useOuterClick(navbarDropdownRef, setNavbarDropdownIsVisible);
 
     return (
-        <section className='bg-dark-grey flex items-center justify-between sectionPadding'>
+        <nav
+            className={`
+        bg-dark-grey flex items-center justify-between sectionPadding transition-all duration-300 
+        ${isScrolled ? "bg-black/90 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-md" : ""}
+        `}>
             <Link href={ApplicationRoutes.Home}>
                 <div className='flex items-center gap-1 '>
                     <div className='h-[1.875rem]'>
@@ -137,7 +155,7 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ session, appThem
                     {appTheme === Theme.Light ? <MoonIcon /> : <SunIcon />}
                 </span> */}
             </div>
-        </section>
+        </nav>
     );
 };
 
