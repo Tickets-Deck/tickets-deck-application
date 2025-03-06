@@ -528,7 +528,8 @@ button {
 
     .sectionPadding {
         /* @apply p-[1.25rem]; */
-        @apply p-[1.25rem] md:px-[5rem] min-[1300px]:px-[16%] lg:px-[10rem];
+        @apply p-[1.25rem] md:py-4 md:px-14;
+        // @apply p-[1.25rem] md:px-[5rem] min-[1300px]:px-[16%] lg:px-[10rem];
     }
 
     .errorMsg {
