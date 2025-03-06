@@ -14,6 +14,8 @@ import HeroSearchSection from "./HeroSearchSection";
 import { ImageWithPlaceholder } from "@/app/models/IImage";
 import { Rive, useStateMachineInput } from '@rive-app/react-canvas';
 import { useRive } from '@rive-app/react-canvas';
+import { Icons } from "../ui/icons";
+import moment from "moment";
 
 interface HeroSectionProps {
     events: EventResponse[];
@@ -55,6 +57,21 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
 
     const [heroSectionImgIndex, setHeroSectionImgIndex] = useState(0);
     const [emailVerificationPromptIsVisible, setEmailVerificationPromptIsVisible] = useState(false);
+    const nextHotEvent = events.find(e => moment(e.startDate).isAfter(moment()));
+
+    // Example: Difference between two dates
+    const start = moment();
+    const end = moment(nextHotEvent?.startDate);
+
+    const duration = moment.duration(end.diff(start));
+    const formattedDate = {
+        days: duration.days(),
+        hours: duration.hours(),
+        minutes: duration.minutes(),
+        seconds: duration.seconds()
+    };
+
+    const [countdown, setCountdown] = useState(formattedDate);
 
     const { rive, RiveComponent } = useRive({
         src: '/rive/btn_anim.riv',
@@ -62,7 +79,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
         autoplay: true,
     });
     // Assuming you have a boolean input called "hover"
-    const hoverInput = useStateMachineInput(rive, "State Machine 1", "Boolean 1");
+    // const hoverInput = useStateMachineInput(rive, "State Machine 1", "Boolean 1");
 
     function showEmailVerificationAlert() {
         // Check for the email verification status if the user is logged in.
@@ -83,6 +100,25 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
         return () => clearInterval(intervalId);
     }, [imageList.length]);
 
+    // Simulate countdown timer
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCountdown((prev) => {
+                if (prev.seconds > 0) {
+                    return { ...prev, seconds: prev.seconds - 1 }
+                } else if (prev.minutes > 0) {
+                    return { ...prev, minutes: prev.minutes - 1, seconds: 59 }
+                } else if (prev.hours > 0) {
+                    return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 }
+                } else if (prev.days > 0) {
+                    return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 }
+                }
+                return prev
+            })
+        }, 1000)
+        return () => clearInterval(timer)
+    }, [formattedDate])
+
     return (
         <>
             <section className={"sectionPadding !pt-[6.5rem] !pb-[4.5rem] flex flex-col md:flex-row gap-8 bg-dark-grey items-center relative"}>
@@ -99,14 +135,15 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                 </div>
                 <div className='flex flex-col gap-5 !basis-1/2 !z-[2]'>
                     <div className='flex flex-col gap-2'>
-                        <h2 className='font-Mona-Sans-Wide font-medium text-[35px] md:text-[40px] leading-[40px] md:leading-[42px] bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300'>
+                        <h2 className='font-Mona-Sans-Wide font-medium text-[35px] md:text-[64px] leading-[40px] md:leading-[68px] bg-clip-text text-transparent animate-gradient bg-[length:200%_200%] bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300'>
+                        {/* <h2 className='font-Mona-Sans-Wide font-medium text-[35px] md:text-[64px] leading-[40px] md:leading-[68px] bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300'> */}
                             Find The Next Big <br />
                             Event To{" "}
                             <span className='relative bg-clip-text text-transparent bg-[linear-gradient(90deg,_rgba(253,253,255,100)_100%,_rgba(253,253,255,0)_100%)]'>
                                 Attend
                             </span>
                         </h2>
-                        <p className='text-sm font-light'>
+                        <p className='text-sm md:text-base font-light max-w-[80%]'>
                             "From music festivals to sports games, find the perfect tickets
                             for your entertainment needs!"
                         </p>
@@ -146,6 +183,19 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                                 </button>
                             </Link>
                         )}
+                    </div><div className="pt-6 flex items-center gap-6">
+                        <div className="flex items-center gap-2">
+                            <Icons.UserOutline className="h-5 w-5 opacity-65" stroke="white" />
+                            <span className="text-sm font-light">10K+ Users</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Icons.Calender className="h-5 w-5 opacity-65" fill="white" />
+                            <span className="text-sm font-light">500+ Events</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Icons.TopRated className="h-5 w-5 opacity-65" stroke="white" />
+                            <span className="text-sm font-light">Top Rated</span>
+                        </div>
                     </div>
                 </div>
                 <div className='basis-full w-full mt-3 mb-0 mx-auto md:mx-0 md:basis-[35%] md:ml-auto z-[2]'>
@@ -172,6 +222,52 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                     userName={userInfo?.firstName as string}
                 />
             )}
+
+            {
+                nextHotEvent &&
+                <section className="sectionPadding bg-gradient-to-r from-purple-900 to-purple-700 py-4">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <Icons.Fire className="w-6 h-6" />
+                            <span className="font-semibold font-Mona-Sans-Wide">Hot Event:</span>
+                            <span>{nextHotEvent.title}</span>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row items-center gap-6">
+                            <div className="flex items-center gap-6">
+                                <div className="flex items-center gap-1">
+                                    <div className="bg-black/20 rounded px-2 py-1">
+                                        <span className="font-mono font-bold">{countdown.days}</span>
+                                    </div>
+                                    <span className="text-xs">days</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <div className="bg-black/20 rounded px-2 py-1">
+                                        <span className="font-mono font-bold">{countdown.hours}</span>
+                                    </div>
+                                    <span className="text-xs">hrs</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <div className="bg-black/20 rounded px-2 py-1">
+                                        <span className="font-mono font-bold">{countdown.minutes}</span>
+                                    </div>
+                                    <span className="text-xs">min</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <div className="bg-black/20 rounded px-2 py-1">
+                                        <span className="font-mono font-bold">{countdown.seconds}</span>
+                                    </div>
+                                    <span className="text-xs">sec</span>
+                                </div>
+                            </div>
+
+                            <button className="bg-black/30 tertiaryButton">
+                                Get Tickets
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            }
         </>
     );
 };
