@@ -193,7 +193,6 @@ export const authOptions: NextAuthOptions = {
 
       // Access token expired — refresh it
       const refreshedToken = await refreshAccessToken(customToken);
-      console.log("🚀 ~ jwt: ~ refreshedToken:", refreshedToken);
 
       // Ensure the refreshed token is fully passed on
       return refreshedToken;
