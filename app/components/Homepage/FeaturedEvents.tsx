@@ -8,6 +8,7 @@ import EventCard from "../Event/EventCard";
 import { EventResponse } from "@/app/models/IEvents";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { Icons } from "../ui/icons";
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean;
@@ -61,8 +62,9 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                 <div className='hidden sm:block'>
                     {!isNotHomepage && (
                         <Link href='/events'>
-                            <button className='py-[0.4rem] px-[0.8rem] bg-transparent border-none cursor-pointer rounded-md opacity-80 text-sm text-white whitespace-nowrap hover:bg-white/10 hover:opacity-100'>
+                            <button className='py-[0.4rem] px-[0.8rem] flex flex-row items-center gap-2 bg-transparent border-none cursor-pointer rounded-md opacity-80 text-sm text-white whitespace-nowrap hover:bg-white/10 hover:opacity-100'>
                                 See all events
+                                <Icons.ChevronRight stroke="white" /> 
                             </button>
                         </Link>
                     )}
