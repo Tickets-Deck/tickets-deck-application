@@ -38,3 +38,4 @@ next-env.d.ts
 .netlify
 netlify.toml
 sw.js.map
+settings.json
