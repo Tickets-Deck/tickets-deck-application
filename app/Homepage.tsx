@@ -10,6 +10,11 @@ import BetaTestModal from "./components/Modal/BetaTestModal";
 import { ImageWithPlaceholder } from "./models/IImage";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import TestimonialSection from "./components/Homepage/TestimonialSection";
+import UpcomingEvents from "./components/Homepage/UpcomingEvents";
+import { useSelector } from "react-redux";
+import { RootState } from "./redux/store";
+import EmailVerificationPrompt from "./components/Modal/EmailVerificationPrompt";
 
 interface HomepageProps {
     imageWithPlaceholder: ImageWithPlaceholder[];
@@ -20,7 +25,6 @@ const Homepage: FunctionComponent<HomepageProps> = ({
 }): ReactElement => {
     const fetchFeaturedEvents = useFetchFeaturedEvents();
     const fetchEvents = useFetchEvents();
-    const { refresh } = useRouter();
     const searchParams = useSearchParams();
     const authToken = searchParams.get('g-oauth-token');
 
@@ -30,6 +34,11 @@ const Homepage: FunctionComponent<HomepageProps> = ({
         useState(true);
     const [isFetchingEvents, setIsFetchingEvents] = useState(true);
     const [showBetaTestModal, setShowBetaTestModal] = useState(false);
+    const [emailVerificationPromptIsVisible, setEmailVerificationPromptIsVisible] = useState(false);
+
+    const userInfo = useSelector(
+        (state: RootState) => state.userCredentials.userInfo
+    );
 
     // function retrieveEventsFromDb() {
     //     const _retrievedEvents = sessionStorage.getItem(StorageKeys.Events);
@@ -87,6 +96,15 @@ const Homepage: FunctionComponent<HomepageProps> = ({
             });
     }
 
+    function showEmailVerificationAlert() {
+        // Check for the email verification status if the user is logged in.
+        if (userInfo && !userInfo.emailVerified) {
+            // toast.error("Please verify your email address to continue.");
+            setEmailVerificationPromptIsVisible(true);
+            return;
+        }
+    }
+
     useEffect(() => {
         handleFetchFeaturedEvents();
         handleFetchEvents();
@@ -94,7 +112,6 @@ const Homepage: FunctionComponent<HomepageProps> = ({
 
     useEffect(() => {
         if (authToken) {
-            console.log("🚀 ~ useEffect ~ authToken:", authToken)
             const login = async () => {
                 await signIn('google-oauth', {
                     token: authToken,
@@ -140,18 +157,39 @@ const Homepage: FunctionComponent<HomepageProps> = ({
                 visibility={showBetaTestModal}
                 setVisibility={setShowBetaTestModal}
             />
+
+            {emailVerificationPromptIsVisible && (
+                <EmailVerificationPrompt
+                    visibility={emailVerificationPromptIsVisible}
+                    setVisibility={setEmailVerificationPromptIsVisible}
+                    userEmail={userInfo?.email as string}
+                    userName={userInfo?.firstName as string}
+                />
+            )}
+
             <div className='bg-dark-grey text-white'>
                 <HeroSection
                     isFetchingEvents={isFetchingEvents}
                     events={events}
                     imageWithPlaceholder={imageWithPlaceholder}
+                    userInfo={userInfo}
+                    showEmailVerificationAlert={showEmailVerificationAlert}
                 />
                 <FeaturedEvents
                     isFetchingEvents={isFetchingFeaturedEvents}
                     featuredEvents={featuredEvents}
                 />
                 <Services />
+                <TestimonialSection />
                 <CreateEvent />
+                <UpcomingEvents
+                    events={events}
+                    emailVerificationPromptIsVisible={emailVerificationPromptIsVisible}
+                    setEmailVerificationPromptIsVisible={setEmailVerificationPromptIsVisible}
+                    userInfo={userInfo}
+                    showEmailVerificationAlert={showEmailVerificationAlert}
+                />
+                {/* <MobileAppSection /> */}
             </div>
         </>
     );

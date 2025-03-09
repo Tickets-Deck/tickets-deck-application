@@ -7,27 +7,28 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { EventResponse } from "@/app/models/IEvents";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
-import { RootState } from "@/app/redux/store";
-import { useSelector } from "react-redux";
-import EmailVerificationPrompt from "../Modal/EmailVerificationPrompt";
 import HeroSearchSection from "./HeroSearchSection";
 import { ImageWithPlaceholder } from "@/app/models/IImage";
-import { Rive, useStateMachineInput } from '@rive-app/react-canvas';
 import { useRive } from '@rive-app/react-canvas';
 import { Icons } from "../ui/icons";
 import moment from "moment";
+import { UserCredentialsResponse } from "@/app/models/IUser";
 
 interface HeroSectionProps {
     events: EventResponse[];
     isFetchingEvents: boolean;
 
     imageWithPlaceholder: ImageWithPlaceholder[];
+    userInfo: UserCredentialsResponse | null
+    showEmailVerificationAlert(): void
 }
 
 const HeroSection: FunctionComponent<HeroSectionProps> = ({
     events,
     isFetchingEvents,
     imageWithPlaceholder,
+    userInfo,
+    showEmailVerificationAlert
 }): ReactElement => {
 
     const { data: session } = useSession();
@@ -51,25 +52,10 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
         }
     ];
 
-    const userInfo = useSelector(
-        (state: RootState) => state.userCredentials.userInfo
-    );
-
     const [heroSectionImgIndex, setHeroSectionImgIndex] = useState(0);
-    const [emailVerificationPromptIsVisible, setEmailVerificationPromptIsVisible] = useState(false);
     const nextHotEvent = events.find(e => moment(e.startDate).isAfter(moment()));
 
-    // Example: Difference between two dates
-    const start = moment();
-    const end = moment(nextHotEvent?.startDate);
-
-    const duration = moment.duration(end.diff(start));
-    const formattedDate = {
-        days: duration.days(),
-        hours: duration.hours(),
-        minutes: duration.minutes(),
-        seconds: duration.seconds()
-    };
+    const formattedDate = { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
     const [countdown, setCountdown] = useState(formattedDate);
 
@@ -80,15 +66,6 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
     });
     // Assuming you have a boolean input called "hover"
     // const hoverInput = useStateMachineInput(rive, "State Machine 1", "Boolean 1");
-
-    function showEmailVerificationAlert() {
-        // Check for the email verification status if the user is logged in.
-        if (userInfo && !userInfo.emailVerified) {
-            // toast.error("Please verify your email address to continue.");
-            setEmailVerificationPromptIsVisible(true);
-            return;
-        }
-    }
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -101,23 +78,52 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
     }, [imageList.length]);
 
     // Simulate countdown timer
+    // useEffect(() => {
+    //     const timer = setInterval(() => {
+    //         setCountdown((prev) => {
+    //             if (prev.seconds > 0) {
+    //                 return { ...prev, seconds: prev.seconds - 1 }
+    //             } else if (prev.minutes > 0) {
+    //                 return { ...prev, minutes: prev.minutes - 1, seconds: 59 }
+    //             } else if (prev.hours > 0) {
+    //                 return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 }
+    //             } else if (prev.days > 0) {
+    //                 return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 }
+    //             }
+    //             return prev
+    //         })
+    //     }, 1000)
+    //     return () => clearInterval(timer)
+    // }, []);
+
     useEffect(() => {
-        const timer = setInterval(() => {
-            setCountdown((prev) => {
-                if (prev.seconds > 0) {
-                    return { ...prev, seconds: prev.seconds - 1 }
-                } else if (prev.minutes > 0) {
-                    return { ...prev, minutes: prev.minutes - 1, seconds: 59 }
-                } else if (prev.hours > 0) {
-                    return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 }
-                } else if (prev.days > 0) {
-                    return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 }
-                }
-                return prev
-            })
-        }, 1000)
-        return () => clearInterval(timer)
-    }, [formattedDate])
+        if (!nextHotEvent) return;
+
+        const updateCountdown = () => {
+            const start = moment();
+            const end = moment(nextHotEvent.startDate);
+            const duration = moment.duration(end.diff(start));
+
+            // If the duration is less than or equal to 0, then the event has already started or if the event is more than 30 days away, then we don't need to show the countdown.
+            if (duration.asSeconds() <= 0 || duration.asDays() > 30) {
+                return;
+            }
+
+            const days = Math.floor(duration.asDays());
+            const hours = duration.hours();
+            const minutes = duration.minutes();
+            const seconds = duration.seconds();
+
+            setCountdown({
+                days, hours, minutes, seconds
+            });
+        };
+
+        updateCountdown();
+        const interval = setInterval(updateCountdown, 1000);
+
+        return () => clearInterval(interval);
+    }, [nextHotEvent]);
 
     return (
         <>
@@ -136,7 +142,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                 <div className='flex flex-col gap-5 !basis-1/2 !z-[2]'>
                     <div className='flex flex-col gap-2'>
                         <h2 className='font-Mona-Sans-Wide font-medium text-[35px] md:text-[64px] leading-[40px] md:leading-[68px] bg-clip-text text-transparent animate-gradient bg-[length:200%_200%] bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300'>
-                        {/* <h2 className='font-Mona-Sans-Wide font-medium text-[35px] md:text-[64px] leading-[40px] md:leading-[68px] bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300'> */}
+                            {/* <h2 className='font-Mona-Sans-Wide font-medium text-[35px] md:text-[64px] leading-[40px] md:leading-[68px] bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300'> */}
                             Find The Next Big <br />
                             Event To{" "}
                             <span className='relative bg-clip-text text-transparent bg-[linear-gradient(90deg,_rgba(253,253,255,100)_100%,_rgba(253,253,255,0)_100%)]'>
@@ -183,18 +189,19 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                                 </button>
                             </Link>
                         )}
-                    </div><div className="pt-6 flex items-center gap-6">
-                        <div className="flex items-center gap-2">
+                    </div>
+                    <div className="pt-6 flex flex-row flex-wrap items-center gap-3 md:gap-6">
+                        <div className="flex items-center gap-1 md:gap-2">
                             <Icons.UserOutline className="h-5 w-5 opacity-65" stroke="white" />
-                            <span className="text-sm font-light">10K+ Users</span>
+                            <span className="text-sm font-light text-nowrap">100+ Users</span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 md:gap-2">
                             <Icons.Calender className="h-5 w-5 opacity-65" fill="white" />
-                            <span className="text-sm font-light">500+ Events</span>
+                            <span className="text-sm font-light text-nowrap">50+ Events</span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 md:gap-2">
                             <Icons.TopRated className="h-5 w-5 opacity-65" stroke="white" />
-                            <span className="text-sm font-light">Top Rated</span>
+                            <span className="text-sm font-light text-nowrap">Top Rated</span>
                         </div>
                     </div>
                 </div>
@@ -214,18 +221,9 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                 </div>
             </section>
 
-            {emailVerificationPromptIsVisible && (
-                <EmailVerificationPrompt
-                    visibility={emailVerificationPromptIsVisible}
-                    setVisibility={setEmailVerificationPromptIsVisible}
-                    userEmail={userInfo?.email as string}
-                    userName={userInfo?.firstName as string}
-                />
-            )}
-
             {
                 nextHotEvent &&
-                <section className="sectionPadding bg-gradient-to-r from-purple-900 to-purple-700 py-4">
+                <section className="sectionPadding bg-gradient-to-b from-purple-900 to-purple-700 py-4">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                             <Icons.Fire className="w-6 h-6" />
