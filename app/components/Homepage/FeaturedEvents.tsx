@@ -9,6 +9,9 @@ import { EventResponse } from "@/app/models/IEvents";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { Icons } from "../ui/icons";
+import { TicketResponse } from "@/app/models/ITicket";
+import { Icon } from "@fluentui/react";
+import moment from "moment";
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean;
@@ -41,20 +44,16 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
     // }
 
     return (
-        <section className='sectionPadding sm:py-[4.5rem] bg-dark-grey flex items-start relative text-white flex-col sm:gap-6 gap-2 pt-[6.5rem] pb-[4.5rem]'>
-            <div className='flex items-start justify-between w-full'>
+        <section className='sectionPadding !py-[4.5rem] bg-dark-grey flex items-start relative text-white flex-col sm:gap-6 gap-2 pt-[6.5rem] pb-[4.5rem]'>
+            <div className='flex items-start justify-between w-full mb-4'>
                 <div className=''>
                     <div className='flex items-center gap-1'>
                         <span className='text-[30px] font-medium font-Mona-Sans-Wide'>
                             Featured Events
                         </span>
-                        <Image
-                            className='w-fit h-[1.25rem] inline-flex'
-                            src={images.rocket}
-                            alt='Rocket'
-                        />
+                        <span className="text-[30px]">🎭</span>
                     </div>
-                    <p className='text-sm w-auto opacity-80 sm:w-[80%]'>
+                    <p className='text-base text-grey w-auto opacity-80'>
                         Based on the superstar that you are, we have carefully gathered top
                         events for you.{" "}
                     </p>
@@ -64,7 +63,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                         <Link href='/events'>
                             <button className='py-[0.4rem] px-[0.8rem] flex flex-row items-center gap-2 bg-transparent border-none cursor-pointer rounded-md opacity-80 text-sm text-white whitespace-nowrap hover:bg-white/10 hover:opacity-100'>
                                 See all events
-                                <Icons.ChevronRight stroke="white" /> 
+                                <Icons.ChevronRight stroke="white" />
                             </button>
                         </Link>
                     )}
@@ -88,14 +87,80 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                     )}
                 </div>
             </div>
-            <div className='w-full overflow-x-auto relative overflow-hidden'>
+
+            <div className="bg-container-grey mb-4 p-1 rounded-lg max-w-full overflow-x-auto md:overflow-auto">
+                <div className="flex flex-row text-nowrap space-x-2 text-sm">
+                    <span className="p-2 px-3 bg-primary-color text-white rounded-md">All</span>
+                    <span className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">Comedy</span>
+                    <span className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">Music</span>
+                    <span className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">Sports</span>
+                    <span className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">Arts & Theatre</span>
+                </div>
+            </div>
+
+            <div className='w-full overflow-x-auto relative overflow-hidden mb-4'>
                 {!isFetchingEvents && featuredEvents.length > 0 && (
-                    <div className='overflow-x-auto snap-mandatory h-[300px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 flex-nowrap'>
+                    <div className='overflow-x-auto snap-mandatory grid sm:grid-cols-2 lg:grid-cols-4 gap-6 flex-nowrap'>
                         {featuredEvents.slice(0, 3).map((event, index) => (
-                            <EventCard
-                                event={event}
-                                key={index}
-                            />
+                            // <EventCard
+                            //     event={event}
+                            //     key={index}
+                            // />
+                            <div
+                                key={event.id}
+                                className="bg-gray-900 border-gray-800 overflow-hidden group hover:border-purple-500/50 rounded-xl transition-all duration-300"
+                            >
+                                <div className="relative">
+                                    <Link href={`/event/${event.id}`}>
+                                        <Image
+                                            src={event.mainImageUrl || "/placeholder.svg"}
+                                            alt={event.title}
+                                            width={400}
+                                            height={200}
+                                            className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        />
+                                    </Link>
+                                    {true && (
+                                        <span className="absolute top-2 right-2 flex flex-row items-center space-x-1 text-sm p-1 px-2 rounded-lg bg-primary-color/70">
+                                            <Icons.Fire className="h-4 w-4 mr-1" />
+                                            Trending
+                                        </span>
+                                    )}
+                                    <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-sm">
+                                        &#8358;{(3500).toLocaleString()}
+                                    </div>
+                                </div>
+
+                                <div className="p-4 pb-2">
+                                    <div className="flex justify-between items-start">
+                                        <h3 className="font-medium text-lg">{event.title}</h3>
+                                        <span className="bg-gray-800 text-xs border-[1px] border-white/30 p-1 px-2 rounded-xl">
+                                            category
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="p-4 pt-0 text-gray-400 text-sm">
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <Icons.Calender className="h-4 w-4" fill="white" />
+                                        <span>
+                                            {moment(event.startDate).format("MMM D")} • {moment(event.startDate).format("hh:mm a")}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <Icons.LocationPin className="h-4 w-4 text-purple-400" />
+                                        <span className="capitalize">{event.venue}</span>
+                                    </div>
+                                    <div className="mt-3 text-xs">
+                                        {/* <span className="text-yellow-400">{event.tickets.reduce((acc: number, ticket: TicketResponse) => acc + ticket.price, 0)} tickets</span> remaining */}
+                                        <span className="text-yellow-400">120 tickets</span> remaining
+                                    </div>
+                                </div>
+
+                                <Link href={`/event/${event.id}`} className="p-4 pt-0 block">
+                                    <button className="primaryButton !w-full !justify-center">View details</button>
+                                </Link>
+                            </div>
                         ))}
                     </div>
                 )}

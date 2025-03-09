@@ -16,7 +16,7 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
   const user = session?.user;
 
   return (
-    <section className={"sectionPadding !py-16 md:!py-12 bg-dark-grey flex flex-col md:flex-row items-start text-white gap-[3.25rem]"}>
+    <section className={"sectionPadding !py-16 md:!py-12 bg-dark-grey flex flex-col md:flex-row md:justify-between items-start text-white gap-[3.25rem]"}>
       <div className='flex mb-4 sm:mb-8 md:mb-0 w-full md:w-[30%] flex-col gap-5'>
         <div className='flex items-center gap-1'>
           <div className='size-8'>
@@ -109,7 +109,7 @@ const Footer: FunctionComponent<FooterProps> = (): ReactElement => {
           <h4 className='mb-5 whitespace-nowrap w-fit text-primary-color-sub font-medium'>
             Stay Connected With Us
           </h4>
-          <p className='w-full text-xs leading-[1.25rem] font-[200] mb-5'>
+          <p className='w-full text-xs leading-[1.25rem] font-[200] mb-5 md:w-[80%]'>
             Join our mailing list to stay in the loop with our newest update on
             Events and concerts
           </p>
