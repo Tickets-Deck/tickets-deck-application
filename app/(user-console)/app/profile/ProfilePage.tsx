@@ -235,7 +235,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                         Events
                                     </p>
                                     <span className='font-medium'>
-                                        {userInformation?.stats.eventsCount}
+                                        {userInformation?.stats?.eventsCount || 0}
                                     </span>
                                 </Link>
                                 <Link
@@ -246,7 +246,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
                                         Tickets Sold
                                     </p>
                                     <span className='font-medium'>
-                                        {userInformation.stats.ticketsSold}
+                                        {userInformation.stats?.ticketsSold || 0}
                                     </span>
                                 </Link>
                                 <div className='flex items-center justify-between py-2 px-4 border-y border-dark-grey/10 cursor-pointer hover:bg-dark-grey/[0.035]'>

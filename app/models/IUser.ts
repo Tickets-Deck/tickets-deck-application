@@ -31,7 +31,7 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   bio: string | undefined;
 
   socialLinks: SocialLinks | null;
-  stats: UserStats;
+  stats: UserStats | null;
 
   bookmarks: Bookmarks[];
   favorites: Favourites[];
