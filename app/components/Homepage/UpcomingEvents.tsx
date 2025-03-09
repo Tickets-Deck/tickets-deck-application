@@ -270,7 +270,7 @@ export default function UpcomingEvents(
                             <div className="space-y-4">
                                 {
                                     upcomingEvents?.slice(0, 4).map((event) => (
-                                        <Link href="/" key={event.id} className="flex items-center gap-3 cursor-pointer group">
+                                        <Link href={`/event/${event.id}`} key={event.id} className="flex items-center gap-3 cursor-pointer group">
                                             <Image
                                                 src={event.mainImageUrl || "/placeholder.svg"}
                                                 alt={event.title}

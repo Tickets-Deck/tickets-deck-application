@@ -259,9 +259,9 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                                 </div>
                             </div>
 
-                            <button className="bg-black/30 tertiaryButton">
+                            <Link href={`/event/${nextHotEvent.id}`} className="bg-black/30 tertiaryButton">
                                 Get Tickets
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </section>
