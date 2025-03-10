@@ -198,6 +198,36 @@ export function useDeleteEvent() {
   return deleteEvent;
 }
 
+export function useRecordEventView() {
+    const requestToken = useRequestCredentialToken();
+    async function recordEventView(eventId: string, userId?: string) {
+        const token = await requestToken();
+        return API.post(ApiRoutes.RecordEventView(eventId, userId), {}, getApiConfig(token.data.token));
+    }
+    
+    return recordEventView;
+}
+
+export function useFetchEventViewsCount() {
+    const requestToken = useRequestCredentialToken();
+    async function fetchEventViewsCount(eventId: string) {
+        const token = await requestToken();
+        return API.get<{ viewsCount: number }>(ApiRoutes.FetchEventViewsCount(eventId), getApiConfig(token.data.token));
+    }
+
+    return fetchEventViewsCount;
+}
+
+export function useFetchEventViewsAnalytics() {
+    const requestToken = useRequestCredentialToken();
+    async function fetchEventViewsAnalytics(eventId: string) {
+        const token = await requestToken();
+        return API.get(ApiRoutes.FetchEventViewsAnalytics(eventId), getApiConfig(token.data.token));
+    }
+
+    return fetchEventViewsAnalytics;
+}
+
 //#endregion
 
 //#region user
@@ -628,6 +658,15 @@ export function useFetchEventCategories() {
   }
 
   return fetchEventCategories;
+}
+
+export function useFetchTrendingEventCategories() {
+
+  async function fetchTrendingEventCategories() {
+    return API.get(ApiRoutes.TrendingEventCategories, getApiConfig(""));
+  }
+
+  return fetchTrendingEventCategories;
 }
 
 export function useVerifyCouponCode() {
