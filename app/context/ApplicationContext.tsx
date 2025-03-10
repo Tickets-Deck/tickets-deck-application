@@ -1,6 +1,6 @@
 import { FunctionComponent, ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { UserCredentialsResponse } from "../models/IUser";
-import { useFetchBankList, useFetchEventCategories, useFetchTransactionFee, useFetchUserInformation } from "../api/apiClient";
+import { useFetchBankList, useFetchEventCategories, useFetchEventViewsAnalytics, useFetchEventViewsCount, useFetchTransactionFee, useFetchUserInformation, useRecordEventView } from "../api/apiClient";
 import { catchError } from "../constants/catchError";
 import { useSession } from "next-auth/react";
 import { Bank } from "../models/IBankAccount";
@@ -21,6 +21,7 @@ export type ApplicationContextData = {
     transactionFee: TransactionFeeResponse | undefined;
     handleFetchTransactionFee: (eventId: string) => Promise<void>
     eventCategories: IEventCategory[] | undefined
+    handleRecordEventView: (eventId: string, userId?: string) => Promise<void>
 };
 
 // Create a context with the specified data type
@@ -37,6 +38,9 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
     const fetchBankList = useFetchBankList();
     const fetchEventCategories = useFetchEventCategories();
     const fetchTransactionFee = useFetchTransactionFee();
+    const recordEventView = useRecordEventView();
+    const fetchEventViewsAnalytics = useFetchEventViewsAnalytics();
+    const fetchEventViewsCount = useFetchEventViewsCount();
 
     const { data: session } = useSession();
 
@@ -146,6 +150,26 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
             })
     }
 
+    async function handleRecordEventView(eventId: string, userId?: string) {
+        await recordEventView(eventId, userId)
+            .then((response) => {
+                console.log("🚀 ~ .then ~ response:", response);
+            })
+            .catch((error) => {
+                catchError(error);
+            })
+    }
+
+    async function handleFetchEventViewsAnalytics(eventId: string) {
+        await fetchEventViewsAnalytics(eventId)
+            .then((response) => {
+                console.log("🚀 ~ .then ~ response:", response);
+            })
+            .catch((error) => {
+                catchError(error);
+            })
+    }
+
     useEffect(() => {
         if (bankList.length === 0) {
             handleFetchBankList();
@@ -169,7 +193,8 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
         bankList,
         transactionFee,
         handleFetchTransactionFee,
-        eventCategories
+        eventCategories,
+        handleRecordEventView
     };
 
     return (
