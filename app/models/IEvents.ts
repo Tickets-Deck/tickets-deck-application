@@ -1,9 +1,6 @@
 import { EventVisibility } from "../enums/IEventVisibility";
-import { Bookmarks } from "./IBookmark";
-import { Favourites } from "./IFavourites";
 import { Location } from "./ILocation";
 import { TicketRequest, TicketResponse, TicketPurchased } from "./ITicket";
-import { UserCredentialsResponse } from "./IUser";
 
 export type EventImages = {
   id: string;
@@ -64,7 +61,7 @@ export type EventResponse = {
   allowedGuestType: string;
   createdAt: string;
   updatedAt: string;
-//   publisher: UserCredentialsResponse;
+  //   publisher: UserCredentialsResponse;
   publisher: EventPublisher;
   tickets: TicketResponse[];
   subImages: [];
@@ -75,11 +72,17 @@ export type EventResponse = {
 
   bookmarksCount: number;
   favoritesCount: number;
-//   bookmarks: Bookmarks[];
-//   favorites: Favourites[];
+  //   bookmarks: Bookmarks[];
+  //   favorites: Favourites[];
   ticketOrdersCount: number;
   ticketsPurchased: TicketPurchased[];
   organizerPaysFee: boolean;
+};
+
+export type FeaturedEvent = EventResponse & {
+    isTrending: boolean;
+    startingPrice: string;
+    remainingTickets: number;
 };
 
 export enum EventFavoriteAction {
@@ -88,27 +91,27 @@ export enum EventFavoriteAction {
 }
 
 export type UpdateEventRequest = {
-    eventId: string;
-    publisherId: string;
-  
-    title: string | null;
-    description: string | null;
-    location: Location | null;
-    venue: string | null;
-    startDate: Date | string | null;
-    endDate: Date | string | null;
-    categoryId: string | null;
-    tags: string[] | null;
-    visibility: EventVisibility | null;
-  
-    // mainImageBase64Url: string | null;
-    // images: EventImages[] | null;
-  
-    currency: string | null;
-    tickets: TicketRequest[] | null;
-    organizerPaysFee: boolean | null;
-    isArchived: boolean | null;
-    purchaseStartDate: Date | string | null;
-    purchaseEndDate: Date | string | null;
-    allowedGuestType: string | null;
-  };
+  eventId: string;
+  publisherId: string;
+
+  title: string | null;
+  description: string | null;
+  location: Location | null;
+  venue: string | null;
+  startDate: Date | string | null;
+  endDate: Date | string | null;
+  categoryId: string | null;
+  tags: string[] | null;
+  visibility: EventVisibility | null;
+
+  // mainImageBase64Url: string | null;
+  // images: EventImages[] | null;
+
+  currency: string | null;
+  tickets: TicketRequest[] | null;
+  organizerPaysFee: boolean | null;
+  isArchived: boolean | null;
+  purchaseStartDate: Date | string | null;
+  purchaseEndDate: Date | string | null;
+  allowedGuestType: string | null;
+};
