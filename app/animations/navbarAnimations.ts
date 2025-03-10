@@ -118,7 +118,7 @@ export const fadeInVariant = {
 export const ulVariant = {
   opened: {
     transition: {
-      delayChildren: 1,
+      delayChildren: 0.5,
       staggerChildren: 0.18,
     },
   },
@@ -135,7 +135,7 @@ export const liVariant = {
     opacity: 1,
     y: "0%",
     transition: {
-      duration: 0.25,
+      duration: 0.2,
       ease: "easeOut",
     },
   },
