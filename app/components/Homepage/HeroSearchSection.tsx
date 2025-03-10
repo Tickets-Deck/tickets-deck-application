@@ -15,15 +15,18 @@ import { scrollWindow } from "../PageScroll/ScrollWindow";
 import Image from "next/image";
 import images from "@/public/images";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
+import { ITrendingEventCategory } from "@/app/models/IEventCategory";
 
 interface HeroSearchSectionProps {
     events: EventResponse[];
     isFetchingEvents: boolean;
+    trendingEventCategories: ITrendingEventCategory[] | undefined
 }
 
 const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({
     events: _events,
     isFetchingEvents,
+    trendingEventCategories
 }): ReactElement => {
     const events = _events.filter((event) => new Date(event.startDate) >= new Date());
 
@@ -164,18 +167,13 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({
             <div className="mt-2 pt-4 w-full border-t border-gray-700">
                 <p className="text-sm text-gray-400 mb-2">Popular searches:</p>
                 <div className="flex flex-wrap gap-2">
-                    <span className="bg-gray-200/10 border-[1px] border-white/20 p-1 px-3 text-sm rounded-lg hover:bg-primary-color/30 cursor-pointer">
-                        Concerts
-                    </span>
-                    <span className="bg-gray-200/10 border-[1px] border-white/20 p-1 px-3 text-sm rounded-lg hover:bg-primary-color/30 cursor-pointer">
-                        Festivals
-                    </span>
-                    <span className="bg-gray-200/10 border-[1px] border-white/20 p-1 px-3 text-sm rounded-lg hover:bg-primary-color/30 cursor-pointer">
-                        Comedy
-                    </span>
-                    <span className="bg-gray-200/10 border-[1px] border-white/20 p-1 px-3 text-sm rounded-lg hover:bg-primary-color/30 cursor-pointer">
-                        Sports
-                    </span>
+                    {
+                        trendingEventCategories?.map((category, index) => (
+                            <span key={index} className="bg-gray-200/10 border-[1px] border-white/20 p-1 px-3 text-sm rounded-lg hover:bg-primary-color/30 cursor-pointer">
+                                {category.name}
+                            </span>
+                        ))
+                    }
                 </div>
             </div>
             {/* <button type="submit" style={isLoading ? { opacity: 0.6, pointerEvents: 'none' } : {}} disabled={isLoading}>
