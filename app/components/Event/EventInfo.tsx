@@ -9,9 +9,9 @@ import moment from "moment";
 import { EventResponse } from "@/app/models/IEvents";
 import { Theme } from "@/app/enums/Theme";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
-import { ApplicationContext, ApplicationContextData } from "@/app/context/ApplicationContext";
+import { useApplicationContext } from "@/app/context/ApplicationContext";
 import { useSession } from "next-auth/react";
-import { useFetchEventLikeStatus } from "@/app/api/apiClient";
+import { useFetchEventLikeStatus, useFetchEventViewsCount } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
 import EventLikeButton from "../custom/EventLikeButton";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
@@ -31,17 +31,20 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     { appTheme, eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
         forOrdersPage, hostUrl }): ReactElement => {
 
+    const { handleRecordEventView } = useApplicationContext();
     const { data: session } = useSession();
     const fetchEventLikeStatus = useFetchEventLikeStatus();
+    const fetchEventViewsCount = useFetchEventViewsCount();
 
     const windowRes = useResponsiveness();
     const isMobile = windowRes.width && windowRes.width < 768;
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
     const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
-    const { isUserLoginPromptVisible, toggleUserLoginPrompt } = useContext(ApplicationContext) as ApplicationContextData;
+    // const { isUserLoginPromptVisible, toggleUserLoginPrompt } = useContext(ApplicationContext) as ApplicationContextData;
 
     const [isEventLiked, setIsEventLiked] = useState(false);
+    const [eventViewsCount, setEventViewsCount] = useState<number>();
 
     async function shareEvent() {
         const eventUrl = `${window.location.origin + ApplicationRoutes.GeneralEvent + eventInfo.id}`;
@@ -77,6 +80,16 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     //         })
     // };
 
+    async function handleFetchEventViewsCount(eventId: string) {
+        await fetchEventViewsCount(eventId)
+            .then((response) => {
+                setEventViewsCount(response.data.viewsCount);
+            })
+            .catch((error) => {
+                catchError(error);
+            })
+    }
+
     async function handleFetchEventLikeStatus(eventId: string) {
         await fetchEventLikeStatus(session?.user.token as string, eventId)
             .then((response) => {
@@ -93,6 +106,9 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
         if (session) {
             handleFetchEventLikeStatus(eventInfo.id);
         }
+
+        handleRecordEventView(eventInfo.id, session?.user.id as string);
+        handleFetchEventViewsCount(eventInfo.id);
     }, [session]);
 
     return (
@@ -108,8 +124,13 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     <h2 className="text-3xl font-semibold text-white">{eventInfo?.title}</h2>
                     <div className="text-xs flex flex-row space-x-2">
                         <p className="text-gray-300 text-nowrap">Posted on: {moment(eventInfo.createdAt).format('Do MMMM YYYY')}</p>
-                        <span>|</span>
-                        <span className="flex flex-row items-center gap-1"><Icons.Eye width={16} height={16} /> 3504</span>
+                        {
+                            eventViewsCount ?
+                            <>
+                                <span>|</span>
+                                <span className="flex flex-row items-center gap-1"><Icons.Eye width={16} height={16} /> {eventViewsCount}</span>
+                            </> : null
+                        }
                     </div>
 
                     <Link href={`/u/${eventInfo.publisher.username ?? eventInfo.publisher.id}`} className="flex items-center gap-2 w-fit hover:opacity-75">
@@ -127,7 +148,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     <div className="w-full">
                         <p className="text-sm text-white capitalize">{eventInfo.venue}</p>
                         <Link href={`https://www.google.com/maps/search/?api=1&query=${eventInfo.venue}`} target='_blank'>
-                            <button className="text-gray-400 underline hover:opacity-75">Get directions on map</button>
+                            <button className="text-gray-400 underline text-sm hover:opacity-75">Get directions on map</button>
                         </Link>
                     </div>
                     {
@@ -165,7 +186,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     }
                 </div>
 
-                <div className={`${forOrdersPage ? '!w-fit' : 'w-1/12'} flex flex-col w-full md:w-fit gap-3 [&_svg]:w-4 [&_svg]:h-4`}>
+                <div className={`${forOrdersPage ? '!w-fit' : ''} flex flex-col w-fit gap-3 [&_svg]:w-4 [&_svg]:h-4`}>
                     <Tooltip
                         position={onMobile ? "top" : onDesktop ? "left" : undefined}
                         tooltipText='Add to calender'>
