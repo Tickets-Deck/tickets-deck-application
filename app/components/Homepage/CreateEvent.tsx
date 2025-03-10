@@ -3,10 +3,14 @@ import { FunctionComponent, ReactElement } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { UserCredentialsResponse } from "@/app/models/IUser";
 
-interface CreateEventProps { }
+interface CreateEventProps {
+    userInfo: UserCredentialsResponse | null
+    showEmailVerificationAlert: () => void
+}
 
-const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
+const CreateEvent: FunctionComponent<CreateEventProps> = ({ userInfo, showEmailVerificationAlert }): ReactElement => {
 
     const { data: session } = useSession();
     const user = session?.user;
@@ -44,14 +48,36 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
                         </p>
                     </div>
 
-                    <Link
+                    {/* <Link
                         className='w-fit'
                         href={user ? ApplicationRoutes.CreateEvent : ApplicationRoutes.SignIn}
                     >
                         <button className='secondaryButton !bg-white !text-primary-color hover:shadow-[0px_10px_50px_0px_rgba(61,55,241,0.25)] w-fit'>
                             Create Event
                         </button>
-                    </Link>
+                    </Link> */}
+
+                    {!user && (
+                        <Link href={ApplicationRoutes.SignIn}>
+                            <button className='secondaryButton !bg-white !text-primary-color hover:shadow-[0px_10px_50px_0px_rgba(61,55,241,0.25)] w-fit'>
+                                Create Event
+                            </button>
+                        </Link>
+                    )}
+                    {user && !userInfo?.emailVerified && (
+                        <button
+                            onClick={() => showEmailVerificationAlert()}
+                            className='secondaryButton !bg-white !text-primary-color hover:shadow-[0px_10px_50px_0px_rgba(61,55,241,0.25)] w-fit'>
+                            Create Event
+                        </button>
+                    )}
+                    {user && userInfo?.emailVerified && (
+                        <Link href={ApplicationRoutes.CreateEvent}>
+                            <button className='secondaryButton !bg-white !text-primary-color hover:shadow-[0px_10px_50px_0px_rgba(61,55,241,0.25)] w-fit'>
+                                Create Event
+                            </button>
+                        </Link>
+                    )}
                 </div>
             </section>
         </>
