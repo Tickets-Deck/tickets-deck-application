@@ -13,6 +13,7 @@ import { useRive } from '@rive-app/react-canvas';
 import { Icons } from "../ui/icons";
 import moment from "moment";
 import { UserCredentialsResponse } from "@/app/models/IUser";
+import { ITrendingEventCategory } from "@/app/models/IEventCategory";
 
 interface HeroSectionProps {
     events: EventResponse[];
@@ -21,6 +22,7 @@ interface HeroSectionProps {
     imageWithPlaceholder: ImageWithPlaceholder[];
     userInfo: UserCredentialsResponse | null
     showEmailVerificationAlert(): void
+    trendingEventCategories: ITrendingEventCategory[] | undefined
 }
 
 const HeroSection: FunctionComponent<HeroSectionProps> = ({
@@ -28,7 +30,8 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
     isFetchingEvents,
     imageWithPlaceholder,
     userInfo,
-    showEmailVerificationAlert
+    showEmailVerificationAlert,
+    trendingEventCategories
 }): ReactElement => {
 
     const { data: session } = useSession();
@@ -104,8 +107,8 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
             const end = moment(nextHotEvent.startDate);
             const duration = moment.duration(end.diff(start));
 
-            // If the duration is less than or equal to 0, then the event has already started or if the event is more than 30 days away, then we don't need to show the countdown.
-            if (duration.asSeconds() <= 0 || duration.asDays() > 30) {
+            // If the duration is less than or equal to 0 seconds, we don't need to update the countdown
+            if (duration.asSeconds() <= 0) {
                 return;
             }
 
@@ -167,6 +170,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                             className="w-48 h-32">
                             <RiveComponent className="w-48 h-32" />
                         </Link> */}
+                        
                         {!user && (
                             <Link href={ApplicationRoutes.SignIn}>
                                 <button className='!border-[1.5px] !border-solid !border-white !text-white font-medium !bg-transparent hover:opacity-60'>
@@ -209,6 +213,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                     <HeroSearchSection
                         isFetchingEvents={isFetchingEvents}
                         events={events}
+                        trendingEventCategories={trendingEventCategories}
                     />
                 </div>
                 <div className='absolute size-full overflow-hidden top-0 left-0 opacity-10 mix-blend-hard-light [&_span]:absolute'>
