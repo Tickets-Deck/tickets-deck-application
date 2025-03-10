@@ -90,7 +90,7 @@ export default function UpcomingEvents(
     return (
         <section className="py-16 bg-black relative">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.05] via-transparent to-rose-500/[0.05] blur-3xl" />
-            <div className="absolute inset-0 m-auto overflow-hidden size-full border-[1px] border-red-500">
+            <div className="absolute inset-0 m-auto overflow-hidden size-full">
                 <ElegantShape
                     delay={0.3}
                     width={600 + 300}
@@ -240,7 +240,7 @@ export default function UpcomingEvents(
                                 {user && !userInfo?.emailVerified && (
                                     <button
                                         onClick={() => showEmailVerificationAlert()}
-                                        className="primaryButton !w-full !justify-center [&_svg_path]:stroke-white group">
+                                        className="primaryButton !mt-auto !w-full !justify-center [&_svg_path]:stroke-white group">
                                         Start Creating
                                         <Icons.ArrowRight className="ml-2 w-6 h-6 group-hover:[&_path]:stroke-black" />
                                     </button>
@@ -249,7 +249,7 @@ export default function UpcomingEvents(
                                     <Link href={ApplicationRoutes.CreateEvent}>
                                         <button
                                             // onClick={() => showEmailVerificationAlert()}
-                                            className="primaryButton !w-full !justify-center [&_svg_path]:stroke-white group">
+                                            className="primaryButton !mt-auto !w-full !justify-center [&_svg_path]:stroke-white group">
                                             Start Creating
                                             <Icons.ArrowRight className="ml-2 w-6 h-6 group-hover:[&_path]:stroke-black" />
                                         </button>
