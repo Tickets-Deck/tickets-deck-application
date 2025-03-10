@@ -4,3 +4,9 @@ export type IEventCategory = {
   createdAt: string;
   eventCount: number;
 };
+
+export type ITrendingEventCategory = {
+  id: string;
+  name: string;
+  eventCount: number;
+};
