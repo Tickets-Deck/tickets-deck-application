@@ -1,21 +1,19 @@
 "use client";
 import { FunctionComponent, ReactElement, useContext } from "react";
 import Image from "next/image";
-import images from "../../../public/images";
 import Link from "next/link";
 import Tooltip from "../custom/Tooltip";
-import EventCard from "../Event/EventCard";
-import { EventResponse } from "@/app/models/IEvents";
+import { FeaturedEvent } from "@/app/models/IEvents";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { Icons } from "../ui/icons";
-import { TicketResponse } from "@/app/models/ITicket";
-import { Icon } from "@fluentui/react";
 import moment from "moment";
+import { useApplicationContext } from "@/app/context/ApplicationContext";
+import { NairaPrice } from "@/app/constants/priceFormatter";
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean;
-    featuredEvents: EventResponse[];
+    featuredEvents: FeaturedEvent[];
     isFetchingEvents: boolean;
 }
 
@@ -24,24 +22,8 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
     featuredEvents,
     isFetchingEvents,
 }): ReactElement => {
-    // const [retrievedFeaturedEvents, setRetrievedFeaturedEvents] = useState<EventResponse[]>();
 
-    // function persistFeaturedEvents() {
-    //     if (events.length > 0 && !sessionStorage.getItem(StorageKeys.FeaturedEvents)) {
-    //         sessionStorage.setItem(StorageKeys.FeaturedEvents, JSON.stringify(events.slice(0, 3)));
-    //     }
-    // }
-
-    // function retrieveFeaturedEvents() {
-    //     const _featuredEvents = sessionStorage.getItem(StorageKeys.FeaturedEvents);
-
-    //     if (_featuredEvents && _featuredEvents.length > 0) {
-    //         setRetrievedFeaturedEvents(JSON.parse(_featuredEvents));
-    //         return;
-    //     }
-
-    //     setRetrievedFeaturedEvents(events.slice(0, 3));
-    // }
+    const { eventCategories } = useApplicationContext();
 
     return (
         <section className='sectionPadding !py-[4.5rem] bg-dark-grey flex items-start relative text-white flex-col sm:gap-6 gap-2 pt-[6.5rem] pb-[4.5rem]'>
@@ -88,15 +70,21 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                 </div>
             </div>
 
-            <div className="bg-container-grey mb-4 p-1 rounded-lg max-w-full overflow-x-auto md:overflow-auto">
-                <div className="flex flex-row text-nowrap space-x-2 text-sm">
-                    <span className="p-2 px-3 bg-primary-color text-white rounded-md">All</span>
-                    <span className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">Comedy</span>
-                    <span className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">Music</span>
-                    <span className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">Sports</span>
-                    <span className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">Arts & Theatre</span>
+            {
+                eventCategories && eventCategories.length > 0 &&
+                <div className="bg-container-grey mb-4 p-1 rounded-lg max-w-full overflow-x-auto md:overflow-auto">
+                    <div className="flex flex-row text-nowrap space-x-2 text-sm">
+                        <span className="p-2 px-3 bg-primary-color text-white rounded-md">All</span>
+                        {
+                            eventCategories?.map((category) => (
+                                <span key={category.id} className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">
+                                    {category.name}
+                                </span>
+                            ))
+                        }
+                    </div>
                 </div>
-            </div>
+            }
 
             <div className='w-full overflow-x-auto relative overflow-hidden mb-4'>
                 {!isFetchingEvents && featuredEvents.length > 0 && (
@@ -120,22 +108,25 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                                             className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                         />
                                     </Link>
-                                    {true && (
+                                    {event.isTrending && (
                                         <span className="absolute top-2 right-2 flex flex-row items-center space-x-1 text-sm p-1 px-2 rounded-lg bg-primary-color/70">
                                             <Icons.Fire className="h-4 w-4 mr-1" />
                                             Trending
                                         </span>
                                     )}
-                                    <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-sm">
-                                        &#8358;{(3500).toLocaleString()}
-                                    </div>
+                                    {
+                                        Number(event.startingPrice) &&
+                                        <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-sm">
+                                            {`${NairaPrice.format(Number(event.startingPrice))}`}
+                                        </div>
+                                    }
                                 </div>
 
                                 <div className="p-4 pb-2">
                                     <div className="flex justify-between items-start">
                                         <h3 className="font-medium text-lg">{event.title}</h3>
                                         <span className="bg-gray-800 text-xs border-[1px] border-white/30 p-1 px-2 rounded-xl">
-                                            category
+                                            {event.category}
                                         </span>
                                     </div>
                                 </div>
@@ -151,10 +142,13 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                                         <Icons.LocationPin className="h-4 w-4 text-purple-400" />
                                         <span className="capitalize">{event.venue}</span>
                                     </div>
-                                    <div className="mt-3 text-xs">
-                                        {/* <span className="text-yellow-400">{event.tickets.reduce((acc: number, ticket: TicketResponse) => acc + ticket.price, 0)} tickets</span> remaining */}
-                                        <span className="text-yellow-400">120 tickets</span> remaining
-                                    </div>
+                                    {
+                                        event.remainingTickets > 0 &&
+                                        <div className="mt-3 text-xs">
+                                            {/* <span className="text-yellow-400">{event.tickets.reduce((acc: number, ticket: TicketResponse) => acc + ticket.price, 0)} tickets</span> remaining */}
+                                            <span className="text-yellow-400">{event.remainingTickets} tickets</span> remaining
+                                        </div>
+                                    }
                                 </div>
 
                                 <Link href={`/event/${event.id}`} className="p-4 pt-0 block">
