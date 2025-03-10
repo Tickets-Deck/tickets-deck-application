@@ -191,17 +191,20 @@ export class ApiRoutes {
   /**
    * The route to FetchEventTickets endpoint
    */
-  static FetchEventTickets: (eventId: string) => string = (eventId: string) => `events/${eventId}/tickets`;
+  static FetchEventTickets: (eventId: string) => string = (eventId: string) =>
+    `events/${eventId}/tickets`;
 
   /**
    * The route to UpdateTicket endpoint
    */
-  static UpdateTicket: (ticketId: string) => string = (ticketId: string) => `tickets/${ticketId}`;
+  static UpdateTicket: (ticketId: string) => string = (ticketId: string) =>
+    `tickets/${ticketId}`;
 
   /**
    * The route to DeleteTicket endpoint
    */
-  static DeleteTicket: (ticketId: string) => string = (ticketId: string) => `tickets/${ticketId}`;
+  static DeleteTicket: (ticketId: string) => string = (ticketId: string) =>
+    `tickets/${ticketId}`;
 
   /**
    * The route to Fetch Dashboard Information endpoint
@@ -308,4 +311,31 @@ export class ApiRoutes {
    * The route to EventCategory endpoint
    */
   static EventCategory: string = "event-category";
+
+  /**
+   * The route to RecordEventView endpoint
+   */
+  static RecordEventView: (eventId: string, userId?: string) => string = (
+    eventId: string,
+    userId?: string
+  ) => `events/${eventId}/record-view${userId ? `?userId=${userId}` : ""}`;
+
+  /**
+   * The route to FetchEventViewsAnalytics endpoint
+   */
+  static FetchEventViewsAnalytics: (eventId: string) => string = (
+    eventId: string
+  ) => `events/${eventId}/views-analytics`;
+
+  /**
+   * The route to FetchEventViewsCount endpoint
+   */
+  static FetchEventViewsCount: (eventId: string) => string = (
+    eventId: string
+  ) => `events/${eventId}/views`;
+
+  /**
+   * The route to TrendingEventCategories endpoint
+   */
+  static TrendingEventCategories: string = "event-category/trending";
 }
