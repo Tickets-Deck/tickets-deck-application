@@ -33,7 +33,6 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
 
     const { handleRecordEventView } = useApplicationContext();
     const { data: session } = useSession();
-    const fetchEventLikeStatus = useFetchEventLikeStatus();
     const fetchEventViewsCount = useFetchEventViewsCount();
 
     const windowRes = useResponsiveness();
@@ -41,9 +40,6 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     const onMobile = typeof (isMobile) == "boolean" && isMobile;
     const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
 
-    // const { isUserLoginPromptVisible, toggleUserLoginPrompt } = useContext(ApplicationContext) as ApplicationContextData;
-
-    const [isEventLiked, setIsEventLiked] = useState(false);
     const [eventViewsCount, setEventViewsCount] = useState<number>();
 
     async function shareEvent() {
@@ -58,28 +54,6 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
             });
     };
 
-    // async function handleUpdateUserFavouriteEvents(eventId: string, action: string = EventFavoriteAction.Like) {
-
-    //     // Check if user is logged in and prompt user to login if not
-    //     if (!isUserLoginPromptVisible && !session) {
-    //         toggleUserLoginPrompt();
-    //         return;
-    //     }
-
-    //     // Update the event's like status
-    //     setIsEventLiked(!isEventLiked);
-
-    //     await likeEvent(session?.user.id as string, eventId, action)
-    //         .then((response) => {
-    //             // console.log("🚀 ~ .then ~ response:", response)
-    //         })
-    //         .catch((error) => {
-    //             catchError(error);
-    //             // Revert the event's like status
-    //             setIsEventLiked(!isEventLiked);
-    //         })
-    // };
-
     async function handleFetchEventViewsCount(eventId: string) {
         await fetchEventViewsCount(eventId)
             .then((response) => {
@@ -90,23 +64,8 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
             })
     }
 
-    async function handleFetchEventLikeStatus(eventId: string) {
-        await fetchEventLikeStatus(session?.user.token as string, eventId)
-            .then((response) => {
-                console.log("🚀 ~ .then ~ fetchEventLikeStatus response:", response)
-                setIsEventLiked(response.data.userLikedEvent);
-            })
-            .catch((error) => {
-                catchError(error);
-            })
-    };
-
     // Use useEffect to fetch the event's like status when the component mounts
     useEffect(() => {
-        if (session) {
-            handleFetchEventLikeStatus(eventInfo.id);
-        }
-
         handleRecordEventView(eventInfo.id, session?.user.id as string);
         handleFetchEventViewsCount(eventInfo.id);
     }, [session]);
@@ -200,7 +159,10 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                             <Icons.Calender />
                         </div>
                     </Tooltip>
-                    <EventLikeButton eventInfo={eventInfo} forEventInfo />
+                    <EventLikeButton
+                        eventInfo={eventInfo}
+                        forEventInfo
+                    />
                     <Tooltip
                         position={onMobile ? "top" : onDesktop ? "left" : undefined}
                         tooltipText='Share event'>
