@@ -36,16 +36,12 @@ const Navbar: FunctionComponent<NavbarProps> = ({ setSelectedTheme }): ReactElem
         <>
             {
                 onMobile &&
-                <MobileNavbar
-                    session={session}
-                    appTheme={appTheme}
-                />
+                <MobileNavbar />
             }
             {
                 onDesktop &&
                 <DesktopNavbar
                     isLightTheme={isLightTheme}
-                    session={session}
                     appTheme={appTheme}
                 />
             }
