@@ -21,6 +21,7 @@ import ContactDetailsModal from '@/app/components/Modal/ContactDetailsModal';
 import { CustomerContactDetails } from '@/app/models/IUser';
 import { useApplicationContext } from '@/app/context/ApplicationContext';
 import { ToastContext } from '@/app/context/ToastCardContext';
+import { ImagePopup } from '@/app/components/custom/ImagePopup';
 
 interface EventDetailsPageProps {
     params: { id: string }
@@ -52,6 +53,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
     const [totalPrice, setTotalPrice] = useState(0);
     const [ticketsSelectionContainerIsVisible, setTicketsSelectionContainerIsVisible] = useState(false);
 
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [ticketDeliveryModalIsVisible, setTicketDeliveryModalIsVisible] = useState(false);
     const [contactDetailsModalIsVisible, setContactDetailsModalIsVisible] = useState(false);
 
@@ -67,7 +69,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
             //     const hoursLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'hours');
             //     const minutesLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'minutes');
             //     const secondsLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'seconds');
-                
+
             //     if (daysLeft > 0) {
             //         setTimeLeftTillPurchaseStarts(`${daysLeft} days, ${hoursLeft} hrs, ${minutesLeft} mins, ${(secondsLeft / 1000) % 60} secs`);
             //         return;
@@ -82,7 +84,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
             //     // }
             //     // setTimeLeftTillPurchaseStarts(`${secondsLeft} secs`);
             // }, 1000);
-            
+
             // return () => clearInterval(interval);
             setTimeLeftTillPurchaseStarts(moment(eventInfo?.purchaseStartDate).fromNow());
         }
@@ -229,6 +231,16 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                 totalPrice={totalPrice}
                 contactDetails={contactDetails}
             />
+            {
+                eventInfo &&
+                <ImagePopup
+                    imageUrl={eventInfo.mainImageUrl}
+                    alt={eventInfo.title}
+                    isOpen={isPopupOpen}
+                    onClose={() => setIsPopupOpen(false)}
+                />
+            }
+
             <div className={styles.eventDetailsPage}>
                 {
                     eventInfo?.purchaseEndDate && new Date(eventInfo?.purchaseEndDate) < new Date() ?
@@ -273,10 +285,10 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                 {eventInfo ?
                     <section className={styles.eventInfoContainer}>
                         <EventMainInfo
-                            appTheme={appTheme}
                             eventInfo={eventInfo}
                             setTicketsSelectionContainerIsVisible={setTicketsSelectionContainerIsVisible}
                             addEventToGoogleCalender={addEventToGoogleCalender}
+                            setIsPopupOpen={setIsPopupOpen}
                         />
                         <div className={styles.optionalSection} id='optionalSection'>
                             {ticketsSelectionContainerIsVisible && eventTickets && eventTickets.length > 0 &&
