@@ -26,9 +26,9 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
 
     const [isFetchingOrderInformation, setIsFetchingOrderInformation] = useState(true);
     const [orderInformation, setOrderInformation] = useState<UserTicketOrderInfo | null>(null);
-    console.log("🚀 ~ orderInformation:", orderInformation)
     const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] = useState<TicketPass>();
     const [isTicketVisible, setIsTicketVisible] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     /**
      * Function to fetch order information
@@ -119,11 +119,11 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
                         <div className={styles.orderInformationContainer}>
                             <div className={styles.eventContainer}>
                                 <EventMainInfo
-                                    appTheme={appTheme}
                                     eventInfo={orderInformation.event}
                                     forOrdersPage
                                     hideStatusTag
                                     hostUrl={hostUrl}
+                                    setIsPopupOpen={setIsPopupOpen}
                                 />
                             </div>
                             <div className={styles.ticketsContainer}>
@@ -138,7 +138,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
                                                     {orderedTicket.associatedEmail ?? "Sent to primary email"}
                                                 </p>
                                                 <button
-                                                className="p-2 px-4 bg-white/10 hover:bg-white/30 rounded-full text-sm transition-all"
+                                                    className="p-2 px-4 bg-white/10 hover:bg-white/30 rounded-full text-sm transition-all"
                                                     onClick={() => showTicketUi(orderedTicket)}
                                                 >
                                                     View Ticket
