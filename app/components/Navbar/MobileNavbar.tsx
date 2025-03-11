@@ -5,7 +5,7 @@ import Image from "next/image";
 import images from "@/public/images";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { usePathname } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Session } from "next-auth";
 import { clearUserCredentials } from "@/app/redux/features/user/userSlice";
 import { signOut } from "next-auth/react";
@@ -20,18 +20,17 @@ import {
     ulVariant,
 } from "@/app/animations/navbarAnimations";
 import { Icons } from "../ui/icons";
+import { RootState } from "@/app/redux/store";
 
 interface MobileNavbarProps {
-    session: Session | null;
-    appTheme: Theme | null;
 }
 
-const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
-    appTheme,
-    session,
-}): ReactElement => {
+const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({}): ReactElement => {
     const dispatch = useDispatch();
-    const user = session?.user;
+
+    const userInfo = useSelector(
+        (state: RootState) => state.userCredentials.userInfo
+    );
 
     const pathname = usePathname();
     const [navbarIsVisible, setNavbarIsVisible] = useState(false);
@@ -84,13 +83,13 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
                 {/* <span onClick={() => dispatch(appTheme == Theme.Light ? updateAppTheme(Theme.Dark) : updateAppTheme(Theme.Light))}>
                     {appTheme === Theme.Light ? <MoonIcon /> : <SunIcon />}
                 </span> */}
-                {user && (
+                {userInfo && (
                     <Link
                         href={ApplicationRoutes.Dashboard}
                         className='size-10 rounded-full hidden relative border-[1.5px] border-primary-color-sub hover:scale-[0.85] hover:opacity-80'
                     >
                         <Image
-                            src={user?.image ?? images.user_avatar}
+                            src={userInfo.profilePhoto ?? images.user_avatar}
                             className='size-full object-cover'
                             alt='Profile photo'
                             fill
@@ -121,7 +120,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
                     className='bg-white backdrop-blur-[10px] w-[80%] h-full mx-0 my-auto p-5 flex flex-col z-[2]'
                 >
                     <div className='flex items-center justify-between mb-10'>
-                        {user && (
+                        {userInfo && (
                             <motion.div
                                 variants={profileVariant}
                                 className='flex items-center gap-2 w-full'
@@ -129,7 +128,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
                                 <span className='size-[56px] rounded-full overflow-hidden relative'>
                                     <Image
                                         className='size-full object-cover'
-                                        src={user.image ?? images.user_avatar}
+                                        src={userInfo.profilePhoto ?? images.user_avatar}
                                         alt='Profile image'
                                         fill
                                         sizes='auto'
@@ -137,7 +136,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
                                 </span>
                                 <div className='flex flex-col w-full'>
                                     <h4 className='text-base font-medium text-dark-grey mb-1 max-w-[90%] whitespace-nowrap overflow-hidden text-ellipsis'>
-                                        {user.name}
+                                        {userInfo.firstName ?? "Account"}
                                     </h4>
                                     <Link
                                         className='text-xs text-primary-color bg-white w-fit'
@@ -178,7 +177,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({
                                 </motion.span>
                             </Link>
                         ))}
-                        {user ? (
+                        {userInfo ? (
                             <>
                                 {/* <Link href={ApplicationRoutes.Dashboard} onClick={() => setNavbarIsVisible(false)}>
                                     <span className={pathname == ApplicationRoutes.Dashboard ? styles.active : ''}>
