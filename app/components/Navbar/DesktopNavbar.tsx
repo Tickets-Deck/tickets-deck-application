@@ -17,10 +17,9 @@ import { RootState } from "@/app/redux/store";
 interface DesktopNavbarProps {
     isLightTheme: boolean;
     appTheme: Theme | null;
-    session: Session | null;
 }
 
-const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ session, appTheme }): ReactElement => {
+const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ appTheme }): ReactElement => {
     const dispatch = useDispatch();
 
     const userInfo = useSelector(
