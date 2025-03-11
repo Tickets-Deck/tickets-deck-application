@@ -109,7 +109,7 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
                     tooltipText='Like event'
                     action={() => isEventLiked ? handleLikeEvent(eventInfo.id) : handleUnlikeEvent(eventInfo.id)}
                 >
-                    <div className='ml-auto size-8 min-[400px]:size-[2.5rem] rounded-full bg-white grid place-items-center relative'>
+                    <div className='ml-auto w-10 h-10 min-[400px]:size-[2.5rem] rounded-full bg-white grid place-items-center relative'>
                         <motion.span
                             style={{
                                 width: "100%",
