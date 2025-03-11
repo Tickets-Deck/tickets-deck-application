@@ -18,18 +18,18 @@ import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { toast } from "sonner";
 
 interface EventMainInfoProps {
-    appTheme: Theme | null
     eventInfo: EventResponse
     setTicketsSelectionContainerIsVisible?: Dispatch<SetStateAction<boolean>>
     addEventToGoogleCalender?: () => void
     forOrdersPage?: boolean
     hideStatusTag?: boolean
     hostUrl?: string
+    setIsPopupOpen: (value: SetStateAction<boolean>) => void
 }
 
 const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
-    { appTheme, eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
-        forOrdersPage, hostUrl }): ReactElement => {
+    { eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
+        forOrdersPage, hostUrl, setIsPopupOpen }): ReactElement => {
 
     const { handleRecordEventView } = useApplicationContext();
     const { data: session } = useSession();
@@ -116,7 +116,12 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
             <div
                 className={`${forOrdersPage ? 'w-full h-[200px]' : 'w-full md:w-1/3 md:min-w-[30%] h-[300px]'} rounded-2xl overflow-hidden relative after after:bg-black after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-[0] hover:after:opacity-40 after:transition-all after:duration-300 group`}>
                 <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill className="object-cover" />
-                <button className="absolute left-1/2 transform -translate-x-1/2 -bottom-12 p-2 px-4 rounded-full bg-primary-color text-sm w-fit h-fit z-[3] hover:bg-white hover:text-primary-color group-hover:bottom-4 transition-all">Expand</button>
+                <button
+                    onClick={() => setIsPopupOpen(true)}
+                    className="absolute left-1/2 transform -translate-x-1/2 -bottom-12 p-2 px-4 rounded-full flex flex-row gap-2 items-center bg-primary-color text-sm w-fit h-fit z-[3] hover:bg-white hover:text-primary-color group-hover:bottom-4 transition-all">
+                    <Icons.Expand className="w-4 h-4 [&_path]:stroke-primary-color-sub" />
+                    Expand
+                </button>
             </div>
             {/* {!hideStatusTag && <span className={styles.tag}>Latest</span>} */}
             <div className="flex items-end gap-1 w-full min-h-full h-fit">
@@ -126,10 +131,10 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                         <p className="text-gray-300 text-nowrap">Posted on: {moment(eventInfo.createdAt).format('Do MMMM YYYY')}</p>
                         {
                             eventViewsCount ?
-                            <>
-                                <span>|</span>
-                                <span className="flex flex-row items-center gap-1"><Icons.Eye width={16} height={16} /> {eventViewsCount}</span>
-                            </> : null
+                                <>
+                                    <span>|</span>
+                                    <span className="flex flex-row items-center gap-1"><Icons.Eye width={16} height={16} /> {eventViewsCount}</span>
+                                </> : null
                         }
                     </div>
 
