@@ -297,7 +297,7 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                             )}
                         </div>
                         {message && (
-                            <span className='text-failed-color text-xs'>{message}</span>
+                            <span className='text-red-500 text-xs'>{message}</span>
                         )}
                         <button
                             className='p-[0.65rem] rounded-lg mt-4 bg-white text-dark-grey text-center cursor-pointer border-none outline-none hover:opacity-80'
