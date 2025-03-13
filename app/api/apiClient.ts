@@ -81,6 +81,20 @@ export function useFetchEvents() {
   return fetchEvents;
 }
 
+export function useFetchPastEvents() {
+  // Request token
+  const requestToken = useRequestCredentialToken();
+  async function fetchPastEvents(page?: number, limit?: number) {
+    const token = await requestToken();
+    return API.get(
+      `${ApiRoutes.FetchPastEvents}?page=${page}&limit=${limit}`,
+      getApiConfig(token.data.token)
+    );
+  }
+
+  return fetchPastEvents;
+}
+
 export function useFetchEventsByPublisherId() {
   const requestToken = useRequestCredentialToken();
   async function fetchEventsByPublisherId(publisherId: string) {
@@ -199,33 +213,94 @@ export function useDeleteEvent() {
 }
 
 export function useRecordEventView() {
-    const requestToken = useRequestCredentialToken();
-    async function recordEventView(eventId: string, userId?: string) {
-        const token = await requestToken();
-        return API.post(ApiRoutes.RecordEventView(eventId, userId), {}, getApiConfig(token.data.token));
-    }
-    
-    return recordEventView;
+  const requestToken = useRequestCredentialToken();
+  async function recordEventView(eventId: string, userId?: string) {
+    const token = await requestToken();
+    return API.post(
+      ApiRoutes.RecordEventView(eventId, userId),
+      {},
+      getApiConfig(token.data.token)
+    );
+  }
+
+  return recordEventView;
 }
 
 export function useFetchEventViewsCount() {
-    const requestToken = useRequestCredentialToken();
-    async function fetchEventViewsCount(eventId: string) {
-        const token = await requestToken();
-        return API.get<{ viewsCount: number }>(ApiRoutes.FetchEventViewsCount(eventId), getApiConfig(token.data.token));
-    }
+  const requestToken = useRequestCredentialToken();
+  async function fetchEventViewsCount(eventId: string) {
+    const token = await requestToken();
+    return API.get<{ viewsCount: number }>(
+      ApiRoutes.FetchEventViewsCount(eventId),
+      getApiConfig(token.data.token)
+    );
+  }
 
-    return fetchEventViewsCount;
+  return fetchEventViewsCount;
 }
 
 export function useFetchEventViewsAnalytics() {
-    const requestToken = useRequestCredentialToken();
-    async function fetchEventViewsAnalytics(eventId: string) {
-        const token = await requestToken();
-        return API.get(ApiRoutes.FetchEventViewsAnalytics(eventId), getApiConfig(token.data.token));
-    }
+  const requestToken = useRequestCredentialToken();
+  async function fetchEventViewsAnalytics(eventId: string) {
+    const token = await requestToken();
+    return API.get(
+      ApiRoutes.FetchEventViewsAnalytics(eventId),
+      getApiConfig(token.data.token)
+    );
+  }
 
-    return fetchEventViewsAnalytics;
+  return fetchEventViewsAnalytics;
+}
+
+export function useFetchEventCategories() {
+  // Request token
+  const requestToken = useRequestCredentialToken();
+
+  async function fetchEventCategories() {
+    const token = await requestToken();
+    return API.get(ApiRoutes.EventCategory, getApiConfig(token.data.token));
+  }
+
+  return fetchEventCategories;
+}
+
+export function useFetchTrendingEventCategories() {
+  async function fetchTrendingEventCategories() {
+    return API.get(ApiRoutes.TrendingEventCategories, getApiConfig(""));
+  }
+
+  return fetchTrendingEventCategories;
+}
+
+export function useFetchEventLikeStatus() {
+  async function fetchEventLikeStatus(token: string, eventId: string) {
+    return API.get(ApiRoutes.EventLikeStatus(eventId), getApiConfig(token));
+  }
+
+  return fetchEventLikeStatus;
+}
+
+export function useLikeEvent() {
+  async function likeEvent(token: string, userId: string, eventId: string) {
+    return API.post(
+      ApiRoutes.LikeEvent(eventId, userId),
+      {},
+      getApiConfig(token)
+    );
+  }
+
+  return likeEvent;
+}
+
+export function useUnlikeEvent() {
+  async function unlikeEvent(token: string, userId: string, eventId: string) {
+    return API.delete(
+      ApiRoutes.UnlikeEvent(eventId, userId),
+      getApiConfig(token)
+    );
+  }
+
+  return unlikeEvent;
 }
 
 //#endregion
@@ -233,8 +308,11 @@ export function useFetchEventViewsAnalytics() {
 //#region user
 
 export function useCreateUser() {
+  const requestToken = useRequestCredentialToken();
   async function createUser(user: UserCredentialsRequest) {
-    return API.post(ApiRoutes.Users, user);
+    const token = await requestToken();
+
+    return API.post(ApiRoutes.UserSignup, user, getApiConfig(token.data.token));
   }
 
   return createUser;
@@ -319,16 +397,27 @@ export function useUpdateUserProfileInformation() {
 //#endregion
 
 export function useVerifyUserEmail() {
-  async function verifyUserEmail(token: string) {
-    return API.get(`${ApiRoutes.VerifyUserEmail}?token=${token}`);
+  const requestToken = useRequestCredentialToken();
+  async function verifyUserEmail(token: string, userId: string) {
+    const credentialToken = await requestToken();
+    return API.post(
+      ApiRoutes.VerifyUserEmail(userId),
+      { token },
+      getApiConfig(credentialToken.data.token)
+    );
   }
 
   return verifyUserEmail;
 }
 
 export function useResendVerificationLink() {
-  async function resendVerificationLink(email: string) {
-    return API.post(`${ApiRoutes.VerifyUserEmail}?email=${email}`);
+  const requestToken = useRequestCredentialToken();
+  async function resendVerificationLink(userId: string) {
+    const token = await requestToken();
+    return API.get(
+      ApiRoutes.ResendVerificationEmail(userId),
+      getApiConfig(token.data.token)
+    );
   }
 
   return resendVerificationLink;
@@ -510,43 +599,12 @@ export function useFetchUserRecentTransactions() {
   return fetchUserRecentTransactions;
 }
 
-export function useFetchEventLikeStatus() {
-  async function fetchEventLikeStatus(token: string, eventId: string) {
-    return API.get(ApiRoutes.EventLikeStatus(eventId), getApiConfig(token));
-  }
-
-  return fetchEventLikeStatus;
-}
-
 export function useFetchUserFavoriteEvents() {
   async function fetchUserFavoriteEvents(token: string, userId: string) {
     return API.get(ApiRoutes.UserFavoriteEvents(userId), getApiConfig(token));
   }
 
   return fetchUserFavoriteEvents;
-}
-
-export function useLikeEvent() {
-  async function likeEvent(token: string, userId: string, eventId: string) {
-    return API.post(
-      ApiRoutes.LikeEvent(eventId, userId),
-      {},
-      getApiConfig(token)
-    );
-  }
-
-  return likeEvent;
-}
-
-export function useUnlikeEvent() {
-  async function unlikeEvent(token: string, userId: string, eventId: string) {
-    return API.delete(
-      ApiRoutes.UnlikeEvent(eventId, userId),
-      getApiConfig(token)
-    );
-  }
-
-  return unlikeEvent;
 }
 
 export function useRequestPasswordResetLink() {
@@ -633,6 +691,7 @@ export function useFetchUserBankAccount() {
   return fetchUserBankAccount;
 }
 
+///todo: Remove this endpoint, so we move the functionality to the backend ~ add transaction fee to the event info response
 export function useFetchTransactionFee() {
   // Request token
   const requestToken = useRequestCredentialToken();
@@ -648,27 +707,6 @@ export function useFetchTransactionFee() {
   return fetchTransactionFee;
 }
 
-export function useFetchEventCategories() {
-  // Request token
-  const requestToken = useRequestCredentialToken();
-
-  async function fetchEventCategories() {
-    const token = await requestToken();
-    return API.get(ApiRoutes.EventCategory, getApiConfig(token.data.token));
-  }
-
-  return fetchEventCategories;
-}
-
-export function useFetchTrendingEventCategories() {
-
-  async function fetchTrendingEventCategories() {
-    return API.get(ApiRoutes.TrendingEventCategories, getApiConfig(""));
-  }
-
-  return fetchTrendingEventCategories;
-}
-
 export function useVerifyCouponCode() {
   async function verifyCouponCode(eventId: string, couponCode: string) {
     return API.get(
@@ -678,5 +716,3 @@ export function useVerifyCouponCode() {
 
   return verifyCouponCode;
 }
-
-// export
