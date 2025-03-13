@@ -7,7 +7,7 @@ import {
     useState,
 } from "react";
 import EventsGroup from "../components/events/EventsGroup";
-import { useFetchEvents } from "../api/apiClient";
+import { useFetchEvents, useFetchPastEvents } from "../api/apiClient";
 import { EventResponse } from "../models/IEvents";
 import PageHeroSection from "../components/shared/PageHeroSection";
 import { ToastContext } from "../context/ToastCardContext";
@@ -16,11 +16,14 @@ interface AllEventsProps { }
 
 const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
     const fetchEvents = useFetchEvents();
+    const fetchPastEvents = useFetchPastEvents();
 
-    const toasthandler = useContext(ToastContext);
+    // const toasthandler = useContext(ToastContext);
 
     const [isFetchingEvents, setIsFetchingEvents] = useState(true);
+    const [isFetchingPastEvents, setIsFetchingPastEvents] = useState(true);
     const [events, setEvents] = useState<EventResponse[]>([]);
+    const [pastEvents, setPastEvents] = useState<EventResponse[]>();
 
     async function handleFetchEvents() {
         // Start loader
@@ -35,10 +38,10 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
             })
             .catch((err) => {
                 console.log(err);
-                toasthandler?.logError(
-                    "Error",
-                    "An error occurred while fetching events."
-                );
+                // toasthandler?.logError(
+                //     "Error",
+                //     "An error occurred while fetching events."
+                // );
             })
             .finally(() => {
                 // Stop loader
@@ -46,8 +49,34 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
             });
     }
 
+    async function handleFetchPastEvents() {
+        console.log("Fetching past events...");
+        // Start loader
+        setIsFetchingPastEvents(true);
+
+        await fetchPastEvents()
+            .then((response) => {
+                if (response) {
+                    console.log("Past events: ", response.data);
+                    setPastEvents(response.data);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                // toasthandler?.logError(
+                //     "Error",
+                //     "An error occurred while fetching events."
+                // );
+            })
+            .finally(() => {
+                // Stop loader
+                setIsFetchingPastEvents(false);
+            });
+    }
+
     useEffect(() => {
         handleFetchEvents();
+        handleFetchPastEvents();    
     }, []);
 
     return (
@@ -89,12 +118,12 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
                 isFetchingEvents={isFetchingEvents}
             />
 
-            {events.some((event) => new Date(event.startDate) < new Date()) && (
+            {pastEvents && pastEvents.length > 0 && (
                 <EventsGroup
-                    eventsData={events}
+                    eventsData={pastEvents}
                     title='Past Events'
                     subText='Browse through our collection of past events.'
-                    isFetchingEvents={isFetchingEvents}
+                    isFetchingEvents={isFetchingPastEvents}
                     forPastEvents
                 />
             )}
