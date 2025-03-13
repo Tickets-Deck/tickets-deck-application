@@ -1,5 +1,5 @@
 "use client";
-import { FunctionComponent, ReactElement, useContext } from "react";
+import { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Tooltip from "../custom/Tooltip";
@@ -10,6 +10,7 @@ import { Icons } from "../ui/icons";
 import moment from "moment";
 import { useApplicationContext } from "@/app/context/ApplicationContext";
 import { NairaPrice } from "@/app/constants/priceFormatter";
+import { IEventCategory } from "@/app/models/IEventCategory";
 
 interface FeaturedEventsProps {
     isNotHomepage?: boolean;
@@ -24,6 +25,22 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
 }): ReactElement => {
 
     const { eventCategories } = useApplicationContext();
+
+    const [featuredEventCategories, setFeaturedEventCategories] = useState<IEventCategory[]>();
+
+    useEffect(() => {
+        if (!eventCategories || !featuredEvents) return;
+
+        const categoryMap = new Map<string, IEventCategory>(); // Using a map to ensure uniqueness
+
+        featuredEvents.forEach((event) => {
+            const category = eventCategories.find((cat) => cat.id === event.categoryId);
+            if (category) categoryMap.set(category.id, category); // Using the 'id' as the key ensures uniqueness
+        });
+
+        setFeaturedEventCategories(Array.from(categoryMap.values()));
+
+    }, [featuredEvents, eventCategories]);
 
     return (
         <section className='sectionPadding !py-[4.5rem] bg-dark-grey flex items-start relative text-white flex-col sm:gap-6 gap-2 pt-[6.5rem] pb-[4.5rem]'>
@@ -71,14 +88,14 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
             </div>
 
             {
-                eventCategories && eventCategories.length > 0 &&
+                featuredEventCategories && featuredEventCategories.length > 0 &&
                 <div className="bg-container-grey mb-4 p-1 rounded-lg max-w-full overflow-x-auto md:overflow-auto">
                     <div className="flex flex-row text-nowrap space-x-2 text-sm">
                         <span className="p-2 px-3 bg-primary-color text-white rounded-md">All</span>
                         {
-                            eventCategories?.map((category) => (
-                                <span key={category.id} className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">
-                                    {category.name}
+                            featuredEventCategories?.map((category) => (
+                                <span key={category?.id} className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">
+                                    {category?.name}
                                 </span>
                             ))
                         }
@@ -96,7 +113,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                             // />
                             <div
                                 key={event.id}
-                                className="bg-gray-900 border-gray-800 overflow-hidden group hover:border-purple-500/50 rounded-xl transition-all duration-300"
+                                className="bg-gray-900 border-gray-800 overflow-hidden flex flex-col group hover:border-purple-500/50 rounded-xl transition-all duration-300"
                             >
                                 <div className="relative">
                                     <Link href={`/event/${event.id}`}>
@@ -151,7 +168,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                                     }
                                 </div>
 
-                                <Link href={`/event/${event.id}`} className="p-4 pt-0 block">
+                                <Link href={`/event/${event.id}`} className="p-4 pt-0 block !mt-auto">
                                     <button className="primaryButton !w-full !justify-center">View details</button>
                                 </Link>
                             </div>
