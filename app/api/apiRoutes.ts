@@ -16,7 +16,7 @@ export class ApiRoutes {
   /**
    * The live base url for the application
    */
-  static BASE_URL_LIVE: string = "https://events.ticketsdeck.com/";
+  static BASE_URL_LIVE: string = "https://api.ticketsdeck.com/";
 
   /**
    * The base url being used for the application
@@ -39,6 +39,11 @@ export class ApiRoutes {
   static UserLogin: string = "auth/login";
 
   /**
+   * The route to User Signup Token endpoint
+   */
+  static UserSignup: string = "auth/register";
+
+  /**
    * The route to OAuth Token Verification endpoint
    */
   static VerifyOAuthToken: string = "auth/verify-oauth-token";
@@ -57,6 +62,11 @@ export class ApiRoutes {
    * The route to Events endpoint
    */
   static Events: string = "events";
+
+  /**
+   * The route to FetchPastEvents endpoint
+   */
+  static FetchPastEvents: `/events/past`;
 
   /**
    * The route to Fetch Event Information endpoint for the publisher's use only
@@ -131,7 +141,14 @@ export class ApiRoutes {
   /**
    * The route to VerifyUserEmail endpoint
    */
-  static VerifyUserEmail: string = "api/users/verify";
+  static VerifyUserEmail: (userId: string) => string = (userId: string) =>
+    `auth/verify-email/${userId}`;
+
+  /**
+   * The route to VerifyUserEmail endpoint
+   */
+  static ResendVerificationEmail: (userId: string) => string = (userId: string) =>
+    `auth/resend-verification-email/${userId}`;
 
   /**
    * The route to UploadUserProfilePhoto endpoint
