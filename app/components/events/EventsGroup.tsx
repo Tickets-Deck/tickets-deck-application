@@ -86,7 +86,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = ({
                     }`}
             >
                 <div
-                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 min-[1200px]:grid-cols-4 gap-4"
                 // "[grid-template-columns:_repeat(auto-fill,_minmax(200px,_1fr))] min-[550px]:[[grid-template-columns:_repeat(auto-fill,_minmax(250px,_1fr))]]"
                 >
                     {!isFetchingEvents &&
