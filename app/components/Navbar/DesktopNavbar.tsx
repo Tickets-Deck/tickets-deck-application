@@ -111,7 +111,7 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ appTheme }): Rea
                                 <Icons.CaretDown className='size-4 [&_path]:fill-primary-color-sub text-white' />
                             </span>
                             {navbarDropdownIsVisible && (
-                                <div className='bg-white p-1 rounded-lg flex flex-col absolute top-[2.813rem] -right-[0.688rem] w-[90%] max-w-32 shadow-[0rem_0.25rem_0.5rem_0.063rem_rgba(0,0,0,0.04)] z-[3] animate-bumpDown after:size-[0.875rem] after:bg-white after:rotate-45 after:absolute after:top[-0.375rem] after:right-4 after:rounded-[0.188rem]'>
+                                <div className='bg-white p-1 rounded-lg flex flex-col absolute top-[2.813rem] -right-[0.688rem] w-[90%] min-w-[128px] max-w-32 shadow-[0rem_0.25rem_0.5rem_0.063rem_rgba(0,0,0,0.04)] z-[3] animate-bumpDown after:size-[0.875rem] after:bg-white after:rotate-45 after:absolute after:top[-0.375rem] after:right-4 after:rounded-[0.188rem]'>
                                     <Link
                                         className='py-2 px-3 text-black rounded-[0.375rem] hover:bg-grey/80'
                                         href={ApplicationRoutes.Dashboard}
