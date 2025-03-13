@@ -59,6 +59,8 @@
             flex-direction: column;
             gap: 1.5rem;
 
+            // px-2 py-4 w-full flex flex-col gap-4
+
             // @include smallLaptop {
             //     flex-basis: 100%;
             //     width: 100%;
@@ -322,9 +324,11 @@
                     display: grid;
                     place-items: center;
                     margin: 0 auto;
+                    // w-20 h-20 grid place-items-center mx-auto
                     svg {
                         width: 3.5rem;
                         height: 3.5rem;
+                        // w-14 h-14
                         path {
                             fill: $success-color;
                         }
