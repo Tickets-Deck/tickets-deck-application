@@ -40,3 +40,4 @@ netlify.toml
 sw.js.map
 settings.json
 /.idea
+.qodo
