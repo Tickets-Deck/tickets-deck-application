@@ -86,7 +86,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({}): ReactElement =>
                 {userInfo && (
                     <Link
                         href={ApplicationRoutes.Dashboard}
-                        className='size-10 rounded-full hidden relative border-[1.5px] border-primary-color-sub hover:scale-[0.85] hover:opacity-80'
+                        className='size-10 rounded-full overflow-hidden hidden relative border-[1.5px] border-primary-color-sub hover:scale-[0.85] hover:opacity-80'
                     >
                         <Image
                             src={userInfo.profilePhoto ?? images.user_avatar}
@@ -125,7 +125,7 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({}): ReactElement =>
                                 variants={profileVariant}
                                 className='flex items-center gap-2 w-full'
                             >
-                                <span className='size-[56px] rounded-full overflow-hidden relative'>
+                                <span className='size-[56px] block rounded-full overflow-hidden relative'>
                                     <Image
                                         className='size-full object-cover'
                                         src={userInfo.profilePhoto ?? images.user_avatar}
