@@ -466,7 +466,8 @@ button {
     }
 
     .input {
-        @apply w-fit rounded-[3.125rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder-grey-bg;
+        // @apply w-fit rounded-[3.125rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder-grey-bg;
+        @apply w-full rounded-[0.5rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none placeholder-grey-bg;
     }
 
     .primaryButton {
@@ -500,9 +501,8 @@ button {
     .createEventFormField {
         @apply w-full flex flex-col gap-1 relative;
     }
-    .createEventFormField input,
-    select {
-        @apply input rounded-lg w-full bg-white/10 text-white text-sm p-4 font-normal placeholder-white/50;
+    .createEventFormField input, select {
+        @apply input w-full bg-white/10 text-white text-sm p-4 font-normal placeholder-white/50;
     }
     .createEventFormField label {
         @apply text-sm text-white;
