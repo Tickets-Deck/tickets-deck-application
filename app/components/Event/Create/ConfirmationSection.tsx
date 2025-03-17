@@ -86,7 +86,7 @@ const ConfirmationSection: FunctionComponent<ConfirmationSectionProps> = (
                         </button>
                     </div>
 
-                    <div className="flex flex-col mb-6">
+                    <div className="flex flex-col mb-6 [&_p]:text-white">
                         <div className="flex flex-col mb-2 [&_span]:mb-1 [&_span]:text-sm [&_span]:text-text-grey">
                             <span>Title</span>
                             <p className="text-base [&_img]:w-[200px] [&_img]:rounded-lg [&_img]:mb-2">{eventRequest?.title}</p>
@@ -129,7 +129,7 @@ const ConfirmationSection: FunctionComponent<ConfirmationSectionProps> = (
                 <div className="flex flex-col w-full">
                     <div>
                         <div className="flex flex-row justify-between items-center mb-4">
-                            <h4 className="text-lg font-normal">Tickets</h4>
+                            <h4 className="text-lg font-normal text-white">Tickets</h4>
                             <button
                                 type='button'
                                 className="tertiaryButton !px-4 !py-2"
@@ -144,10 +144,10 @@ const ConfirmationSection: FunctionComponent<ConfirmationSectionProps> = (
                                         className="p-4 rounded-lg bg-container-grey flex flex-col gap-5 w-full relative overflow-hidden after:content after:absolute after:w-full after:h-full after:top-0 after:left-0 after:bg-black/35 after:z-10 after:border-radius-[100%] after:scale-0.5 after:opacity-0 after:transition-all-300ms-ease"
                                         key={index}>
                                         <div className="flex flex-col gap-1">
-                                            <h5 className="font-medium">{ticket.name}</h5>
+                                            <h5 className="font-medium text-white">{ticket.name}</h5>
                                             <span className="text-sm bg-white text-black px-2 py-1 rounded w-fit">{<>{`${NairaPrice.format(ticket.price)}`}</>}</span>
                                         </div>
-                                        <div className="flex gap-4 flex-col">
+                                        <div className="flex gap-4 flex-col [&_p]:text-white [&_span]:text-white">
                                             <div className="[&_p]:text-sm [&_span]:text-xs">
                                                 <p>Available tickets: </p>
                                                 <span>{ticket.quantity}</span>

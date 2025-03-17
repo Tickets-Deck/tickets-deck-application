@@ -73,7 +73,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
 
             <div className="flex items-start justify-between">
                 <div>
-                    <h3 className="text-xl font-normal mb-1">Let's Create Tickets</h3>
+                    <h3 className="text-xl font-normal mb-1 text-white">Let's Create Tickets</h3>
                     <p className="text-sm text-white/60">Click on the "Create ticket" button below to add tickets for your event</p>
                 </div>
                 <div className="flex flex-col items-center gap-1">
@@ -85,7 +85,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
             <div className="grid grid-cols-2 gap-4">
                 {
                     eventRequest?.tickets.map((ticket, index) =>
-                        <div className="p-6 rounded-lg bg-container-grey flex flex-col gap-6" key={index}>
+                        <div className="p-6 rounded-lg bg-container-grey text-white flex flex-col gap-6" key={index}>
                             <div className="flex items-center justify-between">
                                 <h3 className="text-xl font-normal md:text-lg">{ticket.name}</h3>
                                 <span
@@ -163,7 +163,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = (
                 </div>
             }
             <div>
-                <span className="mb-1 text-sm">Who pays for fee?</span>
+                <span className="mb-1 text-sm text-white">Who pays for fee?</span>
                 <div className="flex flex-row items-center justify-start gap-2 w-fit">
                     <span
                         onClick={(e) => {
