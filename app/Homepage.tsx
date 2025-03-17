@@ -119,12 +119,14 @@ const Homepage: FunctionComponent<HomepageProps> = ({
     }
 
     function showEmailVerificationAlert() {
+        setEmailVerificationPromptIsVisible(true);
+
         // Check for the email verification status if the user is logged in.
-        if (userInfo && !userInfo.emailVerified) {
-            // toast.error("Please verify your email address to continue.");
-            setEmailVerificationPromptIsVisible(true);
-            return;
-        }
+        // if (userInfo && (userInfo.flags && userInfo.flags.find((flag) => flag.flagName == FlagOptions.isEmailVerified && flag.flagValue === true))) {
+        //     // toast.error("Please verify your email address to continue.");
+        //     setEmailVerificationPromptIsVisible(true);
+        //     return;
+        // }
     }
 
     useEffect(() => {
@@ -205,10 +207,10 @@ const Homepage: FunctionComponent<HomepageProps> = ({
                 />
                 <Services />
                 <TestimonialSection />
-                <CreateEvent 
+                <CreateEvent
                     userInfo={userInfo}
                     showEmailVerificationAlert={showEmailVerificationAlert}
-                    />
+                />
                 <UpcomingEvents
                     events={events}
                     emailVerificationPromptIsVisible={emailVerificationPromptIsVisible}
