@@ -14,7 +14,6 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig = {
-    compress: true,
     images: {
         remotePatterns: [
             {
