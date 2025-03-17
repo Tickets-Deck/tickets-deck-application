@@ -72,7 +72,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
      */
     function validateForm() {
 
-        if (ticketFormRequest && ticketFormRequest.name && ticketFormRequest.price && (ticketFormRequest.price == 0 || ticketFormRequest.price > 1000) && ticketFormRequest.quantity && ticketFormRequest.numberOfUsers) {
+        if (ticketFormRequest && ticketFormRequest.name && ticketFormRequest.price && (ticketFormRequest.price == 0 || ticketFormRequest.price >= 1000) && ticketFormRequest.quantity && ticketFormRequest.numberOfUsers) {
             return true;
         }
         else {
