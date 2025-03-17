@@ -14,6 +14,7 @@ import { Icons } from "../ui/icons";
 import moment from "moment";
 import { UserCredentialsResponse } from "@/app/models/IUser";
 import { ITrendingEventCategory } from "@/app/models/IEventCategory";
+import { FlagOptions } from "@/app/enums/UserFlag";
 
 interface HeroSectionProps {
     events: EventResponse[];
@@ -178,7 +179,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                                 </button>
                             </Link>
                         )}
-                        {user && !userInfo?.emailVerified && (
+                        {user && !userInfo?.flags || userInfo?.flags.find((flag) => flag.flagName == FlagOptions.isEmailVerified && flag.flagValue !== true) && (
                             <button
                                 className='border-[1.5px] border-white text-white font-medium bg-transparent hover:opacity-60'
                                 onClick={() => showEmailVerificationAlert()}
@@ -186,7 +187,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                                 Create Event
                             </button>
                         )}
-                        {user && userInfo?.emailVerified && (
+                        {user && userInfo?.flags && userInfo?.flags.find((flag) => flag.flagName == FlagOptions.isEmailVerified && flag.flagValue === true) && (
                             <Link href={ApplicationRoutes.CreateEvent}>
                                 <button className='border-[1.5px] border-white text-white font-medium bg-transparent hover:opacity-60'>
                                     Create Event
