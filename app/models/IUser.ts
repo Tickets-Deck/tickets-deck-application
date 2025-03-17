@@ -1,6 +1,7 @@
 import { Bookmarks } from "./IBookmark";
 import { Favourites } from "./IFavourites";
 import { TicketPurchased } from "./ITicket";
+import { UserFlag } from "./user/IUserFlag";
 
 export type CustomerContactDetails = {
   firstName: string;
@@ -37,13 +38,7 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   favorites: Favourites[];
 
   emailVerified: boolean;
-  isVerified: boolean;
-  isBlocked: boolean;
-  isSuspended: boolean;
-  isDeleted: boolean;
-  isSuperAdmin: boolean;
-  isSubscribed: boolean;
-  isNewsletterSubscribed: boolean;
+  flags: UserFlag[];
 
   ticketsPurchased: TicketPurchased[];
 };
