@@ -8,7 +8,7 @@ import { useFetchEvents, useFetchFeaturedEvents, useFetchTrendingEventCategories
 import { EventResponse, FeaturedEvent } from "./models/IEvents";
 import BetaTestModal from "./components/Modal/BetaTestModal";
 import { ImageWithPlaceholder } from "./models/IImage";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import TestimonialSection from "./components/Homepage/TestimonialSection";
 import UpcomingEvents from "./components/Homepage/UpcomingEvents";
@@ -17,6 +17,7 @@ import { RootState } from "./redux/store";
 import EmailVerificationPrompt from "./components/Modal/EmailVerificationPrompt";
 import { catchError } from "./constants/catchError";
 import { ITrendingEventCategory } from "./models/IEventCategory";
+import { selectUserFlags } from "./redux/features/user/userSlice";
 
 interface HomepageProps {
     imageWithPlaceholder: ImageWithPlaceholder[];
@@ -44,18 +45,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({
     const userInfo = useSelector(
         (state: RootState) => state.userCredentials.userInfo
     );
-
-    // function retrieveEventsFromDb() {
-    //     const _retrievedEvents = sessionStorage.getItem(StorageKeys.Events);
-
-    //     if (!_retrievedEvents || _retrievedEvents === 'undefined') {
-    //         return;
-    //     }
-
-    //     const retrievedEvents = JSON.parse(_retrievedEvents);
-
-    //     return retrievedEvents;
-    // }
+    const userFlags = useSelector(selectUserFlags);
 
     async function handleFetchFeaturedEvents() {
         // Fetch events
@@ -69,9 +59,8 @@ const Homepage: FunctionComponent<HomepageProps> = ({
                     // sessionStorage.setItem(StorageKeys.Events, JSON.stringify(response.data));
                 }
             })
-            .catch((err) => {
-                console.log(err);
-                // toasthandler?.logError('Error', 'An error occurred while fetching events.');
+            .catch((error) => {
+                console.log("🚀 ~ handleFetchFeaturedEvents ~ error:", error);
             })
             .finally(() => {
                 // Stop loader
@@ -187,7 +176,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({
                 <EmailVerificationPrompt
                     visibility={emailVerificationPromptIsVisible}
                     setVisibility={setEmailVerificationPromptIsVisible}
-                    userEmail={userInfo?.email as string}
+                    userId={userInfo?.id as string}
                     userName={userInfo?.firstName as string}
                 />
             )}
@@ -197,8 +186,8 @@ const Homepage: FunctionComponent<HomepageProps> = ({
                     isFetchingEvents={isFetchingEvents}
                     events={events}
                     imageWithPlaceholder={imageWithPlaceholder}
-                    userInfo={userInfo}
-                    showEmailVerificationAlert={showEmailVerificationAlert}
+                    userFlags={userFlags}
+                    setEmailVerificationPromptIsVisible={setEmailVerificationPromptIsVisible}
                     trendingEventCategories={trendingEventCategories}
                 />
                 <FeaturedEvents
