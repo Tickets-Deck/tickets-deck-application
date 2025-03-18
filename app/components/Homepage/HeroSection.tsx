@@ -1,6 +1,6 @@
 "use client";
 
-import { FunctionComponent, ReactElement, useEffect, useState } from "react";
+import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 import images from "../../../public/images";
 import Link from "next/link";
@@ -12,28 +12,27 @@ import { ImageWithPlaceholder } from "@/app/models/IImage";
 import { useRive } from '@rive-app/react-canvas';
 import { Icons } from "../ui/icons";
 import moment from "moment";
-import { UserCredentialsResponse } from "@/app/models/IUser";
 import { ITrendingEventCategory } from "@/app/models/IEventCategory";
 import { FlagOptions } from "@/app/enums/UserFlag";
 
 interface HeroSectionProps {
     events: EventResponse[];
     isFetchingEvents: boolean;
-
     imageWithPlaceholder: ImageWithPlaceholder[];
-    userInfo: UserCredentialsResponse | null
-    showEmailVerificationAlert(): void
+    setEmailVerificationPromptIsVisible: Dispatch<SetStateAction<boolean>>
     trendingEventCategories: ITrendingEventCategory[] | undefined
+    userFlags: Record<string, boolean> | null
 }
 
 const HeroSection: FunctionComponent<HeroSectionProps> = ({
     events,
     isFetchingEvents,
     imageWithPlaceholder,
-    userInfo,
-    showEmailVerificationAlert,
-    trendingEventCategories
+    setEmailVerificationPromptIsVisible,
+    trendingEventCategories,
+    userFlags
 }): ReactElement => {
+    console.log("🚀 ~ userFlags:", userFlags)
 
     const { data: session } = useSession();
     const user = session?.user;
@@ -62,6 +61,8 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
     const formattedDate = { days: 0, hours: 0, minutes: 0, seconds: 0 };
 
     const [countdown, setCountdown] = useState(formattedDate);
+
+    const isEmailVerified = user && userFlags?.[FlagOptions.isEmailVerified];
 
     const { rive, RiveComponent } = useRive({
         src: '/rive/btn_anim.riv',
@@ -171,7 +172,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                             className="w-48 h-32">
                             <RiveComponent className="w-48 h-32" />
                         </Link> */}
-                        
+
                         {!user && (
                             <Link href={ApplicationRoutes.SignIn}>
                                 <button className='!border-[1.5px] !border-solid !border-white !text-white font-medium !bg-transparent hover:opacity-60'>
@@ -179,15 +180,14 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                                 </button>
                             </Link>
                         )}
-                        {user && !userInfo?.flags || userInfo?.flags.find((flag) => flag.flagName == FlagOptions.isEmailVerified && flag.flagValue !== true) && (
+                        {!isEmailVerified ? (
                             <button
                                 className='border-[1.5px] border-white text-white font-medium bg-transparent hover:opacity-60'
-                                onClick={() => showEmailVerificationAlert()}
+                                onClick={() => setEmailVerificationPromptIsVisible(true)}
                             >
                                 Create Event
                             </button>
-                        )}
-                        {user && userInfo?.flags && userInfo?.flags.find((flag) => flag.flagName == FlagOptions.isEmailVerified && flag.flagValue === true) && (
+                        ) : (
                             <Link href={ApplicationRoutes.CreateEvent}>
                                 <button className='border-[1.5px] border-white text-white font-medium bg-transparent hover:opacity-60'>
                                     Create Event
