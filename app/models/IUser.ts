@@ -1,7 +1,7 @@
+import { FlagOptions } from "../enums/UserFlag";
 import { Bookmarks } from "./IBookmark";
 import { Favourites } from "./IFavourites";
 import { TicketPurchased } from "./ITicket";
-import { UserFlag } from "./user/IUserFlag";
 
 export type CustomerContactDetails = {
   firstName: string;
@@ -37,8 +37,7 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   bookmarks: Bookmarks[];
   favorites: Favourites[];
 
-  emailVerified: boolean;
-  flags: UserFlag[];
+  flags: Record<FlagOptions, boolean>
 
   ticketsPurchased: TicketPurchased[];
 };
