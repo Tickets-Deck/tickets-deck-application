@@ -89,7 +89,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
         await fetchUserInformation(session?.user.id as string)
             .then((response) => {
                 // Save to redux
-                dispatch(updateUserCredentials(response.data));
+                // dispatch(updateUserCredentials(response.data));
                 // console.log(response.data);
                 setUserInformation(response.data);
             })
@@ -124,7 +124,7 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
         await updateUserInformation(user?.token as string, userInformation?.id as string, data)
             .then(async (response) => {
                 // Save to redux
-                dispatch(updateUserCredentials(response.data));
+                // dispatch(updateUserCredentials(response.data));
 
                 // Fetch user information again
                 await handleFetchUserInformation();
