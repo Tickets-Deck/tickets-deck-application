@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { catchError } from "@/app/constants/catchError";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ComponentLoader from "../Loader/ComponentLoader";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
@@ -25,6 +25,8 @@ type LoginProps = {}
 const Login: FunctionComponent<LoginProps> = (): ReactElement => {
     const fetchUserInformation = useFetchUserInformation();
     const dispatch = useDispatch();
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl");
 
     // const [loginMethod, setLoginMethod] = useState<LoginMethod>(LoginMethod.Email);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -138,8 +140,9 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
             handleFetchUserInformation();
             // Clear newly created user email
             sessionStorage.removeItem(StorageKeys.NewlyCreatedUserEmail);
-            // Push to homepage
-            router.push(ApplicationRoutes.Home);
+            
+            // Navigate to callback URL if available, otherwise go to homepage
+            router.push(callbackUrl ? decodeURIComponent(callbackUrl) : ApplicationRoutes.Home);
         }
     }, [status]);
 
