@@ -9,10 +9,7 @@ import { usePathname } from 'next/navigation';
 import images from '@/public/images';
 import Image from "next/image";
 import { Session } from 'next-auth';
-import { useFetchUserInformation } from '../api/apiClient';
-import { useDispatch } from 'react-redux';
-import { updateUserCredentials } from '../redux/features/user/userSlice';
-import { catchError } from '../constants/catchError';
+import { clearUserCredentials, fetchUserProfile, updateUserCredentials } from '../redux/features/user/userSlice';
 import { signOut, useSession } from 'next-auth/react';
 import { Theme } from '../enums/Theme';
 import NextTopLoader from 'nextjs-toploader';
@@ -23,6 +20,7 @@ import { ToastMessageType } from '../enums/ToastMessageType';
 import { ToastContext } from '../context/ToastCardContext';
 import TokenSync from './Auth/TokenSync';
 import { UserCredentialsResponse } from '../models/IUser';
+import { useAppDispatch } from '../redux/hook';
 
 export const metadata: Metadata = {
     title: 'Ticketsdeck Events',
@@ -45,29 +43,12 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session, userData })
 
     const iswindow = typeof window !== "undefined" ? true : false;
 
-    const fetchUserInformation = useFetchUserInformation();
-
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     // const windowRes = useResponsiveness();
     // const isMobile = windowRes.width && windowRes.width < 768;
     // const onMobile = typeof (isMobile) == "boolean" && isMobile;
     // const onDesktop = typeof (isMobile) == "boolean" && !isMobile;
-
-    async function handleFetchUserInformation() {
-        // console.log("Session on layout: ", session);
-
-        await fetchUserInformation(session?.user.id as string)
-            .then((response) => {
-                console.log("User information on layout: ", response.data);
-                // Save to redux
-                dispatch(updateUserCredentials(response.data));
-            })
-            .catch((error) => {
-                // console.log(error);
-                catchError(error);
-            })
-    };
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -80,17 +61,28 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session, userData })
             dispatch(updateUserCredentials(userData));
         } else {
             if (session && status === 'authenticated') {
-                handleFetchUserInformation();
+                dispatch(fetchUserProfile(session?.user.id as string));
+            }
+            // Clear Redux when session expires
+            if (status === "unauthenticated") {
+                dispatch(clearUserCredentials());
             }
         }
-    }, [userData, session, status]);
+    }, [userData, session, status, dispatch]);
 
     useEffect(() => {
         if (session?.error === 'RefreshAccessTokenError') {
             // Force user to re-auth if refresh fails
             signOut({ redirect: false });
         }
-    }, [session, status])
+    }, [session, status]);
+
+    // useSocket(WebhookEvent.USER_EMAIL_VERIFIED, (data) => {
+    //     console.log("🚀 ~ User email verified event gotten:", data.email);
+
+    //     // Refresh page or trigger state update
+    //     // window.location.reload();
+    // });
 
     const pathname = usePathname();
 
