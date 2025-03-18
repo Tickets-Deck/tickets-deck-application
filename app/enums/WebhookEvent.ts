@@ -1,0 +1,4 @@
+export enum WebhookEvent {
+  USER_EMAIL_VERIFIED = "USER_EMAIL_VERIFIED",
+  TICKET_SOLD = "TICKET_SOLD",
+}
