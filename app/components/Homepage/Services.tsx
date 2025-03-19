@@ -5,7 +5,7 @@ import { Icons } from "../ui/icons";
 interface ServicesProps { }
 
 const Services: FunctionComponent<ServicesProps> = (): ReactElement => {
-    
+
     const services = [
         {
             icon: Icons.Platform,
@@ -47,13 +47,12 @@ const Services: FunctionComponent<ServicesProps> = (): ReactElement => {
             <div className='flex flex-col items-center gap-2 mx-auto w-[80%] sm:w-[40%]'>
                 <h2 className='relative text-[30px] font-Mona-Sans-Wide font-semibold flex items-center gap-0.5'>
                     Why Us?{" "}
-                    <span>
+                    {/* <span>
                         <Icons.ThinkingEmoji className='size-8' />
-                    </span>
+                    </span> */}
                 </h2>
                 <p className='text-sm w-fit text-center'>
-                    We know you trust us, but just so you are wondering why you should
-                    keep using our service... 👀
+                    Here is what you stand to gain when you work with us, amongst several other benefits.
                 </p>
             </div>
 
