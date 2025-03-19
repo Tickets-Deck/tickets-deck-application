@@ -31,6 +31,7 @@ interface TicketDeliveryProps {
     eventInfo: EventResponse | undefined
     totalPrice: number
     contactDetails: CustomerContactDetails | undefined
+    isEmailVerified: boolean | undefined
 }
 
 enum ValidationStatus {
@@ -41,7 +42,7 @@ enum ValidationStatus {
 
 const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
     { appTheme, visibility, setVisibility, eventTickets,
-        eventInfo, totalPrice, contactDetails }): ReactElement => {
+        eventInfo, totalPrice, contactDetails, isEmailVerified }): ReactElement => {
 
     const createTicketOrder = useInitializeTicketOrder();
     const initializePaystackPayment = useInitializePaystackPayment();
@@ -237,7 +238,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         }
 
         // If the user's email is not verified, show the email verification prompt
-        if (userInfo && userInfo.emailVerified === false) {
+        if (userInfo && !isEmailVerified) {
             if (!emailVerificationPromptIsVisible) {
                 setEmailVerificationPromptIsVisible(true);
             }
@@ -726,6 +727,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
                     setVisibility={setEmailVerificationPromptIsVisible}
                     userEmail={userInfo?.email as string}
                     userName={userInfo?.firstName as string}
+                    userId={userInfo?.id as string}
                 />
             }
             <PrimaryEmailConfirmationModal
