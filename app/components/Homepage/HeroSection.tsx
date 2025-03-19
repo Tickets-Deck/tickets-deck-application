@@ -110,7 +110,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
     return (
         <>
             <section className={"sectionPadding !pt-[6.5rem] !pb-[4.5rem] flex flex-col md:flex-row gap-8 bg-dark-grey items-center relative"}>
-                {/* <div className='absolute size-full top-0 left-0 [&_img]:object-cover after:absolute after:size-full after:top-0 after:left-0 after:bg-[linear-gradient(180deg,_rgba(27,27,27,0.4)_0%,_rgba(27,27,27,0.7)_100%)]'>
+                <div className='absolute size-full top-0 left-0 [&_img]:object-cover after:absolute after:size-full after:top-0 after:left-0 after:bg-[linear-gradient(180deg,_rgba(27,27,27,0.4)_0%,_rgba(27,27,27,0.7)_100%)]'>
                     <Image
                         src={imageWithPlaceholder[heroSectionImgIndex].src}
                         alt='People in event'
@@ -120,7 +120,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                         placeholder={"blur"}
                         blurDataURL={imageWithPlaceholder[heroSectionImgIndex].placeholder}
                     />
-                </div> */}
+                </div>
                 <div className='flex flex-col gap-5 !basis-1/2 !z-[2]'>
                     <div className='flex flex-col gap-2'>
                         <h2 className='font-Mona-Sans-Wide font-medium text-[35px] md:text-[64px] leading-[40px] md:leading-[68px] bg-clip-text text-transparent animate-gradient bg-[length:200%_200%] bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300'>
@@ -157,14 +157,15 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                                 </button>
                             </Link>
                         )}
-                        {!isEmailVerified ? (
+                        {user && !isEmailVerified && (
                             <button
                                 className='border-[1.5px] border-white text-white font-medium bg-transparent hover:opacity-60'
                                 onClick={() => setEmailVerificationPromptIsVisible(true)}
                             >
                                 Create Event
                             </button>
-                        ) : (
+                        )}
+                        {user && isEmailVerified && (
                             <Link href={ApplicationRoutes.CreateEvent}>
                                 <button className='border-[1.5px] border-white text-white font-medium bg-transparent hover:opacity-60'>
                                     Create Event
