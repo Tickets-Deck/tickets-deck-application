@@ -13,6 +13,9 @@ import { Icons } from "../ui/icons";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { StorageKeys } from "@/app/constants/storageKeys";
 import { ApplicationError } from "@/app/constants/applicationError";
+import { useSession } from "next-auth/react";
+import { useAppDispatch } from "@/app/redux/hook";
+import { fetchUserProfile } from "@/app/redux/features/user/userSlice";
 
 interface VerifyEmailPageProps { }
 
@@ -24,13 +27,17 @@ const VerifyEmailPage: FunctionComponent<
     const searchParams = useSearchParams();
     const verifyUserEmail = useVerifyUserEmail();
     const resendVerificationLink = useResendVerificationLink();
+    const dispatch = useAppDispatch();
 
     // Get the token from the search params
     const token = searchParams.get("vrtkn");
     const userId = searchParams.get("userId");
 
+    const { data: session, status } = useSession();
+    const user = session?.user;
+
     const [verificationError, setVerificationError] = useState<string>();
-    const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
+    const [isVerifyingEmail, setIsVerifyingEmail] = useState(true);
     const [isResendingEmail, setIsResendingEmail] = useState(false);
     const [isEmailVerified, setIsEmailVerified] = useState(false);
 
@@ -58,14 +65,7 @@ const VerifyEmailPage: FunctionComponent<
         setIsVerifyingEmail(true);
 
         await verifyUserEmail(token as string, userId as string)
-            .then((response) => {
-                if (response.data.user) {
-                    const email = response.data.user.email;
-
-                    // Save the email to session storage
-                    sessionStorage.setItem(StorageKeys.NewlyCreatedUserEmail, email);
-                }
-
+            .then(() => {
                 // Set the isEmailVerified state to true
                 setIsEmailVerified(true);
             })
@@ -103,10 +103,16 @@ const VerifyEmailPage: FunctionComponent<
     }
 
     useEffect(() => {
-        if (token && userId && !isVerifyingEmail) {
+        if (token && userId) {
             handleVerifyUserEmail();
         }
     }, [token, userId]);
+
+    // This hook fetches the profile of the user if the user is logged in & the email verified status is true
+    useEffect(() => {
+        if (!user || !isEmailVerified) return;
+        dispatch(fetchUserProfile(session?.user.id as string));
+    }, [isEmailVerified, user]);
 
     return (
         <div className='max-[768px]:sectionPadding flex md:grid place-items-center py-[5rem] min-h-[90vh] bg-dark-grey'>
@@ -166,14 +172,22 @@ const VerifyEmailPage: FunctionComponent<
                                 </span>
                             </span>
                             <p className="text-center">
-                                Your email has been verified successfully. You can now login to
-                                your account.
+                                Your email has been verified successfully.
+                                {!user && "You can now login to your account."}
                             </p>
-                            <Link
-                                className='w-full p-[0.65rem] rounded-lg bg-white text-dark-grey text-center cursor-pointer border-none outline-none hover:opacity-80'
-                                href={ApplicationRoutes.SignIn}>
-                                Login
-                            </Link>
+                            {
+                                user ?
+                                    <Link
+                                        className='w-full p-[0.65rem] rounded-lg bg-white text-dark-grey text-center cursor-pointer border-none outline-none hover:opacity-80'
+                                        href={ApplicationRoutes.Home}>
+                                        Go to homepage
+                                    </Link> :
+                                    <Link
+                                        className='w-full p-[0.65rem] rounded-lg bg-white text-dark-grey text-center cursor-pointer border-none outline-none hover:opacity-80'
+                                        href={ApplicationRoutes.SignIn}>
+                                        Login
+                                    </Link>
+                            }
                         </div>
                     )
                 }
