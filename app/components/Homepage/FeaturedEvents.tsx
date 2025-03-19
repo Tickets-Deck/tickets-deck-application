@@ -130,7 +130,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
             <div className='w-full overflow-x-auto relative overflow-hidden mb-4'>
                 {!isFetchingEvents && filteredFeaturedEvents && filteredFeaturedEvents.length > 0 && (
                     <div className='overflow-x-auto snap-mandatory grid sm:grid-cols-2 lg:grid-cols-4 gap-6 flex-nowrap'>
-                        {filteredFeaturedEvents.slice(0, 3).map((event) => (
+                        {filteredFeaturedEvents.slice(0, 4).map((event) => (
                             // <EventCard
                             //     event={event}
                             //     key={index}
@@ -156,11 +156,11 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                                         </span>
                                     )}
                                     {
-                                        Number(event.startingPrice) &&
+                                        Number(event.startingPrice) ?
                                         <div className="absolute bottom-2 right-2 text-sm flex flex-col items-end">
                                             <span className="text-[10px] text-white mix-blend-difference shadow-md">Starting Price:</span>
                                             <p className="bg-black/70 backdrop-blur-sm px-2 py-1 rounded">{`${NairaPrice.format(Number(event.startingPrice))}`}</p>
-                                        </div>
+                                        </div> : <></>
                                     }
                                 </div>
 
@@ -185,11 +185,11 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                                         <span className="capitalize text-xs">{event.venue}</span>
                                     </div>
                                     {
-                                        event.remainingTickets > 0 &&
+                                        event.remainingTickets > 0 ?
                                         <div className="mt-3 text-xs">
                                             {/* <span className="text-yellow-400">{event.tickets.reduce((acc: number, ticket: TicketResponse) => acc + ticket.price, 0)} tickets</span> remaining */}
                                             <span className="text-yellow-400">{event.remainingTickets} tickets</span> remaining
-                                        </div>
+                                        </div> : <></>
                                     }
                                 </div>
 
