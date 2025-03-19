@@ -14,17 +14,17 @@ import ComponentLoader from "../Loader/ComponentLoader";
 import { StatusCodes } from "@/app/models/IStatusCodes";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { StorageKeys } from "@/app/constants/storageKeys";
-import { updateUserCredentials } from "@/app/redux/features/user/userSlice";
+import { fetchUserProfile } from "@/app/redux/features/user/userSlice";
 import { useFetchUserInformation } from "@/app/api/apiClient";
-import { useDispatch } from "react-redux";
 import { Icons } from "../ui/icons";
 import { ApiRoutes } from "@/app/api/apiRoutes";
+import { useAppDispatch } from "@/app/redux/hook";
 
 type LoginProps = {}
 
 const Login: FunctionComponent<LoginProps> = (): ReactElement => {
     const fetchUserInformation = useFetchUserInformation();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl");
 
@@ -64,17 +64,17 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         }
     }
 
-    async function handleFetchUserInformation() {
-        await fetchUserInformation(session?.user.id as string)
-            .then((response) => {
-                // Save to redux
-                dispatch(updateUserCredentials(response.data));
-            })
-            .catch((error) => {
-                // console.log(error);
-                catchError(error);
-            });
-    }
+    // async function handleFetchUserInformation() {
+    //     await fetchUserInformation(session?.user.id as string)
+    //         .then((response) => {
+    //             // Save to redux
+    //             dispatch(updateUserCredentials(response.data));
+    //         })
+    //         .catch((error) => {
+    //             // console.log(error);
+    //             catchError(error);
+    //         });
+    // }
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         // Prevent default form submission
@@ -136,15 +136,18 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
         if (status === "authenticated") {
             // Refresh the page so we get the new session state to the server side
             router.refresh();
+
             // Fetch user information
-            handleFetchUserInformation();
+            // handleFetchUserInformation();
+            dispatch(fetchUserProfile(session?.user.id as string));
+
             // Clear newly created user email
             sessionStorage.removeItem(StorageKeys.NewlyCreatedUserEmail);
-            
+
             // Navigate to callback URL if available, otherwise go to homepage
             router.push(callbackUrl ? decodeURIComponent(callbackUrl) : ApplicationRoutes.Home);
         }
-    }, [status]);
+    }, [session, status]);
 
     return (
         <div className='max-[768px]:sectionPadding flex md:grid place-items-center py-[5rem] min-h-[90vh] bg-dark-grey'>
@@ -194,36 +197,36 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                     >
                         {/* {
                             loginMethod === LoginMethod.Email && */}
-                            <div className='flex flex-col gap-1'>
-                                <label htmlFor='email' className='text-sm font-light'>
-                                    Email address / Username
-                                </label>
-                                <div className='flex rounded-lg overflow-hidden'>
-                                    <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
-                                        <Icons.User />
-                                    </span>
-                                    <input
-                                        // type='email'
-                                        name='email'
-                                        placeholder='Enter your email or username'
-                                        value={emailOrUsername}
-                                        className='w-full outline-none border-none text-white bg-white/10 text-base'
-                                        onChange={(e) => {
-                                            // If we have a value, clear email error message
-                                            if (e.target.value) {
-                                                setEmailErrorMsg(false);
-                                                setMessage("");
-                                            }
-                                            setEmailOrUsername(e.target.value);
-                                        }}
-                                    />
-                                </div>
-                                {emailErrorMsg && (
-                                    <span className='text-failed-color text-xs'>
-                                        Please enter your email address
-                                    </span>
-                                )}
+                        <div className='flex flex-col gap-1'>
+                            <label htmlFor='email' className='text-sm font-light'>
+                                Email address / Username
+                            </label>
+                            <div className='flex rounded-lg overflow-hidden'>
+                                <span className='p-2 bg-white/10 grid place-items-center [&_svg]:size-[1.5rem]'>
+                                    <Icons.User />
+                                </span>
+                                <input
+                                    // type='email'
+                                    name='email'
+                                    placeholder='Enter your email or username'
+                                    value={emailOrUsername}
+                                    className='w-full outline-none border-none text-white bg-white/10 text-base'
+                                    onChange={(e) => {
+                                        // If we have a value, clear email error message
+                                        if (e.target.value) {
+                                            setEmailErrorMsg(false);
+                                            setMessage("");
+                                        }
+                                        setEmailOrUsername(e.target.value);
+                                    }}
+                                />
                             </div>
+                            {emailErrorMsg && (
+                                <span className='text-failed-color text-xs'>
+                                    Please enter your email address
+                                </span>
+                            )}
+                        </div>
                         {/* } */}
                         {/* {
                             loginMethod === LoginMethod.Username &&
