@@ -23,17 +23,17 @@ import sholly from "./images/sholly_y.jpg";
 // import crowd_video from "./videos/crowd_video.mp4";
 
 const ImageBg1 =
-  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140925/hero_images/ImageBg1_nnev1u.jpg";
+  "https://res.cloudinary.com/dvxqk1487/image/upload/v1738492920/hero_images/ImageBg1_mzehqx.jpg";
 const ImageBg2 =
-  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140882/hero_images/ImageBg2_wk6w74.jpg";
+  "https://res.cloudinary.com/dvxqk1487/image/upload/v1738492915/hero_images/ImageBg2_slmsu9.jpg";
 const ImageBg3 =
-  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140935/hero_images/ImageBg3_j0fq4y.jpg";
+  "https://res.cloudinary.com/dvxqk1487/image/upload/v1738492921/hero_images/ImageBg3_rn5scf.jpg";
 const ImageBg4 =
-  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140884/hero_images/ImageBg4_xq1gcm.jpg";
+  "https://res.cloudinary.com/dvxqk1487/image/upload/v1738492914/hero_images/ImageBg4_oxrkxt.jpg";
 const ImageBg5 =
-  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701140920/hero_images/ImageBg5_jkbucy.jpg";
+  "https://res.cloudinary.com/dvxqk1487/image/upload/v1738492920/hero_images/ImageBg5_h6m20q.jpg";
 const ImageBg6 =
-  "https://res.cloudinary.com/dyxqhvkzp/image/upload/v1701141965/hero_images/ImageBg6_e2jb97.jpg";
+  "https://res.cloudinary.com/dvxqk1487/image/upload/v1738492920/hero_images/ImageBg6_kiwrzw.jpg";
 
 export default {
   logoWhite,
@@ -58,5 +58,5 @@ export default {
   about_hero,
   toby,
   simlex,
-  sholly
+  sholly,
 };
