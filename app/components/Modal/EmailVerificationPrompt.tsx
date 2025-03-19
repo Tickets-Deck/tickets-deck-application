@@ -16,12 +16,13 @@ interface EmailVerificationPromptProps {
     visibility: boolean;
     setVisibility: Dispatch<SetStateAction<boolean>>;
     userId: string;
+    userEmail: string;
     userName: string;
 }
 
 const EmailVerificationPrompt: FunctionComponent<
     EmailVerificationPromptProps
-> = ({ visibility, setVisibility, userId, userName }): ReactElement => {
+> = ({ visibility, setVisibility, userId, userName, userEmail }): ReactElement => {
 
     const toastHandler = useToast();
 
@@ -44,7 +45,7 @@ const EmailVerificationPrompt: FunctionComponent<
                 }
 
                 // Show success message
-                toastHandler.logSuccess("Success", "Verification link has been sent successfully.");
+                toastHandler.logSuccess("Success", `A verification link has been sent successfully to your email - ${userEmail}`);
 
                 // Close the modal
                 setVisibility(false);
