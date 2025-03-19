@@ -8,16 +8,13 @@ import Link from 'next/link'
 import { motion } from "framer-motion"
 import { ApplicationRoutes } from '@/app/constants/applicationRoutes'
 import { useSession } from 'next-auth/react'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/app/redux/store'
-import { UserCredentialsResponse } from '@/app/models/IUser'
+import { ITrendingEventCategory } from '@/app/models/IEventCategory'
 
 type Props = {
     events: EventResponse[]
-    emailVerificationPromptIsVisible: boolean
     setEmailVerificationPromptIsVisible: Dispatch<SetStateAction<boolean>>
-    userInfo: UserCredentialsResponse | null
-    showEmailVerificationAlert(): void
+    isEmailVerified: boolean | undefined
+    trendingEventCategories: ITrendingEventCategory[] | undefined
 }
 
 function ElegantShape({
@@ -80,7 +77,7 @@ function ElegantShape({
 }
 
 export default function UpcomingEvents(
-    { events, userInfo, showEmailVerificationAlert }: Props) {
+    { events, setEmailVerificationPromptIsVisible, isEmailVerified, trendingEventCategories }: Props) {
 
     const { data: session } = useSession();
     const user = session?.user;
@@ -237,16 +234,16 @@ export default function UpcomingEvents(
                                         </button>
                                     </Link>
                                 )}
-                                {user && !userInfo?.emailVerified && (
+                                {user && !isEmailVerified && (
                                     <button
-                                        onClick={() => showEmailVerificationAlert()}
+                                        onClick={() => setEmailVerificationPromptIsVisible(true)}
                                         className="primaryButton !mt-auto !w-full !justify-center [&_svg_path]:stroke-white group">
                                         Start Creating
                                         <Icons.ArrowRight className="ml-2 w-6 h-6 group-hover:[&_path]:stroke-black" />
                                     </button>
                                 )}
-                                {user && userInfo?.emailVerified && (
-                                    <Link href={ApplicationRoutes.CreateEvent}>
+                                {user && isEmailVerified && (
+                                    <Link className='!mt-auto' href={ApplicationRoutes.CreateEvent}>
                                         <button
                                             // onClick={() => showEmailVerificationAlert()}
                                             className="primaryButton !mt-auto !w-full !justify-center [&_svg_path]:stroke-white group">
@@ -254,7 +251,8 @@ export default function UpcomingEvents(
                                             <Icons.ArrowRight className="ml-2 w-6 h-6 group-hover:[&_path]:stroke-black" />
                                         </button>
                                     </Link>
-                                )}
+                                )
+                                }
                             </div>
                         </div>
                     </div>
@@ -276,7 +274,7 @@ export default function UpcomingEvents(
                                                 alt={event.title}
                                                 width={60}
                                                 height={60}
-                                                className="rounded-lg object-cover h-16 w-16"
+                                                className="rounded-lg object-cover h-16 w-16 overflow-hidden text-xs min-w-[60px] min-h-[60px]"
                                             />
                                             <div>
                                                 <h4 className="font-medium group-hover:text-purple-400 transition-colors capitalize">{event.title}</h4>
@@ -293,11 +291,14 @@ export default function UpcomingEvents(
                             <div className="mt-6 pt-4 border-t border-gray-800">
                                 <h4 className="font-medium mb-3">Popular Categories</h4>
                                 <div className="flex flex-row flex-wrap gap-2">
-                                    <Badge title='Music' className='!mx-0 !mb-0' />
+                                    {
+                                        trendingEventCategories?.map(category => <Badge title={category.name} className='!mx-0 !mb-0' />)
+                                    }
+                                    {/* <Badge title='Music' className='!mx-0 !mb-0' />
                                     <Badge title='Sports' className='!mx-0 !mb-0' />
                                     <Badge title='Arts' className='!mx-0 !mb-0' />
                                     <Badge title='Business' className='!mx-0 !mb-0' />
-                                    <Badge title='Food' className='!mx-0 !mb-0' />
+                                    <Badge title='Food' className='!mx-0 !mb-0' /> */}
                                 </div>
                             </div>
 
