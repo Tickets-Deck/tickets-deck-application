@@ -9,7 +9,7 @@ import { EventResponse, FeaturedEvent } from "./models/IEvents";
 import BetaTestModal from "./components/Modal/BetaTestModal";
 import { ImageWithPlaceholder } from "./models/IImage";
 import { useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import TestimonialSection from "./components/Homepage/TestimonialSection";
 import UpcomingEvents from "./components/Homepage/UpcomingEvents";
 import { useSelector } from "react-redux";
@@ -18,6 +18,7 @@ import EmailVerificationPrompt from "./components/Modal/EmailVerificationPrompt"
 import { catchError } from "./constants/catchError";
 import { ITrendingEventCategory } from "./models/IEventCategory";
 import { selectUserFlags } from "./redux/features/user/userSlice";
+import { FlagOptions } from "./enums/UserFlag";
 
 interface HomepageProps {
     imageWithPlaceholder: ImageWithPlaceholder[];
@@ -29,6 +30,8 @@ const Homepage: FunctionComponent<HomepageProps> = ({
     const fetchFeaturedEvents = useFetchFeaturedEvents();
     const fetchEvents = useFetchEvents();
     const fetchTrendingEventCategories = useFetchTrendingEventCategories();
+        const { data: session } = useSession();
+        const user = session?.user;
     const searchParams = useSearchParams();
     const authToken = searchParams.get('g-oauth-token');
 
@@ -46,6 +49,8 @@ const Homepage: FunctionComponent<HomepageProps> = ({
         (state: RootState) => state.userCredentials.userInfo
     );
     const userFlags = useSelector(selectUserFlags);
+
+    const isEmailVerified = user && userFlags?.[FlagOptions.isEmailVerified];
 
     async function handleFetchFeaturedEvents() {
         // Fetch events
@@ -186,9 +191,9 @@ const Homepage: FunctionComponent<HomepageProps> = ({
                     isFetchingEvents={isFetchingEvents}
                     events={events}
                     imageWithPlaceholder={imageWithPlaceholder}
-                    userFlags={userFlags}
                     setEmailVerificationPromptIsVisible={setEmailVerificationPromptIsVisible}
                     trendingEventCategories={trendingEventCategories}
+                    isEmailVerified={isEmailVerified}
                 />
                 <FeaturedEvents
                     isFetchingEvents={isFetchingFeaturedEvents}
@@ -198,7 +203,8 @@ const Homepage: FunctionComponent<HomepageProps> = ({
                 <TestimonialSection />
                 <CreateEvent
                     userInfo={userInfo}
-                    showEmailVerificationAlert={showEmailVerificationAlert}
+                    isEmailVerified={isEmailVerified}
+                    setEmailVerificationPromptIsVisible={setEmailVerificationPromptIsVisible}
                 />
                 <UpcomingEvents
                     events={events}
