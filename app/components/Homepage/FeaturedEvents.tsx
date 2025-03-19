@@ -23,10 +23,11 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
     featuredEvents,
     isFetchingEvents,
 }): ReactElement => {
-
     const { eventCategories } = useApplicationContext();
 
     const [featuredEventCategories, setFeaturedEventCategories] = useState<IEventCategory[]>();
+    const [selectedEventCategoryId, setSelectedEventCategoryId] = useState<string>("All");
+    const [filteredFeaturedEvents, setFilteredFeaturedEvents] = useState<FeaturedEvent[]>();
 
     useEffect(() => {
         if (!eventCategories || !featuredEvents) return;
@@ -41,6 +42,21 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
         setFeaturedEventCategories(Array.from(categoryMap.values()));
 
     }, [featuredEvents, eventCategories]);
+
+    useEffect(() => {
+        if (featuredEvents.length == 0) return;
+        setFilteredFeaturedEvents(featuredEvents);
+    }, [featuredEvents])
+
+    useEffect(() => {
+        if (selectedEventCategoryId == "All") {
+            setFilteredFeaturedEvents(featuredEvents);
+            return;
+        }
+
+        const _filteredFeaturedEvents = featuredEvents.filter(event => event.categoryId == selectedEventCategoryId);
+        setFilteredFeaturedEvents(_filteredFeaturedEvents);
+    }, [selectedEventCategoryId])
 
     return (
         <section className='sectionPadding !py-[4.5rem] bg-dark-grey flex items-start relative text-white flex-col sm:gap-6 gap-2 pt-[6.5rem] pb-[4.5rem]'>
@@ -91,10 +107,18 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                 featuredEventCategories && featuredEventCategories.length > 0 &&
                 <div className="bg-container-grey mb-4 p-1 rounded-lg max-w-full overflow-x-auto md:overflow-auto">
                     <div className="flex flex-row text-nowrap space-x-2 text-sm">
-                        <span className="p-2 px-3 bg-primary-color text-white rounded-md">All</span>
+                        <span
+                            onClick={() => setSelectedEventCategoryId("All")}
+                            className={`p-2 px-3 rounded-md cursor-pointer ${selectedEventCategoryId == "All" ? 'bg-primary-color text-white' : ''}`}>
+                            All
+                        </span>
                         {
                             featuredEventCategories?.map((category) => (
-                                <span key={category?.id} className="p-2 px-3 bg-transparent text-white/60 rounded-md cursor-pointer hover:text-white hover:bg-white/10">
+                                <span
+                                    onClick={() => setSelectedEventCategoryId(category.id)}
+                                    key={category?.id}
+                                    className={`p-2 px-3 rounded-md cursor-pointer 
+                                    ${selectedEventCategoryId == category.id ? 'bg-primary-color text-white' : 'bg-transparent text-white/60 hover:text-white hover:bg-white/10'}`}>
                                     {category?.name}
                                 </span>
                             ))
@@ -104,9 +128,9 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
             }
 
             <div className='w-full overflow-x-auto relative overflow-hidden mb-4'>
-                {!isFetchingEvents && featuredEvents.length > 0 && (
+                {!isFetchingEvents && filteredFeaturedEvents && filteredFeaturedEvents.length > 0 && (
                     <div className='overflow-x-auto snap-mandatory grid sm:grid-cols-2 lg:grid-cols-4 gap-6 flex-nowrap'>
-                        {featuredEvents.slice(0, 3).map((event, index) => (
+                        {filteredFeaturedEvents.slice(0, 3).map((event) => (
                             // <EventCard
                             //     event={event}
                             //     key={index}
@@ -133,15 +157,16 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                                     )}
                                     {
                                         Number(event.startingPrice) &&
-                                        <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-sm">
-                                            {`${NairaPrice.format(Number(event.startingPrice))}`}
+                                        <div className="absolute bottom-2 right-2 text-sm flex flex-col items-end">
+                                            <span className="text-[10px] text-white mix-blend-difference shadow-md">Starting Price:</span>
+                                            <p className="bg-black/70 backdrop-blur-sm px-2 py-1 rounded">{`${NairaPrice.format(Number(event.startingPrice))}`}</p>
                                         </div>
                                     }
                                 </div>
 
                                 <div className="p-4 pb-2">
                                     <div className="flex justify-between items-start">
-                                        <h3 className="font-medium text-lg">{event.title}</h3>
+                                        <h3 className="font-medium text-lg whitespace-nowrap text-ellipsis overflow-hidden w-full">{event.title}</h3>
                                         <span className="bg-gray-800 text-xs border-[1px] border-white/30 p-1 px-2 rounded-xl">
                                             {event.category}
                                         </span>
@@ -157,7 +182,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                                     </div>
                                     <div className="flex items-center gap-2 mt-1">
                                         <Icons.LocationPin className="h-4 w-4 text-purple-400" />
-                                        <span className="capitalize">{event.venue}</span>
+                                        <span className="capitalize text-xs">{event.venue}</span>
                                     </div>
                                     {
                                         event.remainingTickets > 0 &&
@@ -182,7 +207,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                         <ComponentLoader customLoaderColor='#fff' />
                     </>
                 )}
-                {!isFetchingEvents && featuredEvents.length == 0 && (
+                {!isFetchingEvents && filteredFeaturedEvents && filteredFeaturedEvents.length == 0 && (
                     <div className='text-center w-fit mx-auto'>
                         <br />
                         <br />
@@ -191,7 +216,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                 )}
             </div>
 
-            {!isNotHomepage && !isFetchingEvents && featuredEvents.length > 0 && (
+            {!isNotHomepage && !isFetchingEvents && filteredFeaturedEvents && filteredFeaturedEvents.length > 0 && (
                 <Link
                     href={ApplicationRoutes.GeneralEvents}
                     className='tertiaryButton my-0 mx-auto'
