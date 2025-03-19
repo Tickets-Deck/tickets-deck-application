@@ -30,8 +30,8 @@ const Homepage: FunctionComponent<HomepageProps> = ({
     const fetchFeaturedEvents = useFetchFeaturedEvents();
     const fetchEvents = useFetchEvents();
     const fetchTrendingEventCategories = useFetchTrendingEventCategories();
-        const { data: session } = useSession();
-        const user = session?.user;
+    const { data: session } = useSession();
+    const user = session?.user;
     const searchParams = useSearchParams();
     const authToken = searchParams.get('g-oauth-token');
 
@@ -57,7 +57,6 @@ const Homepage: FunctionComponent<HomepageProps> = ({
         await fetchFeaturedEvents()
             .then((response) => {
                 if (response) {
-                    console.log("🚀 ~ .then ~ response:", response);
                     setFeaturedEvents(response.data);
 
                     // Save events to session storage
@@ -110,17 +109,6 @@ const Homepage: FunctionComponent<HomepageProps> = ({
                 // Stop loader
                 setIsFetchingTrendingEventCategories(false);
             });
-    }
-
-    function showEmailVerificationAlert() {
-        setEmailVerificationPromptIsVisible(true);
-
-        // Check for the email verification status if the user is logged in.
-        // if (userInfo && (userInfo.flags && userInfo.flags.find((flag) => flag.flagName == FlagOptions.isEmailVerified && flag.flagValue === true))) {
-        //     // toast.error("Please verify your email address to continue.");
-        //     setEmailVerificationPromptIsVisible(true);
-        //     return;
-        // }
     }
 
     useEffect(() => {
@@ -182,6 +170,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({
                     visibility={emailVerificationPromptIsVisible}
                     setVisibility={setEmailVerificationPromptIsVisible}
                     userId={userInfo?.id as string}
+                    userEmail={userInfo?.email as string}
                     userName={userInfo?.firstName as string}
                 />
             )}
@@ -202,16 +191,14 @@ const Homepage: FunctionComponent<HomepageProps> = ({
                 <Services />
                 <TestimonialSection />
                 <CreateEvent
-                    userInfo={userInfo}
                     isEmailVerified={isEmailVerified}
                     setEmailVerificationPromptIsVisible={setEmailVerificationPromptIsVisible}
                 />
                 <UpcomingEvents
                     events={events}
-                    emailVerificationPromptIsVisible={emailVerificationPromptIsVisible}
+                    isEmailVerified={isEmailVerified}
                     setEmailVerificationPromptIsVisible={setEmailVerificationPromptIsVisible}
-                    userInfo={userInfo}
-                    showEmailVerificationAlert={showEmailVerificationAlert}
+                    trendingEventCategories={trendingEventCategories}
                 />
                 {/* <MobileAppSection /> */}
             </div>
