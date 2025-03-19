@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UserCredentialsResponse } from "@/app/models/IUser";
 import { RootState } from "../../store";
 import { useFetchUserInformation } from "@/app/api/apiClient";
+import { FlagOptions } from "@/app/enums/UserFlag";
 
 // Define the initial state
 export interface UserState {
@@ -33,7 +34,7 @@ export const fetchUserProfile = createAsyncThunk(
         const data = response.data;
 
         // Convert flags array into an object
-        const flagsObject: Record<string, boolean> | null =
+        const flagsObject: Record<FlagOptions, boolean> | null =
           data.flags?.reduce((acc: Record<string, boolean>, flag: any) => {
             acc[flag.flagName] = flag.flagValue;
             return acc;
