@@ -22,6 +22,9 @@ import { CustomerContactDetails } from '@/app/models/IUser';
 import { useApplicationContext } from '@/app/context/ApplicationContext';
 import { ToastContext } from '@/app/context/ToastCardContext';
 import { ImagePopup } from '@/app/components/custom/ImagePopup';
+import { useSession } from 'next-auth/react';
+import { selectUserFlags } from '@/app/redux/features/user/userSlice';
+import { FlagOptions } from '@/app/enums/UserFlag';
 
 interface EventDetailsPageProps {
     params: { id: string }
@@ -38,6 +41,11 @@ export interface TimeLeft {
 const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }): ReactElement => {
     const router = useRouter();
     const appTheme = useSelector((state: RootState) => state.theme.appTheme);
+    const { data: session } = useSession();
+    const user = session?.user;
+
+    const userFlags = useSelector(selectUserFlags);
+    const isEmailVerified = user && userFlags?.[FlagOptions.isEmailVerified];
 
     const id = params.id;
 
@@ -230,6 +238,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({ params }):
                 eventInfo={eventInfo}
                 totalPrice={totalPrice}
                 contactDetails={contactDetails}
+                isEmailVerified={isEmailVerified}
             />
             {
                 eventInfo &&
