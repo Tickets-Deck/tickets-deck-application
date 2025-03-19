@@ -21,7 +21,7 @@ interface HeroSectionProps {
     imageWithPlaceholder: ImageWithPlaceholder[];
     setEmailVerificationPromptIsVisible: Dispatch<SetStateAction<boolean>>
     trendingEventCategories: ITrendingEventCategory[] | undefined
-    userFlags: Record<string, boolean> | null
+    isEmailVerified: boolean | undefined
 }
 
 const HeroSection: FunctionComponent<HeroSectionProps> = ({
@@ -30,10 +30,8 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
     imageWithPlaceholder,
     setEmailVerificationPromptIsVisible,
     trendingEventCategories,
-    userFlags
+    isEmailVerified
 }): ReactElement => {
-    console.log("🚀 ~ userFlags:", userFlags)
-
     const { data: session } = useSession();
     const user = session?.user;
 
@@ -62,8 +60,6 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
 
     const [countdown, setCountdown] = useState(formattedDate);
 
-    const isEmailVerified = user && userFlags?.[FlagOptions.isEmailVerified];
-
     const { rive, RiveComponent } = useRive({
         src: '/rive/btn_anim.riv',
         stateMachines: 'State Machine 1',
@@ -81,25 +77,6 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
 
         return () => clearInterval(intervalId);
     }, [imageList.length]);
-
-    // Simulate countdown timer
-    // useEffect(() => {
-    //     const timer = setInterval(() => {
-    //         setCountdown((prev) => {
-    //             if (prev.seconds > 0) {
-    //                 return { ...prev, seconds: prev.seconds - 1 }
-    //             } else if (prev.minutes > 0) {
-    //                 return { ...prev, minutes: prev.minutes - 1, seconds: 59 }
-    //             } else if (prev.hours > 0) {
-    //                 return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 }
-    //             } else if (prev.days > 0) {
-    //                 return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 }
-    //             }
-    //             return prev
-    //         })
-    //     }, 1000)
-    //     return () => clearInterval(timer)
-    // }, []);
 
     useEffect(() => {
         if (!nextHotEvent) return;
@@ -133,7 +110,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
     return (
         <>
             <section className={"sectionPadding !pt-[6.5rem] !pb-[4.5rem] flex flex-col md:flex-row gap-8 bg-dark-grey items-center relative"}>
-                <div className='absolute size-full top-0 left-0 [&_img]:object-cover after:absolute after:size-full after:top-0 after:left-0 after:bg-[linear-gradient(180deg,_rgba(27,27,27,0.4)_0%,_rgba(27,27,27,0.7)_100%)]'>
+                {/* <div className='absolute size-full top-0 left-0 [&_img]:object-cover after:absolute after:size-full after:top-0 after:left-0 after:bg-[linear-gradient(180deg,_rgba(27,27,27,0.4)_0%,_rgba(27,27,27,0.7)_100%)]'>
                     <Image
                         src={imageWithPlaceholder[heroSectionImgIndex].src}
                         alt='People in event'
@@ -143,7 +120,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                         placeholder={"blur"}
                         blurDataURL={imageWithPlaceholder[heroSectionImgIndex].placeholder}
                     />
-                </div>
+                </div> */}
                 <div className='flex flex-col gap-5 !basis-1/2 !z-[2]'>
                     <div className='flex flex-col gap-2'>
                         <h2 className='font-Mona-Sans-Wide font-medium text-[35px] md:text-[64px] leading-[40px] md:leading-[68px] bg-clip-text text-transparent animate-gradient bg-[length:200%_200%] bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300'>
@@ -243,25 +220,25 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                                     <div className="bg-black/20 rounded px-2 py-1">
                                         <span className="font-mono font-bold">{countdown.days}</span>
                                     </div>
-                                    <span className="text-xs">days</span>
+                                    <span className="text-xs">{countdown.days > 1 ? "days" : "day"}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <div className="bg-black/20 rounded px-2 py-1">
                                         <span className="font-mono font-bold">{countdown.hours}</span>
                                     </div>
-                                    <span className="text-xs">hrs</span>
+                                    <span className="text-xs">{countdown.hours > 1 ? "hrs" : "hr"}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <div className="bg-black/20 rounded px-2 py-1">
                                         <span className="font-mono font-bold">{countdown.minutes}</span>
                                     </div>
-                                    <span className="text-xs">min</span>
+                                    <span className="text-xs">{countdown.minutes > 1 ? "mins" : "min"}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <div className="bg-black/20 rounded px-2 py-1">
                                         <span className="font-mono font-bold">{countdown.seconds}</span>
                                     </div>
-                                    <span className="text-xs">sec</span>
+                                    <span className="text-xs">{countdown.seconds > 1 ? "secs" : "sec"}</span>
                                 </div>
                             </div>
 
