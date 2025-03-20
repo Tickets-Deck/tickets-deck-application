@@ -216,30 +216,36 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                         </div>
 
                         <div className="flex flex-col md:flex-row items-center gap-6">
-                            <div className="flex items-center gap-6">
-                                <div className="flex items-center gap-1">
-                                    <div className="bg-black/20 rounded px-2 py-1">
-                                        <span className="font-mono font-bold">{countdown.days}</span>
+                            <div className="flex flex-row items-center gap-4">
+                                <span className="text-sm font-light text-white/80">Starts in:</span>
+                                <div className="flex items-center gap-6">
+                                    {
+                                        countdown.days >= 1 ?
+                                            <div className="flex items-center gap-1">
+                                                <div className="bg-black/20 rounded px-2 py-1">
+                                                    <span className="font-mono font-bold">{countdown.days}</span>
+                                                </div>
+                                                <span className="text-xs">{countdown.days > 1 ? "days" : "day"}</span>
+                                            </div> : <></>
+                                    }
+                                    <div className="flex items-center gap-1">
+                                        <div className="bg-black/20 rounded px-2 py-1">
+                                            <span className="font-mono font-bold">{countdown.hours}</span>
+                                        </div>
+                                        <span className="text-xs">{countdown.hours > 1 ? "hrs" : "hr"}</span>
                                     </div>
-                                    <span className="text-xs">{countdown.days > 1 ? "days" : "day"}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <div className="bg-black/20 rounded px-2 py-1">
-                                        <span className="font-mono font-bold">{countdown.hours}</span>
+                                    <div className="flex items-center gap-1">
+                                        <div className="bg-black/20 rounded px-2 py-1">
+                                            <span className="font-mono font-bold">{countdown.minutes}</span>
+                                        </div>
+                                        <span className="text-xs">{countdown.minutes > 1 ? "mins" : "min"}</span>
                                     </div>
-                                    <span className="text-xs">{countdown.hours > 1 ? "hrs" : "hr"}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <div className="bg-black/20 rounded px-2 py-1">
-                                        <span className="font-mono font-bold">{countdown.minutes}</span>
+                                    <div className="flex items-center gap-1">
+                                        <div className="bg-black/20 rounded px-2 py-1">
+                                            <span className="font-mono font-bold">{countdown.seconds}</span>
+                                        </div>
+                                        <span className="text-xs">{countdown.seconds > 1 ? "secs" : "sec"}</span>
                                     </div>
-                                    <span className="text-xs">{countdown.minutes > 1 ? "mins" : "min"}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <div className="bg-black/20 rounded px-2 py-1">
-                                        <span className="font-mono font-bold">{countdown.seconds}</span>
-                                    </div>
-                                    <span className="text-xs">{countdown.seconds > 1 ? "secs" : "sec"}</span>
                                 </div>
                             </div>
 
