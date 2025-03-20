@@ -71,6 +71,10 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session, userData })
     }, [userData, session, status, dispatch]);
 
     useEffect(() => {
+        fetch('/api/socketio', {method: 'POST'}); // 🔥 This ensures the WebSocket server is running
+    }, []);
+
+    useEffect(() => {
         if (session?.error === 'RefreshAccessTokenError') {
             // Force user to re-auth if refresh fails
             signOut({ redirect: false });
