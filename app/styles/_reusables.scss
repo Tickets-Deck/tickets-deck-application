@@ -2,563 +2,567 @@
 
 // Breakpoints
 @mixin smallLaptop() {
-    @media (max-width: (75rem)) {
-        @content;
-    }
+  @media (max-width: (75rem)) {
+    @content;
+  }
 }
 @mixin bigTablet() {
-    @media (max-width: (56.25rem)) {
-        @content;
-    }
+  @media (max-width: (56.25rem)) {
+    @content;
+  }
 }
 @mixin tablet() {
-    @media (max-width: (48rem)) {
-        @content;
-    }
+  @media (max-width: (48rem)) {
+    @content;
+  }
 }
 @mixin bigMobilePhone() {
-    @media (max-width: (32.5rem)) {
-        @content;
-    }
+  @media (max-width: (32.5rem)) {
+    @content;
+  }
 }
 @mixin midSizeMobilePhone() {
-    @media (max-width: (25rem)) {
-        @content;
-    }
+  @media (max-width: (25rem)) {
+    @content;
+  }
 }
 @mixin smallmobilePhone() {
-    @media (max-width: (20rem)) {
-        @content;
-    }
+  @media (max-width: (20rem)) {
+    @content;
+  }
 }
 
 // Animation
 @keyframes slideLeft {
-    from {
-        left: -100%;
-        opacity: 0;
-    }
+  from {
+    left: -100%;
+    opacity: 0;
+  }
 }
 @keyframes slideRight {
-    from {
-        right: -100%;
-        opacity: 0;
-    }
+  from {
+    right: -100%;
+    opacity: 0;
+  }
 }
 
 // Buttons
 
 @mixin primary-button {
-    width: fit-content;
-    height: fit-content;
-    border-radius: 0.625rem;
-    cursor: pointer;
-    font-size: $font-size-16 - 0.125rem;
-    padding: 0.8rem 1.6rem;
-    border: none;
-    background-color: $primary-color;
-    color: $white;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    
-    svg {
-        opacity: 1;
-        color: #fff;
-        width: 0.75rem;
-        path {
-            fill: #fff;
-        }
-    }
+  width: fit-content;
+  height: fit-content;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  font-size: $font-size-16 - 0.125rem;
+  padding: 0.8rem 1.6rem;
+  border: none;
+  background-color: $primary-color;
+  color: $white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
-    &:hover {
-        background-color: $white;
-        color: $primary-color;
+  svg {
+    opacity: 1;
+    color: #fff;
+    width: 0.75rem;
+    path {
+      fill: #fff;
     }
+  }
+
+  &:hover {
+    background-color: $white;
+    color: $primary-color;
+  }
 }
 @mixin secondary-button {
-    width: fit-content;
-    border-radius: 3.125rem;
-    cursor: pointer;
-    font-size: $font-size-16 - 0.125rem;
-    padding: 0.8rem 1.6rem;
-    border: none;
-    background-color: $primary-color;
-    color: $white;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  width: fit-content;
+  border-radius: 3.125rem;
+  cursor: pointer;
+  font-size: $font-size-16 - 0.125rem;
+  padding: 0.8rem 1.6rem;
+  border: none;
+  background-color: $primary-color;
+  color: $white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
-    svg {
-        opacity: 1;
-        color: #fff;
-        width: 0.75rem;
-        path {
-            fill: #fff;
-        }
+  svg {
+    opacity: 1;
+    color: #fff;
+    width: 0.75rem;
+    path {
+      fill: #fff;
     }
+  }
 
-    // &:hover {
-    //     gap: 1rem;
-    //     svg {
-    //         opacity: 1;
-    //     }
-    // }
+  // &:hover {
+  //     gap: 1rem;
+  //     svg {
+  //         opacity: 1;
+  //     }
+  // }
 }
 
 @mixin tertiary-button {
-    width: fit-content;
-    border-radius: 3.125rem;
-    cursor: pointer;
-    font-size: $font-size-16 - 0.125rem;
-    padding: 0.8rem 1.6rem;
-    border: none;
-    background-color: $white;
-    color: $dark-grey;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  width: fit-content;
+  border-radius: 3.125rem;
+  cursor: pointer;
+  font-size: $font-size-16 - 0.125rem;
+  padding: 0.8rem 1.6rem;
+  border: none;
+  background-color: $white;
+  color: $dark-grey;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
-    svg {
-        opacity: 1;
-        color: #fff;
-        width: 0.75rem;
-        path {
-            fill: #fff;
-        }
-    }
+  //   w-fit rounded-[3.125rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-white text-dark-grey flex items-center gap-2
 
-    &:hover {
-        opacity: 0.6;
+  svg {
+    opacity: 1;
+    color: #fff;
+    width: 0.75rem;
+    path {
+      fill: #fff;
     }
+  }
+
+  &:hover {
+    opacity: 0.6;
+  }
 }
 
 @mixin closeIcon($color) {
-    margin-left: auto;
-    width: 32px;
-    min-width: 32px;
-    height: 32px;
-    min-height: 32px;
-    border-radius: 100%;
-    display: grid;
-    place-items: center;
-    cursor: pointer;
-    &:hover {
-        background-color: rgba($color, $alpha: 0.1);
+  margin-left: auto;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  min-height: 32px;
+  border-radius: 100%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba($color, $alpha: 0.1);
+  }
+  svg {
+    path {
+      stroke: $color;
+      fill: $color;
     }
-    svg {
-        path {
-            stroke: $color;
-            fill: $color;
-        }
-    }
+  }
 
-    // ml-auto w-8 h-8 min-w-8 min-h-8 rounded-full grid place-items-center cursor-pointer hover:bg-gray-100 [&_svg_path]:stroke-[#000] fill-[#000]
+  // ml-auto w-8 h-8 min-w-8 min-h-8 rounded-full grid place-items-center cursor-pointer hover:bg-gray-100 [&_svg_path]:stroke-[#000] fill-[#000]
 }
 
 // Input field
 @mixin input {
-    width: fit-content;
-    border-radius: 3.125rem;
-    font-size: $font-size-16 - 0.125rem;
-    padding: 0.8rem 1.1rem;
-    border: none;
-    outline: none;
-    background-color: $white;
-    &::placeholder {
-        color: $grey-bg;
-    }
+  width: fit-content;
+  border-radius: 3.125rem;
+  font-size: $font-size-16 - 0.125rem;
+  padding: 0.8rem 1.1rem;
+  border: none;
+  outline: none;
+  background-color: $white;
+  &::placeholder {
+    color: $grey-bg;
+  }
 }
 
 // Animations
 @mixin bumpDownAnimation {
-    // animation: bumpDown 400ms cubic-bezier(0.91, -0.31, 0.27, 1.55);
-    animation: bumpDown 400ms cubic-bezier(0.65, -0.07, 0.25, 1.24);
+  // animation: bumpDown 400ms cubic-bezier(0.91, -0.31, 0.27, 1.55);
+  animation: bumpDown 400ms cubic-bezier(0.65, -0.07, 0.25, 1.24);
 
-    @keyframes bumpDown {
-        from {
-            top: 2.188rem;
-            opacity: 0;
-        }
+  @keyframes bumpDown {
+    from {
+      top: 2.188rem;
+      opacity: 0;
     }
+  }
 }
 @mixin searchSlideInAnimation {
-    // animation: searchSlideIn 400ms cubic-bezier(0.91, -0.31, 0.27, 1.55);
-    animation: searchSlideIn 400ms cubic-bezier(0.65, -0.07, 0.25, 1.24);
+  // animation: searchSlideIn 400ms cubic-bezier(0.91, -0.31, 0.27, 1.55);
+  animation: searchSlideIn 400ms cubic-bezier(0.65, -0.07, 0.25, 1.24);
 
-    @keyframes searchSlideIn {
-        from {
-            right: -2.188rem;
-            opacity: 0;
-        }
+  @keyframes searchSlideIn {
+    from {
+      right: -2.188rem;
+      opacity: 0;
     }
+  }
 }
 
 @mixin sectionPadding {
-    padding-left: 10rem;
-    padding-right: 10rem;
+  padding-left: 10rem;
+  padding-right: 10rem;
 
-    @media screen and (min-width: 81.25rem) {
-        //   padding: 1rem 16%;
-        padding-left: 16%;
-        padding-right: 16%;
-    }
-    @include smallLaptop() {
-        padding-left: 5rem;
-        padding-right: 5rem;
-    }
-    @include tablet() {
-        // padding: $padding-mobile;
-        padding: 1.25rem;
-    }
+  @media screen and (min-width: 81.25rem) {
+    //   padding: 1rem 16%;
+    padding-left: 16%;
+    padding-right: 16%;
+  }
+  @include smallLaptop() {
+    padding-left: 5rem;
+    padding-right: 5rem;
+  }
+  @include tablet() {
+    // padding: $padding-mobile;
+    padding: 1.25rem;
+  }
 }
+
+// p-[1.25rem] md:px-[5rem] lg:px-[16%] xl:px-[10rem]
 
 // STYLES ===============
 
 .innerBody {
-    width: 100%;
-    min-width: 80%;
-    min-height: 100%;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    // padding-top: 1.25rem;
-    // height: calc(100vh - 3rem);
+  width: 100%;
+  min-width: 80%;
+  min-height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  // padding-top: 1.25rem;
+  // height: calc(100vh - 3rem);
 
-    -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch;
 
-    &::-webkit-scrollbar {
-        width: 0.313rem;
-    }
+  &::-webkit-scrollbar {
+    width: 0.313rem;
+  }
 
-    &::-webkit-scrollbar-thumb {
-        background-color: rgba(0, 0, 0, 0.2);
-        border-radius: 0.313rem;
-    }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 0.313rem;
+  }
 
-    @include tablet {
-        width: 85%;
-    }
+  @include tablet {
+    width: 85%;
+  }
 }
 
 .errorMsg,
 .successMsg {
-    font-size: 12px;
-    color: #eb485b;
-    display: flex;
-    align-items: center;
-    gap: 2px;
+  font-size: 12px;
+  color: #eb485b;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 
-    svg {
-        width: 12px;
-        height: 12x;
-        display: inline-flex;
-        height: fit-content;
+  svg {
+    width: 12px;
+    height: 12x;
+    display: inline-flex;
+    height: fit-content;
 
-        path {
-            fill: #eb485b;
-        }
+    path {
+      fill: #eb485b;
     }
+  }
 }
 .successMsg {
-    color: $success-color;
-    svg {
-        path {
-            fill: $success-color;
-        }
+  color: $success-color;
+  svg {
+    path {
+      fill: $success-color;
     }
+  }
 }
 
 .inactiveBtn {
-    background-color: #cecece;
-    cursor: not-allowed;
+  background-color: #cecece;
+  cursor: not-allowed;
 }
 
 .scrollArea {
-    &::-webkit-scrollbar-thumb {
-        background-color: lighten($color: $primary-color, $amount: 40%);
-        border-radius: 1rem;
-        border: 0.188rem solid transparent;
-        cursor: pointer;
-        &:hover {
-            background-color: $secondary-color;
-        }
+  &::-webkit-scrollbar-thumb {
+    background-color: lighten($color: $primary-color, $amount: 40%);
+    border-radius: 1rem;
+    border: 0.188rem solid transparent;
+    cursor: pointer;
+    &:hover {
+      background-color: $secondary-color;
     }
-    &::-webkit-scrollbar {
-        width: 0.5rem;
-        @media screen and (max-width: 48rem) {
-            width: 0.25rem;
-        }
+  }
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+    @media screen and (max-width: 48rem) {
+      width: 0.25rem;
     }
-    &::-webkit-scrollbar-track {
-        background-color: rgba($primary-color, 0.2);
-    }
+  }
+  &::-webkit-scrollbar-track {
+    background-color: rgba($primary-color, 0.2);
+  }
 }
 
 .scrollAreaMin {
-    @extend .scrollArea;
-    &::-webkit-scrollbar {
-        width: 0.25rem;
-        @media screen and (max-width: 768p4) {
-            width: 0.125rem;
-        }
+  @extend .scrollArea;
+  &::-webkit-scrollbar {
+    width: 0.25rem;
+    @media screen and (max-width: 768p4) {
+      width: 0.125rem;
     }
+  }
 }
 
 .summaryInfoScroller {
-    @extend .scrollArea;
-    scrollbar-width: thin;
-    &::-webkit-scrollbar {
-        width: 0.35rem;
-    }
+  @extend .scrollArea;
+  scrollbar-width: thin;
+  &::-webkit-scrollbar {
+    width: 0.35rem;
+  }
 }
 
 .leftSidebarContainer {
-    width: 100%;
-    height: 100vh;
-    // height: calc(100vh - 3rem);
+  width: 100%;
+  height: 100vh;
+  // height: calc(100vh - 3rem);
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  // top: 0;
+  z-index: 120;
+  .overlay {
     position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(#000, 0.5);
+    top: 0;
     left: 0;
-    bottom: 0;
-    // top: 0;
-    z-index: 120;
-    .overlay {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(#000, 0.5);
-        top: 0;
-        left: 0;
-        z-index: 1;
-        cursor: pointer;
+    z-index: 1;
+    cursor: pointer;
+  }
+  .container {
+    background-color: $white;
+    width: 30%;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    z-index: 4;
+    @include tablet {
+      width: 100%;
+      z-index: 120;
     }
-    .container {
-        background-color: $white;
-        width: 30%;
-        height: 100%;
-        left: 0;
-        position: absolute;
-        z-index: 4;
-        @include tablet {
-            width: 100%;
-            z-index: 120;
-        }
-    }
+  }
 
-    animation: slideLeft 640ms cubic-bezier(0.86, 0, 0.07, 1);
-    // animation: slideLeft 640ms cubic-bezier(0.65, -0.07, 0.25, 1.24);
+  animation: slideLeft 640ms cubic-bezier(0.86, 0, 0.07, 1);
+  // animation: slideLeft 640ms cubic-bezier(0.65, -0.07, 0.25, 1.24);
 }
 
 .rightSidebarContainer {
-    width: 100vw;
-    min-width: 100%;
-    height: 100vh;
-    // height: calc(100vh - 3rem);
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    // top: 0;
-    z-index: 3;
-    // border: .625rem solid #fff;
-    @include tablet {
-        z-index: 120;
-    }
+  width: 100vw;
+  min-width: 100%;
+  height: 100vh;
+  // height: calc(100vh - 3rem);
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  // top: 0;
+  z-index: 3;
+  // border: .625rem solid #fff;
+  @include tablet {
+    z-index: 120;
+  }
 
-    .overlay {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(#000, 0.5);
-        top: 0;
-        left: 0;
-        z-index: 1;
-        cursor: pointer;
+  .overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(#000, 0.5);
+    top: 0;
+    left: 0;
+    z-index: 1;
+    cursor: pointer;
+  }
+  .container {
+    background-color: $white;
+    width: 80%;
+    height: 100%;
+    right: 0;
+    position: absolute;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    animation: slideRight 640ms cubic-bezier(0.86, 0, 0.07, 1);
+    @include tablet {
+      width: 100%;
+      z-index: 120;
     }
-    .container {
-        background-color: $white;
-        width: 80%;
-        height: 100%;
-        right: 0;
-        position: absolute;
-        z-index: 4;
-        display: flex;
-        flex-direction: column;
-        animation: slideRight 640ms cubic-bezier(0.86, 0, 0.07, 1);
-        @include tablet {
-            width: 100%;
-            z-index: 120;
-        }
-    }
+  }
 }
 
 .tableContainer {
-    max-height: 65vh;
-    overflow-y: auto;
-    border-radius: 16px;
+  max-height: 65vh;
+  overflow-y: auto;
+  border-radius: 16px;
+  position: relative;
+  background-color: $container-grey;
+  // border: 1px solid #fff;
+
+  .tableLoader {
+    width: 100%;
+    height: 15vh;
+    background-color: $grey-bg;
+  }
+  .tableInfoUnavailable {
+    width: 100%;
+    min-width: 100%;
+    height: 15vh;
     position: relative;
-    background-color: $container-grey;
-    // border: 1px solid #fff;
-
-    .tableLoader {
-        width: 100%;
-        height: 15vh;
-        background-color: $grey-bg;
+    column-span: 2;
+    background-color: $grey-bg;
+    p {
+      position: absolute;
+      margin: auto;
+      opacity: 0.8;
+      white-space: nowrap;
+      top: 40%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: $font-size-16 - 0.125rem;
+      color: $dark-grey;
     }
-    .tableInfoUnavailable {
-        width: 100%;
-        min-width: 100%;
-        height: 15vh;
+  }
+
+  table {
+    background-color: $white;
+    width: 100%;
+    border-collapse: collapse;
+
+    tr {
+      &:last-child {
+        td {
+          border-bottom: 0px;
+        }
+      }
+      // &:nth-child(even) {
+      //     background-color: rgba($color: $container-grey, $alpha: 0.6);
+      // }
+      th,
+      td {
+        padding: 12px 12px;
+        border-bottom: 1px solid rgba($color: $dark-grey, $alpha: 0.5);
+        text-align: left;
+        @include tablet {
+          white-space: nowrap;
+        }
+        &:first-child {
+          padding-left: 24px;
+          max-width: 140px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+      }
+      th {
+        padding: 15px 12px;
+        background-color: $dark-grey;
+        color: $white;
+        font-size: $font-size-16 - 0.25rem;
+        font-weight: $fontWeight-400;
+      }
+      td {
+        font-size: $font-size-16 - 0.1875rem;
+        color: $container-grey;
+        padding: 12px 10px;
+
+        .tag {
+          background-color: $success;
+          width: fit-content;
+          padding: 4px 8px;
+          border-radius: 16px;
+          color: $white;
+          font-size: $font-size-16 - 0.3125rem;
+        }
+        .pendingTag,
+        .initiatedTag,
+        .completedTag,
+        .cancelledTag {
+          @extend .tag;
+          // background-color: $light-brown;
+        }
+        .pendingTag {
+          background-color: $warning;
+        }
+        .completedTag {
+          background-color: $success;
+        }
+        .cancelledTag {
+          background-color: $danger;
+        }
+        .initiatedTag {
+          background-color: $premium;
+        }
+      }
+
+      .actionsDropdownContainer {
         position: relative;
-        column-span: 2;
-        background-color: $grey-bg;
-        p {
-            position: absolute;
-            margin: auto;
-            opacity: 0.8;
-            white-space: nowrap;
-            top: 40%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: $font-size-16 - 0.125rem;
-            color: $dark-grey;
+        display: flex;
+
+        button {
+          @include tertiary-button;
+          font-size: $font-size-16 - 0.25rem;
+          padding: 2px 4px;
+          margin-right: 4px;
         }
-    }
 
-    table {
-        background-color: $white;
-        width: 100%;
-        border-collapse: collapse;
-
-        tr {
-            &:last-child {
-                td {
-                    border-bottom: 0px;
-                }
-            }
-            // &:nth-child(even) {
-            //     background-color: rgba($color: $container-grey, $alpha: 0.6);
-            // }
-            th,
-            td {
-                padding: 12px 12px;
-                border-bottom: 1px solid rgba($color: $dark-grey, $alpha: 0.5);
-                text-align: left;
-                @include tablet {
-                    white-space: nowrap;
-                }
-                &:first-child {
-                    padding-left: 24px;
-                    max-width: 140px;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    white-space: nowrap;
-                }
-            }
-            th {
-                padding: 15px 12px;
-                background-color: $dark-grey;
-                color: $white;
-                font-size: $font-size-16 - 0.25rem;
-                font-weight: $fontWeight-400;
-            }
-            td {
-                font-size: $font-size-16 - 0.1875rem;
-                color: $container-grey;
-                padding: 12px 10px;
-
-                .tag {
-                    background-color: $success;
-                    width: fit-content;
-                    padding: 4px 8px;
-                    border-radius: 16px;
-                    color: $white;
-                    font-size: $font-size-16 - 0.3125rem;
-                }
-                .pendingTag,
-                .initiatedTag,
-                .completedTag,
-                .cancelledTag {
-                    @extend .tag;
-                    // background-color: $light-brown;
-                }
-                .pendingTag {
-                    background-color: $warning;
-                }
-                .completedTag {
-                    background-color: $success;
-                }
-                .cancelledTag {
-                    background-color: $danger;
-                }
-                .initiatedTag {
-                    background-color: $premium;
-                }
-            }
-
-            .actionsDropdownContainer {
-                position: relative;
-                display: flex;
-
-                button {
-                    @include tertiary-button;
-                    font-size: $font-size-16 - 0.25rem;
-                    padding: 2px 4px;
-                    margin-right: 4px;
-                }
-
-                span {
-                    width: 1.5rem;
-                    height: 1.5rem;
-                    display: grid;
-                    place-items: center;
-                    cursor: pointer;
-                    border-radius: 0.25rem;
-                    position: relative;
-                    &:hover {
-                        opacity: 0.65;
-                    }
-                    svg {
-                        width: 0.85rem;
-                        height: 0.85rem;
-                    }
-                }
-
-                .dropdownOptions {
-                    position: absolute;
-                    top: 32px;
-                    right: 50%;
-                    // transform: translateX(50%);
-                    height: fit-content;
-                    width: 200px;
-                    background-color: $white;
-                    display: flex;
-                    flex-direction: column;
-                    border: 2px solid #000;
-                    z-index: 3;
-                    span {
-                        padding: 0.5rem;
-                    }
-                }
-
-                .dropdownBtn {
-                    width: 26px;
-                    min-width: 26px;
-                    height: 26px;
-                    min-height: 26px;
-                    border-radius: 0.5rem;
-                    display: grid;
-                    place-items: center;
-                    cursor: pointer;
-                    background-color: rgba($color: $dark-grey, $alpha: 0.025);
-                    &:hover {
-                        background-color: rgba($color: $dark-grey, $alpha: 0.1);
-                    }
-                    svg {
-                        path {
-                            fill: $dark-grey;
-                        }
-                    }
-                }
-            }
+        span {
+          width: 1.5rem;
+          height: 1.5rem;
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          border-radius: 0.25rem;
+          position: relative;
+          &:hover {
+            opacity: 0.65;
+          }
+          svg {
+            width: 0.85rem;
+            height: 0.85rem;
+          }
         }
+
+        .dropdownOptions {
+          position: absolute;
+          top: 32px;
+          right: 50%;
+          // transform: translateX(50%);
+          height: fit-content;
+          width: 200px;
+          background-color: $white;
+          display: flex;
+          flex-direction: column;
+          border: 2px solid #000;
+          z-index: 3;
+          span {
+            padding: 0.5rem;
+          }
+        }
+
+        .dropdownBtn {
+          width: 26px;
+          min-width: 26px;
+          height: 26px;
+          min-height: 26px;
+          border-radius: 0.5rem;
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          background-color: rgba($color: $dark-grey, $alpha: 0.025);
+          &:hover {
+            background-color: rgba($color: $dark-grey, $alpha: 0.1);
+          }
+          svg {
+            path {
+              fill: $dark-grey;
+            }
+          }
+        }
+      }
     }
+  }
 }
