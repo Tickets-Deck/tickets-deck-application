@@ -6,13 +6,13 @@ import { EventResponse } from "../../models/IEvents";
 import { useFetchOrderInformationById } from "@/app/api/apiClient";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { UserTicketOrderInfo } from "@/app/models/IUserTicketOrder";
-import { RootState } from "@/app/redux/store";
-import { useSelector } from "react-redux";
 import { UserTicketOrder } from "@/app/models/ITicketOrder";
 import { TicketPass } from "@/app/models/ITicketPass";
 import QRCode from "qrcode.react";
 import ModalWrapper from "@/app/components/Modal/ModalWrapper";
 import TicketUi from "@/app/components/Ticket/TicketUi";
+import { Icons } from "@/app/components/ui/icons";
+import { ImagePopup } from "@/app/components/custom/ImagePopup";
 
 interface OrdersPageProps {
     orderId: string
@@ -22,7 +22,6 @@ interface OrdersPageProps {
 const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): ReactElement => {
 
     const fetchOrderInformationById = useFetchOrderInformationById();
-    const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
     const [isFetchingOrderInformation, setIsFetchingOrderInformation] = useState(true);
     const [orderInformation, setOrderInformation] = useState<UserTicketOrderInfo | null>(null);
@@ -68,8 +67,6 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
         }
     }, [selectedTicketOrderInfo]);
 
-    const pdfRef = useRef<HTMLDivElement>(null);
-
     return (
         <>
             <ModalWrapper
@@ -84,6 +81,15 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
                     />
                 }
             </ModalWrapper>
+            {
+                orderInformation && orderInformation.event &&
+                <ImagePopup
+                    imageUrl={orderInformation.event.mainImageUrl}
+                    alt={orderInformation.event.title}
+                    isOpen={isPopupOpen}
+                    onClose={() => setIsPopupOpen(false)}
+                />
+            }
 
             <main className={styles.orderspage}>
                 {
@@ -128,19 +134,22 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({ orderId, hostUrl }): R
                             </div>
                             <div className={styles.ticketsContainer}>
                                 <h2>Tickets</h2>
-                                <p>Primary email: {orderInformation.contactEmail}</p>
+                                <p className="text-white">Primary email: {orderInformation.contactEmail}</p>
                                 <div className={styles.tickets}>
                                     {
                                         orderInformation.orderedTickets.map((orderedTicket, index) => (
                                             <div className="flex flex-row items-center justify-between py-4 border-b-[1px] border-b-container-grey" key={index}>
-                                                <h3>{orderedTicket.ticket.name}</h3>
-                                                <p style={orderedTicket.associatedEmail ? {} : { fontSize: "14px", fontStyle: "italic", opacity: 0.5 }}>
-                                                    {orderedTicket.associatedEmail ?? "Sent to primary email"}
-                                                </p>
+                                                <div className="flex flex-col">
+                                                    <h3>{orderedTicket.ticket.name}</h3>
+                                                    <p className="text-sm italic text-white/50">
+                                                        {orderedTicket.associatedEmail || "Sent to primary email"}
+                                                    </p>
+                                                </div>
                                                 <button
-                                                    className="p-2 px-4 bg-white/10 hover:bg-white/30 rounded-full text-sm transition-all"
+                                                    className="p-2 px-4 bg-white/10 hover:bg-white/30 rounded-full text-sm transition-all flex flex-row items-center gap-2"
                                                     onClick={() => showTicketUi(orderedTicket)}
                                                 >
+                                                    <Icons.Ticket width={18} />
                                                     View Ticket
                                                 </button>
                                             </div>
