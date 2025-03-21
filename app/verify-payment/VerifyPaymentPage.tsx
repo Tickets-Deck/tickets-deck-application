@@ -120,7 +120,7 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
     // Write a useEffect to handle the payment verification once the component mounts, and making sure it only runs once
     useEffect(() => {
         if (trxref && !isVerifyingPayment) {
-            // handlePaymentVerification(trxref);
+            handlePaymentVerification(trxref);
         }
     }, [trxref]);
 
