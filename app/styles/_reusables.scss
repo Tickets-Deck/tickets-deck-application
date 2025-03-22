@@ -155,7 +155,7 @@
     }
   }
 
-  // ml-auto w-8 h-8 min-w-8 min-h-8 rounded-full grid place-items-center cursor-pointer hover:bg-gray-100 [&_svg_path]:stroke-[#000] fill-[#000]
+  // ml-auto size-8 rounded-full grid place-items-center cursor-pointer hover:bg-white/10 [&_svg_path]:stroke-[#fff] [&_svg_path]:fill-[#fff]
 }
 
 // Input field
@@ -171,6 +171,8 @@
     color: $grey-bg;
   }
 }
+
+// w-fit rounded-[3.125rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-grey
 
 // Animations
 @mixin bumpDownAnimation {
