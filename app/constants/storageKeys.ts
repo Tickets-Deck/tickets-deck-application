@@ -36,4 +36,9 @@ export class StorageKeys {
    * Key for the list of banks
    */
   static readonly BankLists = "BankLists";
+
+  /**
+   * Key for the Temporary Unique Session
+   */
+  static readonly ClientSessionWS = "ClientSessionWS";
 }

@@ -11,13 +11,13 @@ import { EventResponse } from "../../models/IEvents";
 import { useFetchOrderInformationById } from "@/app/api/apiClient";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { UserTicketOrderInfo } from "@/app/models/IUserTicketOrder";
-import { RootState } from "@/app/redux/store";
-import { useSelector } from "react-redux";
 import { UserTicketOrder } from "@/app/models/ITicketOrder";
 import { TicketPass } from "@/app/models/ITicketPass";
 import QRCode from "qrcode.react";
 import ModalWrapper from "@/app/components/Modal/ModalWrapper";
 import TicketUi from "@/app/components/Ticket/TicketUi";
+import { Icons } from "@/app/components/ui/icons";
+import { ImagePopup } from "@/app/components/custom/ImagePopup";
 
 interface OrdersPageProps {
   orderId: string;
@@ -29,7 +29,6 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({
   hostUrl,
 }): ReactElement => {
   const fetchOrderInformationById = useFetchOrderInformationById();
-  const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
   const [isFetchingOrderInformation, setIsFetchingOrderInformation] =
     useState(true);
@@ -77,8 +76,6 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({
     }
   }, [selectedTicketOrderInfo]);
 
-  const pdfRef = useRef<HTMLDivElement>(null);
-
   return (
     <>
       <ModalWrapper
@@ -101,6 +98,14 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({
           />
         )}
       </ModalWrapper>
+      {orderInformation && orderInformation.event && (
+        <ImagePopup
+          imageUrl={orderInformation.event.mainImageUrl}
+          alt={orderInformation.event.title}
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
+        />
+      )}
 
       <main className='text-white bg-dark-grey p-[1.25rem] md:px-[5rem] lg:px-[16%] xl:px-[10rem] pt-6 pb-20'>
         {isFetchingOrderInformation && !orderInformation && (
@@ -184,10 +189,12 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({
                           {orderedTicket.associatedEmail ??
                             "Sent to primary email"}
                         </p>
+
                         <button
-                          className='p-2 px-4 bg-white/10 hover:bg-white/30 rounded-full text-sm transition-all'
+                          className='p-2 px-4 bg-white/10 hover:bg-white/30 rounded-full text-sm transition-all flex flex-row items-center gap-2'
                           onClick={() => showTicketUi(orderedTicket)}
                         >
+                          <Icons.Ticket width={18} />
                           View Ticket
                         </button>
                       </div>

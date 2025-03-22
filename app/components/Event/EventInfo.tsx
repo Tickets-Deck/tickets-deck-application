@@ -7,20 +7,18 @@ import Image from "next/image";
 import images from "@/public/images";
 import moment from "moment";
 import { EventResponse } from "@/app/models/IEvents";
-import { Theme } from "@/app/enums/Theme";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { useApplicationContext } from "@/app/context/ApplicationContext";
 import { useSession } from "next-auth/react";
-import { useFetchEventLikeStatus, useFetchEventViewsCount } from "@/app/api/apiClient";
+import { useFetchEventViewsCount } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
 import EventLikeButton from "../custom/EventLikeButton";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
-import { toast } from "sonner";
+import { useToast } from "@/app/context/ToastCardContext";
 
 interface EventMainInfoProps {
     eventInfo: EventResponse
     setTicketsSelectionContainerIsVisible?: Dispatch<SetStateAction<boolean>>
-    addEventToGoogleCalender?: () => void
     forOrdersPage?: boolean
     hideStatusTag?: boolean
     hostUrl?: string
@@ -28,9 +26,10 @@ interface EventMainInfoProps {
 }
 
 const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
-    { eventInfo, setTicketsSelectionContainerIsVisible, addEventToGoogleCalender,
+    { eventInfo, setTicketsSelectionContainerIsVisible,
         forOrdersPage, hostUrl, setIsPopupOpen }): ReactElement => {
 
+    const toastHandler = useToast();
     const { handleRecordEventView } = useApplicationContext();
     const { data: session } = useSession();
     const fetchEventViewsCount = useFetchEventViewsCount();
@@ -47,11 +46,27 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
 
         navigator.clipboard.writeText(`${eventInfo?.title} - Ticketsdeck Events: ${eventUrl}`)
             .then(() => {
-                toast.success(`The link to ${eventInfo?.title} has been copied.`);
+                toastHandler.logSuccess("Link copied!", `The link to ${eventInfo?.title} event has been copied.`);
             })
             .catch((error) => {
-                toast.error('Failed to copy event link. Please try again.');
+                toastHandler.logError("We couldn't copy link", 'Failed to copy event link. Please try again.');
             });
+    };
+
+    const eventLocation = eventInfo.location ? eventInfo.location.address + ' ' + eventInfo.location.city + ', ' + eventInfo.location.state + ', ' + eventInfo.location.country : eventInfo.venue;
+
+    function addEventToGoogleCalender() {
+        if (!eventInfo) {
+            return;
+        }
+        const eventTitle = eventInfo?.title;
+        const eventDate = moment(eventInfo?.startDate).format('YYYY-MM-DD');
+        const eventTime = moment(eventInfo?.startDate).format('hh:mm a');
+        const location = eventLocation;
+
+        const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${eventTime}%2F${eventDate}T${eventTime}&location=${encodeURIComponent(location)}`;
+
+        window.open(googleCalendarUrl, "_blank");
     };
 
     async function handleFetchEventViewsCount(eventId: string) {
@@ -154,8 +169,9 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     <Tooltip
                         position={onMobile ? "top" : onDesktop ? "left" : undefined}
                         tooltipText='Add to calender'>
-                        <div className="w-10 h-10 rounded-full bg-white grid place-items-center cursor-pointer"
-                            onClick={() => addEventToGoogleCalender && addEventToGoogleCalender()}>
+                        <div
+                            className="w-10 h-10 rounded-full bg-white grid place-items-center cursor-pointer"
+                            onClick={addEventToGoogleCalender}>
                             <Icons.Calender />
                         </div>
                     </Tooltip>

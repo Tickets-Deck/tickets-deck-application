@@ -136,24 +136,6 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
     );
   }, [eventTickets]);
 
-  function addEventToGoogleCalender() {
-    if (!eventInfo) {
-      return;
-    }
-    const eventTitle = eventInfo?.title;
-    const eventDate = moment(eventInfo?.startDate).format("YYYY-MM-DD");
-    const eventTime = moment(eventInfo?.startDate).format("hh:mm a");
-    const location = eventLocation;
-
-    const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-      eventTitle
-    )}&dates=${eventDate}T${eventTime}%2F${eventDate}T${eventTime}&location=${encodeURIComponent(
-      location
-    )}`;
-
-    window.open(googleCalendarUrl, "_blank");
-  }
-
   async function handleFetchEventInfo() {
     // Set running flag
     setLoader(true);
