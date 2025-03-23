@@ -8,6 +8,7 @@ import userReducer from '@/app/redux/features/user/userSlice';
 import themeReducer from '@/app/redux/features/theme/themeSlice';
 import { ToastProvider } from '../context/ToastCardContext';
 import WebSocketListener from './WebSocket/WebSocketListener';
+import TawkToChat from '../context/TawkToChat';
 
 const store = configureStore({
     reducer: {
@@ -23,6 +24,7 @@ type Props = {
 const GlobalProvider = ({ children }: Props) => {
     return (
         <SessionProvider>
+            <TawkToChat />
             <WebSocketListener />
             <AppProvider>
                 <ToastProvider>
