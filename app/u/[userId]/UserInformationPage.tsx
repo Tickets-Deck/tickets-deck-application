@@ -16,8 +16,8 @@ import UserSocials from "@/app/components/UserInformationPage/UserSocials";
 import UserStats from "@/app/components/UserInformationPage/UserStats";
 import UserHighlights from "@/app/components/UserInformationPage/UserHighlights";
 import { FollowsActionType, IUserFollowMetrics } from "@/app/models/IFollows";
-import { toast } from "sonner";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { useToast } from "@/app/context/ToastCardContext";
 
 interface UserInformationPageProps {
   identifier: string;
@@ -28,6 +28,7 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
   identifier,
   session,
 }): ReactElement => {
+  const toastHandler = useToast();
   const followUser = useFollowUser();
   const fetchUserFollowMetrics = useFetchUserFollowMetrics();
   const fetchUserInformationByUsername = useFetchUserInformationByUserName();
@@ -110,7 +111,7 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
       })
       .catch((error) => {
         catchError(error);
-        toast.error("Failed to follow user");
+        toastHandler.logError("Error", "Failed to follow user");
       })
       .finally(() => {
         setIsInteractingWithUserProfile(false);

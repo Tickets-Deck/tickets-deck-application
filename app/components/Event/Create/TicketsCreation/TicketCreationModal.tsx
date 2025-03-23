@@ -2,6 +2,7 @@ import { useCreateTicketForSpecifiedEvent } from "@/app/api/apiClient";
 import ModalWrapper from "@/app/components/Modal/ModalWrapper";
 import { Icons } from "@/app/components/ui/icons";
 import { catchError } from "@/app/constants/catchError";
+import { useToast } from "@/app/context/ToastCardContext";
 import { EventRequest } from "@/app/models/IEvents";
 import {
   DefaultFormResponseStatus,
@@ -19,7 +20,6 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { toast } from "sonner";
 
 interface TicketCreationModalProps {
   modalVisibility: boolean;
@@ -47,6 +47,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
   handleFetchEventTickets,
   selectedTicketIndex,
 }): ReactElement => {
+  const toastHandler = useToast();
   const createTicketForSpecifiedEvent = useCreateTicketForSpecifiedEvent();
   const { data: session } = useSession();
   const user = session?.user;
@@ -288,7 +289,10 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
       })
       .catch((error) => {
         // Display error
-        toast.error("An error occurred while creating your ticket");
+        toastHandler.logError(
+          "Error",
+          "An error occurred while creating your ticket"
+        );
 
         // Catch error
         catchError(error);

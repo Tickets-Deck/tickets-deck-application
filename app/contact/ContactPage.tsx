@@ -7,13 +7,14 @@ import { Icons } from "../components/ui/icons";
 import { CustomerEnquiry } from "../models/ICustomerEnquiries";
 import ComponentLoader from "../components/Loader/ComponentLoader";
 import { useCreateCustomerEnquiry } from "../api/apiClient";
-import { toast } from "sonner";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
+import { useToast } from "../context/ToastCardContext";
 
 interface ContactPageProps {}
 
 const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
+  const toastHandler = useToast();
   const appTheme = useSelector((state: RootState) => state.theme.appTheme);
 
   const createCustomerEnquiry = useCreateCustomerEnquiry();
@@ -45,7 +46,10 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
       !formValues?.subject ||
       !formValues?.message
     ) {
-      toast.error("Please fill all fields, and try again.");
+      toastHandler.logError(
+        "Fill all fields",
+        "Please fill all fields, and try again."
+      );
       return;
     }
 
@@ -61,7 +65,8 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
         setFormValues(undefined);
 
         // Show success message
-        toast.success(
+        toastHandler.logSuccess(
+          "Success",
           "Your message has been sent successfully. We will get back to you soon."
         );
       })
@@ -69,7 +74,8 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
         console.log("🚀 ~ handeCreateEnquiry ~ error:", error);
 
         // Show error message
-        toast.error(
+        toastHandler.logError(
+          "Error",
           "An error occurred while sending your message. Please try again later."
         );
       })

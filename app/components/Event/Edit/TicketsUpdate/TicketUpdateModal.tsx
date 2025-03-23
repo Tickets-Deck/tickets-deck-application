@@ -2,6 +2,7 @@ import { useUpdateTicketInformation } from "@/app/api/apiClient";
 import ModalWrapper from "@/app/components/Modal/ModalWrapper";
 import { Icons } from "@/app/components/ui/icons";
 import { catchError } from "@/app/constants/catchError";
+import { useToast } from "@/app/context/ToastCardContext";
 import {
   DefaultFormResponseStatus,
   FormFieldResponse,
@@ -18,7 +19,6 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { toast } from "sonner";
 
 interface TicketUpdateModalProps {
   modalVisibility: boolean;
@@ -35,6 +35,7 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = ({
   selectedTicket,
   handleFetchEventTickets,
 }): ReactElement => {
+  const toastHandler = useToast();
   const updateTicketInformation = useUpdateTicketInformation();
   const { data: session } = useSession();
   const user = session?.user;
@@ -183,7 +184,10 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = ({
       })
       .catch((error) => {
         // Display error
-        toast.error("An error occurred while updating your ticket information");
+        toastHandler.logError(
+          "Error",
+          "An error occurred while updating your ticket information"
+        );
 
         // Catch error
         catchError(error);
