@@ -29,7 +29,6 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import Toggler from "../custom/Toggler";
-import { toast } from "sonner";
 import ComponentLoader from "../Loader/ComponentLoader";
 import EmailVerificationPrompt from "./EmailVerificationPrompt";
 import { Theme } from "@/app/enums/Theme";
@@ -37,6 +36,8 @@ import PrimaryEmailConfirmationModal from "./PrimaryEmailConfirmationModal";
 import { CustomerContactDetails } from "@/app/models/IUser";
 import { CouponDetails } from "@/app/models/ICoupon";
 import { ApplicationError } from "@/app/constants/applicationError";
+import { StorageKeys } from "@/app/constants/storageKeys";
+import { useToast } from "@/app/context/ToastCardContext";
 
 interface TicketDeliveryProps {
   appTheme: Theme | null;
@@ -68,6 +69,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
   const createTicketOrder = useInitializeTicketOrder();
   const initializePaystackPayment = useInitializePaystackPayment();
   const verifyCoupon = useVerifyCouponCode();
+  const toastHandler = useToast();
 
   const windowRes = useResponsiveness();
   const isMobile = windowRes.width && windowRes.width < 768;
@@ -268,7 +270,10 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
         (ticketOrder) => !ticketOrder.associatedEmail
       )
     ) {
-      toast.error("Please input an email address for at least one ticket.");
+      toastHandler.logError(
+        "Email address not filled",
+        "Please input an email address for at least one ticket."
+      );
       return;
     }
 
@@ -325,7 +330,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
           setIsProcessingOrder(false);
 
           // Show success message
-          toast.success(
+          toastHandler.logSuccess(
+            "Success",
             "Order successfully processed. You will receive your tickets shortly."
           );
 
@@ -348,6 +354,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
         const paymentInit = await initializePaystackPayment({
           ticketOrderId: response.data.id,
           callbackUrl: `${window.location.origin}/verify-payment`,
+          socketId: localStorage.getItem(StorageKeys.ClientSessionWS) as string,
           organizerAmount: organizerAmount as number,
         });
 
@@ -362,9 +369,20 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
       if (error?.response) {
         if (
           error.response.data.errorCode ==
+          ApplicationError.PaymentInitializationFailed.Code
+        ) {
+          toastHandler.logError(
+            "We could not begin your transaction",
+            "Please check your internet connection and try again."
+          );
+          return;
+        }
+        if (
+          error.response.data.errorCode ==
           ApplicationError.InvalidCouponExpirationDate.Code
         ) {
-          toast.error(
+          toastHandler.logError(
+            "Error",
             "This coupon code has expired. Please get a new code, and try again"
           );
           return;
@@ -373,14 +391,16 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
           error.response.data.errorCode ==
           ApplicationError.InvalidCouponDiscount.Code
         ) {
-          toast.error(
+          toastHandler.logError(
+            "Error",
             "Invalid coupon code. Please confirm code, and try again"
           );
           return;
         }
       }
       // Show error message
-      toast.error(
+      toastHandler.logError(
+        "Error",
         "An error occurred while processing your order. Please try again."
       );
     }
@@ -488,10 +508,14 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
         if (response.data) {
           setCouponDetails(response.data);
           // setCodeValidationStatus(ValidationStatus.Valid);
-          toast.success("Coupon code applied successfully");
+          toastHandler.logSuccess(
+            "Success",
+            "Coupon code applied successfully"
+          );
         } else {
           // setCodeValidationStatus(ValidationStatus.Invalid);
-          toast.error(
+          toastHandler.logError(
+            "Error",
             "Invalid coupon code. Please confirm code, and try again"
           );
         }
@@ -501,13 +525,17 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
           error.response.data.errorCode ==
           ApplicationError.InvalidCouponExpirationDate.Code
         ) {
-          toast.error(
+          toastHandler.logError(
+            "Error",
             "This coupon code has expired. Please get a new code, and try again"
           );
           return;
         }
         // setCodeValidationStatus(ValidationStatus.Invalid);
-        toast.error("Invalid coupon code. Please confirm code, and try again");
+        toastHandler.logError(
+          "Error",
+          "Invalid coupon code. Please confirm code, and try again"
+        );
       })
       .finally(() => {
         setIsValidating(false);
