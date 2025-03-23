@@ -31,29 +31,6 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
 
     const trxref = searchParams.get('trxref');
 
-    /**
-     * Function to handle the verification of the payment
-     * @param trxref is the transaction reference returned from the paystack payment gateway
-     */
-    // async function handlePaymentVerification(trxref: string) {
-    //     try {
-    //         setIsVerifyingPayment(true);
-    //         const response = await verifyPaystackPayment(trxref);
-    //         // console.log(response);
-    //         setPaymentStatus(PaymentStatus.Success);
-    //         if (response) {
-    //             if (userInfo) {
-    //                 router.push('/app');
-    //                 return;
-    //             }
-    //             router.push(ApplicationRoutes.Home);
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //         setPaymentStatus(PaymentStatus.Failed);
-    //     }
-    // }
-
     async function handlePaymentVerification(trxref: string) {
         if (isVerifyingPayment) return;
 
@@ -62,24 +39,26 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
 
         await verifyPaystackPayment(trxref as string)
             .then((response) => {
-                if (response.data.message && response.data.ticketOrderId && response.data.message == "Payment successfully processed.") {
+                if (response.data && response.data.ticketOrderId) {
                     const ticketOrderId = response.data?.ticketOrderId;
                     // Set payment status state
                     setPaymentStatus(PaymentStatus.Success);
                     // Route to order page
                     router.push(`/order/${ticketOrderId}`);
+
                     return;
                 }
 
-                const ticketOrderId = response.data?.metadata.ticketOrderId;
-
-                // Set payment status state
-                setPaymentStatus(PaymentStatus.Success);
-
-                // Route to order page
-                router.push(`/order/${ticketOrderId}`);
+                if (response.data?.metadata) {
+                    const ticketOrderId = response.data?.metadata.ticketOrderId;
+                    // Set payment status state
+                    setPaymentStatus(PaymentStatus.Success);
+                    // Route to order page
+                    router.push(`/order/${ticketOrderId}`);
+                }
             })
             .catch((error) => {
+                console.log("🚀 ~ handlePaymentVerification ~ error:", error)
                 if (error.response) {
                     if (error.response.data.error == "Payment has already been verified") {
                         // Set payment status state
@@ -110,10 +89,8 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
                     //     return;
                     // }
                 }
-
                 // Set payment status state
                 setPaymentStatus(PaymentStatus.Failed);
-                // console.log(error);
             })
     };
 
@@ -123,18 +100,6 @@ const VerifyPaymentPage: FunctionComponent<VerifyPaymentPageProps> = (): ReactEl
             handlePaymentVerification(trxref);
         }
     }, [trxref]);
-
-    // useEffect(() => {
-    //     if(paymentStatus === PaymentStatus.Success) {
-    //         setTimeout(() => {
-    //             if (userInfo) {
-    //                 router.push('/app');
-    //                 return;
-    //             }
-    //             router.push('/events');
-    //         }, 5000);
-    //     }
-    // }, [paymentStatus]);
 
     return (
         <main className={styles.verifyPaymentPage}>
