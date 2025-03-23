@@ -1,35 +1,33 @@
 import { ReactElement, FunctionComponent } from "react";
 import UserAvatarContainer from "../ProfilePage/UserAvatarContainer";
-import styles from "@/app/styles/UserInformationPage.module.scss";
 import { UserCredentialsResponse } from "@/app/models/IUser";
 
 interface UserPersonalInfoProps {
-    userInformation: UserCredentialsResponse
+  userInformation: UserCredentialsResponse;
 }
 
-const UserPersonalInfo: FunctionComponent<UserPersonalInfoProps> = ({ userInformation }): ReactElement => {
-    console.log("🚀 ~ userInformation:", userInformation);
-    return (
-        <div className={styles.userPersonalInfo}>
-            <div className={styles.userPersonalInfo__avatar}>
-                <UserAvatarContainer
-                    userInformation={userInformation}
-                    userAvatarSize={140}
-                />
-            </div>
-            <div className={styles.userPersonalInfo__info}>
-                <h3 className={styles.userPersonalInfo__info__name}>
-                    {userInformation?.firstName} {userInformation?.lastName}
-                </h3>
-                {
-                    userInformation?.username &&
-                    <p className={styles.userPersonalInfo__info__username}>
-                        @{userInformation?.username}
-                    </p>
-                }
-            </div>
-        </div>
-    );
-}
+const UserPersonalInfo: FunctionComponent<UserPersonalInfoProps> = ({
+  userInformation,
+}): ReactElement => {
+  console.log("🚀 ~ userInformation:", userInformation);
+  return (
+    <div className='flex flex-col items-center w-fit mx-auto gap-2'>
+      <div>
+        <UserAvatarContainer
+          userInformation={userInformation}
+          userAvatarSize={140}
+        />
+      </div>
+      <div className='text-center'>
+        <h3 className='text-2xl font-medium capitalize'>
+          {userInformation?.firstName} {userInformation?.lastName}
+        </h3>
+        {userInformation?.username && (
+          <p className='text-text-grey'>@{userInformation?.username}</p>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default UserPersonalInfo;

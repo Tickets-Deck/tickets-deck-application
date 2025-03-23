@@ -6,14 +6,15 @@ import ComponentLoader from "../Loader/ComponentLoader";
 import { Icons } from "../ui/icons";
 import PasswordResetLinkModal from "../Modal/PasswordResetLinkModal";
 import { useRequestPasswordResetLink } from "@/app/api/apiClient";
-import { toast } from "sonner";
 import { emailRegex } from "@/app/constants/emailRegex";
+import { useToast } from "@/app/context/ToastCardContext";
 
 interface ForgotPasswordPageProps {}
 
 const ForgotPasswordPage: FunctionComponent<
   ForgotPasswordPageProps
 > = (): ReactElement => {
+  const toastHandler = useToast();
   const requestPasswordResetLink = useRequestPasswordResetLink();
 
   const [emailErrorMsg, setEmailErrorMsg] = useState<string | null>(null);
@@ -69,7 +70,7 @@ const ForgotPasswordPage: FunctionComponent<
         }
 
         setMessage(error.response?.data.message);
-        toast.error("An error occurred. Please try again.");
+        toastHandler.logError("Error", "An error occurred. Please try again.");
       })
       .finally(() => {
         setIsLoading(false);
