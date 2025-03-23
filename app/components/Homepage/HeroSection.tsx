@@ -216,7 +216,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                         </div>
 
                         <div className="flex flex-col md:flex-row items-center gap-6">
-                            <div className="flex flex-row items-center gap-4">
+                            <div className="flex flex-col sm:flex-row items-center gap-4">
                                 <span className="text-sm font-light text-white/80">Starts in:</span>
                                 <div className="flex items-center gap-6">
                                     {

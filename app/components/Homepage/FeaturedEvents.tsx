@@ -66,7 +66,7 @@ const FeaturedEvents: FunctionComponent<FeaturedEventsProps> = ({
                         <span className='text-[30px] font-medium font-Mona-Sans-Wide'>
                             Featured Events
                         </span>
-                        <span className="text-[30px]">🎭</span>
+                        {/* <span className="text-[30px]">🎭</span> */}
                     </div>
                     <p className='text-base text-grey w-auto opacity-80'>
                         Based on the superstar that you are, we have carefully gathered top
