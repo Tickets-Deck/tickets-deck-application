@@ -66,7 +66,7 @@ export class ApiRoutes {
   /**
    * The route to FetchPastEvents endpoint
    */
-  static FetchPastEvents: `/events/past`;
+  static FetchPastEvents: string = `/events/past`;
 
   /**
    * The route to Fetch Event Information endpoint for the publisher's use only
@@ -147,8 +147,9 @@ export class ApiRoutes {
   /**
    * The route to VerifyUserEmail endpoint
    */
-  static ResendVerificationEmail: (userId: string) => string = (userId: string) =>
-    `auth/resend-verification-email/${userId}`;
+  static ResendVerificationEmail: (userId: string) => string = (
+    userId: string
+  ) => `auth/resend-verification-email/${userId}`;
 
   /**
    * The route to UploadUserProfilePhoto endpoint

@@ -54,7 +54,6 @@ const UserHighlights: FunctionComponent<UserHighlightsProps> = ({
               event={event}
               // mobileAndActionButtonDismiss
               key={index}
-              skipLikeStatusFetch
               // gridDisplay={true}
             />
           ))}
