@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Star, ThumbsUp, Flag, MoreHorizontal } from "lucide-react"
 import { Icons } from "../ui/icons"
 import Image from "next/image"
 import ReviewModal from "../Modal/ReviewModal"
@@ -95,7 +94,7 @@ export function ReviewsTab({ organizerName }: { organizerName: string }) {
                                 </span>
                                 <div className="flex">
                                     {[1, 2, 3, 4, 5].map((star) => (
-                                        <Star
+                                        <Icons.Star
                                             key={star}
                                             className={`h-4 w-4 ${star <= Math.round(reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length)
                                                 ? "fill-primary-color text-primary-color"
@@ -172,7 +171,7 @@ export function ReviewsTab({ organizerName }: { organizerName: string }) {
                                 <div>
                                     <div className="flex items-center gap-1 mb-1">
                                         {[1, 2, 3, 4, 5].map((star) => (
-                                            <Star
+                                            <Icons.Star
                                                 key={star}
                                                 className={`h-4 w-4 ${star <= review.rating ? "fill-primary-color text-primary-color" : "text-white"
                                                     }`}
@@ -185,7 +184,7 @@ export function ReviewsTab({ organizerName }: { organizerName: string }) {
 
                                 <div className="flex items-center gap-4">
                                     <button className="h-8 hover:text-primary-color">
-                                        <ThumbsUp className="h-3 w-3 mr-1" />
+                                        <Icons.ThumbsUp className="h-3 w-3 mr-1" />
                                         Helpful
                                     </button>
                                 </div>
