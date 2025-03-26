@@ -74,7 +74,7 @@ const ReviewModal: FunctionComponent<ReviewModalProps> = ({
                 <div className='flex justify-between items-start mb-6'>
                     <div className="flex flex-col items-start gap-1 text-white">
                         <h4 className="text-lg">Write a Review</h4>
-                        <p className="text-white/80 text-sm">Share your experience with Similoluwa Afolabi to help others in the community.</p>
+                        <p className="text-white/80 text-sm">Share your experience with {organizerName} to help others in the community.</p>
                     </div>
                     <span
                         className='ml-auto size-8 min-w-8 min-h-8 rounded-full grid place-items-center cursor-pointer hover:bg-white/10 [&_svg_path]:stroke-white [&_svg_path]:fill-white'
@@ -108,7 +108,7 @@ const ReviewModal: FunctionComponent<ReviewModalProps> = ({
                                     />
                                 </button>
                             ))}
-                            <span className="ml-2 text-sm text-white/20">
+                            <span className="ml-2 text-sm text-white/80">
                                 {rating > 0 ? `${rating} out of 5 stars` : "Select a rating"}
                             </span>
                         </div>
@@ -119,7 +119,7 @@ const ReviewModal: FunctionComponent<ReviewModalProps> = ({
                             Event Attended
                         </label>
                         <Select value={eventAttended} onValueChange={setEventAttended}>
-                            <SelectTrigger id="event" className="bg-container-grey/50 border-border/60">
+                            <SelectTrigger id="event" className="bg-container-grey/50">
                                 <SelectValue placeholder="Select an event" />
                             </SelectTrigger>
                             <SelectContent className="bg-container-grey border-border/40">
@@ -135,6 +135,7 @@ const ReviewModal: FunctionComponent<ReviewModalProps> = ({
                             Your Review
                         </label>
                         <Textarea
+                            className="!text-base !py-2 !px-3 placeholder:!text-sm"
                             id="review"
                             placeholder="Share details about your experience with this organizer..."
                             value={reviewText}

@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import UserInformationPage from "./UserInformationPage";
+import UserInformationPage from "./OrganizerProfilePage";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import { UserCredentialsResponse } from "@/app/models/IUser";

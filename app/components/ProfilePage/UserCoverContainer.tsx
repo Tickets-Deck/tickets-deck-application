@@ -122,15 +122,17 @@ const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({
     // const myDynamicUrl = await getBase64Url(coverImageUrl ?? userInformation.coverPhoto ?? "https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover");
 
     return (
-        <div className='h-[220px] relative overflow-hidden'>
+        <div className='h-[220px] md:h-80 relative overflow-hidden'>
             <div className='absolute top-0 left-0 size-full z-[1] overflow-hidden [&_img]:object-cover'>
                 <Image
                     src={`${coverImageUrl ||
                         userInformation.coverPhoto ||
-                        "https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover"
+                        "https://placehold.co/1600x400/8133F1/FFFFFF/png?text=Cover+Photo"
                         }`}
                     alt='Cover image'
-                    fill
+                    width={1600}
+                    height={400}
+                    // fill
                     priority
                 // blurDataURL="data:image/jpeg;base64,MGGZ]c#n9a9]s-00jY$%S2xb?woJR*xani"
                 //   placeholder='data:image/jpeg;base64,MGGZ]c#n9a9]s-00jY$%S2xb?woJR*xani'

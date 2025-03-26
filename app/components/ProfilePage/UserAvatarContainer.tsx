@@ -12,7 +12,7 @@ interface UserAvatarContainerProps {
 const UserAvatarContainer: FunctionComponent<UserAvatarContainerProps> = ({ userInformation, setIsPhotoUploadModalVisible, userAvatarSize }): ReactElement => {
     return (
         <div className="relative">
-            <div className="w-24 h-24 rounded-full overflow-hidden relative my-0 mx-auto border-4 border-white [&_img]:object-cover" style={userAvatarSize ? { width: `${userAvatarSize}px`, height: `${userAvatarSize}px` } : {}}>
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative my-0 mx-auto border-4 border-white [&_img]:object-cover" style={userAvatarSize ? { width: `${userAvatarSize}px`, height: `${userAvatarSize}px` } : {}}>
                 <Image
                     src={
                         userInformation.profilePhoto ||

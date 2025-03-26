@@ -60,7 +60,7 @@ export type SocialLinks = {
   instagramUrl: string | null;
 };
 
-type UserStats = {
+export type UserStats = {
   followersCount: number;
   followingCount: number;
   eventsCount: number;

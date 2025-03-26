@@ -79,14 +79,14 @@ const SelectTrigger = React.forwardRef<
             ref={ref}
             id={id}
             type="button"
-            className={`flex h-10 w-full items-center justify-between rounded-md border border-container-grey-20 bg-container-grey-20 px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+            className={`flex h-10 w-full items-center justify-between rounded-md border-2 border-white/80 outline-white/80 bg-white/10 px-3 py-2 text-sm placeholder:text-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
             aria-expanded={open}
             onClick={() => setOpen(!open)}
             whileTap={{ scale: 0.98 }}
             {...rest}
         >
             {children}
-            <Icons.ChevronLeft className="h-4 w-4 opacity-50" />
+            <Icons.ChevronDown className="h-4 w-4 stroke-white" />
         </motion.button>
     )
 })
@@ -173,16 +173,16 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps & React.HTML
         return (
             <motion.div
                 ref={ref}
-                className={`relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground hover:bg-accent hover:text-accent-foreground ${className}`}
-                whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
+                className={`relative flex w-full cursor-default select-none items-center gap-1 rounded-sm py-1.5 px-2 text-sm outline-none focus:bg-text-grey focus:text-white hover:bg-text-grey hover:text-white ${className}`}
+                // whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleClick}
                 {...rest}
             >
-                {isSelected &&
-                    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+                {isSelected ?
+                    <span className="flex h-3.5 w-3.5 items-center justify-center">
                         <Icons.Check className="h-4 w-4" />
-                    </span>
+                    </span> : <></>
                 }
                 {children}
             </motion.div>
