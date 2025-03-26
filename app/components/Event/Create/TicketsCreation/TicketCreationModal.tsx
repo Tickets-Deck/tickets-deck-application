@@ -196,7 +196,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
         // Show loader
         setIsCreatingNewTicket(true);
 
-        await createTicketForSpecifiedEvent(user?.token as string, eventId as string, { ...ticketFormRequest as TicketRequest, visibility: ticketFormRequest?.visibility ?? false, remainingTickets: ticketFormRequest?.quantity as number})
+        await createTicketForSpecifiedEvent(user?.token as string, eventId as string, { ...ticketFormRequest as TicketRequest, visibility: ticketFormRequest?.visibility ?? false, remainingTickets: ticketFormRequest?.quantity as number })
             .then(async (response) => {
                 console.log("🚀 ~ .then ~ response:", response)
 
@@ -373,6 +373,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = (
                     <div className={styles.formField}>
                         <label htmlFor="description">Ticket Description</label>
                         <textarea
+                            className='textarea'
                             name="description"
                             value={ticketFormRequest?.description ?? ""}
                             placeholder="Short description of the ticket, including benefits, etc."
