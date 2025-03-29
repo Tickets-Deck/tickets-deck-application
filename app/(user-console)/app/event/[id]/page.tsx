@@ -96,7 +96,7 @@ const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactEl
         // Set running flag
         setIsFetchingEventInfo(true);
 
-        await fetchEventInfo(user?.token as string, id)
+        await fetchEventInfo(user?.token as string, id, user?.id as string)
             .then((response) => {
                 // Log the result
                 console.log("🚀 ~ .then ~ event info response:", response)

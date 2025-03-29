@@ -21,7 +21,7 @@ export class ApiRoutes {
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
+  static BASE_URL: string = ApiRoutes.BASE_URL_DEV;
 
   /**
    * The route to Request Credential Token endpoint
@@ -71,8 +71,8 @@ export class ApiRoutes {
   /**
    * The route to Fetch Event Information endpoint for the publisher's use only
    */
-  static FetchOrganizerEvent: (eventId: string) => string = (eventId: string) =>
-    `events/${eventId}/publisher`;
+  static FetchOrganizerEvent: (eventId: string, publisherId: string) => string = (eventId: string, publisherId: string) =>
+    `events/${eventId}/publisher/${publisherId}`;
 
   /**
    * The route to Fetch Organizer Events endpoint

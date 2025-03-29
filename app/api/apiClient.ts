@@ -152,8 +152,8 @@ export function useFetchEventById() {
 }
 
 export function useFetchPublisherEventById() {
-  async function fetchEvent(token: string, id: string) {
-    return API.get(ApiRoutes.FetchOrganizerEvent(id), getApiConfig(token));
+  async function fetchEvent(token: string, id: string, publisherId: string) {
+    return API.get(ApiRoutes.FetchOrganizerEvent(id, publisherId), getApiConfig(token));
   }
 
   return fetchEvent;
