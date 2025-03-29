@@ -22,7 +22,7 @@ const UserSocials: FunctionComponent<UserSocialsProps> = ({
   };
 
   return (
-    <div className='flex justify-center gap-4  p-[1.25rem] md:px-[5rem] lg:px-[16%] xl:px-[10rem]'>
+    <div className='flex justify-center gap-4  p-[1.25rem] md:px-[5rem] lg:px-[10rem] xl:px-[16%]'>
       {facebookUrl && (
         <Link
           className='w-full py-4 bg-grey-3/20 rounded-[1em] grid place-items-center hover:bg-grey-3'

@@ -9,7 +9,7 @@ import { ApplicationError } from "./app/constants/applicationError";
 // Request token
 const requestToken = useRequestCredentialToken();
 
-const API_BASE_URL = ApiRoutes.BASE_URL;
+const API_BASE_URL = ApiRoutes.BASE_URL_DEV;
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -92,16 +92,19 @@ export const authOptions: NextAuthOptions = {
 
         const token = await requestToken();
 
-        const res = await fetch(`${API_BASE_URL}${ApiRoutes.VerifyOAuthToken}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token.data.token || ""}`,
-            "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
-            credentials: "include", // allow cookies to be sent
-          },
-          body: JSON.stringify({ token: credentials?.token }),
-        });
+        const res = await fetch(
+          `${API_BASE_URL}${ApiRoutes.VerifyOAuthToken}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token.data.token || ""}`,
+              "x-api-key": process.env.NEXT_PUBLIC_API_KEY || "",
+              credentials: "include", // allow cookies to be sent
+            },
+            body: JSON.stringify({ token: credentials?.token }),
+          }
+        );
 
         const user = await res.json();
         console.log("🚀 ~ authorize ~ res:", res);
@@ -113,7 +116,7 @@ export const authOptions: NextAuthOptions = {
 
         throw new Error("Invalid token");
       },
-    })
+    }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {

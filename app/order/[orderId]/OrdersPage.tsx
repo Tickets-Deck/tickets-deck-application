@@ -107,7 +107,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({
         />
       )}
 
-      <main className='text-white bg-dark-grey p-[1.25rem] md:px-[5rem] lg:px-[16%] xl:px-[10rem] pt-6 pb-20'>
+      <main className='text-white bg-dark-grey p-[1.25rem] md:px-[5rem] xl:px-[16%] lg:px-[10rem] pt-6 pb-20'>
         {isFetchingOrderInformation && !orderInformation && (
           <div className='flex flex-col items-center justify-center min-h-[80vh] text-center'>
             <div className='size-[100px] relative mb-4'>

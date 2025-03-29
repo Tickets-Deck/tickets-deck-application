@@ -22,7 +22,7 @@ const SkeletonEventInfo: FunctionComponent<SkeletonEventInfoProps> = ({
       className={`z-[2] relative translate-y-[-4rem] sm:translate-y-[-2.25rem] ${
         forConsole
           ? "p-[1.25rem] md:px-6"
-          : "p-[1.25rem] md:px-[5rem] lg:px-[16%] xl:px-[10rem]"
+          : "p-[1.25rem] md:px-[5rem] lg:px-[10rem] xl:px-[16%]"
       }`}
     >
       <div className='p-4 rounded-[1.5rem] min-[400px]:p-6 flex flex-col sm:flex-row items-center bg-container-grey gap-4 relative overflow-hidden'>
