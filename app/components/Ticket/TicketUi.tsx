@@ -26,7 +26,10 @@ const TicketUi: FunctionComponent<TicketUiProps> = ({
         if (pdfRef.current) {
             try {
                 // Capture the div as a canvas
-                const canvas = await html2canvas(pdfRef.current);
+                const canvas = await html2canvas(pdfRef.current, {
+                    useCORS: true, // Allow cross-origin images
+                    scale: 2, // Increase resolution
+                });
                 const image = canvas.toDataURL("image/png");
                 saveAs(
                     image,
