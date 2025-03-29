@@ -206,7 +206,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
             return {
                 ticketId: ticketPricing.ticketId,
                 price: parseInt(ticketPricing.price.total),
-                associatedEmail: formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)],
+                associatedEmail: formValues[getInputName(ticketPricing.ticketType, ticketPricing.selectedTickets, ticketPricing.emailId)]?.toLocaleLowerCase(),
                 contactEmail: primaryEmail ?? (userEmailIsPrimaryEmail ? userInfo?.email as string : ""),
             }
         });
@@ -240,12 +240,12 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
         }
 
         // If the user's email is not verified, show the email verification prompt
-        if (userInfo && !isEmailVerified) {
-            if (!emailVerificationPromptIsVisible) {
-                setEmailVerificationPromptIsVisible(true);
-            }
-            return;
-        }
+        // if (userInfo && !isEmailVerified) {
+        //     if (!emailVerificationPromptIsVisible) {
+        //         setEmailVerificationPromptIsVisible(true);
+        //     }
+        //     return;
+        // }
 
         try {
             // Start processing order
@@ -336,7 +336,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
      */
     function updatePrimaryEmail(email: string) {
         if (emailRegex.test(email)) {
-            setPrimaryEmail(email);
+            setPrimaryEmail(email.toLocaleLowerCase());
             return;
         }
     };
@@ -345,7 +345,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = (
      * Function to set the primary email based on suggestion and trigger order creation
      */
     function suggestedPrimaryEmailAndCreateOrder(email: string) {
-        setPrimaryEmail(email);
+        setPrimaryEmail(email?.toLocaleLowerCase());
         setAutoTriggerTicketOrderCreation(true);
         setSuggestPrimaryEmailModal(false);
     };
