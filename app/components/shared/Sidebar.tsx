@@ -136,21 +136,21 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
           >
             <ReusableLink
               route={ApplicationRoutes.Events}
-              className='!text-sm before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
+              className='!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
               currentPageChecker={currentPageIsEvents}
               text='My Events'
               icon={<Icons.Event />}
             />
             <ReusableLink
               route={ApplicationRoutes.FavouriteEvents}
-              className='!text-sm before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
+              className='!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
               currentPageChecker={currentPageIsFavorites}
               text='My Favorites'
               icon={<Icons.Event />}
             />
             <ReusableLink
               route={ApplicationRoutes.CreateEvent}
-              className='!text-sm before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
+              className='!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
               currentPageChecker={currentPageIsCreateEvent}
               text='Create Event'
               icon={<Icons.AddEvent />}

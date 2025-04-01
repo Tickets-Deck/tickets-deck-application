@@ -9,7 +9,7 @@ import { ApplicationError } from "./app/constants/applicationError";
 // Request token
 const requestToken = useRequestCredentialToken();
 
-const API_BASE_URL = ApiRoutes.BASE_URL_DEV;
+const API_BASE_URL = ApiRoutes.BASE_URL;
 
 export const authOptions: NextAuthOptions = {
   session: {
