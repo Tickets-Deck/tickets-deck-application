@@ -397,7 +397,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
                 }
               }}
             />
-            <p className='text-sm text-grey-3'>
+            <p className='text-xs text-grey-3'>
               Make the ticket price zero if it's marked as 'Free.' Tickets
               marked as '&#8358;0' can be gotten without paying anything.
             </p>
@@ -535,11 +535,11 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
                     visibility: true,
                   })
                 }
-                className={
+                className={`w-fit rounded-[3.125rem] cursor-pointer text-sm bg-white text-[#111] py-[0.375rem] px-3 mx-auto ${
                   !ticketFormRequest?.visibility
                     ? "!bg-white/10 !text-white"
                     : ""
-                }
+                }`}
               >
                 Active
               </button>
@@ -550,11 +550,11 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
                     visibility: false,
                   })
                 }
-                className={
+                className={`w-fit rounded-[3.125rem] cursor-pointer text-sm bg-white text-[#111] py-[0.375rem] px-3 mx-auto ${
                   ticketFormRequest?.visibility
                     ? "!bg-white/10 !text-white"
                     : ""
-                }
+                }`}
               >
                 Inactive
               </button>
@@ -562,6 +562,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
           </div>
           <button
             type='button'
+            className='w-fit rounded-[3.125rem] cursor-pointer text-sm bg-white text-[#111] py-[0.375rem] px-3 mx-auto'
             disabled={forExistingEvent && isCreatingNewTicket}
             onClick={() =>
               isEditingTicket

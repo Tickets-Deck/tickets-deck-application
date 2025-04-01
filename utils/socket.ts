@@ -5,6 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 
 // Retrieve or create a session ID
 const getSessionId = () => {
+  if (typeof window === "undefined") {
+    return null; // Prevent running on the server
+  }
+
   let sessionId = localStorage.getItem(StorageKeys.ClientSessionWS);
   if (!sessionId) {
     sessionId = uuidv4(); // Generate a unique ID

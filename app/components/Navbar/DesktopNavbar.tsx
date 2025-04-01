@@ -50,7 +50,7 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ appTheme }): Rea
         <nav
             className={`
         bg-dark-grey flex items-center justify-between sectionPadding transition-all duration-300 
-        ${isScrolled ? "bg-black/90 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-md" : ""}
+        ${isScrolled ? "bg-black/90 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-md supports-[backdrop-filter]:bg-black/60" : ""}
         `}>
             <Link href={ApplicationRoutes.Home}>
                 <div className='flex items-center gap-1 '>

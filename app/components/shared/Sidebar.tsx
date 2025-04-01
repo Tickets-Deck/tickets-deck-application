@@ -69,14 +69,12 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
     return (
       <Link href={route} onClick={closeSidebar}>
         <li
-          className={`py-[0.8rem] px-4 flex items-center gap-[6px] text-sm cursor-pointer relative before:absolute before:left-[-0.25rem] before:top-0 before:bottom-0 before:w-[3px] before:[border-start-end-radius:8px] before:[border-end-end-radius:8px] before:bg-transparent before:transition-all before:[transition-timing-function:cubic-bezier(0.55,0.055,0.675,0.19)] before:duration-200  hover:bg-dark-grey/5 hover:text-primary-color-sub [&_:hover_svg_path]:fill-primary-color-sub hover:before:left-0 hover:before:bg-primary-color-sub [&_svg]:w-[22px] [&_svg_path]:fill-primary-color-sub ${
-            className ? className : ""
-          }
-                    ${
-                      currentPageChecker
-                        ? "rotate-90 [transform-origin:center_center] bg-dark-grey text-primary-color-sub [&_svg_path]:fill-primary-color-sub before:left-0 before:bg-primary-color-sub"
-                        : ""
-                    }`}
+          className={`py-[0.8rem] px-4 flex items-center gap-[6px] text-sm cursor-pointer relative before:absolute before:left-[-0.25rem] before:top-0 before:bottom-0 before:w-[3px] before:[border-start-end-radius:8px] before:[border-end-end-radius:8px] before:bg-transparent before:transition-all before:[transition-timing-function:cubic-bezier(0.55,0.055,0.675,0.19)] before:duration-200  hover:bg-dark-grey/5 hover:text-primary-color-sub [&_svg_path]:hover:fill-primary-color-sub [&_svg]:w-[22px] [&_svg_path]:fill-primary-color-sub ${
+            currentPageChecker
+              ? " bg-dark-grey !text-primary-color-sub [&_svg_path]:!fill-primary-color-sub before:!left-0 before:!bg-primary-color-sub"
+              : ""
+          } ${className ? className : ""}
+                    `}
         >
           {icon} {text}
         </li>
@@ -108,22 +106,22 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
             icon={<Icons.Dashboard />}
           />
           <li
-            className={`py-[0.8rem] px-4 flex items-center gap-[6px] text-sm cursor-pointer relative before:absolute before:left-[-0.25rem] before:top-0 before:bottom-0 before:w-[3px] before:[border-start-end-radius:8px] before:[border-end-end-radius:8px] before:bg-transparent before:transition-all before:[transition-timing-function:cubic-bezier(0.55,0.055,0.675,0.19)] before:duration-200  hover:bg-dark-grey/5 hover:text-primary-color-sub [&_:hover_svg_path]:fill-primary-color-sub hover:before:left-0 hover:before:bg-primary-color-sub [&_svg]:w-[22px] [&_svg_path]:fill-primary-color-sub  ${
+            className={`py-[0.8rem] px-4 flex items-center gap-[6px] text-sm cursor-pointer relative before:absolute before:left-[-0.25rem] before:top-0 before:bottom-0 before:w-[3px] before:[border-start-end-radius:8px] before:[border-end-end-radius:8px] before:bg-transparent before:transition-all before:[transition-timing-function:cubic-bezier(0.55,0.055,0.675,0.19)] before:duration-200  hover:bg-dark-grey/5 hover:text-primary-color-sub [&_svg_path]:hover:fill-primary-color-sub [&_svg]:w-[22px] [&_svg_path]:fill-primary-color-sub  ${
               currentPageIsEvents ||
               currentPageIsCreateEvent ||
               currentPageIsEditEvent
-                ? "rotate-90 [transform-origin:center_center] bg-dark-grey text-primary-color-sub [&_svg_path]:fill-primary-color-sub before:left-0 before:bg-primary-color-sub"
+                ? " !bg-dark-grey !text-primary-color-sub [&_svg_path]:!fill-primary-color-sub before:!left-0 before:!bg-primary-color-sub"
                 : ""
             }`}
             onClick={() => setEventsSubLinksIsOpen(!eventsSubLinksIsOpen)}
           >
             <Icons.Event /> Events{" "}
             <span
-              className={
+              className={`ml-auto inline-flex [&_svg]:!w-[22px] [&_svg]:scale-[0.8] [&_svg]:!h-[12px] ${
                 eventsSubLinksIsOpen
-                  ? "rotate-90 [transform-origin:center_center] bg-dark-grey text-primary-color-sub [&_svg_path]:fill-primary-color-sub before:left-0 before:bg-primary-color-sub"
+                  ? "rotate-90 [transform-origin:center_center]"
                   : ""
-              }
+              }`}
             >
               <Icons.CaretRight />
             </span>
@@ -138,21 +136,21 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
           >
             <ReusableLink
               route={ApplicationRoutes.Events}
-              className='!text-sm before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
+              className='!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
               currentPageChecker={currentPageIsEvents}
               text='My Events'
               icon={<Icons.Event />}
             />
             <ReusableLink
               route={ApplicationRoutes.FavouriteEvents}
-              className='!text-sm before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
+              className='!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
               currentPageChecker={currentPageIsFavorites}
               text='My Favorites'
               icon={<Icons.Event />}
             />
             <ReusableLink
               route={ApplicationRoutes.CreateEvent}
-              className='!text-sm before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
+              className='!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
               currentPageChecker={currentPageIsCreateEvent}
               text='Create Event'
               icon={<Icons.AddEvent />}
@@ -172,7 +170,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
             icon={<Icons.Profile />}
           />
           <li
-            className='py-[0.8rem] px-4 flex items-center gap-[6px] text-sm cursor-pointer relative before:absolute before:left-[-0.25rem] before:top-0 before:bottom-0 before:w-[3px] before:[border-start-end-radius:8px] before:[border-end-end-radius:8px] before:bg-transparent before:transition-all before:[transition-timing-function:cubic-bezier(0.55,0.055,0.675,0.19)] before:duration-200  hover:bg-dark-grey/5 hover:text-primary-color-sub [&_:hover_svg_path]:fill-primary-color-sub hover:before:left-0 hover:before:bg-primary-color-sub [&_svg]:w-[22px] [&_svg_path]:stroke-primary-color-sub'
+            className='py-[0.8rem] px-4 flex items-center gap-[6px] text-sm cursor-pointer relative before:absolute before:left-[-0.25rem] before:top-0 before:bottom-0 before:w-[3px] before:[border-start-end-radius:8px] before:[border-end-end-radius:8px] before:bg-transparent before:transition-all before:[transition-timing-function:cubic-bezier(0.55,0.055,0.675,0.19)] before:duration-200  hover:bg-dark-grey/5 hover:text-primary-color-sub [&_svg_path]:hover:fill-primary-color-sub hover:before:left-0 hover:before:bg-primary-color-sub [&_svg]:w-[22px] [&_svg_path]:stroke-primary-color-sub'
             onClick={() => {
               signOut();
               closeSidebar();

@@ -86,11 +86,7 @@ const ContactPage: FunctionComponent<ContactPageProps> = (): ReactElement => {
   }
 
   return (
-    <main
-      className={
-        "py-8 md:py-16 flex flex-col md:flex-row bg-dark-grey-2 justify-between items-center p-[1.25rem] md:px-[5rem] lg:px-[16%] xl:px-[10rem]"
-      }
-    >
+    <main>
       <PageHeroSection
         imageUrl={images.about_hero}
         title='Contact Us'

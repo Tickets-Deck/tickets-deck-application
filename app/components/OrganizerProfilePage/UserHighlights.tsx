@@ -46,7 +46,7 @@ const UserHighlights: FunctionComponent<UserHighlightsProps> = ({
   return (
     <div className='mt-[3.5rem] min-h-[30vh]'>
       <h3 className='text-2xl font-medium text-center'>Recent Events</h3>
-      <div className='grid [grid-template-columns:repeat(auto-fill,minmax(15rem,_1fr))] gap-4 mt-6 p-[1.25rem] md:px-[5rem] lg:px-[16%] xl:px-[10rem]'>
+      <div className='grid [grid-template-columns:repeat(auto-fill,minmax(15rem,_1fr))] gap-4 mt-6 p-[1.25rem] md:px-[5rem] lg:px-[10rem] xl:px-[16%]'>
         {userEvents &&
           userEvents.length > 0 &&
           userEvents.map((event, index) => (
@@ -54,7 +54,6 @@ const UserHighlights: FunctionComponent<UserHighlightsProps> = ({
               event={event}
               // mobileAndActionButtonDismiss
               key={index}
-              skipLikeStatusFetch
               // gridDisplay={true}
             />
           ))}

@@ -87,7 +87,7 @@ export default function OverviewSection({ eventInfo, handleUpdateEventInfo, setI
                     <div className="mt-4">
                         <h3 className="text-base font-medium mb-2">Tags</h3>
                         {
-                            eventInfo.tags.length > 1 &&
+                            eventInfo.tags.length > 0 &&
                             <div className="flex flex-wrap gap-2">
                                 {eventInfo.tags.map((tag, index) => (
                                     <span

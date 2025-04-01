@@ -281,7 +281,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
             </div>
             <div
               className={
-                "px-5 md:px-[5rem] lg:px-[16%] xl:px-[10rem] py-6 w-full lg:w-[70%] z-[2] relative flex flex-col gap-3"
+                "px-5 md:px-[5rem] lg:px-[10rem] xl:px-[16%] py-6 w-full lg:w-[70%] z-[2] relative flex flex-col gap-3"
               }
             >
               <span className='rounded-[0.5rem] py-1 px-2 flex items-center bg-white/10 gap-1 w-fit text-sm'>
@@ -309,7 +309,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
             </div>
             <div
               className={
-                "px-5 md:px-[5rem] lg:px-[16%] xl:px-[10rem] py-6 w-full lg:w-[70%] z-[2] relative flex flex-col gap-3"
+                "px-5 md:px-[5rem] xl:px-[16%] lg:px-[10rem] py-6 w-full lg:w-[70%] z-[2] relative flex flex-col gap-3"
               }
             >
               <span className='rounded-[0.5rem] py-1 px-2 flex items-center bg-white/10 gap-1 w-fit text-sm'>
@@ -324,19 +324,16 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
         )}
 
         {eventInfo ? (
-          <section className='px-5 md:px-[5rem] lg:px-[16%] xl:px-[10rem] z-[2] relative flex flex-col translate-y-[-4rem] sm:translate-y-[-2.25rem] pb-10'>
+          <section className='px-5 md:px-[5rem] xl:px-[16%] lg:px-[10rem] z-[2] relative flex flex-col translate-y-[-4rem] sm:translate-y-[-2.25rem] pb-10'>
             <EventMainInfo
               eventInfo={eventInfo}
               setTicketsSelectionContainerIsVisible={
                 setTicketsSelectionContainerIsVisible
               }
-              addEventToGoogleCalender={addEventToGoogleCalender}
+              addEventToGoogleCalender={() => {}}
               setIsPopupOpen={setIsPopupOpen}
             />
-            <div
-              className='rounded-[1rem] bg-[linear-gradient(180deg,_rgba(49,49,49,0)_4.17%,_#313131_100%)] w-full pt-8 px-6 pb-[2.5px] sm:pt-10  sm:w-[80%]'
-              id='optionalSection'
-            >
+            <div className='' id='optionalSection'>
               {ticketsSelectionContainerIsVisible &&
                 eventTickets &&
                 eventTickets.length > 0 && (

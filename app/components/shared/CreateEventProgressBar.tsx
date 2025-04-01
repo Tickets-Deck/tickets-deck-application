@@ -52,12 +52,12 @@ const CreateEventProgressBar: FunctionComponent<
     eventCreationStage > EventCreationStage.Confirmation;
 
   return (
-    <div className='mx-auto w-[80%] md:w-1/2 mt-6 mb-[3.5rem flex justify-between items-center relative]'>
+    <div className='mx-auto w-[80%] md:w-1/2 mt-6 mb-[3.5rem] flex justify-between items-center relative'>
       <span className='w-full h-[0.125rem] bg-primary-color-sub absolute'></span>
       <div
         style={disableAllTabs ? { pointerEvents: "none" } : {}}
         className={`relative grid place-items-center size-8 rounded-full bg-primary-color-sub text-white shadow-[0px_0px_24px_4px_rgba(0,0,0,0.5)] hover:cursor-pointer hover:bg-primary-color group ${
-          basicInfoIsCurrent ? "bg-primary-color" : ""
+          basicInfoIsCurrent ? "!bg-primary-color" : ""
         } ${basicInfoIsDone ? "" : ""} `}
         onClick={() => setEventCreationStage(EventCreationStage.BasicInfo)}
       >
@@ -75,7 +75,7 @@ const CreateEventProgressBar: FunctionComponent<
       <div
         style={disableAllTabs ? { pointerEvents: "none" } : {}}
         className={`relative grid place-items-center size-8 rounded-full bg-primary-color-sub text-white shadow-[0px_0px_24px_4px_rgba(0,0,0,0.5)] hover:cursor-pointer hover:bg-primary-color group ${
-          imageUploadIsCurrent ? "bg-primary-color" : ""
+          imageUploadIsCurrent ? "!bg-primary-color" : ""
         } ${imageUploadIsDone ? "" : ""} ${
           imageUploadIsUndone ? "pointer-events-none" : ""
         } `}
@@ -95,7 +95,7 @@ const CreateEventProgressBar: FunctionComponent<
       <div
         style={disableAllTabs ? { pointerEvents: "none" } : {}}
         className={`relative grid place-items-center size-8 rounded-full bg-primary-color-sub text-white shadow-[0px_0px_24px_4px_rgba(0,0,0,0.5)] hover:cursor-pointer hover:bg-primary-color group ${
-          ticketDetailsIsCurrent ? "bg-primary-color" : ""
+          ticketDetailsIsCurrent ? "!bg-primary-color" : ""
         } ${ticketDetailsIsDone ? "" : ""} ${
           ticketDetailsIsUndone ? "pointer-events-none" : ""
         } `}
@@ -115,7 +115,7 @@ const CreateEventProgressBar: FunctionComponent<
       <div
         style={disableAllTabs ? { pointerEvents: "none" } : {}}
         className={`relative grid place-items-center size-8 rounded-full bg-primary-color-sub text-white shadow-[0px_0px_24px_4px_rgba(0,0,0,0.5)] hover:cursor-pointer hover:bg-primary-color group ${
-          reviewAndPublishIsCurrent ? "bg-primary-color" : ""
+          reviewAndPublishIsCurrent ? "!bg-primary-color" : ""
         } ${reviewAndPublishIsDone ? "" : ""} ${
           reviewAndPublishIsUndone ? "pointer-events-none" : ""
         } `}

@@ -109,7 +109,7 @@ const TicketsSelectionContainer: FunctionComponent<
 
   return (
     <div
-      className={`className='rounded-[1rem]  w-full pt-8 px-6 pb-[2.5px] sm:pt-10  sm:w-[80%]' ${
+      className={`rounded-[1rem] w-full pt-8 px-6 pb-[2.5px] sm:pt-10 mx-auto sm:w-[80%] ${
         appTheme === Theme.Light
           ? "bg-[linear-gradient(180deg,var(--dark-grey)_7%,var(--black)_100%)]"
           : "bg-[linear-gradient(180deg,_rgba(49,49,49,0)_4.17%,_#313131_100%)]"
@@ -159,7 +159,7 @@ const TicketsSelectionContainer: FunctionComponent<
               ) : (
                 <div className='flex items-center justify-between'>
                   <span
-                    className='size-[1.875rem] rounded-[0.25rem] bg-primary-color-sub-50/10 hover:bg-primary-color-sub-50/40'
+                    className='size-[1.875rem] rounded-[0.25rem] grid place-items-center bg-primary-color-sub-50/10 hover:bg-primary-color-sub-50/40'
                     onClick={() => {
                       ticketType.selectedTickets > 0 &&
                         decrementTicket(ticketType);
@@ -171,7 +171,12 @@ const TicketsSelectionContainer: FunctionComponent<
                     {ticketType.selectedTickets}{" "}
                     {ticketType.selectedTickets > 1 ? "tickets" : "ticket"}
                   </p>
-                  <span onClick={() => incrementTicket(ticketType)}>+</span>
+                  <span
+                    className='size-[1.875rem] rounded-[0.25rem] grid place-items-center bg-primary-color-sub-50/10 hover:bg-primary-color-sub-50/40'
+                    onClick={() => incrementTicket(ticketType)}
+                  >
+                    +
+                  </span>
                 </div>
               )}
             </div>
@@ -198,7 +203,7 @@ const TicketsSelectionContainer: FunctionComponent<
             </div>
           ) : (
             <button
-              className='size-fit rounded-[0.625rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-primary-color text-white flex items-center gap-1'
+              className='size-fit rounded-[2.5rem] cursor-pointer text-lg py-[0.8rem] px-[1.6rem] border-none font-medium bg-white text-black flex items-center gap-1 disabled:opacity-60 disabled:pointer-events-none'
               onClick={() => {
                 if (!userInfo) {
                   setContactDetailsModalIsVisible(true);
@@ -212,7 +217,7 @@ const TicketsSelectionContainer: FunctionComponent<
             </button>
           )}
           <button
-            className='h-fit w-[3.5rem] md:size-fit rounded-[0.625rem] cursor-pointer text-sm p-[0.65rem] hover:bg-failed-color [&_:hover_svg_path]:stroke-white border-none bg-primary-color [&_svg]:size-6 text-white flex items-center gap-1'
+            className='h-fit w-[3.5rem] md:size-fit rounded-[2.5rem] cursor-pointer text-lg p-[0.65rem] hover:bg-failed-color [&_svg_path]:hover:!stroke-white border-none bg-white [&_svg]:size-6 text-black flex items-center gap-1'
             onClick={() => setTicketsSelectionContainerIsVisible(false)}
           >
             <Icons.Close />
