@@ -1,14 +1,9 @@
 import { ReactElement, FunctionComponent } from "react";
-import styles from "../styles/AuthStyles.module.scss"
 
-interface SignupProps {
-
-}
+interface SignupProps {}
 
 const Signup: FunctionComponent<SignupProps> = (): ReactElement => {
-    return ( 
-        <div className={styles.signUp}></div>
-     );
-}
+  return <div className=''></div>;
+};
 
 export default Signup;

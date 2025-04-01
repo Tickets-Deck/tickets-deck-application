@@ -1,17 +1,32 @@
-import { Dispatch, FunctionComponent, ReactElement, SetStateAction } from "react";
+import {
+  Dispatch,
+  FunctionComponent,
+  ReactElement,
+  SetStateAction,
+} from "react";
 import ModalWrapper from "./ModalWrapper";
-import styles from "@/app/styles/promptModal.module.scss";
 
 interface SuccessfulActionModalProps {
-    visibility: boolean
-    setVisibility: Dispatch<SetStateAction<boolean>>
+  visibility: boolean;
+  setVisibility: Dispatch<SetStateAction<boolean>>;
 }
 
-const SuccessfulActionModal: FunctionComponent<SuccessfulActionModalProps> = ({ visibility, setVisibility }): ReactElement => {
-    return (
-        <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>
-            <>&nbsp;</>
-            {/* <div className={styles.promptModal}>
+const SuccessfulActionModal: FunctionComponent<SuccessfulActionModalProps> = ({
+  visibility,
+  setVisibility,
+}): ReactElement => {
+  return (
+    <ModalWrapper
+      visibility={visibility}
+      setVisibility={setVisibility}
+      styles={{
+        backgroundColor: "transparent",
+        color: "#fff",
+        width: "fit-content",
+      }}
+    >
+      <>&nbsp;</>
+      {/* <div className={styles.promptModal}>
                 <div className={styles.topAreaSection}>
                     <div className={styles.topArea}>
                         <h3>Hello there</h3>
@@ -25,8 +40,8 @@ const SuccessfulActionModal: FunctionComponent<SuccessfulActionModalProps> = ({ 
                     </Link>
                 </div>
             </div> */}
-        </ModalWrapper>
-    );
-}
+    </ModalWrapper>
+  );
+};
 
 export default SuccessfulActionModal;
