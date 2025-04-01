@@ -470,8 +470,16 @@ button {
         @apply w-full rounded-[0.5rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none placeholder-grey-bg;
     }
 
+    .textarea {
+        @apply rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none placeholder:text-white/50 resize-none h-[5rem];
+    }
+
     .primaryButton {
         @apply size-fit rounded-[0.625rem] cursor-pointer text-sm py-[0.8rem] px-[1.6rem] border-none bg-primary-color text-white flex items-center gap-2 [&_svg]:opacity-100 [&_svg]:text-white [&_svg]:w-3 [&_svg_path]:fill-white hover:bg-white hover:text-primary-color;
+    }
+
+    .primaryButtonOutline {
+        @apply size-fit rounded-[0.625rem] cursor-pointer text-sm py-[0.5rem] px-[1rem] border-2 border-white/80 bg-transparent text-white flex items-center gap-1 [&_svg]:opacity-100 [&_svg]:text-white [&_svg]:size-4 [&_svg_path]:fill-white hover:bg-white/20;
     }
 
     .secondaryButton {

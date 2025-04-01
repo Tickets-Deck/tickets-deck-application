@@ -2,14 +2,26 @@ import { Metadata } from 'next'
 import Homepage from './Homepage'
 import { getPlaceholderImage } from './services/DynamicBlurDataUrl'
 import images from '@/public/images';
+import { FeaturedEvent } from './models/IEvents';
+import { useFetchFeaturedEvents } from './api/apiClient';
 
 export const metadata: Metadata = {
     title: 'Homepage | Ticketsdeck Events',
     description: 'Unlocking best experiences, easily.'
 }
 
+async function getFeaturedEvents(): Promise<FeaturedEvent[] | null> {
+    const fetchFeaturedEvents = useFetchFeaturedEvents();
+    try {
+        const response = await fetchFeaturedEvents();
+        return response.data as FeaturedEvent[];
+    } catch (error) {
+        console.error("Error fetching featured events:", error);
+        return null;
+    }
+}
+
 export default async function Home() {
-    
     const imageList = [
         {
             img: images.ImageBg1,
@@ -45,6 +57,8 @@ export default async function Home() {
     )
 
     return (
-        <Homepage imageWithPlaceholder={imageWithPlaceholder} />
+        <Homepage
+            imageWithPlaceholder={imageWithPlaceholder}
+        />
     )
 }

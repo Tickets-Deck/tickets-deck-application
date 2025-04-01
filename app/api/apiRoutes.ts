@@ -71,8 +71,8 @@ export class ApiRoutes {
   /**
    * The route to Fetch Event Information endpoint for the publisher's use only
    */
-  static FetchOrganizerEvent: (eventId: string) => string = (eventId: string) =>
-    `events/${eventId}/publisher`;
+  static FetchOrganizerEvent: (eventId: string, publisherId: string) => string = (eventId: string, publisherId: string) =>
+    `events/${eventId}/publisher/${publisherId}`;
 
   /**
    * The route to Fetch Organizer Events endpoint

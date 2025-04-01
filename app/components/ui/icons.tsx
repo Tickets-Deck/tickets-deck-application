@@ -233,18 +233,8 @@ export const Icons = {
     ),
 
     Notification: (props: IconProps) => (
-        <svg
-            width='24'
-            height='24'
-            viewBox='0 0 24 24'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-            {...props}
-        >
-            <path
-                d='M21 19V20H3V19L5 17V11C5 7.9 7.03 5.17 10 4.29V4C10 3.46957 10.2107 2.96086 10.5858 2.58579C10.9609 2.21071 11.4696 2 12 2C12.5304 2 13.0391 2.21071 13.4142 2.58579C13.7893 2.96086 14 3.46957 14 4V4.29C16.97 5.17 19 7.9 19 11V17L21 19ZM14 21C14 21.5304 13.7893 22.0391 13.4142 22.4142C13.0391 22.7893 12.5304 23 12 23C11.4696 23 10.9609 22.7893 10.5858 22.4142C10.2107 22.0391 10 21.5304 10 21'
-                fill='#003173'
-            />
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {...props}>
+            <path d="M10.268 21a2 2 0 0 0 3.464 0" /><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
         </svg>
     ),
 
@@ -1032,9 +1022,20 @@ export const Icons = {
         </svg>
     ),
 
+    ChevronDown: (props: IconProps) => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {...props}>
+            <path d="m6 9 6 6 6-6" />
+        </svg>
+    ),
+
     Star: (props: IconProps) => (
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" {...props}>
             <path d="M19.3741 7.87107C19.3585 7.82292 19.3286 7.78064 19.2884 7.74984C19.2482 7.71904 19.1997 7.70116 19.1491 7.69857L12.5761 7.37007L10.2336 1.22107C10.1606 1.02657 9.8401 1.02657 9.7666 1.22107L7.4236 7.37007L0.851102 7.69857C0.800498 7.70114 0.751869 7.71902 0.711658 7.74985C0.671448 7.78068 0.641554 7.823 0.625938 7.8712C0.610323 7.9194 0.609722 7.97121 0.624217 8.01977C0.638711 8.06832 0.667617 8.11132 0.707102 8.14307L5.8306 12.2716L4.1126 18.6236C4.0851 18.7236 4.1231 18.8301 4.2071 18.8911C4.24804 18.9209 4.29706 18.9376 4.34769 18.9389C4.39831 18.9402 4.44815 18.9262 4.4906 18.8986L10.0001 15.3006L15.5096 18.8986C15.5521 18.9263 15.602 18.9404 15.6528 18.9391C15.7035 18.9377 15.7526 18.921 15.7936 18.8911C15.8345 18.8612 15.8654 18.8197 15.8822 18.7719C15.899 18.7242 15.9009 18.6724 15.8876 18.6236L14.1691 12.2716L19.2926 8.14307C19.3322 8.11135 19.3612 8.06835 19.3757 8.01976C19.3903 7.97118 19.3897 7.91932 19.3741 7.87107Z" fill={props.fill ?? "#FFB020"} />
+        </svg>
+    ),
+    StarOutline: (props: IconProps) => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {...props}>
+            <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
         </svg>
     ),
 
@@ -1601,6 +1602,13 @@ export const Icons = {
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M20 8H10C8.89543 8 8 8.89543 8 10V20C8 21.1046 8.89543 22 10 22H20C21.1046 22 22 21.1046 22 20V10C22 8.89543 21.1046 8 20 8Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             <path d="M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    ),
+
+    ThumbsUp: (props: IconProps) => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 10v12" />
+            <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
         </svg>
     ),
 };
