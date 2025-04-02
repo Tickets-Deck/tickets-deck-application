@@ -757,8 +757,8 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                                 <label htmlFor='coupon' className='text-xs'>
                                     Do you have any coupon code?
                                 </label>
-                                <div className='flex sm:items-center gap-2 flex-col sm:flex-row items-start w-full sm:w-auto'>
-                                    <div className='sm:w-fit input bg-white/10 min-w-[40%] !p-0 !pr-[12px] w-full flex sm:block'>
+                                <div className='flex sm:items-center gap-2 flex-col sm:flex-row items-start w-fit sm:w-auto'>
+                                    <div className='sm:w-fit input bg-white/10 min-w-[40%] !p-0 !pr-[12px] w-full flex flex-row justify-between sm:block'>
                                         <input
                                             className='sm:w-fit input bg-transparent !placeholder-grey-bg/50'
                                             tabIndex={1}
