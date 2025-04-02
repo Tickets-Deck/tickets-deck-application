@@ -20,7 +20,7 @@ import {
 import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
 
 export const API = axios.create({
-  baseURL: ApiRoutes.BASE_URL_TEST,
+  baseURL: ApiRoutes.BASE_URL,
 });
 
 export const getApiConfig = (token: string) => {
@@ -153,7 +153,10 @@ export function useFetchEventById() {
 
 export function useFetchPublisherEventById() {
   async function fetchEvent(token: string, id: string, publisherId: string) {
-    return API.get(ApiRoutes.FetchOrganizerEvent(id, publisherId), getApiConfig(token));
+    return API.get(
+      ApiRoutes.FetchOrganizerEvent(id, publisherId),
+      getApiConfig(token)
+    );
   }
 
   return fetchEvent;
@@ -708,9 +711,13 @@ export function useFetchTransactionFee() {
 }
 
 export function useVerifyCouponCode() {
+  // Request token
+  const requestToken = useRequestCredentialToken();
   async function verifyCouponCode(eventId: string, couponCode: string) {
+    const token = await requestToken();
     return API.get(
-      `${ApiRoutes.VerifyCouponCode}?eventId=${eventId}&couponCode=${couponCode}`
+      ApiRoutes.VerifyCouponCode(eventId, couponCode),
+      getApiConfig(token.data.token)
     );
   }
 
