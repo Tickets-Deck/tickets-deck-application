@@ -100,7 +100,7 @@ const EventsGroup: FunctionComponent<EventsGroupProps> = ({
                                 return <EventCard
                                     event={event}
                                     key={index}
-                                    consoleDisplay
+                                    consoleDisplay={consoleDisplay}
                                 />;
                             })
                     }
