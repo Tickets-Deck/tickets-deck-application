@@ -176,7 +176,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
     }, [session]);
 
     return (
-        <div className={""}>
+        <div className='p-[1.25rem]'>
             <div className='p-4 md:p-0 max-[768px]:p-4 flex items-center justify-between'>
                 <h3 className="text-3xl font-normal text-white">Create Event</h3>
             </div>
