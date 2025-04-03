@@ -39,23 +39,25 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     function showTicketUi(ticketOrder: UserTicketOrder) {
-        setSelectedTicketOrderInfo({
+        const ticketInfo = {
             ticketType: ticketOrder.ticket.name,
             eventInfo: orderInformation?.event as EventResponse,
             qr: <QRCode value={ticketOrder?.orderId as string} />,
             orderId: ticketOrder?.orderId as string,
-        });
+        };
+        setSelectedTicketOrderInfo(ticketInfo);
+        setIsTicketVisible(true);
     }
 
     // useEffect(() => {
     //     handleFetchOrderInformation();
     // }, []);
 
-    useEffect(() => {
-        if (selectedTicketOrderInfo && !isTicketVisible) {
-            setIsTicketVisible(true);
-        }
-    }, [selectedTicketOrderInfo, isTicketVisible]);
+    // useEffect(() => {
+    //     if (selectedTicketOrderInfo && !isTicketVisible) {
+    //         setIsTicketVisible(true);
+    //     }
+    // }, [selectedTicketOrderInfo, isTicketVisible]);
 
     return (
         <>
