@@ -758,7 +758,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                                     Do you have any coupon code?
                                 </label>
                                 <div className='flex sm:items-center gap-2 flex-col sm:flex-row items-start w-fit sm:w-auto'>
-                                    <div className='sm:w-fit input bg-white/10 min-w-[40%] !p-0 !pr-[12px] w-full flex flex-row justify-between sm:block'>
+                                    <div className='sm:w-fit input bg-white/10 min-w-[40%] !p-0 !pr-[12px] w-full flex flex-row justify-between'>
                                         <input
                                             className='sm:w-fit input bg-transparent !placeholder-grey-bg/50'
                                             tabIndex={1}
@@ -775,7 +775,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                                             placeholder='Enter coupon code'
                                         />
                                         <button
-                                            className={`bg-dark-grey text-white py-[5px] px-[12px] rounded-[12px] text-xs ${canCodeBeValidated ? "!bg-primary-color" : ""
+                                            className={`bg-dark-grey text-white py-[5px] px-[12px] rounded-[12px] text-xs h-fit my-auto ${canCodeBeValidated ? "!bg-primary-color" : ""
                                                 }`}
                                             style={
                                                 isValidating
