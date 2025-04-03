@@ -37,13 +37,16 @@ const ModalWrapper: FunctionComponent<ModalWrapperProps> = ({
     >
       <div
         className={`bg-[rgba(34,34,34,0.6)] absolute size-full top-0 left-0 ${
-          visibility ? "" : "opacity-0 animate-modalBumpIn"
+            visibility
+            ? "opacity-100"
+            : "opacity-0 animate-overlayFadeOut"
         }`}
         onClick={() => (disallowOverlayFunction ? {} : setVisibility(false))}
       ></div>
       <div
         className={`w-full sm:w-auto sm:max-w-[90%] md:w-full md:max-w-full m-auto !z-[120] translate-y-0 bg-primary-color-sub ${
-          visibility ? "" : "opacity-0 animate-modalBumpOut translate-y-[3rem]"
+          visibility ? "animate-modalBumpIn opacity-100 translate-y-0"
+            : "animate-modalBumpOut opacity-0 translate-y-[3rem]"
         }`}
         style={styles}
       >
