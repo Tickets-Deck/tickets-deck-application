@@ -281,9 +281,16 @@ export class ApiRoutes {
   static UserPasswordChange: string = "api/users/password/change";
 
   /**
-   * The route to User Wallet Balance endpoint
+   * The route to Fetch User Wallet Balance endpoint
    */
-  static UserWalletBalance: string = "api/users/wallet-balance";
+  static FetchWalletBalance: (publisherId: string) => string = (publisherId: string) =>
+    `wallet/balance/${publisherId}`;
+
+  /**
+   * The route to Fetch User Witdrawals endpoint
+   */
+  static FetchUserPayouts: (publisherId: string) => string = (publisherId: string) =>
+    `wallet/payouts/${publisherId}`;
 
   /**
    * The route to User Favorite Events endpoint
