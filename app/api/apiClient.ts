@@ -639,11 +639,19 @@ export function useResetPassword() {
 }
 
 export function useFetchUserWalletBalance() {
-  async function fetchUserWalletBalance(userId: string) {
-    return API.get(`${ApiRoutes.UserWalletBalance}?userId=${userId}`);
+  async function fetchUserWalletBalance(userId: string, token: string) {
+    return API.get(ApiRoutes.FetchWalletBalance(userId), getApiConfig(token));
   }
 
   return fetchUserWalletBalance;
+}
+
+export function useFetchUserPayouts() {
+  async function fetchUserPayouts(userId: string, token: string) {
+    return API.get(ApiRoutes.FetchUserPayouts(userId), getApiConfig(token));
+  }
+
+  return fetchUserPayouts;
 }
 
 export function useFetchBankList() {
