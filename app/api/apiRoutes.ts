@@ -5,7 +5,7 @@ export class ApiRoutes {
   /**
    * The dev base url for the application
    */
-  static BASE_URL_DEV: string = "http://localhost:9000/";
+  static BASE_URL_DEV: string = "http://localhost:3050/";
   //   static BASE_URL_DEV: string = "http://192.168.1.226:9000/";
 
   /**
@@ -21,7 +21,7 @@ export class ApiRoutes {
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
+  static BASE_URL: string = ApiRoutes.BASE_URL_DEV;
 
   /**
    * The route to Request Credential Token endpoint
@@ -281,9 +281,16 @@ export class ApiRoutes {
   static UserPasswordChange: string = "api/users/password/change";
 
   /**
-   * The route to User Wallet Balance endpoint
+   * The route to Fetch User Wallet Balance endpoint
    */
-  static UserWalletBalance: string = "api/users/wallet-balance";
+  static FetchWalletBalance: (publisherId: string) => string = (publisherId: string) =>
+    `wallet/balance/${publisherId}`;
+
+  /**
+   * The route to Fetch User Witdrawals endpoint
+   */
+  static FetchUserPayouts: (publisherId: string) => string = (publisherId: string) =>
+    `wallet/payouts/${publisherId}`;
 
   /**
    * The route to User Favorite Events endpoint
@@ -323,7 +330,8 @@ export class ApiRoutes {
   /**
    * The route to Verify Coupon Code endpoint
    */
-  static VerifyCouponCode: string = "api/verify-coupon";
+  static VerifyCouponCode: (eventId: string, couponCode: string) => string = (eventId: string, couponCode: string) => 
+    `coupons/${eventId}/verify/${couponCode}`;
 
   /**
    * The route to EventCategory endpoint

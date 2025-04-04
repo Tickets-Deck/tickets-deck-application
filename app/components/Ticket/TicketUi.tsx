@@ -63,7 +63,7 @@ const TicketUi: FunctionComponent<TicketUiProps> = ({
     return (
         <div className='flex flex-col'>
             <div
-                className='w-full md:w-[450px] bg-white rounded-2xl border border-text-grey/20'
+                className='w-full md:w-[450px] mx-auto bg-white rounded-2xl border border-text-grey/20'
                 id='capture'
                 ref={pdfRef}
             >

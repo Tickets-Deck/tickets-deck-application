@@ -176,7 +176,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
                     <div className="pt-6 flex flex-row flex-wrap items-center gap-3 md:gap-6">
                         <div className="flex items-center gap-1 md:gap-2">
                             <Icons.UserOutline className="h-5 w-5 opacity-65" stroke="white" />
-                            <span className="text-sm font-light text-nowrap">100+ Users</span>
+                            <span className="text-sm font-light text-nowrap">4000+ Users</span>
                         </div>
                         <div className="flex items-center gap-1 md:gap-2">
                             <Icons.Calender className="h-5 w-5 opacity-65" fill="white" />
