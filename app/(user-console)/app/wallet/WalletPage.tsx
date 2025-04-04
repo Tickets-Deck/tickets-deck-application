@@ -1,55 +1,67 @@
 "use client";
-import { useFetchUserWalletBalance } from "@/app/api/apiClient";
 import BetaTestModal from "@/app/components/Modal/BetaTestModal";
-import { catchError } from "@/app/constants/catchError";
+import { NairaPrice } from "@/app/constants/priceFormatter";
 import { useToast } from "@/app/context/ToastCardContext";
-import { RootState } from "@/app/redux/store";
-import { FunctionComponent, ReactElement, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { PaymentServiceProvider } from "@/app/enums/IPaymentServiceProvider";
+import { PaymentStatus } from "@/app/enums/IPaymentStatus";
+import { Payout, WalletBalance } from "@/app/models/IWallet";
+import moment from "moment";
+import { FunctionComponent, ReactElement, useState } from "react";
 
-interface WalletPageProps { }
+interface WalletPageProps {
+    walletBalanceInfo: WalletBalance | null
+    userPayouts: Payout[] | null
+}
 
-const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
+const WalletPage: FunctionComponent<WalletPageProps> = ({ walletBalanceInfo, userPayouts }): ReactElement => {
+
     const toastHandler = useToast();
 
-    const fetchUserWalletBalance = useFetchUserWalletBalance();
-    const userInfo = useSelector(
-        (state: RootState) => state.userCredentials.userInfo
-    );
-
     const [showBetaTestModal, setShowBetaTestModal] = useState(false);
-    const [walletBalance, setWalletBalance] = useState<number>();
-    const [showWalletBalance, setShowWalletBalance] = useState(false);
+    // const [walletBalance, setWalletBalance] = useState<number>();
+    // const [showWalletBalance, setShowWalletBalance] = useState(false);
 
-    const handleFetchUserWalletBalance = async () => {
-        await fetchUserWalletBalance(userInfo?.id as string)
-            .then((response) => {
-                setWalletBalance(response.data.balance);
-            })
-            .catch((error) => {
-                catchError(error);
-                toastHandler.logError("Error", "Failed to fetch user wallet balance");
-            });
+    // const handleFetchUserWalletBalance = async () => {
+    //     await fetchUserWalletBalance(userInfo?.id as string, session?.user.token as string)
+    //         .then((response) => {
+    //             console.log("🚀 ~ .then ~ response:", response)
+    //             setWalletBalance(response.data.balance);
+    //         })
+    //         .catch((error) => {
+    //             catchError(error);
+    //             toastHandler.logError("Error", "Failed to fetch user wallet balance");
+    //         });
+    // };
+
+    // useMemo(() => {
+    //     if (userInfo) handleFetchUserWalletBalance();
+    // }, [userInfo]);
+
+    const showPaymentStatus = (paymentStatus: PaymentStatus) => {
+        switch (paymentStatus) {
+            case PaymentStatus.Paid:
+                return "Paid";
+            case PaymentStatus.Pending:
+                return "Pending";
+            case PaymentStatus.Failed:
+                return "Cancelled";
+            default:
+                return "";
+        }
     };
 
-    // function showTagStyle(orderStatus: OrderStatus) {
-    //     switch (orderStatus) {
-    //         case OrderStatus.Pending:
-    //             return "";
-    //         case OrderStatus.PaymentInitiated:
-    //             return styles.initiatedTag;
-    //         case OrderStatus.Confirmed:
-    //             return styles.completedTag;
-    //         case OrderStatus.Cancelled:
-    //             return styles.cancelledTag;
-    //         default:
-    //             return styles.pendingTag;
-    //     }
-    // }
-
-    useMemo(() => {
-        if (userInfo) handleFetchUserWalletBalance();
-    }, [userInfo]);
+    const showPaymentMethod = (paymentMethod: PaymentServiceProvider) => {
+        switch (paymentMethod) {
+            case PaymentServiceProvider.BankTransfer:
+                return "Bank Transfer";
+            case PaymentServiceProvider.Cash:
+                return "Cash";
+            case PaymentServiceProvider.Paystack:
+                return "Paystack";
+            default:
+                return "";
+        }
+    }
 
     return (
         <>
@@ -57,6 +69,13 @@ const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
                 visibility={showBetaTestModal}
                 setVisibility={setShowBetaTestModal}
             />
+            {/* <PayoutModal
+                modalVisibility={true}
+                setModalVisibility={() => { }}
+                walletBalance={walletBalanceInfo?.balance || 0}
+                onRequestPayout={async () => { }}
+            /> */}
+            
             <main className='px-4 py-8 min-h-screen text-white'>
                 <div className='mb-4 flex flex-row justify-between w-full'>
                     <h2 className='text-2xl font-medium text-gray-300'>Wallet page</h2>
@@ -72,7 +91,7 @@ const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
                 <div className='w-full grid grid-cols-2 gap-4'>
                     <div className='p-6 rounded-2xl flex flex-col bg-dark-grey'>
                         <span className='text-2xl font-semibold mb-4 font-Mona-Sans-Wide'>
-                            &#8358;{walletBalance?.toLocaleString() || 0}
+                            {NairaPrice.format(walletBalanceInfo?.balance || 0)}
                         </span>
                         <span className='text-sm font-light text-text-grey'>
                             Wallet Balance
@@ -80,15 +99,13 @@ const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
                     </div>
                     <div className='p-6 rounded-2xl flex flex-col bg-dark-grey'>
                         <span className='text-2xl font-semibold mb-4 font-Mona-Sans-Wide'>
-                            &#8358;0
+                            {NairaPrice.format(walletBalanceInfo?.totalWithdrawn || 0)}
                         </span>
                         <span className='text-sm font-light text-text-grey'>
                             Total Witdrawals
                         </span>
                     </div>
                 </div>
-                {/* <div className="flex mt-4">
-                </div> */}
 
                 <div className='mt-6 w-full'>
                     <h3 className='mb-2 text-xl'>Payouts</h3>
@@ -119,29 +136,37 @@ const WalletPage: FunctionComponent<WalletPageProps> = (): ReactElement => {
                                     </th> */}
                                 </tr>
 
-                                <tr>
-                                    <td className='p-3 border-b-[1px] text-left text-sm'>
-                                        1722343534-sdwerndfy
-                                    </td>
-                                    <td className='p-3 border-b-[1px] text-left text-sm'>
-                                        &#8358;450,000
-                                    </td>
-                                    <td className='p-3 border-b-[1px] text-left text-sm'>
-                                        Mon 15th Jan, 2024 | 04:25pm
-                                    </td>
-                                    <td className='p-3 border-b-[1px] text-left text-sm'>
-                                        Paid
-                                    </td>
-                                    <td className='p-3 border-b-[1px] text-left text-sm'>
-                                        Bank Transfer
-                                    </td>
-                                    <td className='p-3 border-b-[1px] text-left text-sm'>5%</td>
-                                    {/* <td className='p-3 border-b-[1px] text-left text-sm'>
+                                {
+                                    userPayouts?.map((payout, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td className='p-3 border-b-[1px] text-left text-sm'>
+                                                    {payout.transactionRef}
+                                                </td>
+                                                <td className='p-3 border-b-[1px] text-left text-sm'>
+                                                    {NairaPrice.format(Number(payout.amount))}
+                                                </td>
+                                                <td className='p-3 border-b-[1px] text-left text-sm'>
+                                                    {moment(payout.createdAt).format("ddd Do MMM, YYYY | h:mma")}
+                                                </td>
+                                                <td className='p-3 border-b-[1px] text-left text-sm'>
+                                                    {showPaymentStatus(payout.status)}
+                                                </td>
+                                                <td className='p-3 border-b-[1px] text-left text-sm'>
+                                                    {showPaymentMethod(payout.paymentMethod)}
+                                                </td>
+                                                <td className='p-3 border-b-[1px] text-left text-sm'>
+                                                    {NairaPrice.format(Number(payout.serviceFees) || 0)}
+                                                </td>
+                                                {/* <td className='p-3 border-b-[1px] text-left text-sm'>
                                         <span className='bg-success-color w-fit px-2 py-4 rounded-xl text-white text-lg'>
                                             5%
                                         </span>
                                     </td> */}
-                                </tr>
+                                            </tr>
+                                        )
+                                    })
+                                }
                                 {/* <tr key={index}>
                                             <td>{userRecentTransaction.eventName}</td>
                                             <td>{userRecentTransaction.orderId}</td>
