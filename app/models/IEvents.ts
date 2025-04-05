@@ -55,6 +55,7 @@ export type EventResponse = {
   categoryId: string;
   visibility: string;
   mainImageUrl: string;
+  mainImageId: string;
   currency: string;
   purchaseStartDate: string;
   purchaseEndDate: string;
