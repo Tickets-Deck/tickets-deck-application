@@ -19,6 +19,11 @@ export type UserCredentialsRequest = {
   coverPhoto: string | undefined;
 };
 
+type Flag = {
+  flagName: FlagOptions;
+  flagValue: boolean;
+};
+
 export type UserCredentialsResponse = UserCredentialsRequest & {
   id: string;
   username: string;
@@ -37,7 +42,7 @@ export type UserCredentialsResponse = UserCredentialsRequest & {
   bookmarks: Bookmarks[];
   favorites: Favourites[];
 
-  flags: Record<FlagOptions, boolean>
+  flags: Flag[];
 
   ticketsPurchased: TicketPurchased[];
 };
