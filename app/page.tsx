@@ -4,6 +4,8 @@ import { getPlaceholderImage } from './services/DynamicBlurDataUrl'
 import images from '@/public/images';
 import { FeaturedEvent } from './models/IEvents';
 import { useFetchFeaturedEvents } from './api/apiClient';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/auth';
 
 export const metadata: Metadata = {
     title: 'Homepage | Ticketsdeck Events',
@@ -22,6 +24,9 @@ async function getFeaturedEvents(): Promise<FeaturedEvent[] | null> {
 }
 
 export default async function Home() {
+
+    const session = await getServerSession(authOptions);
+
     const imageList = [
         {
             img: images.ImageBg1,
@@ -59,6 +64,7 @@ export default async function Home() {
     return (
         <Homepage
             imageWithPlaceholder={imageWithPlaceholder}
+            session={session}
         />
     )
 }
