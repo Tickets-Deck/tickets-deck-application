@@ -8,6 +8,7 @@ import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { ToastContext } from "@/app/context/ToastCardContext";
 import { useContext } from "react";
 import { NairaPrice } from "@/app/constants/priceFormatter";
+import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 
 function isFeaturedEvent(event: EventResponse | FeaturedEvent): event is FeaturedEvent {
     return "startingPrice" in event && "remainingTickets" in event;
@@ -34,13 +35,13 @@ const EventCard = ({ event, consoleDisplay }: { event: EventResponse | FeaturedE
                 );
             });
     }
-
+    
     return (
         <div className='bg-gray-900 border-gray-800 overflow-hidden flex flex-col group hover:border-purple-500/50 rounded-xl transition-all duration-300'>
             <div className='relative after:bg-[linear-gradient(180deg,_rgba(0,0,0,0)_4.17%,_rgba(0,0,0,0.4)_100%)] after:size-full after:top-0 after:left-0 after:absolute after:opacity-100 after:pointer-events-none after:content-[""] group-hover:after:opacity-0'>
                 {event.isArchived ? (
                     <Image
-                        src={event.mainImageUrl || "/placeholder.svg"}
+                        src={buildCloudinaryImageUrl(event.mainImageId) || event.mainImageUrl || "/placeholder.svg"}
                         alt={event.title}
                         width={400}
                         height={200}
@@ -49,7 +50,7 @@ const EventCard = ({ event, consoleDisplay }: { event: EventResponse | FeaturedE
                 ) : (
                     <Link href={`/event/${event.id}`}>
                         <Image
-                            src={event.mainImageUrl || "/placeholder.svg"}
+                            src={buildCloudinaryImageUrl(event.mainImageId) || event.mainImageUrl || "/placeholder.svg"}
                             alt={event.title}
                             width={400}
                             height={200}
