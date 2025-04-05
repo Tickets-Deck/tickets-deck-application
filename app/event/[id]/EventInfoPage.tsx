@@ -276,7 +276,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
                                 onLoadStart={(e) => (e.currentTarget.playbackRate = 0.05)}
                                 onLoadedData={(e) => (e.currentTarget.playbackRate = 0.05)}
                                 onPlay={(e) => (e.currentTarget.playbackRate = 0.05)}
-                                src='https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4'
+                                src='https://res.cloudinary.com/dvxqk1487/video/upload/f_auto,q_auto/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4'
                             />
                         </div>
                         <div
@@ -304,7 +304,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
                                 loop
                                 muted
                                 playsInline
-                                src='https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4'
+                                src='https://res.cloudinary.com/dvxqk1487/video/upload/f_auto,q_auto/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4'
                             />
                         </div>
                         <div

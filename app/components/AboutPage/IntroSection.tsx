@@ -34,7 +34,7 @@ const IntroSection: FunctionComponent<IntroSectionProps> = (): ReactElement => {
                     muted
                     playsInline
                     className='w-full h-full object-cover scale-110'
-                    src='https://res.cloudinary.com/dvxqk1487/video/upload/v1717209808/videos/crowd_video_yrahfy.mp4'
+                    src='https://res.cloudinary.com/dvxqk1487/video/upload/f_auto,q_auto/v1717209808/videos/crowd_video_yrahfy.mp4'
                 />
                 <div className='size-full absolute top-0 left-0 grid place-items-center bg-white/10'>
                     {/* <Image src={images.logoWhite} alt="Logo" sizes="auto" fill /> */}

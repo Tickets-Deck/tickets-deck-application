@@ -95,7 +95,7 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
                 description="Dear superstar, below is a list of all events available at the moment."
             /> */}
             <PageHeroSection
-                videoUrl='https://res.cloudinary.com/dvxqk1487/video/upload/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4'
+                videoUrl='https://res.cloudinary.com/dvxqk1487/video/upload/f_auto,q_auto/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4'
                 title={
                     <h2 className='font-medium text-4xl'>
                         Escape the Ordinary: <br />
