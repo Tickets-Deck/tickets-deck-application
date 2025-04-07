@@ -118,7 +118,7 @@ const ConfirmationSection: FunctionComponent<ConfirmationSectionProps> = ({
                 {eventRequest?.venue}
               </p>
             </div>
-            <div className='flex mb-2'>
+            <div className='flex flex-row gap-3 mb-2'>
               <div className='flex flex-col mb-2 [&_span]:mb-1 [&_span]:text-sm [&_span]:text-text-grey'>
                 <span>Starting on:</span>
                 <p className='text-base [&_img]:w-[200px] [&_img]:rounded-lg [&_img]:mb-2'>
