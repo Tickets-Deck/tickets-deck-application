@@ -9,6 +9,7 @@ import themeReducer from '@/app/redux/features/theme/themeSlice';
 import { ToastProvider } from '../context/ToastCardContext';
 import WebSocketListener from './WebSocket/WebSocketListener';
 import TawkToChat from '../context/TawkToChat';
+import ThemeProvider from './ThemeProvider';
 
 const store = configureStore({
     reducer: {
@@ -29,6 +30,7 @@ const GlobalProvider = ({ children }: Props) => {
             <AppProvider>
                 <ToastProvider>
                     <Provider store={store}>
+                        <ThemeProvider />
                         {children}
                     </Provider>
                 </ToastProvider>
