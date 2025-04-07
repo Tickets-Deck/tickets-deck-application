@@ -62,9 +62,8 @@ const UserEventsPage: FunctionComponent<UserEventsPageProps> = ({
     // Start deleting event
     setIsDeletingEvent(true);
 
-    await deleteEvent(user?.token as string, selectedEvent?.id as string)
+    await deleteEvent(user?.token as string, selectedEvent?.id as string, user?.id as string)
       .then((response) => {
-        console.log("🚀 ~ .then ~ response:", response);
         // Fetch events again
         handleFetchOrganizerEvents();
         // Set event deleted state
