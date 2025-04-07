@@ -30,6 +30,11 @@ export default function OverviewSection({ eventInfo, handleUpdateEventInfo, setI
                 </div>
                 <div className="space-y-6">
                     <div>
+                        <h3 className="text-base text-gray-400 font-medium mb-1">Title</h3>
+                        <p className="text-base text-white">{eventInfo.title}</p>
+                    </div>
+
+                    <div>
                         <h3 className="text-base text-gray-400 font-medium mb-1">Description</h3>
                         <p className="text-sm text-white" dangerouslySetInnerHTML={{ __html: eventInfo.description }} />
                     </div>
