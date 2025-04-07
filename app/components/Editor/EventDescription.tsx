@@ -1,13 +1,13 @@
 "use client"
-import { EventRequest } from "@/app/models/IEvents";
+import { EventRequest, UpdateEventRequest } from "@/app/models/IEvents";
 import dynamic from "next/dynamic";
-import { Dispatch, FunctionComponent, ReactElement, SetStateAction, useState } from "react";
-// import ReactQuill from "react-quill";
+import { Dispatch, FunctionComponent, ReactElement, SetStateAction } from "react";
+
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 interface EventDescriptionEditorProps {
     description: string | undefined
-    setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
+    setEventRequest: Dispatch<SetStateAction<EventRequest | UpdateEventRequest | undefined>>
 }
 
 const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = ({ description, setEventRequest }): ReactElement => {
