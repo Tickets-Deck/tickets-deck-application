@@ -48,7 +48,7 @@ const EventCard = ({ event, consoleDisplay }: { event: EventResponse | FeaturedE
                         className='h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105'
                     />
                 ) : (
-                    <Link href={`/event/${event.id}`}>
+                    <Link href={consoleDisplay ? ApplicationRoutes.UserEventDetails(event.id) : `/event/${event.id}`}>
                         <Image
                             src={buildCloudinaryImageUrl(event.mainImageId) || event.mainImageUrl || "/placeholder.svg"}
                             alt={event.title}
