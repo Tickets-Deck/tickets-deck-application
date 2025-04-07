@@ -77,7 +77,7 @@ export default async function RootLayout({
 
     return (
         <GlobalProvider>
-            <html lang='en' data-theme={"dark"}>
+            <html lang='en'>
                 <Head>
                     <link rel='apple-touch-icon' href='/etd_logo_192.png' />
                     <script
