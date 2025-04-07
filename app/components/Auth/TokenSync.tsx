@@ -11,13 +11,16 @@ const TokenSync = ({ session }: TokenSyncProps) => {
 
     useEffect(() => {
         const interval = setInterval(async () => {
-            if (session && Date.now() > session.user?.accessTokenExpires) {
-                console.log("Access token expired, refreshing...");
-
-                const updatedSession = await update();
-                console.log("Updated session: ", updatedSession);
+            if (session && session.user?.accessTokenExpires) {
+                // Only refresh if token expires in less than 1 minute
+                const timeUntilExpiry = session.user.accessTokenExpires - Date.now();
+                if (timeUntilExpiry > 0 && timeUntilExpiry < 60 * 1000) {
+                    console.log("Token expiring soon, refreshing...");
+                    const updatedSession = await update();
+                    console.log("Updated session: ", updatedSession);
+                }
             }
-        }, 5 * 60 * 1000); // Check every 5 minutes
+        }, 30 * 1000); // Check every 30 seconds
 
         return () => clearInterval(interval);
     }, [session, update]);
