@@ -303,12 +303,12 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
       });
   }
 
-  // useEffect(() => {
-  //     // If we are editing a ticket, set the ticket form request to the selected ticket
-  //     if (isEditingTicket && eventRequest?.tickets && selectedTicketIndex != undefined) {
-  //         setTicketFormRequest(eventRequest?.tickets[selectedTicketIndex]);
-  //     }
-  // }, [selectedTicketIndex]);
+  useEffect(() => {
+      // If we are editing a ticket, set the ticket form request to the selected ticket
+      if (isEditingTicket && eventRequest?.tickets && selectedTicketIndex != undefined) {
+          setTicketFormRequest(eventRequest?.tickets[selectedTicketIndex]);
+      }
+  }, [selectedTicketIndex]);
 
   return (
     <ModalWrapper
@@ -320,13 +320,13 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
         width: "fit-content",
       }}
     >
-      <div className='w-full md:w-[28.125rem] max-h-[86vh] overflow-y-auto p-6 rounded-[20px] bg-container-grey [scrollbar-width:none]'>
-        <div className='flex justify-between items-center mb-6'>
-          <h4 className=''>
+      <div className="w-full md:w-[28.125rem] max-h-[86vh] overflow-y-auto p-6 rounded-[20px] bg-container-grey [scrollbar-width:none]">
+        <div className="flex justify-between items-center mb-6">
+          <h4 className="">
             {isEditingTicket ? "Edit Ticket" : "Create Ticket"}
           </h4>
           <span
-            className='ml-auto size-8 rounded-full grid place-items-center cursor-pointer hover:bg-white/10 [&_svg_path]:stroke-white [&_svg_path]:fill-white'
+            className="ml-auto size-8 rounded-full grid place-items-center cursor-pointer hover:bg-white/10 [&_svg_path]:stroke-white [&_svg_path]:fill-white"
             onClick={() => {
               setModalVisibility(false);
               setTicketFormRequest({} as TicketRequest);
@@ -335,38 +335,38 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
             <Icons.Close />
           </span>
         </div>
-        <div className='flex flex-col gap-[0.8rem] mb-[1.5rem]'>
-          <div className='flex flex-col gap-1 relative'>
-            <label className='text-xs text-white' htmlFor='name'>
+        <div className="flex flex-col gap-[0.8rem] mb-[1.5rem]">
+          <div className="flex flex-col gap-1 relative">
+            <label className="text-xs text-white" htmlFor="name">
               Ticket Name
             </label>
             <input
-              className='rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-white/50'
-              type='text'
-              name='name'
+              className="rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-white/50"
+              type="text"
+              name="name"
               // value={eventRequest?.tickets[0]?.role}
               value={ticketFormRequest?.name ?? ""}
-              placeholder='Ticket name'
+              placeholder="Ticket name"
               onChange={(e) => onFormValueChange(e, setTicketNameErrorMsg)}
             />
             {ticketNameErrorMsg &&
               ticketNameErrorMsg.status == DefaultFormResponseStatus.Failed && (
-                <span className='text-xs text-[#eb485b] flex items-center gap-[2px]'>
+                <span className="text-xs text-[#eb485b] flex items-center gap-[2px]">
                   {ticketNameErrorMsg.message}
                 </span>
               )}
           </div>
-          <div className='flex flex-col gap-1 relative'>
-            <label className='text-xs text-white' htmlFor='price'>
+          <div className="flex flex-col gap-1 relative">
+            <label className="text-xs text-white" htmlFor="price">
               Ticket Price
             </label>
             <input
-              className='rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-white/50'
-              type='text'
-              name='price'
+              className="rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-white/50"
+              type="text"
+              name="price"
               // value={eventRequest?.tickets[0]?.price}
               value={ticketFormRequest?.price ?? ""}
-              placeholder='Price per ticket'
+              placeholder="Price per ticket"
               onChange={(e) => {
                 if (Number(e.target.value) == 0) {
                   onFormValueChange(e);
@@ -397,28 +397,28 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
                 }
               }}
             />
-            <p className='text-xs text-grey-3'>
+            <p className="text-xs text-grey-3">
               Make the ticket price zero if it's marked as 'Free.' Tickets
               marked as '&#8358;0' can be gotten without paying anything.
             </p>
             {ticketPriceErrorMsg &&
               ticketPriceErrorMsg.status ==
                 DefaultFormResponseStatus.Failed && (
-                <span className='text-xs text-[#eb485b] flex items-center gap-[2px]'>
+                <span className="text-xs text-[#eb485b] flex items-center gap-[2px]">
                   {ticketPriceErrorMsg.message}
                 </span>
               )}
           </div>
-          <div className='flex flex-col gap-1 relative'>
-            <label htmlFor='numberOfUsers' className='text-xs text-white'>
+          <div className="flex flex-col gap-1 relative">
+            <label htmlFor="numberOfUsers" className="text-xs text-white">
               Number of persons for this ticket
             </label>
             <input
-              type='text'
-              name='numberOfUsers'
-              className='rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-white/50'
+              type="text"
+              name="numberOfUsers"
+              className="rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-white/50"
               value={ticketFormRequest?.numberOfUsers ?? ""}
-              placeholder='Number of users'
+              placeholder="Number of users"
               onChange={(e) => {
                 if (Number(e.target.value) == 0) {
                   onFormValueChange(e, setTicketNumberOfUsersErrorMsg);
@@ -451,21 +451,21 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
             {ticketNumberOfUsersErrorMsg &&
               ticketNumberOfUsersErrorMsg.status ==
                 DefaultFormResponseStatus.Failed && (
-                <span className='text-xs text-[#eb485b] flex items-center gap-[2px]'>
+                <span className="text-xs text-[#eb485b] flex items-center gap-[2px]">
                   {ticketNumberOfUsersErrorMsg.message}
                 </span>
               )}
           </div>
-          <div className='flex flex-col gap-1 relative'>
-            <label className='text-xs text-white' htmlFor='quantity'>
+          <div className="flex flex-col gap-1 relative">
+            <label className="text-xs text-white" htmlFor="quantity">
               Number of available tickets
             </label>
             <input
-              className='rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-white/50'
-              type='text'
-              name='quantity'
+              className="rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-white/50"
+              type="text"
+              name="quantity"
               value={ticketFormRequest?.quantity ?? ""}
-              placeholder='Number of available tickets'
+              placeholder="Number of available tickets"
               onChange={(e) => {
                 if (Number(e.target.value) == 0) {
                   onFormValueChange(e, setTicketQuantityErrorMsg);
@@ -499,20 +499,20 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
             {ticketQuantityErrorMsg &&
               ticketQuantityErrorMsg.status ==
                 DefaultFormResponseStatus.Failed && (
-                <span className='text-xs text-[#eb485b] flex items-center gap-[2px]'>
+                <span className="text-xs text-[#eb485b] flex items-center gap-[2px]">
                   {ticketQuantityErrorMsg.message}
                 </span>
               )}
           </div>
-          <div className='flex flex-col gap-1 relative'>
-            <label className='text-xs text-white' htmlFor='description'>
+          <div className="flex flex-col gap-1 relative">
+            <label className="text-xs text-white" htmlFor="description">
               Ticket Description
             </label>
             <textarea
-              className='rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-white/50 resize-none h-[5rem]'
-              name='description'
+              className="rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder:text-white/50 resize-none h-[5rem]"
+              name="description"
               value={ticketFormRequest?.description ?? ""}
-              placeholder='Short description of the ticket, including benefits, etc.'
+              placeholder="Short description of the ticket, including benefits, etc."
               onChange={(e) =>
                 onFormValueChange(e, setTicketDescriptionErrorMsg)
               }
@@ -520,15 +520,16 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
             {ticketDescriptionErrorMsg &&
               ticketDescriptionErrorMsg.status ==
                 DefaultFormResponseStatus.Failed && (
-                <span className='text-xs text-[#eb485b] flex items-center gap-[2px]'>
+                <span className="text-xs text-[#eb485b] flex items-center gap-[2px]">
                   {ticketDescriptionErrorMsg.message}
                 </span>
               )}
           </div>
           <div>
             <span>Status</span>
-            <div className='flex flex-row items-center justify-start gap-2 w-fit'>
+            <div className="flex flex-row items-center justify-start gap-2 w-fit">
               <button
+                type="button"
                 onClick={() =>
                   setTicketFormRequest({
                     ...(ticketFormRequest as TicketRequest),
@@ -544,6 +545,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
                 Active
               </button>
               <button
+                type="button"
                 onClick={() =>
                   setTicketFormRequest({
                     ...(ticketFormRequest as TicketRequest),
@@ -561,8 +563,8 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
             </div>
           </div>
           <button
-            type='button'
-            className='w-fit rounded-[3.125rem] cursor-pointer text-sm bg-white text-[#111] py-[0.375rem] px-3 mx-auto'
+            type="button"
+            className="w-fit rounded-[3.125rem] cursor-pointer text-sm bg-white text-[#111] py-[0.375rem] px-3 mx-auto"
             disabled={forExistingEvent && isCreatingNewTicket}
             onClick={() =>
               isEditingTicket
