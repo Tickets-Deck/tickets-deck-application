@@ -63,8 +63,14 @@ export function useCreateCustomerEnquiry() {
 //#region event
 
 export function useCreateEvent() {
-  async function createEvent(token: string, event: EventRequest) {
-    return API.post(ApiRoutes.Events, event, getApiConfig(token));
+  async function createEvent(token: string, event: FormData) {
+    return API.post(ApiRoutes.Events, event, {
+      ...getApiConfig(token),
+      headers: {
+        ...getApiConfig(token).headers,
+        "Content-Type": "multipart/form-data",
+      },
+    });
   }
 
   return createEvent;
@@ -208,8 +214,11 @@ export function useUpdateEventById() {
 }
 
 export function useDeleteEvent() {
-  async function deleteEvent(token: string, id: string) {
-    return API.delete(`${ApiRoutes.Events}/${id}`, getApiConfig(token));
+  async function deleteEvent(token: string, id: string, userId: string) {
+    return API.delete(
+      `${ApiRoutes.Events}/${id}/publisher/${userId}`,
+      getApiConfig(token)
+    );
   }
 
   return deleteEvent;
