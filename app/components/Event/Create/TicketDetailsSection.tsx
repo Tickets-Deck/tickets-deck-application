@@ -190,7 +190,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({
                         ),
                       });
                     }}
-                    minDate={moment(eventRequest?.startDate)}
+                    minDate={moment(new Date())}
                   />
                 </div>
               </div>
