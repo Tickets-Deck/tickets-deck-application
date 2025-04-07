@@ -7,7 +7,7 @@ const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 interface EventDescriptionEditorProps {
     description: string | undefined
-    setEventRequest: Dispatch<SetStateAction<EventRequest | UpdateEventRequest | undefined>>
+    setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
 }
 
 const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = ({ description, setEventRequest }): ReactElement => {
