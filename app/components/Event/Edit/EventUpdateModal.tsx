@@ -6,8 +6,8 @@ import ModalWrapper from "../../Modal/ModalWrapper"
 import BasicDateTimePicker from "../../custom/DateTimePicker"
 import moment from "moment"
 import { UpdateEventRequest } from "@/app/models/IEvents"
-import { formattedDateForApi } from "@/utils/dateformatter"
 import { Icons } from "../../ui/icons"
+import EventDescriptionEditor from "../../Editor/EventDescription"
 
 interface EditEventModalProps {
     modalVisibility: boolean;
@@ -70,8 +70,9 @@ export function EditEventModal({ modalVisibility, setModalVisibility, initialDat
             //     throw new Error("Ticket sales must end before event starts")
             // }
 
+            setModalVisibility(false);
+            
             await handleUpdateEventInfo(eventRequest);
-            setModalVisibility(false)
         } catch (err) {
             setError(err instanceof Error ? err.message : "An error occurred")
         } finally {
@@ -124,10 +125,10 @@ export function EditEventModal({ modalVisibility, setModalVisibility, initialDat
                             <label htmlFor="description" className="text-sm font-medium block mb-1">
                                 Description
                             </label>
-                            {/* <EventDescriptionEditor
+                            <EventDescriptionEditor
                                 description={eventRequest?.description ?? ''}
                                 setEventRequest={setEventRequest}
-                            /> */}
+                            />
                             {/* <textarea
                                 id="description"
                                 value={eventRequest.description || ""}
