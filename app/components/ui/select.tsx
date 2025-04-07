@@ -94,12 +94,13 @@ SelectTrigger.displayName = "SelectTrigger"
 
 interface SelectValueProps {
     placeholder?: string
+    className?: string
 }
 
-const SelectValue = ({ placeholder }: SelectValueProps) => {
+const SelectValue = ({ placeholder, className }: SelectValueProps) => {
     const { value } = useSelect()
 
-    return <span className="text-sm">{value ? value : placeholder}</span>
+    return <span className={`text-sm ${className}`}>{value ? value : placeholder}</span>
 }
 
 interface SelectContentProps {
