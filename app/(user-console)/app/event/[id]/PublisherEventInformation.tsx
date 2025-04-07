@@ -154,11 +154,12 @@ const PublisherEventInformation: FunctionComponent<PublisherEventInformationProp
         // Start deleting event
         setIsDeletingEvent(true);
 
-        await deleteEvent(user?.token as string, eventId)
+        await deleteEvent(user?.token as string, eventId, user?.id as string)
             .then((response) => {
-                console.log("🚀 ~ .then ~ response:", response);
                 // Route to the events page
                 router.push(ApplicationRoutes.Events);
+
+                toasthandler?.logSuccess("Successfully deleted", "Your event was successfully deleted.");
 
                 // Close modal after deleting event
                 setIsEventDeletionConfirmationModalVisible(false);
