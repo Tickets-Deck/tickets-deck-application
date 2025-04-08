@@ -23,7 +23,6 @@ export class ApiRoutes {
    */
   static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
 
-  
   /**
    * The route to Request Credential Token endpoint
    */
