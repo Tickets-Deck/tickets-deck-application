@@ -7,10 +7,10 @@ const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 interface EventDescriptionEditorProps {
     description: string | undefined
-    setEventRequest: Dispatch<SetStateAction<EventRequest | undefined>>
+    updateDescription: (value: string) => void
 }
 
-const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = ({ description, setEventRequest }): ReactElement => {
+const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = ({ description, updateDescription }): ReactElement => {
     const myColors = [
         "#8133f1",
         "#ceb0fa",
@@ -49,15 +49,6 @@ const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = (
         "align"
     ];
 
-    const handleProcedureContentChange = (content: any) => {
-        setEventRequest((prev) => {
-            return {
-                ...prev!,
-                description: content
-            }
-        });
-    };
-
     return (
         <>
             {/* {console.log(eventRequest?.description)} */}
@@ -66,7 +57,7 @@ const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = (
                 modules={modules}
                 formats={formats}
                 value={description}
-                onChange={handleProcedureContentChange}
+                onChange={(value) => updateDescription(value)}
                 placeholder="Start by typing here..."
             />
         </>
