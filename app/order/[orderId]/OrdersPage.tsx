@@ -20,21 +20,21 @@ import ModalWrapper from "@/app/components/Modal/ModalWrapper";
 import TicketUi from "@/app/components/Ticket/TicketUi";
 import { Icons } from "@/app/components/ui/icons";
 import { ImagePopup } from "@/app/components/custom/ImagePopup";
+import { Session } from "next-auth";
 
 interface OrdersPageProps {
     hostUrl: string | undefined;
     orderInformation: UserTicketOrderInfo | null;
+    session: Session | null
 }
 
 const OrdersPage: FunctionComponent<OrdersPageProps> = ({
     orderInformation,
     hostUrl,
+    session
 }): ReactElement => {
-    const [isFetchingOrderInformation, setIsFetchingOrderInformation] =
-        useState(false);
-    const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] =
-        useState<TicketPass>();
-    console.log("🚀 ~ selectedTicketOrderInfo:", selectedTicketOrderInfo)
+    const [isFetchingOrderInformation, setIsFetchingOrderInformation] = useState(false);
+    const [selectedTicketOrderInfo, setSelectedTicketOrderInfo] = useState<TicketPass>();
     const [isTicketVisible, setIsTicketVisible] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -147,6 +147,7 @@ const OrdersPage: FunctionComponent<OrdersPageProps> = ({
                                         hideStatusTag
                                         hostUrl={hostUrl}
                                         setIsPopupOpen={setIsPopupOpen}
+                                        session={session}
                                     />
                                 </div>
                                 <div className='w-full order-1 md:order-none md:w-[calc(65%-3rem)] flex flex-col bg-container-grey mb-8 h-fit p-5 rounded-[20px]'>

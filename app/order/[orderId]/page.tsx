@@ -3,6 +3,7 @@ import OrdersPage from "./OrdersPage";
 import { UserTicketOrderInfo } from "@/app/models/IUserTicketOrder";
 import { useFetchOrderInformationById } from "@/app/api/apiClient";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/auth";
 
 interface OrdersProps {
     params: { orderId: string }
@@ -25,11 +26,13 @@ const Orders: FunctionComponent<OrdersProps> = async ({ params }) => {
 
     const identifier = params.orderId;
     const orderInformation = await getOrderInformation(identifier);
+    const session = await getServerSession(authOptions);
 
     return (
         <OrdersPage
             hostUrl={hostUrl}
             orderInformation={orderInformation}
+            session={session}
         />
     );
 }
