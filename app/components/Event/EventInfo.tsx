@@ -9,12 +9,12 @@ import moment from "moment";
 import { EventResponse } from "@/app/models/IEvents";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { useApplicationContext } from "@/app/context/ApplicationContext";
-import { useSession } from "next-auth/react";
 import { useFetchEventViewsCount } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
 import EventLikeButton from "../custom/EventLikeButton";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { useToast } from "@/app/context/ToastCardContext";
+import { Session } from "next-auth";
 
 interface EventMainInfoProps {
     eventInfo: EventResponse
@@ -23,15 +23,15 @@ interface EventMainInfoProps {
     hideStatusTag?: boolean
     hostUrl?: string
     setIsPopupOpen: (value: SetStateAction<boolean>) => void
+    session: Session | null
 }
 
 const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
     { eventInfo, setTicketsSelectionContainerIsVisible,
-        forOrdersPage, hostUrl, setIsPopupOpen }): ReactElement => {
+        forOrdersPage, hostUrl, setIsPopupOpen, session }): ReactElement => {
 
     const toastHandler = useToast();
     const { handleRecordEventView } = useApplicationContext();
-    const { data: session } = useSession();
     const fetchEventViewsCount = useFetchEventViewsCount();
 
     const windowRes = useResponsiveness();
@@ -178,6 +178,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                     <EventLikeButton
                         eventInfo={eventInfo}
                         forEventInfo
+                        session={session}
                     />
                     <Tooltip
                         position={onMobile ? "top" : onDesktop ? "left" : undefined}

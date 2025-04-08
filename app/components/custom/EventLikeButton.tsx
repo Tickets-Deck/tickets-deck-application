@@ -10,7 +10,6 @@ import { motion } from "framer-motion";
 import { Icons } from "../ui/icons";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { EventResponse } from "@/app/models/IEvents";
-import { useSession } from "next-auth/react";
 import {
   useFetchEventLikeStatus,
   useLikeEvent,
@@ -21,12 +20,14 @@ import {
   ApplicationContextData,
 } from "@/app/context/ApplicationContext";
 import { catchError } from "@/app/constants/catchError";
+import { Session } from "next-auth";
 
 interface EventLikeButtonProps {
   eventInfo: EventResponse;
   forEventCard?: boolean;
   forEventInfo?: boolean;
   skipFetch?: boolean;
+  session: Session | null;
 }
 
 const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
@@ -34,10 +35,10 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
   forEventCard,
   forEventInfo,
   skipFetch,
+  session,
 }): ReactElement => {
-  const { data: session } = useSession();
   const user = session?.user;
-
+  
   const likeEvent = useLikeEvent();
   const unlikeEvent = useUnlikeEvent();
   const fetchEventLikeStatus = useFetchEventLikeStatus();
@@ -119,14 +120,14 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
       {forEventInfo && (
         <Tooltip
           position={onMobile ? "top" : onDesktop ? "left" : undefined}
-          tooltipText='Like event'
+          tooltipText="Like event"
           action={() =>
             isEventLiked
               ? handleLikeEvent(eventInfo.id)
               : handleUnlikeEvent(eventInfo.id)
           }
         >
-          <div className='ml-auto w-10 h-10 min-[400px]:size-[2.5rem] rounded-full bg-white grid place-items-center relative'>
+          <div className="ml-auto w-10 h-10 min-[400px]:size-[2.5rem] rounded-full bg-white grid place-items-center relative">
             <motion.span
               style={{
                 width: "100%",
@@ -137,7 +138,7 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
               whileTap={{ scale: 2.5 }}
               transition={{ duration: 0.35 }}
             >
-              <Icons.Like className='size-4' isLiked={isEventLiked} />
+              <Icons.Like className="size-4" isLiked={isEventLiked} />
             </motion.span>
           </div>
         </Tooltip>
@@ -145,7 +146,7 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
       {forEventCard && (
         <button
           style={{ display: "none" }}
-          className='size-[1.875rem] rounded-full grid place-items-center bg-transparent cursor-pointer hover:bg-white/20'
+          className="size-[1.875rem] rounded-full grid place-items-center bg-transparent cursor-pointer hover:bg-white/20"
           onClick={() =>
             isEventLiked
               ? handleLikeEvent(eventInfo.id)
@@ -162,7 +163,7 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
             whileTap={{ scale: 3 }}
             transition={{ duration: 0.5 }}
           >
-            <Icons.Like className='size[0.8rem]' isLiked={isEventLiked} />
+            <Icons.Like className="size[0.8rem]" isLiked={isEventLiked} />
           </motion.span>
         </button>
       )}

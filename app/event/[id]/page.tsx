@@ -3,6 +3,8 @@ import EventDetailsPage from './EventInfoPage';
 import { EventResponse } from '@/app/models/IEvents';
 import { useFetchEventById, useFetchEvents } from '@/app/api/apiClient';
 import { Metadata, ResolvingMetadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/auth';
 
 interface EventDetailsProps {
     params: { id: string }
@@ -38,10 +40,13 @@ export async function generateMetadata(
 }
 
 
-const EventDetails: FunctionComponent<EventDetailsProps> = ({ params }): ReactElement => {
+const EventDetails: FunctionComponent<EventDetailsProps> = async ({ params }) => {
+
+    const session = await getServerSession(authOptions);
 
     return <EventDetailsPage
-        params={params}
+        id={params.id}
+        session={session}
     />
 }
 
