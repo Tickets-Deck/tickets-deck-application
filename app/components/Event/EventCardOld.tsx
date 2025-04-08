@@ -77,11 +77,11 @@ const EventCardOld: FunctionComponent<EventCardProps> = ({
         </div>
         <div className='basis-[15%] flex flex-col items-end justify-between h-full'>
           <div className='flex gap-[0.45rem]'>
-            <EventLikeButton
+            {/* <EventLikeButton
               eventInfo={event}
               forEventCard
               skipFetch={skipLikeStatusFetch}
-            />
+            /> */}
             <button
               className='size-[1.875rem] rounded-full grid place-items-center cursor-pointer bg-[#d5542a] hover:bg-[darken(#d5542a,_amount:10%)]'
               onClick={() =>
