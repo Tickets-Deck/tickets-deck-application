@@ -125,10 +125,10 @@ export function EditEventModal({ modalVisibility, setModalVisibility, initialDat
                             <label htmlFor="description" className="text-sm font-medium block mb-1">
                                 Description
                             </label>
-                            {/* <EventDescriptionEditor
+                            <EventDescriptionEditor
                                 description={eventRequest?.description ?? ''}
-                                setEventRequest={setEventRequest}
-                            /> */}
+                                updateDescription={(value) => setEventRequest({...eventRequest as UpdateEventRequest, description: value })}
+                            />
                             {/* <textarea
                                 id="description"
                                 value={eventRequest.description || ""}

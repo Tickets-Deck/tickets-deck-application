@@ -265,16 +265,16 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
       <span className="w-[1px] h-auto bg-white/20 block"></span>
 
       <div className={"w-full max-w-[50%] flex flex-col gap-5"}>
-        {/* <div className="createEventFormField">
+        <div className="createEventFormField">
           <label htmlFor="description">Description</label>
           <EventDescriptionEditor
             description={eventRequest?.description ?? ""}
-            setEventRequest={setEventRequest}
+            updateDescription={(value) => setEventRequest({...eventRequest as EventRequest, description: value })}
           />
           {descriptionErrorMsg && (
             <span className="errorMsg">Please enter event description</span>
           )}
-        </div> */}
+        </div>
         <div className="flex mt-10 flex-col gap-4 md:flex-row md:gap-8">
           <div className="createEventFormField">
             <label htmlFor="category">Category</label>
