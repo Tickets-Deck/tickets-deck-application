@@ -93,69 +93,6 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = ({
     }
   }
 
-  /**
-   * Function to validate the form
-   */
-  // function validateForm() {
-
-  //     if (ticketFormRequest && ticketFormRequest.name && ticketFormRequest.price && ticketFormRequest.remainingTickets && ticketFormRequest.numberOfUsers) {
-  //         return true;
-  //     }
-  //     else {
-  //         console.log(ticketFormRequest)
-
-  //         // Validate the ticket name
-  //         if (!ticketFormRequest?.name) {
-  //             setTicketNameErrorMsg({ message: "Please enter ticket name", status: DefaultFormResponseStatus.Failed });
-  //         } else {
-  //             setTicketNameErrorMsg(undefined);
-  //         }
-
-  //         // Validate the ticket price
-  //         if (!ticketFormRequest?.price) {
-  //             setTicketPriceErrorMsg({ message: "Please enter ticket price", status: DefaultFormResponseStatus.Failed });
-  //         } else {
-  //             if (Number(ticketFormRequest?.price) > 0 && Number(ticketFormRequest?.price) < 1000) {
-  //                 setTicketPriceErrorMsg({ message: "Ticket price cannot be less than 1000", status: DefaultFormResponseStatus.Failed });
-  //                 return false;
-  //             }
-  //             setTicketPriceErrorMsg(undefined);
-  //         }
-
-  //         // Validate the ticket remainingTickets
-  //         if (!ticketFormRequest?.remainingTickets) {
-  //             setTicketRemainingErrorMsg({ message: "Please enter remaining tickets", status: DefaultFormResponseStatus.Failed });
-  //         } else {
-  //             if (Number(ticketFormRequest?.remainingTickets < 0)) {
-  //                 setTicketRemainingErrorMsg({ message: "Remaining tickets cannot be less than 0", status: DefaultFormResponseStatus.Failed });
-  //                 return false;
-  //             }
-  //             setTicketRemainingErrorMsg(undefined);
-  //         }
-
-  //         // Validate the ticket number of users
-  //         if (!ticketFormRequest?.numberOfUsers) {
-  //             setTicketNumberOfUsersErrorMsg({ message: "Please enter number of users", status: DefaultFormResponseStatus.Failed });
-  //         } else {
-  //             if (Number(ticketFormRequest?.numberOfUsers < 1)) {
-  //                 console.log("Less than 1")
-  //                 setTicketNumberOfUsersErrorMsg({ message: "Number of users cannot be less than 1", status: DefaultFormResponseStatus.Failed });
-  //                 return false;
-  //             }
-  //             setTicketNumberOfUsersErrorMsg(undefined);
-  //         }
-
-  //         // Validate the ticket description
-  //         // if (!ticketFormRequest?.description) {
-  //         //     setTicketDescriptionErrorMsg({ message: "Please enter ticket description", status: DefaultFormResponseStatus.Failed });
-  //         // } else {
-  //         //     setTicketDescriptionErrorMsg(undefined);
-  //         // }
-
-  //         return false;
-  //     }
-  // };
-
   useEffect(() => {
     if (selectedTicket) {
       setTicketFormRequest({ ...(selectedTicket as TicketRequest) });
@@ -171,6 +108,7 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = ({
     await updateTicketInformation(
       user?.token as string,
       selectedTicket?.id as string,
+      user?.id as string,
       ticketFormRequest as TicketResponse
     )
       .then(async () => {
@@ -426,11 +364,11 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = ({
                     visibility: true,
                   })
                 }
-                className={
+                className={`w-fit rounded-[3.125rem] cursor-pointer text-sm bg-white text-[#111] py-[0.375rem] px-3 mx-auto ${
                   !ticketFormRequest?.visibility
                     ? "!bg-white/10 !text-white"
                     : ""
-                }
+                }`}
               >
                 Active
               </button>
@@ -441,11 +379,11 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = ({
                     visibility: false,
                   })
                 }
-                className={
+                className={`w-fit rounded-[3.125rem] cursor-pointer text-sm bg-white text-[#111] py-[0.375rem] px-3 mx-auto ${
                   ticketFormRequest?.visibility
                     ? "!bg-white/10 !text-white"
                     : ""
-                }
+                }`}
               >
                 Inactive
               </button>
@@ -453,6 +391,7 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = ({
           </div>
           <button
             type='button'
+            className="w-fit rounded-[3.125rem] cursor-pointer text-sm bg-white text-[#111] py-[0.375rem] px-3 mx-auto"
             disabled={isUpdatingTicketInfo}
             onClick={() => handleUpdateTicketInformation()}
           >
