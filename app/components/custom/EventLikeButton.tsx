@@ -4,6 +4,8 @@ import {
   useContext,
   useEffect,
   useState,
+  useCallback,
+  useMemo,
 } from "react";
 import Tooltip from "./Tooltip";
 import { motion } from "framer-motion";
@@ -38,7 +40,7 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
   session,
 }): ReactElement => {
   const user = session?.user;
-  
+
   const likeEvent = useLikeEvent();
   const unlikeEvent = useUnlikeEvent();
   const fetchEventLikeStatus = useFetchEventLikeStatus();
@@ -52,80 +54,97 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
     ApplicationContext
   ) as ApplicationContextData;
   const [isEventLiked, setIsEventLiked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  async function handleLikeEvent(eventId: string) {
-    // Check if user is logged in and prompt user to login if not
-    if (!isUserLoginPromptVisible && !session) {
-      toggleUserLoginPrompt();
-      return;
-    }
+  const handleLikeEvent = useCallback(
+    async (eventId: string) => {
+      if (!isUserLoginPromptVisible && !session) {
+        toggleUserLoginPrompt();
+        return;
+      }
 
-    // Update the event's like status
-    setIsEventLiked(!isEventLiked);
+      if (isLoading) return;
+      setIsLoading(true);
+      setIsEventLiked(true);
 
-    await likeEvent(user?.token as string, user?.id as string, eventId)
-      .then(() => {})
-      .catch((error) => {
+      try {
+        await likeEvent(user?.token as string, user?.id as string, eventId);
+      } catch (error) {
+        setIsEventLiked(false);
         catchError(error);
-        // Revert the event's like status
-        setIsEventLiked(!isEventLiked);
-      });
-  }
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [isUserLoginPromptVisible, session, user, likeEvent, toggleUserLoginPrompt]
+  );
 
-  async function handleUnlikeEvent(eventId: string) {
-    // Check if user is logged in and prompt user to login if not
-    if (!isUserLoginPromptVisible && !session) {
-      toggleUserLoginPrompt();
-      return;
-    }
+  const handleUnlikeEvent = useCallback(
+    async (eventId: string) => {
+      if (!isUserLoginPromptVisible && !session) {
+        toggleUserLoginPrompt();
+        return;
+      }
 
-    // Update the event's like status
-    setIsEventLiked(!isEventLiked);
+      if (isLoading) return;
+      setIsLoading(true);
+      setIsEventLiked(false);
 
-    await unlikeEvent(
-      session?.user.token as string,
-      user?.id as string,
-      eventId
-    )
-      .then((response) => {
-        console.log("🚀 ~ .then ~ like event response:", response);
-      })
-      .catch((error) => {
-        console.log("🚀 ~ handleUnlikeEvent ~ error:", error);
+      try {
+        await unlikeEvent(user?.token as string, user?.id as string, eventId);
+      } catch (error) {
+        setIsEventLiked(true);
         catchError(error);
-        // Revert the event's like status
-        setIsEventLiked(!isEventLiked);
-      });
-  }
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [isUserLoginPromptVisible, session, user, unlikeEvent, toggleUserLoginPrompt]
+  );
 
-  async function handleFetchEventLikeStatus(eventId: string) {
-    await fetchEventLikeStatus(session?.user.token as string, eventId)
-      .then((response) => {
+  const handleFetchEventLikeStatus = useCallback(
+    async (eventId: string) => {
+      if (!session?.user?.token) return;
+
+      try {
+        const response = await fetchEventLikeStatus(
+          session.user.token,
+          eventId
+        );
         setIsEventLiked(response.data.status);
-      })
-      .catch((error) => {
+      } catch (error) {
         catchError(error);
-      });
-  }
+      }
+    },
+    [session, fetchEventLikeStatus]
+  );
 
-  // Use useEffect to fetch the event's like status when the component mounts
   useEffect(() => {
     if (session && !skipFetch) {
       handleFetchEventLikeStatus(eventInfo.id);
     }
-  }, [session, skipFetch]);
+  }, [session, skipFetch, eventInfo.id, handleFetchEventLikeStatus]);
+
+  const handleLikeAction = useCallback(() => {
+    if (isEventLiked) {
+      handleUnlikeEvent(eventInfo.id);
+    } else {
+      handleLikeEvent(eventInfo.id);
+    }
+  }, [isEventLiked, eventInfo.id, handleLikeEvent, handleUnlikeEvent]);
+
+  const tooltipPosition = useMemo(
+    () => (onMobile ? "top" : onDesktop ? "left" : undefined),
+    [onMobile, onDesktop]
+  );
 
   return (
     <>
       {forEventInfo && (
         <Tooltip
-          position={onMobile ? "top" : onDesktop ? "left" : undefined}
+          position={tooltipPosition}
           tooltipText="Like event"
-          action={() =>
-            isEventLiked
-              ? handleLikeEvent(eventInfo.id)
-              : handleUnlikeEvent(eventInfo.id)
-          }
+          action={handleLikeAction}
         >
           <div className="ml-auto w-10 h-10 min-[400px]:size-[2.5rem] rounded-full bg-white grid place-items-center relative">
             <motion.span
@@ -147,11 +166,7 @@ const EventLikeButton: FunctionComponent<EventLikeButtonProps> = ({
         <button
           style={{ display: "none" }}
           className="size-[1.875rem] rounded-full grid place-items-center bg-transparent cursor-pointer hover:bg-white/20"
-          onClick={() =>
-            isEventLiked
-              ? handleLikeEvent(eventInfo.id)
-              : handleUnlikeEvent(eventInfo.id)
-          }
+          onClick={handleLikeAction}
         >
           <motion.span
             style={{
