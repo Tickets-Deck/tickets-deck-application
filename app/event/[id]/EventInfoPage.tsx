@@ -140,9 +140,6 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
 
     await fetchEventInfo(id)
       .then((response) => {
-        // Log the result
-        console.log("Event: ", response.data);
-
         // Set the event results
         let _eventInfo = response.data;
 
@@ -316,7 +313,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
                   <Image src={images.woman_dancing} alt="Woman dancing" />
                 </span>
               </span>
-              <h2>Event Information</h2>
+              <h2 className="text-3xl font-semibold">Event Information</h2>
             </div>
           </section>
         )}
