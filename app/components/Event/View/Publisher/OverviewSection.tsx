@@ -54,7 +54,7 @@ export default function OverviewSection({
               </h3>
 
               <div
-                className={`w-full md:w-[35%] md:min-w-[35%] h-[300px] rounded-2xl overflow-hidden relative after after:bg-black after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-[0] hover:after:opacity-40 after:transition-all after:duration-300 group`}
+                className={`w-full md:w-[50%] md:max-w-[300px] h-[300px] rounded-2xl overflow-hidden relative after after:bg-black after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-[0] hover:after:opacity-40 after:transition-all after:duration-300 group`}
               >
                 <Image
                   src={eventInfo.mainImageUrl}
