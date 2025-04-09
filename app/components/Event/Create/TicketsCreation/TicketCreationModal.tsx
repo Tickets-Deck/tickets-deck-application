@@ -255,9 +255,6 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
   }
 
   async function handleAddNewTicketToEvent() {
-    // console.log("New ticket: ", ticketFormRequest);
-    // console.log("Event: ", eventId);
-
     if (!validateForm()) {
       return;
     }
@@ -268,6 +265,7 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
     await createTicketForSpecifiedEvent(
       user?.token as string,
       eventId as string,
+      user?.id as string,
       {
         ...(ticketFormRequest as TicketRequest),
         visibility: ticketFormRequest?.visibility ?? false,
@@ -304,10 +302,14 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
   }
 
   useEffect(() => {
-      // If we are editing a ticket, set the ticket form request to the selected ticket
-      if (isEditingTicket && eventRequest?.tickets && selectedTicketIndex != undefined) {
-          setTicketFormRequest(eventRequest?.tickets[selectedTicketIndex]);
-      }
+    // If we are editing a ticket, set the ticket form request to the selected ticket
+    if (
+      isEditingTicket &&
+      eventRequest?.tickets &&
+      selectedTicketIndex != undefined
+    ) {
+      setTicketFormRequest(eventRequest?.tickets[selectedTicketIndex]);
+    }
   }, [selectedTicketIndex]);
 
   return (
