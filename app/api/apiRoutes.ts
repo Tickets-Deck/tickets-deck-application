@@ -215,14 +215,14 @@ export class ApiRoutes {
   /**
    * The route to UpdateTicket endpoint
    */
-  static UpdateTicket: (ticketId: string) => string = (ticketId: string) =>
-    `tickets/${ticketId}`;
+  static UpdateTicket: (ticketId: string, publisherId: string) => string = (ticketId: string, publisherId: string) =>
+    `tickets/${ticketId}/publisher/${publisherId}`;
 
   /**
    * The route to DeleteTicket endpoint
    */
-  static DeleteTicket: (ticketId: string) => string = (ticketId: string) =>
-    `tickets/${ticketId}`;
+  static DeleteTicket: (ticketId: string, publisherId: string) => string = (ticketId: string, publisherId: string) =>
+    `tickets/${ticketId}/publisher/${publisherId}`;
 
   /**
    * The route to Fetch Dashboard Information endpoint
