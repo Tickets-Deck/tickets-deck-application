@@ -178,7 +178,7 @@ const PublisherEventInformation: FunctionComponent<PublisherEventInformationProp
         // Show loader
         setIsDeletingTicket(true);
 
-        await deleteTicketById(user?.token as string, selectedTicket?.id as string)
+        await deleteTicketById(user?.token as string, selectedTicket?.id as string, user?.id as string)
             .then(async () => {
                 // Close the modal
                 setIsTicketDeleteModalVisible(false);

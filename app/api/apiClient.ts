@@ -523,10 +523,11 @@ export function useCreateTicketForSpecifiedEvent() {
   async function createTicketForSpecifiedEvent(
     token: string,
     eventId: string,
+    publisherId: string,
     data: TicketRequest
   ) {
     return API.post(
-      `${ApiRoutes.Tickets}/${eventId}`,
+      `${ApiRoutes.Tickets}/${eventId}/publisher/${publisherId}`,
       data,
       getApiConfig(token)
     );
@@ -547,17 +548,18 @@ export function useUpdateTicketInformation() {
   async function updateTicketInformation(
     token: string,
     ticketId: string,
+    publisherId: string,
     data: TicketResponse
   ) {
-    return API.put(ApiRoutes.UpdateTicket(ticketId), data, getApiConfig(token));
+    return API.put(ApiRoutes.UpdateTicket(ticketId, publisherId), data, getApiConfig(token));
   }
 
   return updateTicketInformation;
 }
 
 export function useDeleteTicket() {
-  async function deleteTicket(token: string, ticketId: string) {
-    return API.delete(ApiRoutes.DeleteTicket(ticketId), getApiConfig(token));
+  async function deleteTicket(token: string, ticketId: string, publisherId: string) {
+    return API.delete(ApiRoutes.DeleteTicket(ticketId, publisherId), getApiConfig(token));
   }
 
   return deleteTicket;
