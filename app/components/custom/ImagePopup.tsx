@@ -32,7 +32,7 @@ export function ImagePopup({ imageUrl, alt, isOpen, onClose }: ImagePopupProps) 
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
+          className="fixed top-0 inset-0 z-[999] !mt-0 flex items-center justify-center p-4 bg-black/80"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
