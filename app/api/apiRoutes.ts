@@ -71,15 +71,28 @@ export class ApiRoutes {
   /**
    * The route to Fetch Event Information endpoint for the publisher's use only
    */
-  static FetchOrganizerEvent: (eventId: string, publisherId: string) => string = (eventId: string, publisherId: string) =>
-    `events/${eventId}/publisher/${publisherId}`;
+  static FetchOrganizerEvent: (eventId: string, publisherId: string) => string =
+    (eventId: string, publisherId: string) =>
+      `events/${eventId}/publisher/${publisherId}`;
 
   /**
-   * The route to Fetch Organizer Events endpoint
+   * The route to Fetch Events endpoint for the publisher's use only
    */
-  static FetchOrganizerEvents: (organizerId: string) => string = (
+  static FetchOrganizerEvents: (publisherId: string) => string = (
+    publisherId: string
+  ) => `events/organizer/${publisherId}`;
+
+  /**
+   * The route to Create Organizer Review endpoint
+   */
+  static CreateReview: string = `reviews`;
+
+  /**
+   * The route to Fetch Organizer Reviews Id endpoint
+   */
+  static FetchOrganizerReviews: (organizerId: string) => string = (
     organizerId: string
-  ) => `events/organizer/${organizerId}`;
+  ) => `reviews/organizer/${organizerId}`;
 
   /**
    * The route to Fetch Events By Publisher Id endpoint
@@ -215,14 +228,18 @@ export class ApiRoutes {
   /**
    * The route to UpdateTicket endpoint
    */
-  static UpdateTicket: (ticketId: string, publisherId: string) => string = (ticketId: string, publisherId: string) =>
-    `tickets/${ticketId}/publisher/${publisherId}`;
+  static UpdateTicket: (ticketId: string, publisherId: string) => string = (
+    ticketId: string,
+    publisherId: string
+  ) => `tickets/${ticketId}/publisher/${publisherId}`;
 
   /**
    * The route to DeleteTicket endpoint
    */
-  static DeleteTicket: (ticketId: string, publisherId: string) => string = (ticketId: string, publisherId: string) =>
-    `tickets/${ticketId}/publisher/${publisherId}`;
+  static DeleteTicket: (ticketId: string, publisherId: string) => string = (
+    ticketId: string,
+    publisherId: string
+  ) => `tickets/${ticketId}/publisher/${publisherId}`;
 
   /**
    * The route to Fetch Dashboard Information endpoint
@@ -283,14 +300,23 @@ export class ApiRoutes {
   /**
    * The route to Fetch User Wallet Balance endpoint
    */
-  static FetchWalletBalance: (publisherId: string) => string = (publisherId: string) =>
-    `wallet/balance/${publisherId}`;
+  static FetchWalletBalance: (publisherId: string) => string = (
+    publisherId: string
+  ) => `wallet/balance/${publisherId}`;
 
   /**
    * The route to Fetch User Witdrawals endpoint
    */
-  static FetchUserPayouts: (publisherId: string) => string = (publisherId: string) =>
-    `wallet/payouts/${publisherId}`;
+  static FetchUserPayouts: (publisherId: string) => string = (
+    publisherId: string
+  ) => `wallet/payouts/${publisherId}`;
+
+  /**
+   * The route to Fetch User Witdrawals endpoint
+   */
+  static InitiateUserWithdrawals: (publisherId: string) => string = (
+    publisherId: string
+  ) => `wallet/withdraw/${publisherId}`;
 
   /**
    * The route to User Favorite Events endpoint
@@ -330,8 +356,10 @@ export class ApiRoutes {
   /**
    * The route to Verify Coupon Code endpoint
    */
-  static VerifyCouponCode: (eventId: string, couponCode: string) => string = (eventId: string, couponCode: string) => 
-    `coupons/${eventId}/verify/${couponCode}`;
+  static VerifyCouponCode: (eventId: string, couponCode: string) => string = (
+    eventId: string,
+    couponCode: string
+  ) => `coupons/${eventId}/verify/${couponCode}`;
 
   /**
    * The route to EventCategory endpoint
