@@ -551,15 +551,26 @@ export function useUpdateTicketInformation() {
     publisherId: string,
     data: TicketResponse
   ) {
-    return API.put(ApiRoutes.UpdateTicket(ticketId, publisherId), data, getApiConfig(token));
+    return API.put(
+      ApiRoutes.UpdateTicket(ticketId, publisherId),
+      data,
+      getApiConfig(token)
+    );
   }
 
   return updateTicketInformation;
 }
 
 export function useDeleteTicket() {
-  async function deleteTicket(token: string, ticketId: string, publisherId: string) {
-    return API.delete(ApiRoutes.DeleteTicket(ticketId, publisherId), getApiConfig(token));
+  async function deleteTicket(
+    token: string,
+    ticketId: string,
+    publisherId: string
+  ) {
+    return API.delete(
+      ApiRoutes.DeleteTicket(ticketId, publisherId),
+      getApiConfig(token)
+    );
   }
 
   return deleteTicket;
@@ -665,6 +676,24 @@ export function useFetchUserPayouts() {
   return fetchUserPayouts;
 }
 
+export function useRequestUserWithdrawals() {
+  async function InitiateUserWithdrawals(
+    userId: string,
+    token: string,
+    amount: number
+  ) {
+    return API.post(
+      ApiRoutes.InitiateUserWithdrawals(userId),
+      {
+        amount,
+      },
+      getApiConfig(token)
+    );
+  }
+
+  return InitiateUserWithdrawals;
+}
+
 export function useFetchBankList() {
   const requestToken = useRequestCredentialToken();
   async function fetchBankList() {
@@ -741,4 +770,42 @@ export function useVerifyCouponCode() {
   }
 
   return verifyCouponCode;
+}
+
+export function useCreateReview() {
+  async function createReview({
+    rating,
+    reviewText,
+    eventId,
+    reviewerId,
+    organizerId,
+    token,
+  }: {
+    rating: number;
+    reviewText: string;
+    eventId: string;
+    reviewerId: string;
+    organizerId: string;
+    token: string;
+  }) {
+    return API.post(
+      `${ApiRoutes.CreateReview}`,
+      { rating, reviewText, eventId, reviewerId, organizerId },
+      getApiConfig(token)
+    );
+  }
+  return createReview;
+}
+export function useFetchOrganizerReviews() {
+  const requestToken = useRequestCredentialToken();
+
+  async function fetchReviews(organizerId: string) {
+    const token = await requestToken();
+    return API.get(
+      ApiRoutes.FetchOrganizerReviews(organizerId),
+      getApiConfig(token.data.token)
+    );
+  }
+
+  return fetchReviews;
 }
