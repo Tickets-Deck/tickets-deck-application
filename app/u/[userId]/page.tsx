@@ -33,7 +33,7 @@ const UserInformation: FunctionComponent<UserInformationProps> = async ({
     <UserInformationPage
       identifier={params.userId}
       session={session}
-      userInformation={userInformation}
+      initialUserInformation={userInformation}
     />
   );
 };
