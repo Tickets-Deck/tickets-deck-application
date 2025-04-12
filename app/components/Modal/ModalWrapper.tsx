@@ -30,7 +30,7 @@ const ModalWrapper: FunctionComponent<ModalWrapperProps> = ({
 
   return (
     <div
-      className={`fixed size-full top-0 left-0 z-[120] grid place-items-center sectionPadding p-[1.25rem] ${
+      className={`fixed size-full top-0 left-0 z-[120] grid place-items-center sectionPadding !mt-0 p-[1.25rem] ${
         visibility ? "" : "pointer-events-none"
       }`}
       ref={modalContainerRef}
