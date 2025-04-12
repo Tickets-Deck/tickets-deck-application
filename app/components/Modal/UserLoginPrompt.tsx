@@ -9,6 +9,7 @@ import ModalWrapper from "./ModalWrapper";
 import { Icons } from "../ui/icons";
 import Link from "next/link";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { usePathname } from "next/navigation";
 
 interface UserLoginPromptProps {
   visibility: boolean;
@@ -19,6 +20,11 @@ const UserLoginPrompt: FunctionComponent<UserLoginPromptProps> = ({
   visibility,
   setVisibility,
 }): ReactElement => {
+  const pathname = usePathname();
+  
+  // Create the callback URL by encoding the current path
+  const callbackUrl = encodeURIComponent(pathname);
+
   return (
     <ModalWrapper
       visibility={visibility}
@@ -47,7 +53,7 @@ const UserLoginPrompt: FunctionComponent<UserLoginPromptProps> = ({
         <div className='flex justify-end mt-4 gap-2'>
           <Link
             className='py-2 px-4 w-fit rounded-[3.125rem] cursor-pointer text-sm border-none bg-white text-dark-grey flex items-center gap-2'
-            href={ApplicationRoutes.SignIn}
+            href={`${ApplicationRoutes.SignIn}?callbackUrl=${callbackUrl}`}
             onClick={() => setVisibility(false)}
           >
             Login
