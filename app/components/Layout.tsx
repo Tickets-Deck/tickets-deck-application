@@ -56,19 +56,37 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session, userData })
         }
     }, [iswindow]);
 
+    // useEffect(() => {
+    //     if (userData) {
+    //         dispatch(updateUserCredentials(userData));
+    //     } else {
+    //         if (session && status === 'authenticated') {
+    //             dispatch(fetchUserProfile(session?.user.id as string));
+    //         }
+    //         // Clear Redux when session expires
+    //         if (status === "unauthenticated") {
+    //             dispatch(clearUserCredentials());
+    //         }
+    //     }
+    // }, [userData, session, status, dispatch]);
+    
     useEffect(() => {
         if (userData) {
             dispatch(updateUserCredentials(userData));
-        } else {
-            if (session && status === 'authenticated') {
-                dispatch(fetchUserProfile(session?.user.id as string));
-            }
-            // Clear Redux when session expires
-            if (status === "unauthenticated") {
-                dispatch(clearUserCredentials());
-            }
+        }
+    }, [userData, dispatch]);
+    
+    useEffect(() => {
+        if (!userData && session && status === 'authenticated') {
+            dispatch(fetchUserProfile(session.user.id as string));
         }
     }, [userData, session, status, dispatch]);
+    
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            dispatch(clearUserCredentials());
+        }
+    }, [status, dispatch]);
 
     useEffect(() => {
         if (session?.error === 'RefreshAccessTokenError') {
