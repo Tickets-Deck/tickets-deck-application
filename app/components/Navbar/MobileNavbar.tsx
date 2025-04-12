@@ -51,6 +51,11 @@ const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({}): ReactElement =>
             icon: Icons.Events,
         },
         {
+            link: ApplicationRoutes.Pricing,
+            text: "Pricing",
+            icon: Icons.Ticket,
+        },
+        {
             link: ApplicationRoutes.About,
             text: "About Us",
             icon: Icons.About,
