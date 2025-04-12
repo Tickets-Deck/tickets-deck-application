@@ -6,6 +6,7 @@ import {
   useFetchUserFollowMetrics,
   useFetchUserInformationByUserName,
   useFollowUser,
+  useUnfollowUser,
 } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
@@ -32,11 +33,17 @@ import {
 import { set } from "date-fns";
 import EventCard from "@/app/components/Event/EventCard";
 import { EventResponse } from "@/app/models/IEvents";
+import moment from "moment";
 
+export type OrganizerEvents = {
+  date: string;
+  title: string;
+  id: string;
+};
 interface UserInformationPageProps {
   identifier: string;
   session: Session | null;
-  userInformation: UserCredentialsResponse | null;
+  initialUserInformation: UserCredentialsResponse | null;
 }
 
 enum Tab {
@@ -48,27 +55,32 @@ enum Tab {
 const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
   identifier,
   session,
-  userInformation,
+  initialUserInformation,
 }): ReactElement => {
   const toastHandler = useToast();
   const followUser = useFollowUser();
+  const unfollowUser = useUnfollowUser();
   const fetchUserFollowMetrics = useFetchUserFollowMetrics();
   const fetchUserInformationByUsername = useFetchUserInformationByUserName();
   const fetchPublisherEvents = useFetchEventsByPublisherId();
 
-  // const [userInformation, setUserInformation] =
-  //     useState<UserCredentialsResponse>();
   const [isFetchingUserInformation, setIsFetchingUserInformation] =
     useState(true);
   const [isInteractingWithUserProfile, setIsInteractingWithUserProfile] =
     useState(false);
+  const [userInformation, setUserInformation] =
+    useState<UserCredentialsResponse | null>(initialUserInformation);
 
   const [organizerEvents, setOrganizerEvents] = useState<EventResponse[]>([]);
 
   const [isFollowingUser, setIsFollowingUser] = useState<boolean | null>(null);
-  const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Events);
 
-  const isForUser = session?.user.id === userInformation?.id;
+  const upcomingEvents = organizerEvents.filter((event) =>
+    moment(event.endDate).isAfter(new Date())
+  );
+  const pastEvents = organizerEvents.filter((event) =>
+    moment(event.endDate).isBefore(new Date())
+  );
 
   async function handleFetchUserInformation(hideLoader?: boolean) {
     // Show loading indicator
@@ -77,8 +89,7 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
     await fetchUserInformationByUsername(identifier as string)
       .then((response) => {
         console.log("🚀 ~ .then ~ response:", response);
-        // console.log(response.data);
-        // setUserInformation(response.data);
+        setUserInformation(response.data);
       })
       .catch((error) => {
         // console.log(error);
@@ -95,9 +106,11 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
       session?.user.id as string
     )
       .then((response) => {
-        // console.log("Fetched metrics: ", response.data);
+        console.log("Fetched metrics: ", response.data);
 
         const result = response.data as IUserFollowMetrics;
+
+        // setus
 
         if (result.isFollowing == true) {
           setIsFollowingUser(true);
@@ -116,24 +129,45 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
     // Spin up loader
     setIsInteractingWithUserProfile(true);
 
-    await followUser(
-      session?.user.id as string,
-      userInformation?.id as string,
-      followActionType
-    )
-      .then(async () => {
-        handleFetchUserFollowMetrics();
+    if (followActionType == FollowsActionType.Follow) {
+      await followUser(
+        session?.user.id as string,
+        userInformation?.id as string
+      )
+        .then(async () => {
+          handleFetchUserFollowMetrics();
 
-        // Refetch user information
-        await handleFetchUserInformation(true);
-      })
-      .catch((error) => {
-        catchError(error);
-        toastHandler.logError("Error", "Failed to follow user");
-      })
-      .finally(() => {
-        setIsInteractingWithUserProfile(false);
-      });
+          // Refetch user information
+          await handleFetchUserInformation(true);
+        })
+        .catch((error) => {
+          catchError(error);
+          toastHandler.logError("Error", "Failed to follow user");
+        })
+        .finally(() => {
+          setIsInteractingWithUserProfile(false);
+        });
+    }
+
+    if (followActionType == FollowsActionType.Unfollow) {
+      await unfollowUser(
+        session?.user.id as string,
+        userInformation?.id as string
+      )
+        .then(async () => {
+          handleFetchUserFollowMetrics();
+
+          // Refetch user information
+          await handleFetchUserInformation(true);
+        })
+        .catch((error) => {
+          catchError(error);
+          toastHandler.logError("Error", "Failed to follow user");
+        })
+        .finally(() => {
+          setIsInteractingWithUserProfile(false);
+        });
+    }
   }
 
   async function handleFetchPublisherEvents() {
@@ -161,7 +195,7 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
   }, [userInformation]);
 
   return (
-    <div className='bg-dark-grey text-white'>
+    <div className="bg-dark-grey text-white">
       {userInformation && (
         <>
           <UserCoverContainer
@@ -169,48 +203,73 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
             handleFetchUserInformation={handleFetchUserInformation}
             forUser
           />
-          <div className='sectionPadding relative'>
-            <UserPersonalInfo userInformation={userInformation} />
+          <div className="sectionPadding relative">
+            <UserPersonalInfo
+              userInformation={userInformation}
+              handleInteractWithUser={handleInteractWithUser}
+              isFollowingUser={isFollowingUser}
+              isInteractingWithUserProfile={isInteractingWithUserProfile}
+            />
 
             {userInformation.stats && (
               <UserStats stats={userInformation.stats} />
             )}
 
             {/* Tabs */}
-            <Tabs defaultValue={Tab.Events} className='mt-6'>
-              <TabsList className='grid w-full md:w-auto grid-cols-3'>
+            <Tabs defaultValue={Tab.Events} className="mt-6">
+              <TabsList className="grid w-full md:w-auto grid-cols-3">
                 <TabsTrigger value={Tab.Events}>Events</TabsTrigger>
                 <TabsTrigger value={Tab.About}>About</TabsTrigger>
                 <TabsTrigger value={Tab.Reviews}>Reviews</TabsTrigger>
               </TabsList>
 
-              <TabsContent value={Tab.Events} className='!mt-6 !space-y-8'>
-                <div className='flex items-center justify-between'>
-                  <h2 className='text-2xl font-bold'>Upcoming Events</h2>
-                  <button className='tertiaryButton'>View All</button>
+              <TabsContent value={Tab.Events} className="!mt-6 !space-y-8">
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <h2 className="text-2xl font-bold">Upcoming Events</h2>
+                    {/* <button className='tertiaryButton'>View All</button> */}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {upcomingEvents.length > 0 ? (
+                      upcomingEvents.map((event) => <EventCard event={event} />)
+                    ) : (
+                      <p>
+                        {userInformation.firstName} does not have any upcoming
+                        events yet.
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-                  {organizerEvents.length > 0 ? (
-                    organizerEvents.map((event) => <EventCard event={event} />)
-                  ) : (
-                    <p>No Events Yet</p>
-                  )}
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <h2 className="text-2xl font-bold">Past Events</h2>
+                    {/* <button className='tertiaryButton'>View All</button> */}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {pastEvents.length > 0 ? (
+                      pastEvents.map((event) => <EventCard event={event} />)
+                    ) : (
+                      <p>No Events Yet</p>
+                    )}
+                  </div>
                 </div>
 
-                <div className='text-center py-8'>
-                  <p className='text-white mb-4'>Looking for more events?</p>
+                <div className="text-center py-8">
+                  <p className="text-white mb-4">Looking for more events?</p>
                   <Link
                     href={ApplicationRoutes.GeneralEvents}
-                    className='primaryButton mx-auto'
+                    className="primaryButton mx-auto"
                   >
                     Browse All Events
                   </Link>
                 </div>
               </TabsContent>
-              <TabsContent value={Tab.About} className='!mt-6 !space-y-8'>
+              <TabsContent value={Tab.About} className="!mt-6 !space-y-8">
                 <div>
-                  <h3 className='text-lg font-semibold mb-2'>
+                  <h3 className="text-lg font-semibold mb-2">
                     About the Organizer
                   </h3>
                   <p
@@ -224,12 +283,12 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
                 </div>
 
                 <div>
-                  <h3 className='text-lg font-semibold mb-2'>
+                  <h3 className="text-lg font-semibold mb-2">
                     Contact Information
                   </h3>
-                  <div className='space-y-2'>
+                  <div className="space-y-2">
                     <Link
-                      className='flex items-center gap-[0.35rem] text-white hover:opacity-100 hover:text-primary-color-sub no-underline w-fit'
+                      className="flex items-center gap-[0.35rem] text-white hover:opacity-100 hover:text-primary-color-sub no-underline w-fit"
                       href={`mailto:${userInformation.email}`}
                     >
                       <Icons.Mail />
@@ -237,7 +296,7 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
                     </Link>
                     {userInformation.phone && (
                       <Link
-                        className='flex items-center gap-[0.35rem] text-white hover:opacity-100 hover:text-primary-color-sub no-underline w-fit'
+                        className="flex items-center gap-[0.35rem] text-white hover:opacity-100 hover:text-primary-color-sub no-underline w-fit"
                         href={`tel:${userInformation.phone}`}
                       >
                         <Icons.Phone />
@@ -253,58 +312,54 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
 
                 {userInformation.socialLinks && (
                   <div>
-                    <h3 className='text-lg font-semibold mb-2'>Social Media</h3>
-                    <div className='flex gap-4'>
+                    <h3 className="text-lg font-semibold mb-2">Social Media</h3>
+                    <div className="flex gap-4">
                       {userInformation.socialLinks?.twitterUrl && (
                         <Link
                           href={userInformation.socialLinks.twitterUrl}
-                          className='border-brand-primary/20 hover:border-brand-primary/50 hover:text-brand-primary'
+                          className="border-brand-primary/20 hover:border-brand-primary/50 hover:text-brand-primary"
                         >
-                          <Icons.Twitter className='size-6' />
+                          <Icons.Twitter className="size-6" />
                         </Link>
                       )}
                       {userInformation.socialLinks?.instagramUrl && (
                         <Link
                           href={userInformation.socialLinks.instagramUrl}
-                          className='border-brand-primary/20 hover:border-brand-primary/50 hover:text-brand-primary'
+                          className="border-brand-primary/20 hover:border-brand-primary/50 hover:text-brand-primary"
                         >
-                          <Icons.Instagram className='size-6' />
+                          <Icons.Instagram className="size-6" />
                         </Link>
                       )}
                       {userInformation.socialLinks?.facebookUrl && (
                         <Link
                           href={userInformation.socialLinks.facebookUrl}
-                          className='border-brand-primary/20 hover:border-brand-primary/50 hover:text-brand-primary'
+                          className="border-brand-primary/20 hover:border-brand-primary/50 hover:text-brand-primary"
                         >
-                          <Icons.Facebook className='size-6' />
+                          <Icons.Facebook className="size-6" />
                         </Link>
                       )}
                     </div>
                   </div>
                 )}
               </TabsContent>
-              <TabsContent value={Tab.Reviews} className='!mt-6 !space-y-8'>
+              <TabsContent value={Tab.Reviews} className="!mt-6 !space-y-8">
                 <ReviewsTab
-                  reviewerToken={session?.user.token || ""}
-                  reviewerId={session?.user.id || ""}
                   organizerId={userInformation.id || ""}
-                  organizerEvents={organizerEvents.reduce<
-                    {
-                      id: string;
-                      date: string;
-                      title: string;
-                    }[]
-                  >((acc, event) => {
-                    acc.push({
-                      id: event.id,
-                      date: event.startDate,
-                      title: event.title,
-                    });
-                    return acc;
-                  }, [])}
+                  organizerEvents={organizerEvents.reduce<OrganizerEvents[]>(
+                    (acc, event) => {
+                      acc.push({
+                        id: event.id,
+                        date: event.startDate,
+                        title: event.title,
+                      });
+                      return acc;
+                    },
+                    []
+                  )}
                   organizerName={
                     userInformation.firstName + " " + userInformation.lastName
                   }
+                  session={session}
                 />
               </TabsContent>
             </Tabs>
@@ -315,15 +370,15 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
       )}
 
       {!userInformation && isFetchingUserInformation && (
-        <div className='h-[60vh] grid place-items-center'>
-          <ComponentLoader customLoaderColor='#fff' />
+        <div className="h-[60vh] grid place-items-center">
+          <ComponentLoader customLoaderColor="#fff" />
         </div>
       )}
 
       {!userInformation && !isFetchingUserInformation && (
-        <div className='h-[60vh] flex flex-col items-center justify-center'>
-          <h3 className='text-2xl font-medium mb-4'>User not found</h3>
-          <p className='text-sm text-grey'>
+        <div className="h-[60vh] flex flex-col items-center justify-center">
+          <h3 className="text-2xl font-medium mb-4">User not found</h3>
+          <p className="text-sm text-grey">
             Sorry, we couldn't find the user you're looking for.
           </p>
         </div>
