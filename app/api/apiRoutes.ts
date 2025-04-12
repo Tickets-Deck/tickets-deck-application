@@ -21,7 +21,7 @@ export class ApiRoutes {
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
+  static BASE_URL: string = ApiRoutes.BASE_URL_DEV;
 
   /**
    * The route to Request Credential Token endpoint
@@ -249,9 +249,28 @@ export class ApiRoutes {
   ) => `dashboard/user/${userId}`;
 
   /**
-   * The route to Follows endpoint
+   * The route to Follow User endpoint
    */
-  static Follows: string = "api/users/follows";
+  static FollowUser: (id: string, followingId: string) => string = (
+    id: string,
+    followingId: string
+  ) => `users/${id}/follow/${followingId}`;
+
+  /**
+   * The route to Unfollow User endpoint
+   */
+  static UnfollowUser: (id: string, followingId: string) => string = (
+    id: string,
+    followingId: string
+  ) => `users/${id}/unfollow/${followingId}`;
+
+  /**
+   * The route to get followers count for a user endpoint
+   */
+  static GetFollowersCount: (objectiveUserId: string, id?: string) => string = (
+    objectiveUserId: string,
+    id?: string
+  ) => `users/${objectiveUserId}/followers/count/${id ?? ''}`;
 
   /**
    * The route to User Recent Transactions endpoint
