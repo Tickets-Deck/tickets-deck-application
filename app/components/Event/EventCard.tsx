@@ -96,7 +96,7 @@ const EventCard = ({ event, consoleDisplay }: { event: EventResponse | FeaturedE
                     <div className='flex items-center gap-2 mt-2'>
                         <Icons.Calender className='h-4 w-4' fill='white' />
                         <span>
-                            {moment(event.startDate).format("MMM D")} •{" "}
+                            {moment(event.startDate).format("MMM Do, YYYY")} •{" "}
                             {moment(event.startDate).format("hh:mm a")}
                         </span>
                     </div>
