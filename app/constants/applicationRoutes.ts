@@ -43,6 +43,11 @@ export class ApplicationRoutes {
   static readonly GeneralEvents = "/events";
 
   /**
+   * The route to the pricing page
+   */
+  static readonly Pricing = "/pricing";
+
+  /**
    * The route to the about page
    */
   static readonly About = "/about";
