@@ -80,6 +80,9 @@ const DesktopNavbar: FunctionComponent<DesktopNavbarProps> = ({ appTheme }): Rea
                     <Link href={ApplicationRoutes.GeneralEvents}>
                         <li className='hover:text-primary-color-sub'>Events</li>
                     </Link>
+                    <Link href={ApplicationRoutes.Pricing}>
+                        <li className='hover:text-primary-color-sub'>Pricing</li>
+                    </Link>
                     <Link href={ApplicationRoutes.About}>
                         <li className='hover:text-primary-color-sub'>About</li>
                     </Link>
