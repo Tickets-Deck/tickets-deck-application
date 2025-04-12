@@ -428,6 +428,137 @@ button {
     }
 }
 
+.purple-gradient {
+    background: linear-gradient(135deg, #8133f1 0%, #a56ef4 100%);
+}
+
+.purple-gradient-light {
+    background: linear-gradient(135deg, rgba(129, 51, 241, 0.1) 0%, rgba(206, 176, 250, 0.1) 100%);
+}
+
+.purple-glow {
+    box-shadow: 0 0 30px rgba(129, 51, 241, 0.2);
+}
+
+.shape-blob {
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+.shape-circle {
+    border-radius: 50%;
+}
+
+.shape-diamond {
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.shape-dots {
+    background-image: radial-gradient(#8133f1 1px, transparent 1px);
+    background-size: 16px 16px;
+}
+
+.shape-grid {
+    background-image: linear-gradient(to right, rgba(129, 51, 241, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(129, 51, 241, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* Add these new wave animation classes */
+.wave-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.wave {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(135deg, rgba(129, 51, 241, 0.05) 0%, rgba(206, 176, 250, 0.05) 100%);
+    border-radius: 43%;
+    transform-origin: 50% 48%;
+    animation: drift 15000ms infinite linear;
+    z-index: -1;
+}
+
+.wave-2 {
+    animation: drift 17000ms infinite linear;
+    opacity: 0.5;
+    background: linear-gradient(135deg, rgba(129, 51, 241, 0.03) 0%, rgba(206, 176, 250, 0.03) 100%);
+}
+
+.wave-3 {
+    animation: drift 25000ms infinite linear;
+    opacity: 0.3;
+    background: linear-gradient(135deg, rgba(129, 51, 241, 0.02) 0%, rgba(206, 176, 250, 0.02) 100%);
+}
+
+@keyframes drift {
+    from {
+        transform: rotate(0deg);
+        transform: translateX(10);
+    }
+    to {
+        transform: rotate(360deg);
+        transform: translateX(150);
+    }
+}
+
+.dreamy-bg {
+    position: relative;
+    overflow: hidden;
+}
+
+.floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(129, 51, 241, 0.2) 0%, rgba(206, 176, 250, 0.1) 100%);
+    filter: blur(30px);
+    z-index: -1;
+    animation: float 20s ease-in-out infinite alternate;
+}
+
+.floating-shape-1 {
+    width: 400px;
+    height: 400px;
+    top: -100px;
+    left: -100px;
+    animation-delay: 0s;
+}
+
+.floating-shape-2 {
+    width: 300px;
+    height: 300px;
+    bottom: -50px;
+    right: -50px;
+    animation-delay: -5s;
+}
+
+.floating-shape-3 {
+    width: 200px;
+    height: 200px;
+    top: 40%;
+    left: 30%;
+    animation-delay: -10s;
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(30px, -30px) scale(1.05);
+    }
+    100% {
+        transform: translate(-20px, 20px) scale(0.95);
+    }
+}
+
 // ================== Tailwind Utilities starts here
 @layer utilities {
     .secondary-button {
@@ -509,7 +640,8 @@ button {
     .createEventFormField {
         @apply w-full flex flex-col gap-1 relative;
     }
-    .createEventFormField input, select {
+    .createEventFormField input,
+    select {
         @apply input w-full bg-white/10 text-white text-sm p-4 font-normal placeholder-white/50;
     }
     .createEventFormField label {
@@ -568,7 +700,7 @@ button {
 }
 @function randomBetween($min, $max) {
     @return $min + random($max - $min + 1) - 1;
-  }
+}
 
 /* keyFrames */
 @keyframes bumpDown {
