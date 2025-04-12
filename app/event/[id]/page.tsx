@@ -19,23 +19,35 @@ export async function generateMetadata(
     { params, searchParams }: Props,
     parent: ResolvingMetadata
 ): Promise<Metadata> {
-    // read route params
-    const id = params.id
+    try {
+        // read route params
+        const id = params.id
 
-    const fetchEventInfo = useFetchEventById();
+        const fetchEventInfo = useFetchEventById();
 
-    // fetch data
-    const event = await fetchEventInfo(id).then((response) => response.data as EventResponse);
+        // fetch data
+        const event = await fetchEventInfo(id).then((response) => response.data as EventResponse);
 
-    // optionally access and extend (rather than replace) parent metadata
-    const previousImages = (await parent).openGraph?.images || []
+        // optionally access and extend (rather than replace) parent metadata
+        const previousImages = (await parent).openGraph?.images || []
 
-    return {
-        title: event.title,
-        description: 'Come unlock your best experiences with Ticketsdeck Events!',
-        openGraph: {
-            images: [event.mainImageUrl, ...previousImages],
-        },
+        return {
+            title: event.title,
+            description: 'Come unlock your best experiences with Ticketsdeck Events!',
+            openGraph: {
+                images: [event.mainImageUrl, ...previousImages],
+            },
+        }
+    } catch (error) {
+        console.error('Error generating metadata:', error);
+        // Return default metadata in case of error
+        return {
+            title: 'Event Details',
+            description: 'Come unlock your best experiences with Ticketsdeck Events!',
+            openGraph: {
+                images: [],
+            },
+        }
     }
 }
 
