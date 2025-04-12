@@ -18,6 +18,7 @@ import {
   PasswordResetRequest,
 } from "../models/IPassword";
 import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
+import { CreateReviewRequest } from "../models/IReview";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL,
@@ -577,20 +578,35 @@ export function useDeleteTicket() {
 }
 
 export function useFollowUser() {
-  async function followUser(
-    subjectUserId: string,
-    objectUserId: string,
-    actionType: FollowsActionType
-  ) {
+  const requestToken = useRequestCredentialToken();
+  async function followUser(subjectUserId: string, objectUserId: string) {
+    const token = await requestToken();
     return API.post(
-      `${ApiRoutes.Follows}?subjectiveUserId=${subjectUserId}&objectiveUserId=${objectUserId}&actionType=${actionType}`
+      ApiRoutes.FollowUser(subjectUserId, objectUserId), {},
+      getApiConfig(token.data.token)
     );
   }
 
   return followUser;
 }
 
+export function useUnfollowUser() {
+  const requestToken = useRequestCredentialToken();
+  async function unfollowUser(subjectUserId: string, objectUserId: string) {
+    const token = await requestToken();
+
+    return API.delete(
+      ApiRoutes.UnfollowUser(subjectUserId, objectUserId),
+      getApiConfig(token.data.token)
+    );
+  }
+
+  return unfollowUser;
+}
+
 export function useFetchUserFollowMetrics() {
+  const requestToken = useRequestCredentialToken();
+
   /**
    * Fetches the number of followers and following of a user, and whether the logged in user is following the user
    * @param objectiveUserId is the user whose followers and following you want to fetch
@@ -601,8 +617,10 @@ export function useFetchUserFollowMetrics() {
     objectiveUserId: string,
     subjectUserId?: string
   ) {
+    const token = await requestToken();
     return API.get(
-      `${ApiRoutes.Follows}?objectiveUserId=${objectiveUserId}&subjectUserId=${subjectUserId}`
+      ApiRoutes.GetFollowersCount(objectiveUserId, subjectUserId),
+      getApiConfig(token.data.token)
     );
   }
 
@@ -773,26 +791,8 @@ export function useVerifyCouponCode() {
 }
 
 export function useCreateReview() {
-  async function createReview({
-    rating,
-    reviewText,
-    eventId,
-    reviewerId,
-    organizerId,
-    token,
-  }: {
-    rating: number;
-    reviewText: string;
-    eventId: string;
-    reviewerId: string;
-    organizerId: string;
-    token: string;
-  }) {
-    return API.post(
-      `${ApiRoutes.CreateReview}`,
-      { rating, reviewText, eventId, reviewerId, organizerId },
-      getApiConfig(token)
-    );
+  async function createReview(data: CreateReviewRequest, token: string) {
+    return API.post(`${ApiRoutes.CreateReview}`, data, getApiConfig(token));
   }
   return createReview;
 }
