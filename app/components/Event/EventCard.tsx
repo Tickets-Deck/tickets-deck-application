@@ -41,7 +41,7 @@ const EventCard = ({ event, consoleDisplay }: { event: EventResponse | FeaturedE
             <div className='relative after:bg-[linear-gradient(180deg,_rgba(0,0,0,0)_4.17%,_rgba(0,0,0,0.4)_100%)] after:size-full after:top-0 after:left-0 after:absolute after:opacity-100 after:pointer-events-none after:content-[""] group-hover:after:opacity-0'>
                 {event.isArchived ? (
                     <Image
-                        src={buildCloudinaryImageUrl(event.mainImageId) || event.mainImageUrl || "/placeholder.svg"}
+                        src={buildCloudinaryImageUrl(event.mainImageUrl) || "/placeholder.svg"}
                         alt={event.title}
                         width={400}
                         height={200}
@@ -50,7 +50,7 @@ const EventCard = ({ event, consoleDisplay }: { event: EventResponse | FeaturedE
                 ) : (
                     <Link href={consoleDisplay ? ApplicationRoutes.UserEventDetails(event.id) : `/event/${event.id}`}>
                         <Image
-                            src={buildCloudinaryImageUrl(event.mainImageId) || event.mainImageUrl || "/placeholder.svg"}
+                            src={buildCloudinaryImageUrl(event.mainImageUrl) || "/placeholder.svg"}
                             alt={event.title}
                             width={400}
                             height={200}

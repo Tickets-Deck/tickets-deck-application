@@ -17,6 +17,7 @@ import {
     ApplicationContextData,
 } from "@/app/context/ApplicationContext";
 import { CouponDetails } from "@/app/models/ICoupon";
+import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 
 interface OrderSummarySectionProps {
     eventTickets: RetrievedTicketResponse[] | undefined;
@@ -94,7 +95,7 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = ({
                     {eventInfo?.mainImageUrl && (
                         <Image
                             className='w-full h-full object-cover'
-                            src={eventInfo.mainImageUrl as string}
+                            src={buildCloudinaryImageUrl(eventInfo.mainImageUrl as string)}
                             fill
                             alt='Flyer'
                         />

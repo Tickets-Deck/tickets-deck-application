@@ -15,6 +15,7 @@ import EventLikeButton from "../custom/EventLikeButton";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { useToast } from "@/app/context/ToastCardContext";
 import { Session } from "next-auth";
+import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 
 interface EventMainInfoProps {
     eventInfo: EventResponse
@@ -89,7 +90,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
         <div className={`flex flex-col md:flex-row items-center rounded-3xl p-6 bg-container-grey gap-4 relative min-h-[320px] ${forOrdersPage ? 'md:flex-col' : ''}`}>
             <div
                 className={`${forOrdersPage ? 'w-full h-[200px]' : 'w-full md:w-1/3 md:min-w-[30%] h-[300px]'} rounded-2xl overflow-hidden relative after after:bg-black after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-[0] hover:after:opacity-40 after:transition-all after:duration-300 group`}>
-                <Image src={eventInfo.mainImageUrl} alt='Event flyer' fill className="object-cover" />
+                <Image src={buildCloudinaryImageUrl(eventInfo.mainImageUrl)} alt='Event flyer' fill className="object-cover" />
                 <button
                     onClick={() => setIsPopupOpen(true)}
                     className="absolute left-1/2 transform -translate-x-1/2 -bottom-12 p-2 px-4 rounded-full flex flex-row gap-2 items-center bg-primary-color text-sm w-fit h-fit z-[3] hover:bg-white hover:text-primary-color group-hover:bottom-4 transition-all">

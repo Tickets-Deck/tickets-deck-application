@@ -29,6 +29,7 @@ import { ImagePopup } from "@/app/components/custom/ImagePopup";
 import { selectUserFlags } from "@/app/redux/features/user/userSlice";
 import { FlagOptions } from "@/app/enums/UserFlag";
 import { Session } from "next-auth";
+import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 
 interface EventDetailsPageProps {
   id: string;
@@ -250,7 +251,7 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
       />
       {eventInfo && (
         <ImagePopup
-          imageUrl={eventInfo.mainImageUrl}
+          imageUrl={buildCloudinaryImageUrl(eventInfo.mainImageUrl)}
           alt={eventInfo.title}
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}

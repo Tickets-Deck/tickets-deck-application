@@ -10,6 +10,7 @@ import { TicketPass } from "@/app/models/ITicketPass";
 import moment from "moment";
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
+import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 
 interface TicketUiProps {
     ticketInfo: TicketPass;
@@ -74,7 +75,7 @@ const TicketUi: FunctionComponent<TicketUiProps> = ({
                     <div className='w-full h-[140px] relative rounded-[0.85rem] overflow-hidden'>
                         <Image
                             className='object-cover'
-                            src={ticketInfo.eventInfo.mainImageUrl}
+                            src={buildCloudinaryImageUrl(ticketInfo.eventInfo.mainImageUrl)}
                             fill
                             alt='Event flyer'
                         />

@@ -3,6 +3,7 @@ import Toggler from "@/app/components/custom/Toggler";
 import { Icons } from "@/app/components/ui/icons";
 import { EventVisibility } from "@/app/enums/IEventVisibility";
 import { EventResponse, UpdateEventRequest } from "@/app/models/IEvents";
+import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 import moment from "moment";
 import Image from "next/image";
 import React, { Dispatch, SetStateAction, useState } from "react";
@@ -27,7 +28,7 @@ export default function OverviewSection({
     <>
       {eventInfo && (
         <ImagePopup
-          imageUrl={eventInfo.mainImageUrl}
+          imageUrl={buildCloudinaryImageUrl(eventInfo.mainImageUrl)}
           alt={eventInfo.title}
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
@@ -57,7 +58,7 @@ export default function OverviewSection({
                 className={`w-full md:w-[50%] md:max-w-[300px] h-[300px] rounded-2xl overflow-hidden relative after after:bg-black after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-[0] hover:after:opacity-40 after:transition-all after:duration-300 group`}
               >
                 <Image
-                  src={eventInfo.mainImageUrl}
+                  src={buildCloudinaryImageUrl(eventInfo.mainImageUrl)}
                   alt="Event flyer"
                   fill
                   className="object-cover"
