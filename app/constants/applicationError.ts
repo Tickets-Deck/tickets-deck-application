@@ -40,10 +40,10 @@ export class BaseApplicationError {
     };
   }
   
-  /**
-   * The ApplicationError class
-   */
-  export class ApplicationError extends BaseApplicationError {
+/**
+ * The ApplicationError class
+ */
+export class ApplicationError extends BaseApplicationError {
     //#region Auth Errors
   
     /**
@@ -224,6 +224,14 @@ export class BaseApplicationError {
     static UserTokenIsInvalid: IApplicationError = {
       Text: 'User token is invalid',
       Code: 'USER_1020',
+    };
+  
+    /**
+     * The error message for ~ Username is not valid
+     */
+    static InvalidUsername: IApplicationError = {
+      Text: 'Username is not valid',
+      Code: 'USER_1021',
     };
   
     //#endregion
@@ -716,6 +724,26 @@ export class BaseApplicationError {
   
     //#endregion
   
+    //#region Event Category
+  
+    /**
+     * The error message for ~ Event Category already exists
+     */
+    static EventCategoryAlreadyExists: IApplicationError = {
+      Text: 'Event Category already exists',
+      Code: 'EVENT_CATEGORY_1000',
+    };
+  
+    /**
+     * The error message for ~ Event Category not found
+     */
+    static EventCategoryNotFound: IApplicationError = {
+      Text: 'Event Category not found',
+      Code: 'EVENT_CATEGORY_1001',
+    };
+  
+    //#endregion
+  
     //#region Payment Errors
   
     /**
@@ -1026,6 +1054,30 @@ export class BaseApplicationError {
       Code: 'WALLET_1004',
     };
   
+    /**
+     * The error message for ~ Payout with specified ID not found
+     */
+    static PayoutWithIdNotFound: IApplicationError = {
+      Text: 'There was no payout with the specified ID found.',
+      Code: 'WALLET_1005',
+    };
+  
+    /**
+     * The error message for ~ Payout has already been processed
+     */
+    static PayoutAlreadyProcessed: IApplicationError = {
+      Text: 'This payout has already been processed and cannot be modified.',
+      Code: 'WALLET_1006',
+    };
+  
+    /**
+     * The error message for ~ User does not have sufficient balance
+     */
+    static InsufficientFunds: IApplicationError = {
+      Text: 'User does not have sufficient balance.',
+      Code: 'WALLET_1007',
+    };
+  
     //#endregion
   
     //#region Customer Enquiry
@@ -1036,6 +1088,42 @@ export class BaseApplicationError {
     static EnquiryNotSubmitted: IApplicationError = {
       Text: 'Enquiry could not be submitted',
       Code: 'ENQUIRY_1000',
+    };
+  
+    //#endregion
+  
+    //#region Review 
+  
+    /**
+     * The error message for ~ Duplicate review
+     */
+    static DuplicateReview: IApplicationError = {
+      Text: 'Review already provided by this user',
+      Code: 'REVIEW_1000',
+    };
+  
+    /**
+     * The error message for ~ Review with ID not found
+     */
+    static ReviewNotFound: IApplicationError = {
+      Text: 'Review with specified ID not found',
+      Code: 'REVIEW_1001',
+    };
+  
+    /**
+     * The error message for ~ Review has not been given to the organizer
+     */
+    static NoReviewFoundForOrganizer: IApplicationError = {
+      Text: 'Review has not been given to the organizer',
+      Code: 'REVIEW_1002',
+    };
+  
+    /**
+     * The error message for ~ Review already flagged by same user
+     */
+    static DuplicateReviewFlag: IApplicationError = {
+      Text: 'Review already flagged by same user',
+      Code: 'REVIEW_1003',
     };
   
     //#endregion
