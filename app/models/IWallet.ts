@@ -3,8 +3,9 @@ import { PaymentStatus } from "../enums/IPaymentStatus";
 
 export type WalletBalance = {
   balance: number;
-  totalRevenue: number;
   totalWithdrawn: number;
+  totalRevenue: number;
+  netEarnings: number;
 };
 
 export type Payout = {
