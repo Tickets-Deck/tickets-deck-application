@@ -1,6 +1,5 @@
 export interface PaymentResultDataMetadata {
     ticketOrderId: string;
-    organizerAmount: number;
 }
 export interface PaymentResultCustomerData {
     id: number;

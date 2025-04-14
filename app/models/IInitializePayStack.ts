@@ -4,5 +4,4 @@ export interface InitializePayStack {
     callbackUrl: string;
     socketId: string;
     couponCode?: string; 
-    organizerAmount: number;
 }
