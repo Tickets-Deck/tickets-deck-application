@@ -88,7 +88,6 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
 
     await fetchUserInformationByUsername(identifier as string)
       .then((response) => {
-        console.log("🚀 ~ .then ~ response:", response);
         setUserInformation(response.data);
       })
       .catch((error) => {
@@ -106,7 +105,6 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
       session?.user.id as string
     )
       .then((response) => {
-        console.log("Fetched metrics: ", response.data);
 
         const result = response.data as IUserFollowMetrics;
 
