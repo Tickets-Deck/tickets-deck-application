@@ -21,13 +21,21 @@ export default function AnalyticsSection({ eventInfo, handleUpdateEventInfo }: P
 
             <div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <div className="bg-[#252525] p-4 rounded-lg">
+                    {/* <div className="bg-[#252525] p-4 rounded-lg">
                         <p className="text-sm text-gray-400">Total Revenue</p>
                         <p className="text-2xl font-bold">
                             {eventInfo.currency}{" "}
                             {eventInfo.tickets
                                 .reduce((acc, ticket) => acc + (ticket.price * ticket.ticketOrdersCount), 0)
                                 .toLocaleString()}
+                        </p>
+                        <p className="text-xs text-green-400 mt-1">+12% from previous event</p>
+                    </div> */}
+                    <div className="bg-[#252525] p-4 rounded-lg">
+                        <p className="text-sm text-gray-400">Net Earnings</p>
+                        <p className="text-2xl font-bold">
+                            {eventInfo.currency}{" "}
+                            {eventInfo.netEarnings}
                         </p>
                         <p className="text-xs text-green-400 mt-1">+12% from previous event</p>
                     </div>
