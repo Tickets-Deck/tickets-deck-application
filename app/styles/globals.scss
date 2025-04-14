@@ -598,11 +598,11 @@ button {
 
     .input {
         // @apply w-fit rounded-[3.125rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none bg-white placeholder-grey-bg;
-        @apply w-full rounded-[0.5rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none placeholder-grey-bg;
+        @apply w-full rounded-[0.5rem] text-sm py-[0.8rem] px-[1.1rem] border-none outline-none placeholder:text-white/50;
     }
 
     .textarea {
-        @apply rounded-[0.5rem] bg-white/10 text-xs w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none placeholder:text-white/50 resize-none h-[5rem];
+        @apply rounded-[0.5rem] bg-white/10 text-sm w-full text-white py-[0.8rem] px-[1.1rem] border-none outline-none placeholder:text-white/50 resize-none h-[5rem];
     }
 
     .primaryButton {
