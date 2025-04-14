@@ -151,7 +151,7 @@ export default function PricingPage() {
       <section className="sectionPadding !py-16 md:!py-24 relative overflow-hidden">
         <WavyBackground />
         <div className="absolute inset-0 shape-grid opacity-30"></div>
-        <div className="container relative z-10">
+        <div className="container relative z-10 mx-auto">
           <motion.div
             className="max-w-3xl mx-auto text-center"
             initial="hidden"
@@ -172,13 +172,13 @@ export default function PricingPage() {
             <div className="flex flex-col md:flex-row gap-4 justify-center">
               <Link
                 href={ApplicationRoutes.CreateEvent}
-                className="tertiaryButton !w-full md:!w-fit md:!justify-center"
+                className="tertiaryButton !w-full md:!w-fit justify-center"
               >
                 Get Started for Free
               </Link>
               <Button
                 onClick={() => setIsContactSalesModalOpen(true)}
-                className="tertiaryButton !w-full md:!w-fit md:!justify-center"
+                className="tertiaryButton !w-full md:!w-fit justify-center"
               >
                 Contact Sales
               </Button>
@@ -189,7 +189,7 @@ export default function PricingPage() {
 
       {/* Pricing Overview */}
       <section className="sectionPadding !py-12 relative overflow-hidden">
-        <div className="container relative z-10">
+        <div className="container relative z-10 mx-auto">
           <motion.div
             className="max-w-4xl mx-auto"
             initial="hidden"
@@ -250,7 +250,7 @@ export default function PricingPage() {
 
       {/* Features Grid */}
       <section className="sectionPadding !py-16 relative">
-        <div className="container relative z-10">
+        <div className="container relative z-10 mx-auto">
           <motion.div
             className="text-center mb-12"
             initial="hidden"
@@ -358,7 +358,7 @@ export default function PricingPage() {
       {/* FAQ Section */}
       <section className="sectionPadding !py-16 relative overflow-hidden">
         <div className="absolute inset-0 shape-grid opacity-30"></div>
-        <div className="container relative z-10">
+        <div className="container relative z-10 mx-auto">
           <motion.div
             className="text-center mb-12"
             initial="hidden"
@@ -411,7 +411,7 @@ export default function PricingPage() {
           <div className="absolute top-0 right-0 w-96 h-96 shape-blob bg-primary-color/10 -mr-20 -mt-20"></div>
           <div className="absolute bottom-0 left-0 w-96 h-96 shape-circle bg-primary-color/10 -ml-20 -mb-20"></div>
         </div>
-        <div className="container relative z-10">
+        <div className="container relative z-10 mx-auto">
           <motion.div
             className="max-w-4xl mx-auto text-center"
             initial="hidden"
@@ -419,23 +419,23 @@ export default function PricingPage() {
             viewport={{ once: true }}
             variants={fadeIn}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary-color">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary-color-sub">
               Ready to create your first event?
             </h2>
             <p className="text-base md:text-xl text-white/70 mb-8">
               Join thousands of event organizers who trust Ticketsdeck Events to
               power their events.
             </p>
-            <div className="flex flex-row gap-4 justify-center">
+            <div className="flex flex-col md:flex-row gap-4 justify-center">
               <Link
                 href={ApplicationRoutes.SignUp}
-                className="tertiaryButton !purple-gradient hover:opacity-90 transition-opacity"
+                className="tertiaryButton !w-full md:!w-fit justify-center !purple-gradient hover:opacity-90 transition-opacity"
               >
                 Sign Up for Free
               </Link>
               <button
                 onClick={() => setIsScheduleDemoModalOpen(true)}
-                className="tertiaryButton"
+                className="tertiaryButton !w-full md:!w-fit justify-center"
               >
                 Schedule a Demo
               </button>
