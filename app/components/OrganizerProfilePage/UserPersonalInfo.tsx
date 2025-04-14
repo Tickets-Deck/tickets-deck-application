@@ -32,7 +32,7 @@ const UserPersonalInfo: FunctionComponent<UserPersonalInfoProps> = ({
             <h1 className="text-2xl md:text-3xl font-semibold capitalize">
               {userInformation.firstName + " " + userInformation.lastName}
             </h1>
-            <Badge title="Organizer" className="!mb-0" />
+            {userInformation.stats && userInformation.stats.eventsCount > 0 && <Badge title="Organizer" className="!mb-0" />}
           </div>
           {userInformation.username && (
             <p className="text-white">@{userInformation.username}</p>
