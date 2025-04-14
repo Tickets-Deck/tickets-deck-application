@@ -1,6 +1,6 @@
 export enum EventInformationTab {
-    Overview = 1,
-    Tickets = 2,
-    Settings = 3,
-    // Analytics = 4
+  Overview = 1,
+  Tickets = 2,
+  Analytics = 4,
+  Settings = 3,
 }
