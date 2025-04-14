@@ -365,13 +365,13 @@ const PublisherEventInformation: FunctionComponent<PublisherEventInformationProp
                                 setIsDeletionConfirmationModalVisible={setIsEventDeletionConfirmationModalVisible}
                             />
                         }
-                        {/* {
+                        {
                             selectedInfoTab == EventInformationTab.Analytics &&
                             <AnalyticsSection
                                 eventInfo={eventInfo}
                                 handleUpdateEventInfo={handleUpdateEventInfo}
                             />
-                        } */}
+                        }
                     </div>
                 </section>
             }
