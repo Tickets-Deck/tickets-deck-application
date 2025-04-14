@@ -27,7 +27,6 @@ interface OrderSummarySectionProps {
     isProcessingOrder: boolean;
     eventInfo: EventResponse | undefined;
     couponDetails: CouponDetails | undefined;
-    setOrganizerAmount: Dispatch<SetStateAction<number | undefined>>;
     hideActionButtons?: boolean;
 }
 
@@ -36,7 +35,6 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = ({
     totalPrice,
     setVisibility,
     couponDetails,
-    setOrganizerAmount,
     handleTicketOrderCreation,
     isProcessingOrder,
     eventInfo,
@@ -81,12 +79,6 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = ({
     //         ? (totalPrice * Number(couponDetails.discount)) / 100
     //         : 0)
     //     + fees;
-
-    useEffect(() => {
-        setOrganizerAmount(
-            fees == 0 ? totalAmountPayable : totalAmountPayable - fees
-        );
-    }, [totalAmountPayable, fees]);
 
     return (
         <div className='flex flex-col basis-full gap-4 md:basis-[35%]'>

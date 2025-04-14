@@ -100,7 +100,6 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
         useState<ValidationStatus>(ValidationStatus.NotInitiated);
     const [couponCodeValue, setCouponCodeValue] = useState<string>();
     const [couponDetails, setCouponDetails] = useState<CouponDetails>();
-    const [organizerAmount, setOrganizerAmount] = useState<number>();
 
     const [orderSummaryVisible, setOrderSummaryVisible] = useState(false);
 
@@ -355,8 +354,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                     ticketOrderId: response.data.id,
                     callbackUrl: `${window.location.origin}/verify-payment`,
                     socketId: localStorage.getItem(StorageKeys.ClientSessionWS) as string,
-                    couponCode: couponCodeValue,
-                    organizerAmount: organizerAmount as number,
+                    couponCode: couponCodeValue
                 });
 
                 if (paymentInit) {
@@ -834,7 +832,6 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                             isProcessingOrder={isProcessingOrder}
                             eventInfo={eventInfo}
                             couponDetails={couponDetails}
-                            setOrganizerAmount={setOrganizerAmount}
                         />
                     </div>
                 </ModalWrapper>
@@ -1044,7 +1041,6 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                                         isProcessingOrder={isProcessingOrder}
                                         eventInfo={eventInfo}
                                         couponDetails={couponDetails}
-                                        setOrganizerAmount={setOrganizerAmount}
                                         hideActionButtons={true}
                                     />
                                 )
