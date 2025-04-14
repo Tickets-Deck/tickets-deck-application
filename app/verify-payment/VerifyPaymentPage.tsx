@@ -141,7 +141,7 @@ const VerifyPaymentPage: FunctionComponent<
       {paymentStatus == PaymentStatus.Success && (
         <div className='flex flex-col items-center text-center'>
           <h3 className='text-xl font-medium text-white mb-1'>
-            This payment has already been verified
+            This payment has been successfully verified
           </h3>
           <p className='text-[0.85rem] text-white text-center'>
             Redirecting you to the order page in seconds.
