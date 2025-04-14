@@ -222,7 +222,7 @@ const ReviewModal: FunctionComponent<ReviewModalProps> = ({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm text-white mb-2" htmlFor="name">
+            <label className="text-sm text-white mb-2" htmlFor="review">
               Your Review
             </label>
             <Textarea
