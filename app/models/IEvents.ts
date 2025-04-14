@@ -78,6 +78,8 @@ export type EventResponse = {
   ticketOrdersCount: number;
   ticketsPurchased: TicketPurchased[];
   organizerPaysFee: boolean;
+
+  netEarnings?: number;
 };
 
 export type FeaturedEvent = EventResponse & {
