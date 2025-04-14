@@ -8,6 +8,8 @@ import Badge from "../components/ui/badge";
 import Button from "../components/ui/button";
 import { DreamyBackground, WavyBackground } from "./3d-background";
 import { ApplicationRoutes } from "../constants/applicationRoutes";
+import { ContactSalesModal } from "../components/Modal/PricingPage/ContactSales";
+import { ScheduleDemoModal } from "../components/Modal/PricingPage/ScheduleDemo";
 
 // Animation variants
 const fadeIn = {
@@ -129,8 +131,22 @@ const FeatureCategory = ({
 };
 
 export default function PricingPage() {
+  const [isContactSalesModalOpen, setIsContactSalesModalOpen] = useState(false);
+  const [isScheduleDemoModalOpen, setIsScheduleDemoModalOpen] = useState(false);
+
+  const fee = 5;
+
   return (
     <div className="min-h-screen bg-dark-grey">
+      <ContactSalesModal
+        modalVisibility={isContactSalesModalOpen}
+        setModalVisibility={setIsContactSalesModalOpen}
+      />
+      <ScheduleDemoModal
+        modalVisibility={isScheduleDemoModalOpen}
+        setModalVisibility={setIsScheduleDemoModalOpen}
+      />
+
       {/* Hero Section */}
       <section className="sectionPadding !py-16 md:!py-24 relative overflow-hidden">
         <WavyBackground />
@@ -153,14 +169,19 @@ export default function PricingPage() {
               No hidden fees, no surprises. Just a simple pricing model to help
               you focus on creating amazing events.
             </p>
-            <div className="flex flex-row gap-4 justify-center">
+            <div className="flex flex-col md:flex-row gap-4 justify-center">
               <Link
                 href={ApplicationRoutes.CreateEvent}
-                className="tertiaryButton"  
+                className="tertiaryButton !w-full md:!w-fit md:!justify-center"
               >
                 Get Started for Free
               </Link>
-              <Button className="tertiaryButton">Contact Sales</Button>
+              <Button
+                onClick={() => setIsContactSalesModalOpen(true)}
+                className="tertiaryButton !w-full md:!w-fit md:!justify-center"
+              >
+                Contact Sales
+              </Button>
             </div>
           </motion.div>
         </div>
@@ -197,7 +218,7 @@ export default function PricingPage() {
                       </li>
                       <li className="flex items-center">
                         <Icons.Check className="h-5 w-5 text-primary-color mr-2" />
-                        <span>Only 5% fee per paid ticket</span>
+                        <span>Only {fee}% fee per paid ticket</span>
                       </li>
                       <li className="flex items-center">
                         <Icons.Check className="h-5 w-5 text-primary-color mr-2" />
@@ -209,7 +230,7 @@ export default function PricingPage() {
                     <div className="text-sm uppercase font-semibold mb-1">
                       Current Fee
                     </div>
-                    <div className="text-5xl font-bold">5%</div>
+                    <div className="text-5xl font-bold">{fee}%</div>
                     <div className="text-sm mt-1 opacity-90">
                       per paid ticket
                     </div>
@@ -265,7 +286,7 @@ export default function PricingPage() {
               title="Selling Tickets"
               features={[
                 "No fee on free tickets",
-                "5% fee per paid ticket",
+                `${fee}% fee per paid ticket`,
                 "Organizer can pay fee or pass to attendees",
                 "Ability to manage ticket sales & inventory",
                 "Multiple ticket types",
@@ -355,8 +376,8 @@ export default function PricingPage() {
 
           <div className="max-w-3xl mx-auto bg-background rounded-xl p-8 shadow-md">
             <FAQItem
-              question="How does the 5% fee work?"
-              answer="Our fee is 5% of the ticket price for each paid ticket sold. For example, if you sell a ticket for $100, our fee would be $5. There are no fees for free tickets or events."
+              question={`How does the ${fee}% fee work?`}
+              answer={`Our fee is ${fee}% of the ticket price for each paid ticket sold. There are no fees for free tickets or events.`}
             />
             <FAQItem
               question="Can I pass the fees to attendees?"
@@ -364,7 +385,7 @@ export default function PricingPage() {
             />
             <FAQItem
               question="Are there any hidden fees?"
-              answer="No, we believe in complete transparency. The only fee is the 5% per paid ticket. There are no setup fees, monthly fees, or other hidden charges."
+              answer={`No, we believe in complete transparency. The only fee is the ${fee}% per paid ticket. There are no setup fees, monthly fees, or other hidden charges.`}
             />
             <FAQItem
               question="How do payouts work?"
@@ -412,7 +433,12 @@ export default function PricingPage() {
               >
                 Sign Up for Free
               </Link>
-              <button className="tertiaryButton">Schedule a Demo</button>
+              <button
+                onClick={() => setIsScheduleDemoModalOpen(true)}
+                className="tertiaryButton"
+              >
+                Schedule a Demo
+              </button>
             </div>
           </motion.div>
         </div>
