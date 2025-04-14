@@ -1,5 +1,6 @@
 "use client";
 import {
+  useFetchUserPayouts,
   useFetchUserWalletBalance,
   useRequestUserWithdrawals,
 } from "@/app/api/apiClient";
@@ -17,20 +18,24 @@ import { FunctionComponent, ReactElement, useMemo, useState } from "react";
 
 interface WalletPageProps {
   walletBalanceInfo: WalletBalance | null;
-  userPayouts: Payout[] | null;
+  initialUserPayouts: Payout[] | null;
 }
 
 const WalletPage: FunctionComponent<WalletPageProps> = ({
   walletBalanceInfo,
-  userPayouts,
+  initialUserPayouts,
 }): ReactElement => {
   const toastHandler = useToast();
   const fetchUserWalletBalance = useFetchUserWalletBalance();
   const initiateUserWithdrawals = useRequestUserWithdrawals();
+  const fetchUserPayouts = useFetchUserPayouts();
 
   const [showPayoutModal, setShowPayoutModal] = useState(false);
   const [walletBalance, setWalletBalance] = useState<WalletBalance>();
-  const [showWalletBalance, setShowWalletBalance] = useState(false);
+//   const [showWalletBalance, setShowWalletBalance] = useState(false);
+  const [userPayouts, setUserPayouts] = useState<Payout[] | null>(
+    initialUserPayouts
+  );
 
   const { data: session } = useSession();
   const user = session?.user;
@@ -38,7 +43,6 @@ const WalletPage: FunctionComponent<WalletPageProps> = ({
   const handleFetchUserWalletBalance = async () => {
     await fetchUserWalletBalance(user?.id as string, user?.token as string)
       .then((response) => {
-        console.log("🚀 ~ .then ~ response:", response);
         setWalletBalance(response.data);
       })
       .catch((error) => {
@@ -46,10 +50,6 @@ const WalletPage: FunctionComponent<WalletPageProps> = ({
         toastHandler.logError("Error", "Failed to fetch user wallet balance");
       });
   };
-
-  useMemo(() => {
-    if (user) handleFetchUserWalletBalance();
-  }, [user]);
 
   const handleInitiateUserWithdrawals = async (amount: number) => {
     await initiateUserWithdrawals(
@@ -59,6 +59,7 @@ const WalletPage: FunctionComponent<WalletPageProps> = ({
     )
       .then((response) => {
         if (response.data) {
+          handleFetchUserPayouts();
           toastHandler.logSuccess(
             "Success",
             "Your payout request has been initiated"
@@ -68,6 +69,16 @@ const WalletPage: FunctionComponent<WalletPageProps> = ({
       })
       .catch((error) => {
         if (error.response) throw new Error(error.response.data.message);
+      });
+  };
+
+  const handleFetchUserPayouts = async () => {
+    await fetchUserPayouts(user?.id as string, user?.token as string)
+      .then((response) => {
+        setUserPayouts(response.data);
+      })
+      .catch((error) => {
+        console.log("🚀 ~ handleFetchUserPayouts ~ error:", error);
       });
   };
 
@@ -97,6 +108,10 @@ const WalletPage: FunctionComponent<WalletPageProps> = ({
     }
   };
 
+  useMemo(() => {
+    if (user) handleFetchUserWalletBalance();
+  }, [user]);
+
   return (
     <>
       {/* <BetaTestModal
@@ -115,11 +130,11 @@ const WalletPage: FunctionComponent<WalletPageProps> = ({
         // onRequestPayout={async () => { }}
       />
 
-      <main className='px-4 py-8 min-h-screen text-white'>
-        <div className='mb-4 flex flex-row justify-between w-full'>
-          <h2 className='text-2xl font-medium text-gray-300'>Wallet page</h2>
+      <main className="px-4 py-8 min-h-screen text-white">
+        <div className="mb-4 flex flex-row justify-between w-full">
+          <h2 className="text-2xl font-medium text-gray-300">Wallet page</h2>
           <button
-            className='w-fit h-fit rounded-full cursor-pointer text-sm p-4 py-2 border-none bg-primary-color text-white hover:bg-white hover:text-primary-color'
+            className="w-fit h-fit rounded-full cursor-pointer text-sm p-4 py-2 border-none bg-primary-color text-white hover:bg-white hover:text-primary-color"
             onClick={() => setShowPayoutModal(true)}
           >
             Request payment
@@ -127,47 +142,47 @@ const WalletPage: FunctionComponent<WalletPageProps> = ({
         </div>
 
         {/* KPI Section */}
-        <div className='w-full grid grid-cols-2 gap-4'>
-          <div className='p-6 rounded-2xl flex flex-col bg-dark-grey'>
-            <span className='text-2xl font-semibold mb-4 font-Mona-Sans-Wide'>
+        <div className="w-full grid grid-cols-2 gap-4">
+          <div className="p-6 rounded-2xl flex flex-col bg-dark-grey">
+            <span className="text-2xl font-semibold mb-4 font-Mona-Sans-Wide">
               {NairaPrice.format(walletBalanceInfo?.balance || 0)}
             </span>
-            <span className='text-sm font-light text-text-grey'>
+            <span className="text-sm font-light text-text-grey">
               Wallet Balance
             </span>
           </div>
-          <div className='p-6 rounded-2xl flex flex-col bg-dark-grey'>
-            <span className='text-2xl font-semibold mb-4 font-Mona-Sans-Wide'>
+          <div className="p-6 rounded-2xl flex flex-col bg-dark-grey">
+            <span className="text-2xl font-semibold mb-4 font-Mona-Sans-Wide">
               {NairaPrice.format(walletBalanceInfo?.totalWithdrawn || 0)}
             </span>
-            <span className='text-sm font-light text-text-grey'>
+            <span className="text-sm font-light text-text-grey">
               Total Witdrawals
             </span>
           </div>
         </div>
 
-        <div className='mt-6 w-full'>
-          <h3 className='mb-2 text-xl'>Payouts</h3>
-          <div className='max-h-[65vh] w-full overflow-y-auto rounded-2xl relative bg-container-grey'>
-            <table className='bg-white w-full text-dark-grey'>
+        <div className="mt-6 w-full">
+          <h3 className="mb-2 text-xl">Payouts</h3>
+          <div className="max-h-[65vh] w-full overflow-y-auto rounded-2xl relative bg-container-grey">
+            <table className="bg-white w-full text-dark-grey">
               <tbody>
                 <tr>
-                  <th className='p-3 border-b-[1px] text-left text-sm font-semibold'>
+                  <th className="p-3 border-b-[1px] text-left text-sm font-semibold">
                     Transaction Reference
                   </th>
-                  <th className='p-3 border-b-[1px] text-left text-sm font-semibold'>
+                  <th className="p-3 border-b-[1px] text-left text-sm font-semibold">
                     Amount
                   </th>
-                  <th className='p-3 border-b-[1px] text-left text-sm font-semibold'>
+                  <th className="p-3 border-b-[1px] text-left text-sm font-semibold">
                     Date
                   </th>
-                  <th className='p-3 border-b-[1px] text-left text-sm font-semibold'>
+                  <th className="p-3 border-b-[1px] text-left text-sm font-semibold">
                     Status
                   </th>
-                  <th className='p-3 border-b-[1px] text-left text-sm font-semibold'>
+                  <th className="p-3 border-b-[1px] text-left text-sm font-semibold">
                     Payment Method
                   </th>
-                  <th className='p-3 border-b-[1px] text-left text-sm font-semibold'>
+                  <th className="p-3 border-b-[1px] text-left text-sm font-semibold">
                     Service Fee
                   </th>
                   {/* <th className='p-3 border-b-[1px] text-left text-sm font-semibold'>
@@ -178,24 +193,24 @@ const WalletPage: FunctionComponent<WalletPageProps> = ({
                 {userPayouts?.map((payout, index) => {
                   return (
                     <tr key={index}>
-                      <td className='p-3 border-b-[1px] text-left text-sm'>
+                      <td className="p-3 border-b-[1px] text-left text-sm">
                         {payout.transactionRef}
                       </td>
-                      <td className='p-3 border-b-[1px] text-left text-sm'>
+                      <td className="p-3 border-b-[1px] text-left text-sm">
                         {NairaPrice.format(Number(payout.amount))}
                       </td>
-                      <td className='p-3 border-b-[1px] text-left text-sm'>
+                      <td className="p-3 border-b-[1px] text-left text-sm">
                         {moment(payout.createdAt).format(
                           "ddd Do MMM, YYYY | h:mma"
                         )}
                       </td>
-                      <td className='p-3 border-b-[1px] text-left text-sm'>
+                      <td className="p-3 border-b-[1px] text-left text-sm">
                         {showPaymentStatus(payout.status)}
                       </td>
-                      <td className='p-3 border-b-[1px] text-left text-sm'>
+                      <td className="p-3 border-b-[1px] text-left text-sm">
                         {showPaymentMethod(payout.paymentMethod)}
                       </td>
-                      <td className='p-3 border-b-[1px] text-left text-sm'>
+                      <td className="p-3 border-b-[1px] text-left text-sm">
                         {NairaPrice.format(Number(payout.serviceFees) || 0)}
                       </td>
                       {/* <td className='p-3 border-b-[1px] text-left text-sm'>

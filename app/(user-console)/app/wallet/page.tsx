@@ -43,7 +43,7 @@ const Wallet: FunctionComponent<WalletProps> = async () => {
     return (
         <WalletPage
             walletBalanceInfo={walletBalanceInfo}
-            userPayouts={userPayouts}
+            initialUserPayouts={userPayouts}
         />
     );
 }
