@@ -23,6 +23,7 @@ import NextTopLoader from 'nextjs-toploader';
 import UserLoginPrompt from './Modal/UserLoginPrompt';
 import { ApplicationContext, ApplicationContextData } from '../context/ApplicationContext';
 import { updateUserBankAccount } from "@/app/redux/features/user/walletSlice";
+import MaintenancePage from './Maintenance';
 
 export const metadata: Metadata = {
     title: 'Ticketsdeck Events',
@@ -187,6 +188,14 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
             visible: false
         });
     };
+
+    if (
+        new Date().getTime() >= 1713654000000 
+        &&
+        new Date().getTime() <= 1713672000000
+    )
+    return <MaintenancePage />;
+    
 
     return (
         <>
