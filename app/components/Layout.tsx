@@ -190,9 +190,9 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session }): ReactEle
     };
 
     if (
-        new Date().getTime() >= 1713654000000 
+        new Date().getTime() >= 1745186486119 
         &&
-        new Date().getTime() <= 1713672000000
+        new Date().getTime() <= 1745208000000
     )
     return <MaintenancePage />;
     
