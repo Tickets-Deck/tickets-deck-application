@@ -182,47 +182,47 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
 
   useEffect(() => {
     if (eventRequest?.description) {
-        setDescriptionErrorMsg(false);
+      setDescriptionErrorMsg(false);
     }
-  }, [eventRequest])
+  }, [eventRequest]);
 
   //#endregion
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 size-full mb-8">
-      <div className="w-full max-w-[50%] flex flex-col gap-5">
-        <div className="createEventFormField">
-          <label htmlFor="title">Title</label>
+    <div className='flex flex-col md:flex-row gap-8 size-full mb-8'>
+      <div className='w-full md:max-w-[50%] flex flex-col gap-5'>
+        <div className='createEventFormField'>
+          <label htmlFor='title'>Title</label>
           <input
-            type="text"
-            name="title"
+            type='text'
+            name='title'
             value={eventRequest?.title}
-            placeholder="Event Title"
+            placeholder='Event Title'
             onChange={(e) => onFormValueChange(e, setTitleErrorMsg)}
           />
           {titleErrorMsg && (
-            <span className="errorMsg">Please enter event title</span>
+            <span className='errorMsg'>Please enter event title</span>
           )}
         </div>
-        <div className="createEventFormField">
-          <label htmlFor="venue">Location</label>
+        <div className='createEventFormField'>
+          <label htmlFor='venue'>Location</label>
           <input
-            type="text"
-            name="venue"
+            type='text'
+            name='venue'
             value={eventRequest?.venue}
-            id="venue"
-            placeholder="Event Venue"
+            id='venue'
+            placeholder='Event Venue'
             onChange={(e) => onFormValueChange(e, setVenueErrorMsg)}
           />
           {venueErrorMsg && (
-            <span className="errorMsg">Please enter event location</span>
+            <span className='errorMsg'>Please enter event location</span>
           )}
         </div>
-        <div className="createEventFormField">
-          <label htmlFor="date">Start date</label>
-          <div className="">
+        <div className='createEventFormField'>
+          <label htmlFor='date'>Start date</label>
+          <div className=''>
             <BasicDateTimePicker
-              className="custom-datepicker"
+              className='custom-datepicker'
               defaultValue={
                 eventRequest?.startDate
                   ? moment(eventRequest.startDate)
@@ -241,20 +241,25 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
             />
           </div>
           {startDateErrorMsg && (
-            <span className="errorMsg">Please enter event start date</span>
+            <span className='errorMsg'>Please enter event start date</span>
           )}
         </div>
-        <div className="createEventFormField">
-          <label htmlFor="date">End date (Optional)</label>
-          <div className="">
+        <div className='createEventFormField'>
+          <label htmlFor='date'>End date (Optional)</label>
+          <div className=''>
             <BasicDateTimePicker
-              className="custom-datepicker"
-              defaultValue={eventRequest?.endDate ? moment(eventRequest.endDate) : undefined}
+              className='custom-datepicker'
+              defaultValue={
+                eventRequest?.endDate ? moment(eventRequest.endDate) : undefined
+              }
               onChangeFn={(newValue) => {
-                  // Set the form value
-                  setEventRequest({ ...eventRequest as EventRequest, endDate: formattedDateForApi(newValue.toDate()) });
-                  // Close error message
-                  setStartDateErrorMsg(false);
+                // Set the form value
+                setEventRequest({
+                  ...(eventRequest as EventRequest),
+                  endDate: formattedDateForApi(newValue.toDate()),
+                });
+                // Close error message
+                setStartDateErrorMsg(false);
               }}
               minDate={moment(eventRequest?.startDate)}
             />
@@ -262,26 +267,31 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
         </div>
       </div>
 
-      <span className="w-[1px] h-auto bg-white/20 block"></span>
+      <span className='w-[1px] h-auto bg-white/20 block'></span>
 
-      <div className={"w-full max-w-[50%] flex flex-col gap-5"}>
-        <div className="createEventFormField">
-          <label htmlFor="description">Description</label>
+      <div className={"w-full md:max-w-[50%] flex flex-col gap-5"}>
+        <div className='createEventFormField'>
+          <label htmlFor='description'>Description</label>
           <EventDescriptionEditor
             description={eventRequest?.description ?? ""}
-            updateDescription={(value) => setEventRequest({...eventRequest as EventRequest, description: value })}
+            updateDescription={(value) =>
+              setEventRequest({
+                ...(eventRequest as EventRequest),
+                description: value,
+              })
+            }
           />
           {descriptionErrorMsg && (
-            <span className="errorMsg">Please enter event description</span>
+            <span className='errorMsg'>Please enter event description</span>
           )}
         </div>
-        <div className="flex mt-10 flex-col gap-4 md:flex-row md:gap-8">
-          <div className="createEventFormField">
-            <label htmlFor="category">Category</label>
+        <div className='flex mt-10 flex-col gap-4 md:flex-row md:gap-8'>
+          <div className='createEventFormField'>
+            <label htmlFor='category'>Category</label>
             <input
-              type="text"
-              name="category"
-              placeholder="Select category"
+              type='text'
+              name='category'
+              placeholder='Select category'
               value={
                 eventCategories?.find(
                   (category) => category.id === eventRequest?.categoryId
@@ -293,12 +303,12 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
             />
             {categoryDropdownIsVisible && eventCategories && (
               <div
-                className="absolute w-[120%] top-[70px] left-0 bg-dark-grey z-10 rounded-lg overflow-hidden max-h-[180px] overflow-y-auto scrollbar-thin"
+                className='absolute w-[120%] top-[70px] left-0 bg-dark-grey z-10 rounded-lg overflow-hidden max-h-[180px] overflow-y-auto scrollbar-thin'
                 ref={categoryDropdownRef}
               >
                 {eventCategories.map((category, index) => (
                   <span
-                    className="block px-2 py-3 text-sm text-white cursor-pointer hover:bg-white/10"
+                    className='block px-2 py-3 text-sm text-white cursor-pointer hover:bg-white/10'
                     key={index}
                     onClick={() => {
                       // Set the form value
@@ -316,14 +326,14 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
               </div>
             )}
           </div>
-          <div className="createEventFormField">
-            <label htmlFor="tags">Tags</label>
-            <div className="flex flex-row items-center space-x-1">
+          <div className='createEventFormField'>
+            <label htmlFor='tags'>Tags</label>
+            <div className='flex flex-row items-center space-x-1'>
               <input
-                type="text"
-                name="tags"
-                className="input !rounded-lg w-full !bg-white/10 text-sm"
-                placeholder="Add event Tags"
+                type='text'
+                name='tags'
+                className='input !rounded-lg w-full !bg-white/10 text-sm'
+                placeholder='Add event Tags'
                 value={tag}
                 onChange={(e) => setTag(e.target.value)}
                 onKeyDown={(e) => {
@@ -336,34 +346,42 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
                 }}
               />
               <span
-                className="w-[50px] h-full grid place-items-center rounded-lg cursor-pointer bg-white/10 hover:bg-white/20 [&_svg]:w-[20px] [&_svg]:h-[20px] [&_svg_path]:fill-white"
+                className='w-[50px] h-full grid place-items-center rounded-lg cursor-pointer bg-white/10 hover:bg-white/20 [&_svg]:w-[20px] [&_svg]:h-[20px] [&_svg_path]:fill-white'
                 onClick={() => addTagToFormRequest()}
               >
                 <Icons.Add />
               </span>
             </div>
             {tagErrorMsg && (
-              <span className="errorMsg">Please add at least one tag</span>
+              <span className='errorMsg'>Please add at least one tag</span>
             )}
           </div>
         </div>
 
-        <div className="createEventFormField">
-          <label htmlFor="time">Visibility</label>
+        <div className='createEventFormField'>
+          <label htmlFor='time'>Visibility</label>
           <Select
             value={eventRequest?.visibility || ""}
             defaultValue={eventRequest?.visibility}
-            onValueChange={(selectedValue: string) => setEventRequest({...eventRequest as EventRequest, visibility: selectedValue as EventVisibility})}
+            onValueChange={(selectedValue: string) =>
+              setEventRequest({
+                ...(eventRequest as EventRequest),
+                visibility: selectedValue as EventVisibility,
+              })
+            }
           >
-            <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Event visibility" className="text-white" />
+            <SelectTrigger className='w-[160px]'>
+              <SelectValue
+                placeholder='Event visibility'
+                className='text-white'
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={EventVisibility.PUBLIC}>
                 Public - Visible to everyone
               </SelectItem>
               <SelectItem value={EventVisibility.PRIVATE}>
-              Private - Visible to only people that have the link
+                Private - Visible to only people that have the link
               </SelectItem>
             </SelectContent>
           </Select>
