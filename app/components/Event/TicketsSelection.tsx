@@ -125,21 +125,21 @@ const TicketsSelectionContainer: FunctionComponent<
       </div>
       <div className="flex flex-col sm:grid [grid-template-columns:repeat(auto-fill,_minmax(calc(50%-1.25rem),_1fr))] gap-5">
         {eventTickets?.map((ticketType, index) => {
+          console.log("🚀 ~ {eventTickets?.map ~ ticketType:", ticketType);
           if (!ticketType.visibility) {
             return;
           }
 
           const ticketIsSoldOut = ticketType.remainingTickets === 0;
 
-          const remainingTickets = eventTickets.find(
-            (ticket) => ticket.id == ticketType.id
-          )?.remainingTickets;
-
           const totalTickets = ticketType.quantity; // Total available tickets
-          const soldTickets = ticketType.quantity; // Tickets already sold
-          const threshold = 0.9; // 90% sold = almost sold out
+          const remainingTickets = ticketType.remainingTickets; // Total available tickets
+          const soldTickets = totalTickets - remainingTickets; // Tickets already sold
+          const threshold = 90; // 90% sold = almost sold out
 
-          const isAlmostSoldOut = totalTickets / soldTickets >= threshold;
+          const soldPercentage = (soldTickets / totalTickets) * 100;
+
+          const isAlmostSoldOut = soldPercentage >= threshold;
 
           return (
             <div
