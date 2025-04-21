@@ -136,7 +136,7 @@ const TicketsSelectionContainer: FunctionComponent<
           )?.remainingTickets;
 
           const totalTickets = ticketType.quantity; // Total available tickets
-          const soldTickets = ticketType.quantity; // Tickets already sold
+          const soldTickets = ticketType.ticketOrdersCount; // Tickets already sold
           const threshold = 0.9; // 90% sold = almost sold out
 
           const isAlmostSoldOut = totalTickets / soldTickets >= threshold;
