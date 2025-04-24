@@ -76,6 +76,40 @@ const TeamSection: FunctionComponent<TeamSectionProps> = (): ReactElement => {
                 // },
             ],
         },
+        {
+            name: "Praise Okaegbu-Wali",
+            role: "UX & Marketing",
+            image: images.praise,
+            socials: [
+                {
+                    name: "LinkedIn",
+                    icon: <Icons.LinkedIn />,
+                    link: "https://www.linkedin.com/in/praise-okaegbu-wali/"
+                },
+            ],
+        },
+        {
+            name: "Ayobami Ajayi",
+            role: "Software Engineer",
+            image: images.ayo,
+            socials: [
+                {
+                    name: "Instagram",
+                    icon: <Icons.Instagram />,
+                    link: "https://www.instagram.com/lynxdm/",
+                },
+                {
+                    name: "Twitter",
+                    icon: <Icons.Twitter />,
+                    link: "https://x.com/lynxdm32",
+                },
+                {
+                    name: "LinkedIn",
+                    icon: <Icons.LinkedIn />,
+                    link: "http://linkedin.com/in/ajayi-ayobami"
+                },
+            ],
+        },
     ];
 
     const sectionRef = useRef(null);

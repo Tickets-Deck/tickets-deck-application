@@ -13,76 +13,76 @@ import { useFetchUserInformation } from "./api/apiClient";
 const Layout = dynamic(() => import("./components/Layout"), { ssr: false });
 
 export const metadata: Metadata = {
-    manifest: "/manifest.json",
-    title: "Ticketsdeck Events",
-    description: "Unlocking best experiences, easily.",
+  manifest: "/manifest.json",
+  title: "Ticketsdeck Events",
+  description: "Unlocking best experiences, easily.",
 };
 
 export const viewport: Viewport = {
-    themeColor: "#111",
+  themeColor: "#111",
 };
 
 // Load fluent UI icons
 loadTheme({
-    palette: {
-        themePrimary: "#8133f1",
-        themeLighterAlt: "#fef9f6",
-        themeLighter: "#fde5db",
-        themeLight: "#fbcfbd",
-        themeTertiary: "#f7a17c",
-        themeSecondary: "#f47742",
-        themeDarkAlt: "#da5b25",
-        themeDark: "#b84d1f",
-        themeDarker: "#883917",
-        neutralLighterAlt: "#faf9f8",
-        neutralLighter: "#f3f2f1",
-        neutralLight: "#edebe9",
-        neutralQuaternaryAlt: "#e1dfdd",
-        neutralQuaternary: "#d0d0d0",
-        neutralTertiaryAlt: "#c8c6c4",
-        neutralTertiary: "#a19f9d",
-        neutralSecondary: "#605e5c",
-        neutralSecondaryAlt: "#8a8886",
-        neutralPrimaryAlt: "#3b3a39",
-        neutralPrimary: "#323130",
-        neutralDark: "#201f1e",
-        black: "#000000",
-        white: "#ffffff",
-    },
-    defaultFontStyle: { fontFamily: "MonaSans" },
+  palette: {
+    themePrimary: "#8133f1",
+    themeLighterAlt: "#fef9f6",
+    themeLighter: "#fde5db",
+    themeLight: "#fbcfbd",
+    themeTertiary: "#f7a17c",
+    themeSecondary: "#f47742",
+    themeDarkAlt: "#da5b25",
+    themeDark: "#b84d1f",
+    themeDarker: "#883917",
+    neutralLighterAlt: "#faf9f8",
+    neutralLighter: "#f3f2f1",
+    neutralLight: "#edebe9",
+    neutralQuaternaryAlt: "#e1dfdd",
+    neutralQuaternary: "#d0d0d0",
+    neutralTertiaryAlt: "#c8c6c4",
+    neutralTertiary: "#a19f9d",
+    neutralSecondary: "#605e5c",
+    neutralSecondaryAlt: "#8a8886",
+    neutralPrimaryAlt: "#3b3a39",
+    neutralPrimary: "#323130",
+    neutralDark: "#201f1e",
+    black: "#000000",
+    white: "#ffffff",
+  },
+  defaultFontStyle: { fontFamily: "MonaSans" },
 });
 
 // Initialize icons
 initializeIcons();
 
 export default async function RootLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    const session = await getServerSession(authOptions);
-    
-    const fetchUserInformation = useFetchUserInformation();
+  const session = await getServerSession(authOptions);
 
-    let userData: UserCredentialsResponse | null = null;
+  const fetchUserInformation = useFetchUserInformation();
 
-    if (session?.user?.id) {
-        try {
-            const response = await fetchUserInformation(session.user.id);
-            userData = response.data;
-        } catch (error) {
-            console.error('Failed to fetch user data:', error);
-        }
+  let userData: UserCredentialsResponse | null = null;
+
+  if (session?.user?.id) {
+    try {
+      const response = await fetchUserInformation(session.user.id);
+      userData = response.data;
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
     }
+  }
 
-    return (
-        <GlobalProvider>
-            <html lang='en'>
-                <Head>
-                    <link rel='apple-touch-icon' href='/etd_logo_192.png' />
-                    <script
-                        dangerouslySetInnerHTML={{
-                            __html: `
+  return (
+    <GlobalProvider>
+      <html lang="en">
+        <Head>
+          <link rel="apple-touch-icon" href="/etd_logo_192.png" />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
                             !function(f,b,e,v,n,t,s)
                             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
                                 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -94,20 +94,20 @@ export default async function RootLayout({
                                 fbq('init', '891024619563071');
                                 fbq('track', 'PageView');
                                 `,
-                        }}
-                    />
-                    <noscript>
-                        <img
-                            height='1'
-                            width='1'
-                            style={{ display: "none" }}
-                            src='https://www.facebook.com/tr?id=891024619563071&ev=PageView&noscript=1'
-                            alt='Facebook Pixel'
-                        />
-                    </noscript>
-                    <script
-                        dangerouslySetInnerHTML={{
-                            __html: `
+            }}
+          />
+          <noscript>
+            <img
+              height="1"
+              width="1"
+              style={{ display: "none" }}
+              src="https://www.facebook.com/tr?id=891024619563071&ev=PageView&noscript=1"
+              alt="Facebook Pixel"
+            />
+          </noscript>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
                             !function(f,b,e,v,n,t,s)
                             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
                                 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -119,47 +119,74 @@ export default async function RootLayout({
                                 fbq('init', '1297977994706009');
                                 fbq('track', 'PageView');
                                 `,
-                        }}
-                    />
-                    
+            }}
+          />
 
-                    <noscript>
-                        <img
-                            height='1'
-                            width='1'
-                            style={{ display: "none" }}
-                            src='https://www.facebook.com/tr?id=1297977994706009&ev=PageView&noscript=1'
-                            alt='Facebook Pixel'
-                        />
-                    </noscript>
-                </Head>
-                {/* <meta name="description" content="Elevating event experiences with next-level ticketing and management solutions." />
+          <noscript>
+            <img
+              height="1"
+              width="1"
+              style={{ display: "none" }}
+              src="https://www.facebook.com/tr?id=1297977994706009&ev=PageView&noscript=1"
+              alt="Facebook Pixel"
+            />
+          </noscript>
 
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <meta name="image" content="https://res.cloudinary.com/doklhs4em/image/upload/v1711460397/External/bablo_meta_img.jpg" />
+          <title>
+            Ticketsdeck Events | Unlocking best experiences, Easily.
+          </title>
+          <meta
+            name="description"
+            content="Elevating event experiences with next-level ticketing and management solutions."
+          />
 
-                <meta property="og:url" content="https://bablohomes.co.uk/" />
-                <meta property="og:type" content="website" />
-                <meta property="og:title" content="Ticketsdeck Events | Unlocking best experiences, Easily." />
-                <meta property="og:description" content="Elevating event experiences with next-level ticketing and management solutions." />
-                <meta property="og:image" content="https://res.cloudinary.com/doklhs4em/image/upload/v1711460397/External/bablo_meta_img.jpg" />
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+          <meta
+            name="image"
+            content="https://res.cloudinary.com/dvxqk1487/image/upload/v1745473667/misc/ticketsdeck-metadata-img_iaijvt.jpg"
+          />
 
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta property="twitter:domain" content="https://bablohomes.co.uk/" />
-                <meta property="twitter:url" content="https://bablohomes.co.uk/" />
-                <meta name="twitter:title" content="Ticketsdeck Events | Unlocking best experiences, Easily." />
-                <meta name="twitter:description" content="Elevating event experiences with next-level ticketing and management solutions." />
-                <meta name="twitter:image" content="https://res.cloudinary.com/doklhs4em/image/upload/v1711460397/External/bablo_meta_img.jpg" /> */}
+          {/* Open Graph */}
+          <meta property="og:url" content="https://events.ticketsdeck.com/" />
+          <meta property="og:type" content="website" />
+          <meta
+            property="og:title"
+            content="Ticketsdeck Events | Unlocking best experiences, Easily."
+          />
+          <meta
+            property="og:description"
+            content="Elevating event experiences with next-level ticketing and management solutions."
+          />
+          <meta
+            property="og:image"
+            content="https://res.cloudinary.com/dvxqk1487/image/upload/v1745473667/misc/ticketsdeck-metadata-img_iaijvt.jpg"
+          />
 
-                <body>
-                    <Layout
-                        children={children}
-                        session={session}
-                        userData={userData}
-                    />
-                </body>
-            </html>
-        </GlobalProvider>
-    );
+          {/* Twitter */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta property="twitter:domain" content="events.ticketsdeck.com" />
+          <meta property="twitter:url" content="https://events.ticketsdeck.com/" />
+          <meta
+            name="twitter:title"
+            content="Ticketsdeck Events | Unlocking best experiences, Easily."
+          />
+          <meta
+            name="twitter:description"
+            content="Elevating event experiences with next-level ticketing and management solutions."
+          />
+          <meta
+            name="twitter:image"
+            content="https://res.cloudinary.com/dvxqk1487/image/upload/v1745473667/misc/ticketsdeck-metadata-img_iaijvt.jpg"
+          />
+        </Head>
+        <body>
+          <Layout children={children} session={session} userData={userData} />
+        </body>
+      </html>
+    </GlobalProvider>
+  );
 }
