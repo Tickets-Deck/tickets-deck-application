@@ -19,6 +19,8 @@ import about_hero from "./images/about-hero.jpg";
 import toby from "./images/toby.jpg";
 import simlex from "./images/simlex_x.jpg";
 import sholly from "./images/sholly_y.jpg";
+import praise from "./images/praise.jpg";
+import ayo from "./images/ayobami.jpg";
 
 // import crowd_video from "./videos/crowd_video.mp4";
 
@@ -59,4 +61,6 @@ export default {
   toby,
   simlex,
   sholly,
+  praise,
+  ayo,
 };
