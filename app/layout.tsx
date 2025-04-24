@@ -13,13 +13,47 @@ import { useFetchUserInformation } from "./api/apiClient";
 const Layout = dynamic(() => import("./components/Layout"), { ssr: false });
 
 export const metadata: Metadata = {
+  title: "Ticketsdeck Events | Unlocking best experiences, Easily.",
+  description:
+    "Elevating event experiences with next-level ticketing and management solutions.",
   manifest: "/manifest.json",
-  title: "Ticketsdeck Events",
-  description: "Unlocking best experiences, easily.",
+  metadataBase: new URL("https://events.ticketsdeck.com"),
+  openGraph: {
+    title: "Ticketsdeck Events | Unlocking best experiences, Easily.",
+    description:
+      "Elevating event experiences with next-level ticketing and management solutions.",
+    url: "https://events.ticketsdeck.com",
+    siteName: "Ticketsdeck Events",
+    images: [
+      {
+        url: "https://res.cloudinary.com/dvxqk1487/image/upload/v1745473667/misc/ticketsdeck-metadata-img_iaijvt.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Ticketsdeck Events",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ticketsdeck Events | Unlocking best experiences, Easily.",
+    description:
+      "Elevating event experiences with next-level ticketing and management solutions.",
+    images: [
+      "https://res.cloudinary.com/dvxqk1487/image/upload/v1745473667/misc/ticketsdeck-metadata-img_iaijvt.jpg",
+    ],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/etd_logo_192.png",
+  },
 };
 
 export const viewport: Viewport = {
   themeColor: "#111",
+  width: "device-width",
+  initialScale: 1,
 };
 
 // Load fluent UI icons
@@ -78,7 +112,7 @@ export default async function RootLayout({
   return (
     <GlobalProvider>
       <html lang="en">
-        <Head>
+        <head>
           <link rel="apple-touch-icon" href="/etd_logo_192.png" />
           <script
             dangerouslySetInnerHTML={{
@@ -131,58 +165,7 @@ export default async function RootLayout({
               alt="Facebook Pixel"
             />
           </noscript>
-
-          <title>
-            Ticketsdeck Events | Unlocking best experiences, Easily.
-          </title>
-          <meta
-            name="description"
-            content="Elevating event experiences with next-level ticketing and management solutions."
-          />
-
-          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0"
-          />
-          <meta
-            name="image"
-            content="https://res.cloudinary.com/dvxqk1487/image/upload/v1745473667/misc/ticketsdeck-metadata-img_iaijvt.jpg"
-          />
-
-          {/* Open Graph */}
-          <meta property="og:url" content="https://events.ticketsdeck.com/" />
-          <meta property="og:type" content="website" />
-          <meta
-            property="og:title"
-            content="Ticketsdeck Events | Unlocking best experiences, Easily."
-          />
-          <meta
-            property="og:description"
-            content="Elevating event experiences with next-level ticketing and management solutions."
-          />
-          <meta
-            property="og:image"
-            content="https://res.cloudinary.com/dvxqk1487/image/upload/v1745473667/misc/ticketsdeck-metadata-img_iaijvt.jpg"
-          />
-
-          {/* Twitter */}
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta property="twitter:domain" content="events.ticketsdeck.com" />
-          <meta property="twitter:url" content="https://events.ticketsdeck.com/" />
-          <meta
-            name="twitter:title"
-            content="Ticketsdeck Events | Unlocking best experiences, Easily."
-          />
-          <meta
-            name="twitter:description"
-            content="Elevating event experiences with next-level ticketing and management solutions."
-          />
-          <meta
-            name="twitter:image"
-            content="https://res.cloudinary.com/dvxqk1487/image/upload/v1745473667/misc/ticketsdeck-metadata-img_iaijvt.jpg"
-          />
-        </Head>
+        </head>
         <body>
           <Layout children={children} session={session} userData={userData} />
         </body>
