@@ -5,8 +5,6 @@ import PageHeroSection from "../components/shared/PageHeroSection";
 import IntroSection from "../components/AboutPage/IntroSection";
 import WhyChooseUs from "../components/AboutPage/WhyChooseUs";
 import TeamSection from "../components/AboutPage/TeamSection";
-import { RootState } from "../redux/store";
-import { useSelector } from "react-redux";
 
 interface AboutPageProps {
 
