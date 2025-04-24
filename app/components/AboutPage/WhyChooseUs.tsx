@@ -39,7 +39,7 @@ const WhyChooseUs: FunctionComponent<WhyChooseUsProps> = (): ReactElement => {
             <h2 className='w-fit mx-auto font-medium text-2xl'>Why Choose Us</h2>
 
             <motion.div
-                className='grid grid-cols-none min-[350px]:[grid-template-columns:repeat(auto-fit,_minmax(300px,_1fr))] gap-6 mt-8'
+                className='grid grid-cols-none min-[350px]:[grid-template-columns:repeat(auto-fit,_minmax(340px,_1fr))] gap-6 mt-8'
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: 'easeOut' }}
