@@ -26,6 +26,8 @@ import {
 } from "@/app/models/IFormField";
 import { StorageKeys } from "@/app/constants/storageKeys";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
+import { compressImage } from "@/utils/imageCompress";
+import { formatFileSize } from "@/utils/formatFileSize";
 
 interface CreateEventProps {}
 
@@ -137,7 +139,27 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
     const formData = new FormData();
 
     // Append the file
-    formData.append("mainImage", mainImageFile || "");
+    // formData.append("mainImage", mainImageFile || "");
+    // Compress image if it's too large (e.g., > 2MB)
+    if (mainImageFile && mainImageFile.size > 2 * 1024 * 1024) {
+      console.log(`Original image size: ${formatFileSize(mainImageFile.size)}`);
+
+    //   const compressedImage = await compressImage(mainImageFile);
+      const {
+        compressedFile,
+        originalSize,
+        compressedSize,
+        reductionPercentage
+      } = await compressImage(mainImageFile);
+      
+      console.log(`Original image size: ${formatFileSize(originalSize)}`);
+      console.log(`Compressed image size: ${formatFileSize(compressedSize)}`);
+      console.log(`Reduction: ${reductionPercentage.toFixed(2)}%`);
+      
+      formData.append("mainImage", compressedFile, mainImageFile.name);
+    } else {
+      formData.append("mainImage", mainImageFile || "");
+    }
 
     // Append all other fields as strings
     for (const [key, value] of Object.entries(eventRequest)) {
