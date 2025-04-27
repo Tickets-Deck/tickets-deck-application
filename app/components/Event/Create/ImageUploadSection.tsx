@@ -200,7 +200,7 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({
   return (
     <div className='flex flex-col gap-8 mb-8'>
       <div className='flex flex-col gap-4'>
-        <h3 className='font-normal'>Main Image</h3>
+        <h3 className='font-normal text-white'>Main Image</h3>
         <div className='flex gap-6 items-center flex-col md:gap-4'>
           <div className='w-[250px] md:w-[50%] h-[250px] rounded-lg bg-[rgba($white,0.1)] overflow-hidden relative grid place-items-center cursor-pointer [&_img]:size-full [&_img]:object-cover [&_svg]:w-[40px] [&_svg]:h-[40px] [&_svg_path]:fill-white'>
             <input

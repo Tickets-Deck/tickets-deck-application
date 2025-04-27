@@ -28,11 +28,14 @@ import { StorageKeys } from "@/app/constants/storageKeys";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { compressImage } from "@/utils/imageCompress";
 import { formatFileSize } from "@/utils/formatFileSize";
+import { useApplicationContext } from "@/app/context/ApplicationContext";
 
 interface CreateEventProps {}
 
 const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
   const createEvent = useCreateEvent();
+  const { eventCategories, handleFetchEventCategories } =
+    useApplicationContext();
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -144,19 +147,19 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
     if (mainImageFile && mainImageFile.size > 2 * 1024 * 1024) {
       console.log(`Original image size: ${formatFileSize(mainImageFile.size)}`);
 
-    //   const compressedImage = await compressImage(mainImageFile);
+      //   const compressedImage = await compressImage(mainImageFile);
       const {
         compressedFile,
         originalSize,
         compressedSize,
-        reductionPercentage
+        reductionPercentage,
       } = await compressImage(mainImageFile);
-      
+
       console.log(`Original image size: ${formatFileSize(originalSize)}`);
       console.log(`Compressed image size: ${formatFileSize(compressedSize)}`);
       console.log(`Reduction: ${reductionPercentage.toFixed(2)}%`);
-      
-      formData.append("mainImage", compressedFile, mainImageFile.name);
+
+      formData.append("mainImage", compressedFile);
     } else {
       formData.append("mainImage", mainImageFile || "");
     }
@@ -242,6 +245,12 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
       publisherId: session?.user.id as string,
     });
   }, [session]);
+  
+  useEffect(() => {
+    if (!eventCategories) {
+      handleFetchEventCategories();
+    }
+  }, [eventCategories]);
 
   return (
     <div className="p-[1.25rem]">
