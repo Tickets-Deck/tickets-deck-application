@@ -18,6 +18,7 @@ import {
 } from "@/app/context/ApplicationContext";
 import { CouponDetails } from "@/app/models/ICoupon";
 import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
+import { formatStoredDate } from "@/utils/dateformatter";
 
 interface OrderSummarySectionProps {
     eventTickets: RetrievedTicketResponse[] | undefined;
@@ -98,7 +99,7 @@ const OrderSummarySection: FunctionComponent<OrderSummarySectionProps> = ({
                         {eventInfo?.title}
                     </h3>
                     <p className='text-white opacity-80'>
-                        {moment(eventInfo?.startDate).format("Do of MMMM YYYY")}
+                        {formatStoredDate(eventInfo?.startDate as string, "Do of MMMM YYYY")}
                     </p>
                 </div>
             </div>

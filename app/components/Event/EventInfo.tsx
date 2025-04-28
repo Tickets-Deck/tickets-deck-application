@@ -16,6 +16,7 @@ import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { useToast } from "@/app/context/ToastCardContext";
 import { Session } from "next-auth";
 import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
+import { formatStoredDate } from "@/utils/dateformatter";
 
 interface EventMainInfoProps {
     eventInfo: EventResponse
@@ -61,8 +62,8 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
             return;
         }
         const eventTitle = eventInfo?.title;
-        const eventDate = moment(eventInfo?.startDate).format('YYYY-MM-DD');
-        const eventTime = moment(eventInfo?.startDate).format('hh:mm a');
+        const eventDate = formatStoredDate(eventInfo?.startDate, 'YYYY-MM-DD');
+        const eventTime = formatStoredDate(eventInfo?.startDate, 'hh:mm a');
         const location = eventLocation;
 
         const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${eventTime}%2F${eventDate}T${eventTime}&location=${encodeURIComponent(location)}`;
@@ -120,9 +121,9 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = (
                         <span className="text-white text-sm font-medium capitalize">{`${eventInfo?.publisher.firstName} ${eventInfo?.publisher.lastName}`}</span>
                     </Link>
                     <div className="flex items-center gap-3 text-white">
-                        <h4>{moment(eventInfo?.startDate).format("MMM. Do YYYY")}</h4>
+                        <h4>{formatStoredDate(eventInfo?.startDate, "LL")}</h4>
                         <span>|</span>
-                        <h4>{moment(eventInfo?.startDate).format("hh:mm a")}</h4>
+                        <h4>{formatStoredDate(eventInfo?.startDate, "hh:mm a")}</h4>
                     </div>
 
                     <div className="w-full">

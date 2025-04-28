@@ -9,6 +9,7 @@ import { ToastContext } from "@/app/context/ToastCardContext";
 import { useContext } from "react";
 import { NairaPrice } from "@/app/constants/priceFormatter";
 import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
+import { formatStoredDate } from "@/utils/dateformatter";
 
 function isFeaturedEvent(event: EventResponse | FeaturedEvent): event is FeaturedEvent {
     return "startingPrice" in event && "remainingTickets" in event;
@@ -96,8 +97,8 @@ const EventCard = ({ event, consoleDisplay }: { event: EventResponse | FeaturedE
                     <div className='flex items-center gap-2 mt-2'>
                         <Icons.Calender className='h-4 w-4' fill='white' />
                         <span>
-                            {moment(event.startDate).format("MMM Do, YYYY")} •{" "}
-                            {moment(event.startDate).format("hh:mm a")}
+                            {formatStoredDate(event.startDate, "LL")} •{" "}
+                            {formatStoredDate(event.startDate, "hh:mm a")}
                         </span>
                     </div>
                     <div className='flex items-center gap-2 mt-1'>

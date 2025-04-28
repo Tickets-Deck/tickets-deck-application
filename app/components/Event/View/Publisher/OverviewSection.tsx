@@ -3,6 +3,7 @@ import Toggler from "@/app/components/custom/Toggler";
 import { Icons } from "@/app/components/ui/icons";
 import { EventVisibility } from "@/app/enums/IEventVisibility";
 import { EventResponse, UpdateEventRequest } from "@/app/models/IEvents";
+import { formatStoredDate } from "@/utils/dateformatter";
 import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 import moment from "moment";
 import Image from "next/image";
@@ -103,7 +104,8 @@ export default function OverviewSection({
                         Start Date & Time
                       </p>
                       <p className="text-sm">
-                        {moment(eventInfo.startDate).format(
+                        {formatStoredDate(
+                          eventInfo.startDate,
                           "ddd, MMM Do, YYYY, hh:mm A"
                         )}
                       </p>

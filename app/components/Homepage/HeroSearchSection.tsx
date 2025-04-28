@@ -16,6 +16,7 @@ import Image from "next/image";
 import images from "@/public/images";
 import useResponsiveness from "@/app/hooks/useResponsiveness";
 import { ITrendingEventCategory } from "@/app/models/IEventCategory";
+import { formatStoredDate } from "@/utils/dateformatter";
 
 interface HeroSearchSectionProps {
     events: EventResponse[];
@@ -140,7 +141,7 @@ const HeroSearchSection: FunctionComponent<HeroSearchSectionProps> = ({
                                             {event.title}
                                         </h4>
                                         <h4 className='min-w-fit opacity-80 text-xs font-medium'>
-                                            {moment(event?.startDate).format("MMM. Do YYYY")}
+                                            {formatStoredDate(event?.startDate, "MMM. Do YYYY")}
                                         </h4>
                                     </div>
                                     {/* <p>Starting price: &#8358;{event.ticketPrice.amount.toLocaleString()}</p> */}

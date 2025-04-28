@@ -6,6 +6,7 @@ import moment from "moment";
 import { EventResponse } from "@/app/models/IEvents";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { ToastContext } from "@/app/context/ToastCardContext";
+import { formatStoredDate } from "@/utils/dateformatter";
 
 interface UserEventCardProps {
     event: EventResponse;
@@ -46,10 +47,12 @@ const UserEventCard: FunctionComponent<UserEventCardProps> = ({ event }): ReactE
                     </h3>
                     <div className='flex items-center gap-1'>
                         <span className='text-sm text-white/80 font-medium'>
-                            {moment(event.startDate).format("MMM DD")}
+                            {formatStoredDate(event.startDate, "MMM DD")}
                         </span>
                         <span className='size-[0.188rem] bg-white rounded-full block'></span>
-                        <span className='text-sm text-white/80 opacity-80'>{moment(event.startDate).format("hh:mm a")}</span>
+                        <span className='text-sm text-white/80 opacity-80'>
+                        {formatStoredDate(event.startDate)}
+                        </span>
                     </div>
                     <div className='inline-flex items-center gap-0.5 w-full'>
                         <Icons.LocationPin className='w-4 min-w-4 h-4' />

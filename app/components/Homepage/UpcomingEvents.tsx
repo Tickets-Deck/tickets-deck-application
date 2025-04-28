@@ -9,6 +9,7 @@ import { motion } from "framer-motion"
 import { ApplicationRoutes } from '@/app/constants/applicationRoutes'
 import { useSession } from 'next-auth/react'
 import { ITrendingEventCategory } from '@/app/models/IEventCategory'
+import { formatStoredDate } from '@/utils/dateformatter'
 
 type Props = {
     events: EventResponse[]
@@ -280,7 +281,7 @@ export default function UpcomingEvents(
                                                 <h4 className="font-medium group-hover:text-purple-400 transition-colors capitalize">{event.title}</h4>
                                                 <div className="flex items-center text-sm text-gray-400">
                                                     <Icons.Calender fill="#fff" className="h-3 w-3 mr-1" />
-                                                    {moment(event.startDate).format("MMM D")}
+                                                    {formatStoredDate(event.startDate, "MMM D")}
                                                 </div>
                                             </div>
                                         </Link>
