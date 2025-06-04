@@ -28,7 +28,6 @@ export default function TicketsSection(
     const futureDateTime = moment(eventInfo.purchaseStartDate);
     const duration = moment.duration(futureDateTime.diff(now));
     const [progress, setProgress] = useState(0);
-    console.log("🚀 ~ progress:", progress)
 
     const startDate = eventInfo.purchaseStartDate;
     const endDate = eventInfo.purchaseEndDate;
@@ -208,7 +207,7 @@ export default function TicketsSection(
                         </span>
                         <div className="text-right">
                             <span className="text-xs font-semibold inline-block text-purple-200">
-                                {!timer ? "Active" : `${timer}`}
+                                {!timer ? "Not active" : `${timer}`}
                             </span>
                         </div>
                     </div>
