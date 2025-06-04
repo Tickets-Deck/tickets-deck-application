@@ -14,7 +14,7 @@ import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 interface EditEventModalProps {
   modalVisibility: boolean;
   setModalVisibility: Dispatch<SetStateAction<boolean>>;
-  initialData: UpdateEventRequest;
+  initialData: Omit<UpdateEventRequest, "mainImageBase64Url">;
   handleUpdateEventInfo: (
     updatedEventInfo: UpdateEventRequest,
     toastMessage?: string

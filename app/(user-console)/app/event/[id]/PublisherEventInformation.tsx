@@ -238,7 +238,7 @@ const PublisherEventInformation: FunctionComponent<PublisherEventInformationProp
             {
                 eventInfo &&
                 <EditEventModal
-                    initialData={eventInfo as UpdateEventRequest}
+                    initialData={eventInfo as Omit<UpdateEventRequest, "mainImageBase64Url">}
                     modalVisibility={isEventUpdateModalVisible}
                     setModalVisibility={setIsEventUpdateModalVisible}
                     handleUpdateEventInfo={handleUpdateEventInfo}
