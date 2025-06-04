@@ -42,6 +42,13 @@ export interface TicketOrderResponse {
   event: TicketEventOrderResponse;
 }
 
+interface UserTicketOrderResponse {
+  contactEmail: string | null;
+  contactFirstName: string | null;
+  contactLastName: string | null;
+  contactNumber: string | null;
+}
+
 export interface UserTicketOrder {
   id: string;
   ticketId: string;
@@ -54,6 +61,7 @@ export interface UserTicketOrder {
   createdAt: string;
   updatedAt: string;
   ticket: TicketOrderResponse;
+  order: UserTicketOrderResponse;
 }
 
 //#endregion
