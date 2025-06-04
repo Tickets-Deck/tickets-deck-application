@@ -1,12 +1,14 @@
 import { ImagePopup } from "@/app/components/custom/ImagePopup";
 import Toggler from "@/app/components/custom/Toggler";
 import { Icons } from "@/app/components/ui/icons";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { EventVisibility } from "@/app/enums/IEventVisibility";
 import { EventResponse, UpdateEventRequest } from "@/app/models/IEvents";
 import { formatStoredDate } from "@/utils/dateformatter";
 import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 import moment from "moment";
 import Image from "next/image";
+import Link from "next/link";
 import React, { Dispatch, SetStateAction, useState } from "react";
 
 type Props = {
@@ -199,7 +201,17 @@ export default function OverviewSection({
                   />
                   <span>Tickets Sold</span>
                 </div>
-                <span className="font-bold">{eventInfo.ticketOrdersCount}</span>
+                <div className="flex flex-row items-center gap-2">
+                  <span className="font-bold">
+                    {eventInfo.ticketOrdersCount}
+                  </span>
+                  <Link
+                    className="py-1 p-2 bg-white/20 text-sm rounded-lg hover:opacity-50"
+                    href={`${ApplicationRoutes.EventTickets}/${eventInfo.id}`}
+                  >
+                    View
+                  </Link>
+                </div>
               </div>
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-2">
