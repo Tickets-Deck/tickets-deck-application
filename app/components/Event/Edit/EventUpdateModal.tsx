@@ -14,7 +14,7 @@ import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 interface EditEventModalProps {
   modalVisibility: boolean;
   setModalVisibility: Dispatch<SetStateAction<boolean>>;
-  initialData: Omit<UpdateEventRequest, "mainImageBase64Url">;
+  initialData: UpdateEventRequest;
   handleUpdateEventInfo: (
     updatedEventInfo: UpdateEventRequest,
     toastMessage?: string
@@ -235,8 +235,8 @@ export function EditEventModal({
                         setMainImageUrl(undefined);
                         setEventRequest({
                           ...(eventRequest as UpdateEventRequest),
-                          mainImageBase64Url: null,
-                          mainImageId: null,
+                          mainImageBase64Url: undefined,
+                          mainImageId: undefined,
                         });
                       }}
                       className="p-2 px-4 rounded-full flex flex-row gap-2 items-center bg-primary-color text-sm w-fit h-fit whitespace-nowrap hover:bg-white hover:text-primary-color"
