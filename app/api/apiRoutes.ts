@@ -215,6 +215,22 @@ export class ApiRoutes {
   ) => `users/${publisherId}/sold-tickets`;
 
   /**
+   * The route to Tickets Sold Metrics endpoint
+   */
+  static TicketsSoldMetrics: (publisherId: string) => string = (
+    publisherId: string
+  ) => `dashboard/ticket-sold-metrics/${publisherId}`;
+
+  /**
+   * The route to User Event Tickets sold endpoint
+   */
+  static UserEventTicketsSold: (
+    publisherId: string,
+    eventId: string
+  ) => string = (publisherId: string, eventId: string) =>
+    `events/${eventId}/sold-tickets/${publisherId}`;
+
+  /**
    * The route to Tickets endpoint
    */
   static Tickets: string = "tickets";
@@ -270,7 +286,7 @@ export class ApiRoutes {
   static GetFollowersCount: (objectiveUserId: string, id?: string) => string = (
     objectiveUserId: string,
     id?: string
-  ) => `users/${objectiveUserId}/followers/count/${id ?? ''}`;
+  ) => `users/${objectiveUserId}/followers/count/${id ?? ""}`;
 
   /**
    * The route to User Recent Transactions endpoint

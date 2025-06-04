@@ -507,6 +507,29 @@ export function useFetchUserSoldTickets() {
   return fetchUserSoldTickets;
 }
 
+export function useFetchTicketsSoldMetrics() {
+  async function fetchTicketsSoldMetrics(token: string, userId: string) {
+    return API.get(ApiRoutes.TicketsSoldMetrics(userId), getApiConfig(token));
+  }
+
+  return fetchTicketsSoldMetrics;
+}
+
+export function useFetchUserEventTicketsSold() {
+  async function userEventTicketsSold(
+    token: string,
+    userId: string,
+    eventId: string
+  ) {
+    return API.get(
+      ApiRoutes.UserEventTicketsSold(userId, eventId),
+      getApiConfig(token)
+    );
+  }
+
+  return userEventTicketsSold;
+}
+
 export function useFetchOrderInformationById() {
   const requestToken = useRequestCredentialToken();
   async function fetchOrderInformationById(id: string) {
@@ -582,7 +605,8 @@ export function useFollowUser() {
   async function followUser(subjectUserId: string, objectUserId: string) {
     const token = await requestToken();
     return API.post(
-      ApiRoutes.FollowUser(subjectUserId, objectUserId), {},
+      ApiRoutes.FollowUser(subjectUserId, objectUserId),
+      {},
       getApiConfig(token.data.token)
     );
   }

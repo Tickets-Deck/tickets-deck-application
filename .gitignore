@@ -37,7 +37,10 @@ yarn-error.log*
 next-env.d.ts
 .netlify
 netlify.toml
+sw.js
 sw.js.map
+swe-worker-development.js
+workbox*.js
 settings.json
 /.idea
 .qodo
