@@ -64,7 +64,7 @@ export default function EventTicketDetails({ eventId }: Props) {
     }
   }
 
-  async function handleDownloadCustomerInfo(e: MouseEvent<HTMLButtonElement>) {
+  async function handleDownloadEventTicketsInfo(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     setIsDownloadingTicketsSold(true);
 
@@ -75,10 +75,10 @@ export default function EventTicketDetails({ eventId }: Props) {
             ? eachData.order.contactFirstName +
               " " +
               eachData.order.contactLastName
-            : "";
+            : "Not provided";
         return {
           Ticket: eachData.ticket.name,
-          Amount: eachData.ticket.price,
+          Amount: eachData.price,
           "Email Address": eachData.associatedEmail ?? eachData.contactEmail,
           "Full Name": fullName,
           "Phone Number": eachData.order.contactNumber,
@@ -131,7 +131,7 @@ export default function EventTicketDetails({ eventId }: Props) {
           </h3>
 
           <Button
-            onClick={handleDownloadCustomerInfo}
+            onClick={handleDownloadEventTicketsInfo}
             isLoading={isDownloadingTicketsSold}
             disabled={isDownloadingTicketsSold}
             className="bg-primary-color text-white w-fit hover:!text-primary-color"
