@@ -107,7 +107,9 @@ export type UpdateEventRequest = {
   tags: string[] | null;
   visibility: EventVisibility | null;
 
-  // mainImageBase64Url: string | null;
+  mainImageUrl: string | null;
+  mainImageId: string | null;
+  mainImageBase64Url: string | null;
   // images: EventImages[] | null;
 
   currency: string | null;
