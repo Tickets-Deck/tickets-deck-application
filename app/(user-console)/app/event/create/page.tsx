@@ -261,22 +261,34 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
         const isLargeFile = mainImageFile.size > 2 * 1024 * 1024; // 2MB threshold
         let fileToUpload = mainImageFile;
 
-        if (isLargeFile) {
-          console.log(
-            `Original image size: ${formatFileSize(mainImageFile.size)}`
-          );
-          const { compressedFile, compressedSize, reductionPercentage } =
-            await compressImage(mainImageFile);
-          console.log(
-            `Compressed to: ${formatFileSize(
-              compressedSize
-            )} (${reductionPercentage.toFixed(2)}% reduction)`
-          );
-          fileToUpload = compressedFile;
-        }
+        console.log(
+          `Original image size: ${formatFileSize(mainImageFile.size)}`
+        );
+        const { compressedFile, compressedSize, reductionPercentage } =
+          await compressImage(mainImageFile);
+        console.log(
+          `Compressed to: ${formatFileSize(
+            compressedSize
+          )} (${reductionPercentage.toFixed(2)}% reduction)`
+        );
+        fileToUpload = compressedFile;
 
-        // IMPORTANT: Use 'file' to match the backend Multer middleware parameter.
-        formData.append("mainImage", fileToUpload);
+        // if (isLargeFile) {
+        //   console.log(
+        //     `Original image size: ${formatFileSize(mainImageFile.size)}`
+        //   );
+        //   const { compressedFile, compressedSize, reductionPercentage } =
+        //     await compressImage(mainImageFile);
+        //   console.log(
+        //     `Compressed to: ${formatFileSize(
+        //       compressedSize
+        //     )} (${reductionPercentage.toFixed(2)}% reduction)`
+        //   );
+        //   fileToUpload = compressedFile;
+        // }
+
+        // // IMPORTANT: Use 'file' to match the backend Multer middleware parameter.
+        // formData.append("mainImage", fileToUpload);
       }
 
       // 4. Prepare Data Object: Consolidate all event data and set defaults.
