@@ -29,10 +29,12 @@ import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { compressImage } from "@/utils/imageCompress";
 import { formatFileSize } from "@/utils/formatFileSize";
 import { useApplicationContext } from "@/app/context/ApplicationContext";
+import { useToast } from "@/app/context/ToastCardContext";
 
 interface CreateEventProps {}
 
 const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
+  const toasthandler = useToast();
   const createEvent = useCreateEvent();
   const { eventCategories, handleFetchEventCategories } =
     useApplicationContext();
@@ -131,112 +133,221 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
     sessionStorage.setItem(StorageKeys.NewlyCreatedEvent, newlyCreatedEvent);
   }
 
+  //   async function handleEventCreation() {
+  //     if (!eventRequest) {
+  //       return;
+  //     }
+
+  //     // Start loader
+  //     setIsCreatingEvent(true);
+
+  //     const formData = new FormData();
+
+  //     // Append the file
+  //     // formData.append("mainImage", mainImageFile || "");
+  //     // Compress image if it's too large (e.g., > 2MB)
+  //     if (mainImageFile && mainImageFile.size > 2 * 1024 * 1024) {
+  //       console.log(`Original image size: ${formatFileSize(mainImageFile.size)}`);
+
+  //       //   const compressedImage = await compressImage(mainImageFile);
+  //       const {
+  //         compressedFile,
+  //         originalSize,
+  //         compressedSize,
+  //         reductionPercentage,
+  //       } = await compressImage(mainImageFile);
+
+  //       console.log(`Original image size: ${formatFileSize(originalSize)}`);
+  //       console.log(`Compressed image size: ${formatFileSize(compressedSize)}`);
+  //       console.log(`Reduction: ${reductionPercentage.toFixed(2)}%`);
+
+  //       formData.append("mainImage", compressedFile);
+  //     } else {
+  //       formData.append("mainImage", mainImageFile || "");
+  //     }
+
+  //     // Append all other fields as strings
+  //     for (const [key, value] of Object.entries(eventRequest)) {
+  //       if (key == "mainImageBase64Url") continue;
+
+  //       if (
+  //         [
+  //           "startDate",
+  //           "endDate",
+  //           "purchaseStartDate",
+  //           "purchaseEndDate",
+  //         ].includes(key)
+  //       ) {
+  //         const date = new Date(value as string);
+  //         if (!isNaN(date.getTime())) {
+  //           formData.append(key, date.toISOString());
+  //         } else {
+  //           console.warn(`Invalid date value for ${key}:`, value);
+  //         }
+  //         continue;
+  //       }
+
+  //       if (typeof value === "object") {
+  //         formData.append(key, JSON.stringify(value)); // For arrays/objects like tags, tickets
+  //       } else {
+  //         formData.append(key, String(value));
+  //       }
+  //     }
+
+  //     formData.append("currency", "NGN");
+  //     formData.append(
+  //       "organizerPaysFee",
+  //       `${eventRequest?.organizerPaysFee || false}`
+  //     );
+  //     formData.append(
+  //       "allowedGuestType",
+  //       eventRequest?.allowedGuestType || "Everyone"
+  //     );
+
+  //     // Set the event request data
+  //     // const data: EventRequest = {
+  //     //   ...(eventRequest as EventRequest),
+  //     //   currency: "NGN",
+  //     //   organizerPaysFee: eventRequest?.organizerPaysFee || false,
+  //     //   allowedGuestType: eventRequest?.allowedGuestType || "Everyone",
+  //     //   mainImageBase64Url: "" // no longer needed.
+  //     // };
+
+  //     // Create the event
+  //     await createEvent(user?.token as string, formData)
+  //       .then((response) => {
+  //         // Update created event state
+  //         setIsEventCreated(true);
+
+  //         // log response
+  //         // console.log(response);
+
+  //         // Persist the newly created event
+  //         persistNewlyCreatedEvent(response.data);
+
+  //         // Clear the event request
+  //         // setEventRequest(undefined);
+
+  //         // Redirect to the event page
+  //         push(`${ApplicationRoutes.Event}/${response.data.id}`);
+  //       })
+  //       .catch((error) => {
+  //         // log error
+  //         // console.log(error);
+  //         // Stop loader
+  //         setIsCreatingEvent(false);
+  //       });
+  //     // .finally(() => {
+  //     // });
+  //   }
+
   async function handleEventCreation() {
-    if (!eventRequest) {
+    // 1. Guard Clause: Ensure essential data exists before proceeding.
+    if (!eventRequest || !user?.token) {
+      console.error("Event creation failed: Missing event data or user token.");
+      // Optionally, show an error message to the user here.
+      // e.g., showToast("Cannot create event. Please log in and try again.", { type: "error" });
       return;
     }
 
-    // Start loader
+    // 2. Start Loader: Update UI to show a loading state.
     setIsCreatingEvent(true);
 
-    const formData = new FormData();
+    try {
+      const formData = new FormData();
 
-    // Append the file
-    // formData.append("mainImage", mainImageFile || "");
-    // Compress image if it's too large (e.g., > 2MB)
-    if (mainImageFile && mainImageFile.size > 2 * 1024 * 1024) {
-      console.log(`Original image size: ${formatFileSize(mainImageFile.size)}`);
+      // 3. Image Processing: Compress if necessary and append to FormData.
+      if (mainImageFile) {
+        const isLargeFile = mainImageFile.size > 2 * 1024 * 1024; // 2MB threshold
+        let fileToUpload = mainImageFile;
 
-      //   const compressedImage = await compressImage(mainImageFile);
-      const {
-        compressedFile,
-        originalSize,
-        compressedSize,
-        reductionPercentage,
-      } = await compressImage(mainImageFile);
-
-      console.log(`Original image size: ${formatFileSize(originalSize)}`);
-      console.log(`Compressed image size: ${formatFileSize(compressedSize)}`);
-      console.log(`Reduction: ${reductionPercentage.toFixed(2)}%`);
-
-      formData.append("mainImage", compressedFile);
-    } else {
-      formData.append("mainImage", mainImageFile || "");
-    }
-
-    // Append all other fields as strings
-    for (const [key, value] of Object.entries(eventRequest)) {
-      if (key == "mainImageBase64Url") continue;
-
-      if (
-        [
-          "startDate",
-          "endDate",
-          "purchaseStartDate",
-          "purchaseEndDate",
-        ].includes(key)
-      ) {
-        const date = new Date(value as string);
-        if (!isNaN(date.getTime())) {
-          formData.append(key, date.toISOString());
-        } else {
-          console.warn(`Invalid date value for ${key}:`, value);
+        if (isLargeFile) {
+          console.log(
+            `Original image size: ${formatFileSize(mainImageFile.size)}`
+          );
+          const { compressedFile, compressedSize, reductionPercentage } =
+            await compressImage(mainImageFile);
+          console.log(
+            `Compressed to: ${formatFileSize(
+              compressedSize
+            )} (${reductionPercentage.toFixed(2)}% reduction)`
+          );
+          fileToUpload = compressedFile;
         }
-        continue;
+
+        // IMPORTANT: Use 'file' to match the backend Multer middleware parameter.
+        formData.append("mainImage", fileToUpload);
       }
 
-      if (typeof value === "object") {
-        formData.append(key, JSON.stringify(value)); // For arrays/objects like tags, tickets
-      } else {
-        formData.append(key, String(value));
+      // 4. Prepare Data Object: Consolidate all event data and set defaults.
+      const eventData = {
+        ...eventRequest,
+        currency: "NGN",
+        organizerPaysFee: eventRequest.organizerPaysFee || false,
+        allowedGuestType: eventRequest.allowedGuestType || "Everyone",
+        // Set default purchaseStartDate to today if not provided.
+        purchaseStartDate:
+          eventRequest.purchaseStartDate || new Date().toISOString(),
+      };
+
+      // 5. Populate FormData: Append all fields from the prepared data object.
+      for (const [key, value] of Object.entries(eventData)) {
+        // Skip the legacy Base64 field and the file object itself.
+        if (key === "mainImageBase64Url" || key === "mainImageFile") {
+          continue;
+        }
+
+        // Handle date fields explicitly to ensure they are in ISO 8601 format.
+        if (
+          [
+            "startDate",
+            "endDate",
+            "purchaseStartDate",
+            "purchaseEndDate",
+          ].includes(key) &&
+          value
+        ) {
+          const date = new Date(value as string);
+          // Ensure the date is valid before appending
+          if (!isNaN(date.getTime())) {
+            formData.append(key, date.toISOString());
+          } else {
+            console.warn(`Skipping invalid date for ${key}:`, value);
+          }
+          // Continue to the next item in the loop
+          continue;
+        }
+
+        // Stringify objects/arrays (like tags and tickets).
+        if (typeof value === "object" && value !== null) {
+          formData.append(key, JSON.stringify(value));
+        }
+        // Append all other defined, non-null values.
+        else if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
+        }
       }
+
+      // 6. API Call: Execute the event creation request.
+      const response = await createEvent(user.token, formData);
+
+      // --- Success Path ---
+      console.log("Event created successfully:", response.data);
+      setIsEventCreated(true);
+      persistNewlyCreatedEvent(response.data);
+
+      // Redirect to the new event's page.
+      push(`${ApplicationRoutes.Event}/${response.data.id}`);
+    } catch (error) {
+      // --- Error Path ---
+      // 7. Log the actual error for debugging and provide user feedback.
+      console.error("💥 Failed to create event:", error);
+      // e.g., showToast("Event creation failed. Please check your details and try again.", { type: "error" });
+    } finally {
+      // --- Cleanup ---
+      // 8. Stop Loader: This runs regardless of success or failure.
+      setIsCreatingEvent(false);
     }
-
-    formData.append("currency", "NGN");
-    formData.append(
-      "organizerPaysFee",
-      `${eventRequest?.organizerPaysFee || false}`
-    );
-    formData.append(
-      "allowedGuestType",
-      eventRequest?.allowedGuestType || "Everyone"
-    );
-
-    // Set the event request data
-    // const data: EventRequest = {
-    //   ...(eventRequest as EventRequest),
-    //   currency: "NGN",
-    //   organizerPaysFee: eventRequest?.organizerPaysFee || false,
-    //   allowedGuestType: eventRequest?.allowedGuestType || "Everyone",
-    //   mainImageBase64Url: "" // no longer needed.
-    // };
-
-    // Create the event
-    await createEvent(user?.token as string, formData)
-      .then((response) => {
-        // Update created event state
-        setIsEventCreated(true);
-
-        // log response
-        // console.log(response);
-
-        // Persist the newly created event
-        persistNewlyCreatedEvent(response.data);
-
-        // Clear the event request
-        // setEventRequest(undefined);
-
-        // Redirect to the event page
-        push(`${ApplicationRoutes.Event}/${response.data.id}`);
-      })
-      .catch((error) => {
-        // log error
-        // console.log(error);
-        // Stop loader
-        setIsCreatingEvent(false);
-      });
-    // .finally(() => {
-    // });
   }
 
   useEffect(() => {
@@ -245,7 +356,7 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
       publisherId: session?.user.id as string,
     });
   }, [session]);
-  
+
   useEffect(() => {
     if (!eventCategories) {
       handleFetchEventCategories();
