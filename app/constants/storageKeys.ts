@@ -41,4 +41,9 @@ export class StorageKeys {
    * Key for the Temporary Unique Session
    */
   static readonly ClientSessionWS = "ClientSessionWS";
+
+  /**
+   * Key for the Draft Event Session
+   */
+  static readonly DraftEvent = "draftEvent";
 }
