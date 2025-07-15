@@ -78,7 +78,7 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({
   }, [isTicketCreationModalVisible]);
 
   return (
-    <div className='flex flex-col gap-8'>
+    <div className="flex flex-col gap-8">
       <TicketCreationModal
         modalVisibility={isTicketCreationModalVisible}
         setModalVisibility={setIsTicketCreationModalVisible}
@@ -88,36 +88,36 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({
         selectedTicketIndex={selectedTicketIndex}
       />
 
-      <div className='flex items-start justify-between'>
+      <div className="flex items-start justify-between">
         <div>
-          <h3 className='text-xl font-normal mb-1 text-white'>
+          <h3 className="text-xl font-normal mb-1 text-white">
             Let's Create Tickets
           </h3>
-          <p className='text-sm text-white/60'>
+          <p className="text-sm text-white/60">
             Click on the "Create ticket" button below to add tickets for your
             event
           </p>
         </div>
-        <div className='flex flex-col items-center gap-1'>
-          <span className='w-8 h-8 rounded-full bg-white text-black grid place-items-center'>
+        <div className="flex flex-col items-center gap-1">
+          <span className="w-8 h-8 rounded-full bg-white text-black grid place-items-center">
             {eventRequest?.tickets.length}
           </span>
-          <p className='text-sm text-white/60 md:text-center'>
+          <p className="text-sm text-white/60 md:text-center">
             tickets created
           </p>
         </div>
       </div>
 
-      <div className='grid grid-cols-2 gap-4'>
+      <div className="grid grid-cols-2 gap-4">
         {eventRequest?.tickets.map((ticket, index) => (
           <div
-            className='p-6 rounded-lg bg-container-grey text-white flex flex-col gap-6'
+            className="p-6 rounded-lg bg-container-grey text-white flex flex-col gap-6"
             key={index}
           >
-            <div className='flex items-center justify-between'>
-              <h3 className='text-xl font-normal md:text-lg'>{ticket.name}</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-normal md:text-lg">{ticket.name}</h3>
               <span
-                className='w-[2.5rem] h-[2.5rem] rounded-lg grid place-items-center bg-dark-grey cursor-pointer md:w-[2rem] md:h-[2rem] md:min-w-[2rem] md:min-h-[2rem] md:cursor-pointer md:[&_svg]:w-[1rem] md:[&_svg]:h-[1rem]'
+                className="w-[2.5rem] h-[2.5rem] rounded-lg grid place-items-center bg-dark-grey cursor-pointer md:w-[2rem] md:h-[2rem] md:min-w-[2rem] md:min-h-[2rem] md:cursor-pointer md:[&_svg]:w-[1rem] md:[&_svg]:h-[1rem]"
                 onClick={() => {
                   setIsEditingTicket(true);
                   setSelectedTicketIndex(index);
@@ -127,17 +127,17 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({
                 <Icons.Edit />
               </span>
             </div>
-            <div className='flex md:flex-col md:gap-1 md:mt-auto'>
-              <div className='w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start'>
-                <span className='text-sm text-grey'>Price</span>
+            <div className="flex md:flex-col md:gap-1 md:mt-auto">
+              <div className="w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start">
+                <span className="text-sm text-grey">Price</span>
                 <p>&#8358;{ticket.price.toLocaleString()}</p>
               </div>
-              <div className='w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start'>
-                <span className='text-sm text-grey'>Total available</span>
+              <div className="w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start">
+                <span className="text-sm text-grey">Total available</span>
                 <p>{ticket.quantity}</p>
               </div>
-              <div className='w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start'>
-                <span className='text-sm text-grey'>User per Ticket</span>
+              <div className="w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start">
+                <span className="text-sm text-grey">User per Ticket</span>
                 <p>{ticket.numberOfUsers}</p>
               </div>
             </div>
@@ -145,14 +145,14 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({
         ))}
       </div>
       {eventRequest?.tickets.length == 0 && (
-        <div className='flex flex-col items-center justify-center gap-4 w-1/2 m-auto mt-1 mb-4'>
-          <p className='text-sm text-grey'>No tickets created yet</p>
+        <div className="flex flex-col items-center justify-center gap-4 w-1/2 m-auto mt-1 mb-4">
+          <p className="text-sm text-grey">No tickets created yet</p>
         </div>
       )}
 
       {ticketValidationMessage && (
         <span
-          className='text-xs text-[#eb485b] flex items-center'
+          className="text-xs text-[#eb485b] flex items-center"
           style={{ textAlign: "center" }}
         >
           {ticketValidationMessage.message}
@@ -160,22 +160,22 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({
       )}
 
       <button
-        className='tertiaryButton mx-auto'
-        type='button'
+        className="tertiaryButton mx-auto"
+        type="button"
         onClick={() => setIsTicketCreationModalVisible(true)}
       >
         Create Ticket
       </button>
       <br />
       {eventRequest?.tickets && eventRequest?.tickets.length > 0 && (
-        <div className='flex-col md:flex-row gap-8 size-full mb-8'>
-          <div className='w-full flex flex-col gap-4'>
-            <div className='flex flex-col gap-4 md:flex-row md:gap-8'>
-              <div className='createEventFormField'>
-                <label htmlFor='date'>Purchase start date</label>
-                <div className='' ref={purchaseStartDateRef}>
+        <div className="flex-col md:flex-row gap-8 size-full mb-8">
+          <div className="w-full flex flex-col gap-4">
+            <div className="flex flex-col gap-4 md:flex-row md:gap-8">
+              <div className="createEventFormField">
+                <label htmlFor="date">Purchase start date</label>
+                <div className="" ref={purchaseStartDateRef}>
                   <BasicDateTimePicker
-                    className='custom-datepicker'
+                    className="custom-datepicker"
                     defaultValue={
                       eventRequest?.purchaseStartDate
                         ? moment(eventRequest.purchaseStartDate)
@@ -194,11 +194,11 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({
                   />
                 </div>
               </div>
-              <div className='createEventFormField'>
-                <label htmlFor='date'>Purchase date deadline</label>
-                <div className='' ref={purchaseEndDateRef}>
+              <div className="createEventFormField">
+                <label htmlFor="date">Purchase date deadline</label>
+                <div className="" ref={purchaseEndDateRef}>
                   <BasicDateTimePicker
-                    className='custom-datepicker'
+                    className="custom-datepicker"
                     defaultValue={
                       eventRequest?.purchaseStartDate
                         ? moment(eventRequest.purchaseStartDate)
@@ -220,8 +220,8 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({
         </div>
       )}
       <div>
-        <span className='mb-1 text-sm text-white'>Who pays for fee?</span>
-        <div className='flex flex-row items-center justify-start gap-2 w-fit'>
+        <span className="mb-1 text-sm text-white">Who pays for fee?</span>
+        <div className="flex flex-row items-center justify-start gap-2 w-fit">
           <span
             onClick={(e) => {
               e.preventDefault();
