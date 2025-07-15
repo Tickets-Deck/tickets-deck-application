@@ -7,6 +7,54 @@ import {
 import { EventCreationStage } from "@/app/enums/EventCreationStage";
 import { EventRequest } from "@/app/models/IEvents";
 
+// A helper for conditionally joining class names
+const cn = (...classes: (string | boolean | undefined)[]) =>
+  classes.filter(Boolean).join(" ");
+
+interface ProgressStepProps {
+  label: string;
+  stepNumber: number;
+  isCurrent: boolean;
+  isCompleted: boolean;
+  isClickable: boolean;
+  onClick: () => void;
+}
+
+const ProgressStep: FunctionComponent<ProgressStepProps> = ({
+  label,
+  stepNumber,
+  isCurrent,
+  isCompleted,
+  isClickable,
+  onClick,
+}) => {
+  const circleClasses = cn(
+    "relative grid place-items-center size-8 rounded-full text-white shadow-[0px_0px_24px_4px_rgba(0,0,0,0.5)] transition-all duration-300 group",
+    isCompleted && !isCurrent && "bg-primary-color-sub hover:bg-primary-color",
+    !isCompleted && !isCurrent && "bg-gray-600",
+    isCurrent && "!bg-primary-color",
+    isClickable ? "cursor-pointer" : "pointer-events-none"
+  );
+
+  const numberClasses = cn(
+    "text-sm leading-none transition-colors duration-300",
+    isCompleted && !isCurrent && "text-dark-grey group-hover:text-white",
+    !isCompleted && !isCurrent && "text-white",
+    isCurrent && "!text-white"
+  );
+
+  return (
+    <div className="z-10 flex flex-col items-center relative">
+      <div className={circleClasses} onClick={onClick}>
+        <span className={numberClasses}>{stepNumber}</span>
+      </div>
+      <p className="absolute md:bottom-[-60%] left-1/2 -translate-x-1/2 text-white/70 text-xs md:whitespace-nowrap w-[60px] md:w-auto bottom-[-100%] text-center md:text-start whitespace-normal">
+        {label}
+      </p>
+    </div>
+  );
+};
+
 interface CreateEventProgressBarProps {
   eventCreationStage: EventCreationStage;
   setEventCreationStage: Dispatch<SetStateAction<EventCreationStage>>;
@@ -22,115 +70,55 @@ const CreateEventProgressBar: FunctionComponent<
   eventRequest,
   disableAllTabs,
 }): ReactElement => {
-  const imageUploadIsUndone =
-    eventCreationStage === EventCreationStage.BasicInfo &&
-    !eventRequest?.mainImageBase64Url;
-  const ticketDetailsIsUndone =
-    eventCreationStage < EventCreationStage.TicketDetails &&
-    !eventRequest?.tickets;
-  const reviewAndPublishIsUndone =
-    eventCreationStage < EventCreationStage.Confirmation &&
-    !eventRequest?.tickets;
+  const steps = [
+    { stage: EventCreationStage.BasicInfo, label: "Event Details" },
+    { stage: EventCreationStage.ImageUpload, label: "Image Upload" },
+    { stage: EventCreationStage.TicketDetails, label: "Ticket Details" },
+    { stage: EventCreationStage.Confirmation, label: "Review & Publish" },
+  ];
 
-  const basicInfoIsCurrent =
-    eventCreationStage === EventCreationStage.BasicInfo;
-  const imageUploadIsCurrent =
-    eventCreationStage === EventCreationStage.ImageUpload ||
-    eventRequest?.images;
-  const ticketDetailsIsCurrent =
-    eventCreationStage === EventCreationStage.TicketDetails ||
-    eventRequest?.tickets;
-  const reviewAndPublishIsCurrent =
-    eventCreationStage === EventCreationStage.Confirmation ||
-    eventRequest?.tickets;
+  const currentStageIndex = steps.findIndex(
+    (step) => step.stage === eventCreationStage
+  );
 
-  const basicInfoIsDone = eventCreationStage > EventCreationStage.BasicInfo;
-  const imageUploadIsDone = eventCreationStage > EventCreationStage.ImageUpload;
-  const ticketDetailsIsDone =
-    eventCreationStage > EventCreationStage.TicketDetails;
-  const reviewAndPublishIsDone =
-    eventCreationStage > EventCreationStage.Confirmation;
+  // Calculate progress percentage for the connecting line
+  const progressPercentage =
+    currentStageIndex > 0 ? (currentStageIndex / (steps.length - 1)) * 100 : 0;
 
   return (
-    <div className='mx-auto w-[80%] md:w-1/2 mt-6 mb-[3.5rem] flex justify-between items-center relative'>
-      <span className='w-full h-[0.125rem] bg-primary-color-sub absolute'></span>
-      <div
-        style={disableAllTabs ? { pointerEvents: "none" } : {}}
-        className={`relative grid place-items-center size-8 rounded-full bg-primary-color-sub text-white shadow-[0px_0px_24px_4px_rgba(0,0,0,0.5)] hover:cursor-pointer hover:bg-primary-color group ${
-          basicInfoIsCurrent ? "!bg-primary-color" : ""
-        } ${basicInfoIsDone ? "" : ""} `}
-        onClick={() => setEventCreationStage(EventCreationStage.BasicInfo)}
-      >
-        <span
-          className={`${
-            basicInfoIsCurrent ? "!text-white" : ""
-          } text-dark-grey group-hover:text-white text-sm leading-none`}
-        >
-          1
-        </span>
-        <p className='absolute md:bottom-[-60%] left-1/2 -translate-x-1/2 text-xs md:whitespace-nowrap w-[60px] md:w-auto bottom-[-100%] text-center md:text-start whitespace-normal'>
-          Event Details
-        </p>
+    <div className="mx-auto w-[80%] md:w-1/2 mt-6 mb-[3.5rem] relative">
+      <div className="absolute top-1/2 -translate-y-1/2 w-full h-[0.125rem] bg-gray-600">
+        <div
+          className="h-full bg-primary-color-sub transition-all duration-500 ease-in-out"
+          style={{ width: `${progressPercentage}%` }}
+        ></div>
       </div>
       <div
+        className="flex justify-between items-center"
         style={disableAllTabs ? { pointerEvents: "none" } : {}}
-        className={`relative grid place-items-center size-8 rounded-full bg-primary-color-sub text-white shadow-[0px_0px_24px_4px_rgba(0,0,0,0.5)] hover:cursor-pointer hover:bg-primary-color group ${
-          imageUploadIsCurrent ? "!bg-primary-color" : ""
-        } ${imageUploadIsDone ? "" : ""} ${
-          imageUploadIsUndone ? "pointer-events-none" : ""
-        } `}
-        onClick={() => setEventCreationStage(EventCreationStage.ImageUpload)}
       >
-        <span
-          className={`${
-            imageUploadIsCurrent ? "!text-white" : ""
-          } text-dark-grey group-hover:text-white text-sm leading-none`}
-        >
-          2
-        </span>
-        <p className='absolute md:bottom-[-60%] left-1/2 -translate-x-1/2 text-xs md:whitespace-nowrap w-[60px] md:w-auto bottom-[-100%] text-center md:text-start whitespace-normal'>
-          Image Upload
-        </p>
-      </div>
-      <div
-        style={disableAllTabs ? { pointerEvents: "none" } : {}}
-        className={`relative grid place-items-center size-8 rounded-full bg-primary-color-sub text-white shadow-[0px_0px_24px_4px_rgba(0,0,0,0.5)] hover:cursor-pointer hover:bg-primary-color group ${
-          ticketDetailsIsCurrent ? "!bg-primary-color" : ""
-        } ${ticketDetailsIsDone ? "" : ""} ${
-          ticketDetailsIsUndone ? "pointer-events-none" : ""
-        } `}
-        onClick={() => setEventCreationStage(EventCreationStage.TicketDetails)}
-      >
-        <span
-          className={`${
-            ticketDetailsIsCurrent ? "!text-white" : ""
-          } text-dark-grey group-hover:text-white text-sm leading-none`}
-        >
-          3
-        </span>
-        <p className='absolute md:bottom-[-60%] left-1/2 -translate-x-1/2 text-xs md:whitespace-nowrap w-[60px] md:w-auto bottom-[-100%] text-center md:text-start whitespace-normal'>
-          Ticket Details
-        </p>
-      </div>
-      <div
-        style={disableAllTabs ? { pointerEvents: "none" } : {}}
-        className={`relative grid place-items-center size-8 rounded-full bg-primary-color-sub text-white shadow-[0px_0px_24px_4px_rgba(0,0,0,0.5)] hover:cursor-pointer hover:bg-primary-color group ${
-          reviewAndPublishIsCurrent ? "!bg-primary-color" : ""
-        } ${reviewAndPublishIsDone ? "" : ""} ${
-          reviewAndPublishIsUndone ? "pointer-events-none" : ""
-        } `}
-        onClick={() => setEventCreationStage(EventCreationStage.Confirmation)}
-      >
-        <span
-          className={`${
-            reviewAndPublishIsCurrent ? "!text-white" : ""
-          } text-dark-grey group-hover:text-white text-sm leading-none`}
-        >
-          4
-        </span>
-        <p className='absolute md:bottom-[-60%] left-1/2 -translate-x-1/2 text-xs md:whitespace-nowrap w-[60px] md:w-auto bottom-[-100%] text-center md:text-start whitespace-normal'>
-          Review & Publish
-        </p>
+        {steps.map((step, index) => {
+          const isCompleted = currentStageIndex > index;
+          const isCurrent = currentStageIndex === index;
+          // Allow clicking only on past (completed) steps to review/edit them.
+          const isClickable = isCompleted;
+
+          return (
+            <ProgressStep
+              key={step.stage}
+              label={step.label}
+              stepNumber={index + 1}
+              isCurrent={isCurrent}
+              isCompleted={isCompleted || isCurrent}
+              isClickable={isClickable}
+              onClick={() => {
+                if (isClickable) {
+                  setEventCreationStage(step.stage);
+                }
+              }}
+            />
+          );
+        })}
       </div>
     </div>
   );
