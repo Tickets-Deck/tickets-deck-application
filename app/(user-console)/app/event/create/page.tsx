@@ -273,6 +273,8 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
         );
         fileToUpload = compressedFile;
 
+        formData.append("mainImage", fileToUpload);
+
         // if (isLargeFile) {
         //   console.log(
         //     `Original image size: ${formatFileSize(mainImageFile.size)}`
@@ -355,9 +357,8 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
       // 7. Log the actual error for debugging and provide user feedback.
       console.error("💥 Failed to create event:", error);
       // e.g., showToast("Event creation failed. Please check your details and try again.", { type: "error" });
-    } finally {
-      // --- Cleanup ---
-      // 8. Stop Loader: This runs regardless of success or failure.
+
+      // 8. Stop Loader: This runs when there is a failure.
       setIsCreatingEvent(false);
     }
   }
