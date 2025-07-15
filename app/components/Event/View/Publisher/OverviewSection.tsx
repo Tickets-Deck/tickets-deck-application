@@ -22,9 +22,6 @@ export default function OverviewSection({
   handleUpdateEventInfo,
   setIsEventUpdateModalVisible,
 }: Props) {
-  const [eventVisibility, setEventVisibility] = React.useState(
-    eventInfo.visibility == EventVisibility.PUBLIC
-  );
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   return (
@@ -106,8 +103,7 @@ export default function OverviewSection({
                         Start Date & Time
                       </p>
                       <p className="text-sm">
-                        {formatStoredDate(
-                          eventInfo.startDate,
+                        {moment(eventInfo.startDate).format(
                           "ddd, MMM Do, YYYY, hh:mm A"
                         )}
                       </p>
@@ -260,10 +256,14 @@ export default function OverviewSection({
                 <span className="text-sm">Visibility</span>
                 <span
                   className={`p-2 px-3 rounded-lg text-sm text-white ${
-                    eventVisibility ? "bg-green-500" : "bg-red-500"
+                    eventInfo.visibility === EventVisibility.PUBLIC
+                      ? "bg-green-500"
+                      : "bg-red-500"
                   }`}
                 >
-                  {eventVisibility ? "Public" : "Private"}
+                  {eventInfo.visibility === EventVisibility.PUBLIC
+                    ? "Public"
+                    : "Private"}
                 </span>
               </div>
               {/* <div className="flex justify-between items-center">

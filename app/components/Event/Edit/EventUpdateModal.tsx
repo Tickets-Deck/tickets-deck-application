@@ -157,9 +157,9 @@ export function EditEventModal({
       //     throw new Error("Ticket sales must end before event starts")
       // }
 
-      setModalVisibility(false);
-
       await handleUpdateEventInfo(eventRequest);
+
+      setModalVisibility(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
