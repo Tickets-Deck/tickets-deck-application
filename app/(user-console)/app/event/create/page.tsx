@@ -29,6 +29,11 @@ import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { compressImage } from "@/utils/imageCompress";
 import { formatFileSize } from "@/utils/formatFileSize";
 import { useApplicationContext } from "@/app/context/ApplicationContext";
+import {
+  clearEventDraft,
+  getEventDraft,
+  saveEventDraft,
+} from "@/utils/eventDraftStorageService";
 import { useToast } from "@/app/context/ToastCardContext";
 
 interface CreateEventProps {}
@@ -89,7 +94,10 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
         break;
       case EventCreationStage.ImageUpload:
         if (eventRequest?.mainImageBase64Url) {
-          setEventRequest({ ...(eventRequest as EventRequest), tickets: [] });
+          setEventRequest({
+            ...(eventRequest as EventRequest),
+            tickets: eventRequest.tickets || [],
+          });
           setEventCreationStage(EventCreationStage.TicketDetails);
           break;
         }
@@ -350,6 +358,9 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
       setIsEventCreated(true);
       persistNewlyCreatedEvent(response.data);
 
+      // Clear the draft from IndexedDB upon successful creation
+      await clearEventDraft();
+
       // Redirect to the new event's page.
       push(`${ApplicationRoutes.Event}/${response.data.id}`);
     } catch (error) {
@@ -364,17 +375,65 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
   }
 
   useEffect(() => {
-    setEventRequest({
-      ...(eventRequest as EventRequest),
-      publisherId: session?.user.id as string,
-    });
-  }, [session]);
-
-  useEffect(() => {
     if (!eventCategories) {
       handleFetchEventCategories();
     }
   }, [eventCategories]);
+
+  useEffect(() => {
+    // This effect runs when the user session becomes available.
+    // It handles loading a draft, verifying ownership, or initializing a new draft.
+    const loadDraftAndSetUser = async () => {
+      // Wait until we have a user ID.
+      if (!session?.user.id) {
+        return;
+      }
+
+      const currentUserId = session.user.id;
+
+      try {
+        const draft = await getEventDraft();
+
+        // Case 1: A draft exists and it belongs to the current user.
+        if (draft.eventData?.publisherId === currentUserId) {
+          console.log("Matching draft found for user. Loading...");
+          setEventRequest(draft.eventData);
+          if (draft.imageFile) {
+            setMainImageFile(draft.imageFile);
+            setMainImageUrl(URL.createObjectURL(draft.imageFile));
+          }
+        }
+        // Case 2: A draft exists but belongs to a different user.
+        else if (draft.eventData) {
+          console.warn("Draft from a different user found. Clearing it.");
+          await clearEventDraft();
+          // Initialize a new draft for the current user.
+          setEventRequest({ publisherId: currentUserId } as EventRequest);
+        }
+        // Case 3: No draft exists.
+        else {
+          // Initialize a new draft for the current user.
+          setEventRequest({ publisherId: currentUserId } as EventRequest);
+        }
+      } catch (error) {
+        console.error("Failed to load or process event draft:", error);
+        // As a fallback, ensure a new draft can be started.
+        setEventRequest({ publisherId: currentUserId } as EventRequest);
+      }
+    };
+
+    loadDraftAndSetUser();
+  }, [session?.user.id]); // Dependency ensures this runs when the user session is ready.
+
+  useEffect(() => {
+    // Do not save an empty draft or after the event has been created.
+    // We check for a title or an image file to determine if the form has been started.
+    if ((eventRequest?.title || mainImageFile) && !isEventCreated) {
+      saveEventDraft(eventRequest, mainImageFile).catch((error) => {
+        console.error("Failed to save event draft:", error);
+      });
+    }
+  }, [eventRequest, mainImageFile, isEventCreated]);
 
   return (
     <div className="p-[1.25rem]">
