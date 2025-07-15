@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import { UserCredentialsResponse } from "@/app/models/IUser";
 import { useFetchUserInformationByUserName } from "@/app/api/apiClient";
+import { ApiRoutes } from "@/app/api/apiRoutes";
 
 interface UserInformationProps {
   params: { userId: string };
@@ -12,9 +13,20 @@ interface UserInformationProps {
 async function getUserData(
   userId: string
 ): Promise<UserCredentialsResponse | null> {
-  const fetchUserInformationByUserName = useFetchUserInformationByUserName();
+  // This page is a Server Component, so we need to fetch data directly.
+  const apiBaseUrl = ApiRoutes.BASE_URL;
+  const url = `${apiBaseUrl}/ApiRoutes.FetchUserByUsername(${userId})`;
+
   try {
-    const response = await fetchUserInformationByUserName(userId);
+    const res = await fetch(url, {
+      // Using 'no-store' to ensure the profile is always fresh.
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch user data: ${res.statusText}`);
+    }
+    const response = await res.json();
     return response.data as UserCredentialsResponse;
   } catch (error) {
     console.error("Error fetching user info:", error);

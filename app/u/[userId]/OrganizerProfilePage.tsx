@@ -64,8 +64,11 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
   const fetchUserInformationByUsername = useFetchUserInformationByUserName();
   const fetchPublisherEvents = useFetchEventsByPublisherId();
 
-  const [isFetchingUserInformation, setIsFetchingUserInformation] =
-    useState(true);
+  // Initialize fetching state based on whether initial data is present.
+  // If there's initial data, we're not fetching on mount.
+  const [isFetchingUserInformation, setIsFetchingUserInformation] = useState(
+    !initialUserInformation
+  );
   const [isInteractingWithUserProfile, setIsInteractingWithUserProfile] =
     useState(false);
   const [userInformation, setUserInformation] =
@@ -105,7 +108,6 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
       session?.user.id as string
     )
       .then((response) => {
-
         const result = response.data as IUserFollowMetrics;
 
         // setus
@@ -183,14 +185,16 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
   }
 
   useEffect(() => {
+    // If initial data from the server exists, use it to fetch dependent data.
+    // If not, trigger a client-side fetch for the main user info.
     if (userInformation) {
       handleFetchUserFollowMetrics();
+      handleFetchPublisherEvents();
+    } else if (!initialUserInformation) {
+      // Only fetch if no server-provided data exists, to avoid double-fetching.
+      handleFetchUserInformation();
     }
-  }, [userInformation]);
-
-  useEffect(() => {
-    if (userInformation) handleFetchPublisherEvents();
-  }, [userInformation]);
+  }, [userInformation, initialUserInformation]);
 
   return (
     <div className="bg-dark-grey text-white">

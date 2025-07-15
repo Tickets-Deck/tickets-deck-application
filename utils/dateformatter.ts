@@ -22,7 +22,8 @@ export function formatStoredDate(
   format: string = "LT"
 ): string {
   // Parse without timezone conversion (treats time as-is)
-  return moment.parseZone(dbDate).format(format);
+//   return moment.parseZone(dbDate).format(format);
+  return moment(dbDate).format(format);
 }
 
 /**
