@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
+import * as Slider from "@radix-ui/react-slider";
 
 interface BasicInformationFormProps {
   eventRequest: EventRequest | undefined;
@@ -57,6 +58,24 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
   const [startDateErrorMsg, setStartDateErrorMsg] = useState<boolean>();
   const [descriptionErrorMsg, setDescriptionErrorMsg] = useState<boolean>();
   const [tagErrorMsg, setTagErrorMsg] = useState<boolean>();
+
+  //   const [mode, setMode] = useState<"end" | "duration">("duration");
+  //   const [hours, setHours] = useState(1);
+  //   const [minutes, setMinutes] = useState(0);
+
+  //   useEffect(() => {
+  //     if (mode === "duration") {
+  //       const start = moment(eventRequest?.startDate);
+  //       const computed = start.clone().add(hours, "hours");
+
+  //       console.log("🚀 ~ useEffect ~ computed:", computed);
+
+  //       setEventRequest({
+  //         ...(eventRequest as EventRequest),
+  //         endDate: computed.toDate(),
+  //       });
+  //     }
+  //   }, [eventRequest?.startDate, hours, mode]);
 
   //#endregion
 
@@ -94,6 +113,14 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
       setStartDateErrorMsg(false);
       setDescriptionErrorMsg(false);
       setTagErrorMsg(false);
+
+      if (!eventRequest.endDate) {
+        setEventRequest({
+          ...(eventRequest as EventRequest),
+          endDate: moment(eventRequest?.startDate).add(1, "hour").toDate(),
+        });
+      }
+
       return true;
     } else {
       if (!eventRequest?.title) {
@@ -189,40 +216,40 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
   //#endregion
 
   return (
-    <div className='flex flex-col md:flex-row gap-8 size-full mb-8'>
-      <div className='w-full md:max-w-[50%] flex flex-col gap-5'>
-        <div className='createEventFormField'>
-          <label htmlFor='title'>Title</label>
+    <div className="flex flex-col md:flex-row gap-8 size-full mb-8">
+      <div className="w-full md:max-w-[50%] flex flex-col gap-5">
+        <div className="createEventFormField">
+          <label htmlFor="title">Title</label>
           <input
-            type='text'
-            name='title'
+            type="text"
+            name="title"
             value={eventRequest?.title}
-            placeholder='Event Title'
+            placeholder="Event Title"
             onChange={(e) => onFormValueChange(e, setTitleErrorMsg)}
           />
           {titleErrorMsg && (
-            <span className='errorMsg'>Please enter event title</span>
+            <span className="errorMsg">Please enter event title</span>
           )}
         </div>
-        <div className='createEventFormField'>
-          <label htmlFor='venue'>Location</label>
+        <div className="createEventFormField">
+          <label htmlFor="venue">Location</label>
           <input
-            type='text'
-            name='venue'
+            type="text"
+            name="venue"
             value={eventRequest?.venue}
-            id='venue'
-            placeholder='Event Venue'
+            id="venue"
+            placeholder="Event Venue"
             onChange={(e) => onFormValueChange(e, setVenueErrorMsg)}
           />
           {venueErrorMsg && (
-            <span className='errorMsg'>Please enter event location</span>
+            <span className="errorMsg">Please enter event location</span>
           )}
         </div>
-        <div className='createEventFormField'>
-          <label htmlFor='date'>Start date</label>
-          <div className=''>
+        <div className="createEventFormField">
+          <label htmlFor="date">Start date</label>
+          <div className="">
             <BasicDateTimePicker
-              className='custom-datepicker'
+              className="custom-datepicker"
               defaultValue={
                 eventRequest?.startDate
                   ? moment(eventRequest.startDate)
@@ -232,7 +259,7 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
                 // Set the form value
                 setEventRequest({
                   ...(eventRequest as EventRequest),
-                  startDate: formattedDateForApi(newValue.toDate()),
+                  startDate: newValue.toDate(),
                 });
                 // Close error message
                 setStartDateErrorMsg(false);
@@ -241,14 +268,14 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
             />
           </div>
           {startDateErrorMsg && (
-            <span className='errorMsg'>Please enter event start date</span>
+            <span className="errorMsg">Please enter event start date</span>
           )}
         </div>
-        <div className='createEventFormField'>
-          <label htmlFor='date'>End date (Optional)</label>
-          <div className=''>
+        <div className="createEventFormField">
+          <label htmlFor="date">End date (Optional)</label>
+          <div className="">
             <BasicDateTimePicker
-              className='custom-datepicker'
+              className="custom-datepicker"
               defaultValue={
                 eventRequest?.endDate ? moment(eventRequest.endDate) : undefined
               }
@@ -256,7 +283,7 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
                 // Set the form value
                 setEventRequest({
                   ...(eventRequest as EventRequest),
-                  endDate: formattedDateForApi(newValue.toDate()),
+                  endDate: newValue.toDate(),
                 });
                 // Close error message
                 setStartDateErrorMsg(false);
@@ -265,13 +292,34 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
             />
           </div>
         </div>
+
+        {/* <div className="space-y-6">
+          <Slider.Root
+            className="relative flex items-center select-none touch-none w-full h-5"
+            min={0}
+            max={12}
+            step={1}
+            value={[hours]}
+            onValueChange={([val]) => setHours(val)}
+          >
+            <Slider.Track className="bg-gray-700 relative grow rounded-full h-1">
+              <Slider.Range className="absolute bg-blue-500 rounded-full h-full" />
+            </Slider.Track>
+            <Slider.Thumb className="block w-4 h-4 bg-white rounded-full shadow" />
+          </Slider.Root>
+
+          <div className="text-green-400 text-sm">
+            Ends at:{" "}
+            {moment(eventRequest?.endDate).format("MMM D, YYYY h:mm A")}
+          </div>
+        </div> */}
       </div>
 
-      <span className='w-[1px] h-auto bg-white/20 block'></span>
+      <span className="w-[1px] h-auto bg-white/20 block"></span>
 
       <div className={"w-full md:max-w-[50%] flex flex-col gap-5"}>
-        <div className='createEventFormField'>
-          <label htmlFor='description'>Description</label>
+        <div className="createEventFormField">
+          <label htmlFor="description">Description</label>
           <EventDescriptionEditor
             description={eventRequest?.description ?? ""}
             updateDescription={(value) =>
@@ -282,16 +330,16 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
             }
           />
           {descriptionErrorMsg && (
-            <span className='errorMsg'>Please enter event description</span>
+            <span className="errorMsg">Please enter event description</span>
           )}
         </div>
-        <div className='flex mt-10 flex-col gap-4 md:flex-row md:gap-8'>
-          <div className='createEventFormField'>
-            <label htmlFor='category'>Category</label>
+        <div className="flex mt-10 flex-col gap-4 md:flex-row md:gap-8">
+          <div className="createEventFormField">
+            <label htmlFor="category">Category</label>
             <input
-              type='text'
-              name='category'
-              placeholder='Select category'
+              type="text"
+              name="category"
+              placeholder="Select category"
               value={
                 eventCategories?.find(
                   (category) => category.id === eventRequest?.categoryId
@@ -303,12 +351,12 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
             />
             {categoryDropdownIsVisible && eventCategories && (
               <div
-                className='absolute w-[120%] top-[70px] left-0 bg-dark-grey z-10 rounded-lg overflow-hidden max-h-[180px] overflow-y-auto scrollbar-thin'
+                className="absolute w-[120%] top-[70px] left-0 bg-dark-grey z-10 rounded-lg overflow-hidden max-h-[180px] overflow-y-auto scrollbar-thin"
                 ref={categoryDropdownRef}
               >
                 {eventCategories.map((category, index) => (
                   <span
-                    className='block px-2 py-3 text-sm text-white cursor-pointer hover:bg-white/10'
+                    className="block px-2 py-3 text-sm text-white cursor-pointer hover:bg-white/10"
                     key={index}
                     onClick={() => {
                       // Set the form value
@@ -326,14 +374,14 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
               </div>
             )}
           </div>
-          <div className='createEventFormField'>
-            <label htmlFor='tags'>Tags</label>
-            <div className='flex flex-row items-center space-x-1'>
+          <div className="createEventFormField">
+            <label htmlFor="tags">Tags</label>
+            <div className="flex flex-row items-center space-x-1">
               <input
-                type='text'
-                name='tags'
-                className='input !rounded-lg w-full !bg-white/10 text-sm'
-                placeholder='Add event Tags'
+                type="text"
+                name="tags"
+                className="input !rounded-lg w-full !bg-white/10 text-sm"
+                placeholder="Add event Tags"
                 value={tag}
                 onChange={(e) => setTag(e.target.value)}
                 onKeyDown={(e) => {
@@ -346,20 +394,20 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
                 }}
               />
               <span
-                className='w-[50px] h-full grid place-items-center rounded-lg cursor-pointer bg-white/10 hover:bg-white/20 [&_svg]:w-[20px] [&_svg]:h-[20px] [&_svg_path]:fill-white'
+                className="w-[50px] h-full grid place-items-center rounded-lg cursor-pointer bg-white/10 hover:bg-white/20 [&_svg]:w-[20px] [&_svg]:h-[20px] [&_svg_path]:fill-white"
                 onClick={() => addTagToFormRequest()}
               >
                 <Icons.Add />
               </span>
             </div>
             {tagErrorMsg && (
-              <span className='errorMsg'>Please add at least one tag</span>
+              <span className="errorMsg">Please add at least one tag</span>
             )}
           </div>
         </div>
 
-        <div className='createEventFormField'>
-          <label htmlFor='time'>Visibility</label>
+        <div className="createEventFormField">
+          <label htmlFor="time">Visibility</label>
           <Select
             value={eventRequest?.visibility || ""}
             defaultValue={eventRequest?.visibility}
@@ -370,10 +418,10 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
               })
             }
           >
-            <SelectTrigger className='w-[160px]'>
+            <SelectTrigger className="w-[160px]">
               <SelectValue
-                placeholder='Event visibility'
-                className='text-white'
+                placeholder="Event visibility"
+                className="text-white"
               />
             </SelectTrigger>
             <SelectContent>
