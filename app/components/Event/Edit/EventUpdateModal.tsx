@@ -169,22 +169,6 @@ export function EditEventModal({
     }
   };
 
-  useEffect(() => {
-    if (initialData) {
-      if (initialData.tags) {
-        setEventRequest((prev) => ({
-          ...(prev as UpdateEventRequest),
-          tags: initialData.tags,
-        }));
-      }
-      setEventRequest((prev) => ({
-        ...(prev as UpdateEventRequest),
-        eventId: initialData.eventId,
-        publisherId: initialData.publisherId,
-      }));
-    }
-  }, [initialData]);
-
   return (
     <ModalWrapper
       visibility={modalVisibility}
