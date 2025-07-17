@@ -111,33 +111,39 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({
       <div className="grid grid-cols-2 gap-4">
         {eventRequest?.tickets.map((ticket, index) => (
           <div
-            className="p-6 rounded-lg bg-container-grey text-white flex flex-col gap-6"
+            className="p-4 md:p-6 rounded-lg bg-container-grey text-white flex flex-col gap-6"
             key={index}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-normal md:text-lg">{ticket.name}</h3>
+              <h3 className="text-base font-normal md:text-lg">
+                {ticket.name}
+              </h3>
               <span
-                className="w-[2.5rem] h-[2.5rem] rounded-lg grid place-items-center bg-dark-grey cursor-pointer md:w-[2rem] md:h-[2rem] md:min-w-[2rem] md:min-h-[2rem] md:cursor-pointer md:[&_svg]:w-[1rem] md:[&_svg]:h-[1rem]"
+                className="min-w-[2rem] min-h-[2rem] rounded-lg grid place-items-center bg-dark-grey cursor-pointer md:w-[2rem] md:h-[2rem] md:min-w-[2rem] md:min-h-[2rem] md:cursor-pointer md:[&_svg]:w-[1rem] md:[&_svg]:h-[1rem]"
                 onClick={() => {
                   setIsEditingTicket(true);
                   setSelectedTicketIndex(index);
                   setIsTicketCreationModalVisible(true);
                 }}
               >
-                <Icons.Edit />
+                <Icons.Edit className="size-4 md:size-6" />
               </span>
             </div>
-            <div className="flex md:flex-col md:gap-1 md:mt-auto">
-              <div className="w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start">
-                <span className="text-sm text-grey">Price</span>
+            <div className="flex flex-col md:gap-1 md:mt-auto">
+              <div className="w-full flex items-center gap-2 md:items-start flex-row justify-between first:items-start last:flex-end md:last:items-start">
+                <span className="text-xs md:text-sm text-grey">Price</span>
                 <p>&#8358;{ticket.price.toLocaleString()}</p>
               </div>
-              <div className="w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start">
-                <span className="text-sm text-grey">Total available</span>
+              <div className="w-full flex items-center gap-2 md:items-start flex-row justify-between first:items-start last:flex-end md:last:items-start">
+                <span className="text-xs md:text-sm text-grey">
+                  Total available
+                </span>
                 <p>{ticket.quantity}</p>
               </div>
-              <div className="w-full flex flex-col items-center gap-2 md:items-start md:flex-row md:justify-between first:items-start last:flex-end md:last:items-start">
-                <span className="text-sm text-grey">User per Ticket</span>
+              <div className="w-full flex items-center gap-2 md:items-start flex-row justify-between first:items-start last:flex-end md:last:items-start">
+                <span className="text-xs md:text-sm text-grey">
+                  User per Ticket
+                </span>
                 <p>{ticket.numberOfUsers}</p>
               </div>
             </div>
@@ -172,43 +178,60 @@ const TicketDetailsSection: FunctionComponent<TicketDetailsSectionProps> = ({
           <div className="w-full flex flex-col gap-4">
             <div className="flex flex-col gap-4 md:flex-row md:gap-8">
               <div className="createEventFormField">
-                <label htmlFor="date">Purchase start date</label>
+                <label htmlFor="date">
+                  Purchase start date{" "}
+                  <span className="text-xs text-white/60">
+                    (defaults to event creation date if not set)
+                  </span>{" "}
+                </label>
                 <div className="" ref={purchaseStartDateRef}>
                   <BasicDateTimePicker
                     className="custom-datepicker"
                     defaultValue={
                       eventRequest?.purchaseStartDate
                         ? moment(eventRequest.purchaseStartDate)
-                        : undefined
+                        : moment(new Date())
                     }
                     onChangeFn={(newValue) => {
                       // Set the form value
                       setEventRequest({
                         ...(eventRequest as EventRequest),
-                        purchaseStartDate: formattedDateForApi(
-                          newValue.toDate()
-                        ),
+                        purchaseStartDate: newValue.toDate(),
                       });
                     }}
                     minDate={moment(new Date())}
+                    maxDate={
+                      eventRequest.endDate
+                        ? moment(eventRequest.endDate)
+                        : eventRequest.startDate
+                        ? moment(eventRequest.startDate)
+                        : undefined
+                    }
                   />
                 </div>
               </div>
               <div className="createEventFormField">
-                <label htmlFor="date">Purchase date deadline</label>
+                <label htmlFor="date">
+                  Purchase date deadline{" "}
+                  <span className="text-xs text-white/60">
+                    (defaults to start date of event if not set)
+                  </span>{" "}
+                </label>
                 <div className="" ref={purchaseEndDateRef}>
                   <BasicDateTimePicker
                     className="custom-datepicker"
                     defaultValue={
-                      eventRequest?.purchaseStartDate
-                        ? moment(eventRequest.purchaseStartDate)
+                      eventRequest.purchaseEndDate
+                        ? moment(eventRequest.purchaseEndDate)
+                        : eventRequest?.startDate
+                        ? moment(eventRequest.startDate)
                         : undefined
                     }
                     onChangeFn={(newValue) => {
                       // Set the form value
                       setEventRequest({
                         ...(eventRequest as EventRequest),
-                        purchaseEndDate: formattedDateForApi(newValue.toDate()),
+                        purchaseEndDate: newValue.toDate(),
                       });
                     }}
                     minDate={moment(eventRequest?.purchaseStartDate)}

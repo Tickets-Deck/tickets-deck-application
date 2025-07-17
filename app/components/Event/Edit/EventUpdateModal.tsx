@@ -36,12 +36,12 @@ export function EditEventModal({
 
   const handleDateSelect = (
     field: keyof UpdateEventRequest,
-    date: Date | undefined
+    date: Date | string | undefined
   ) => {
     if (date) {
       setEventRequest((prev) => ({
         ...(prev as UpdateEventRequest),
-        [field]: moment(date).format("YYYY-MM-DD HH:mm:ss"),
+        [field]: date,
       }));
     }
   };
@@ -156,6 +156,8 @@ export function EditEventModal({
       // if (eventRequest.purchaseEndDate && eventRequest.startDate && eventRequest.purchaseEndDate > eventRequest.startDate) {
       //     throw new Error("Ticket sales must end before event starts")
       // }
+
+      // console.log("🚀 ~ handleSubmit ~ eventRequest:", eventRequest);
 
       await handleUpdateEventInfo(eventRequest);
 
@@ -322,8 +324,10 @@ export function EditEventModal({
                       : undefined
                   }
                   onChangeFn={(newValue) => {
+                    console.log("🚀 ~ newValue:", newValue);
+                    console.log("🚀 ~ newValue:", newValue.toISOString());
                     // Set the form value
-                    handleDateSelect("startDate", newValue?.toDate());
+                    handleDateSelect("startDate", newValue?.toISOString());
                     // setEventRequest({ ...eventRequest as UpdateEventRequest, startDate: formattedDateForApi(newValue.toDate()) });
                   }}
                   minDate={moment(new Date())}
