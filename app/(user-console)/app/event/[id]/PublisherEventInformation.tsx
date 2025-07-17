@@ -243,7 +243,13 @@ const PublisherEventInformation: FunctionComponent<
     updatedEventInfo: UpdateEventRequest,
     toastMessage?: string
   ) {
-    await updateEventById(user?.token as string, id, updatedEventInfo)
+    // add publisher id
+    const _updatedEventInfo: UpdateEventRequest = {
+      ...updatedEventInfo,
+      publisherId: eventInfo?.publisherId as string,
+      eventId: eventInfo?.eventId as string,
+    };
+    await updateEventById(user?.token as string, id, _updatedEventInfo)
       .then(async (response) => {
         // toasthandler?.logSuccess("Success", "Event information updated successfully.");
         await handleFetchEventInfo();
