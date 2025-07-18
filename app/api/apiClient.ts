@@ -206,9 +206,10 @@ export function useUpdateEventById() {
   async function updateEventById(
     token: string,
     eventId: string,
-    data: UpdateEventRequest
+    publisherId: string,
+    data: FormData
   ) {
-    return API.put(`${ApiRoutes.Events}/${eventId}`, data, getApiConfig(token));
+    return API.put(`${ApiRoutes.Events}/${eventId}/publisher/${publisherId}`, data, getApiConfig(token));
   }
 
   return updateEventById;

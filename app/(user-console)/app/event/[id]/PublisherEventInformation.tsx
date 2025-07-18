@@ -43,6 +43,8 @@ import TicketCreationModal from "@/app/components/Event/Create/TicketsCreation/T
 import SharePopup from "@/app/components/custom/SharePopup";
 import { EditEventModal } from "@/app/components/Event/Edit/EventUpdateModal";
 import { Session } from "next-auth";
+import { formatFileSize } from "@/utils/formatFileSize";
+import { compressImage } from "@/utils/imageCompress";
 
 interface PublisherEventInformationProps {
   id: string;
@@ -240,33 +242,106 @@ const PublisherEventInformation: FunctionComponent<
   }
 
   async function handleUpdateEventInfo(
-    updatedEventInfo: UpdateEventRequest,
+    updatedEventInfo: UpdateEventRequest & { mainImageFile: File | undefined },
     toastMessage?: string
   ) {
     // add publisher id
-    const _updatedEventInfo: UpdateEventRequest = {
+    const eventData = {
       ...updatedEventInfo,
       publisherId: eventInfo?.publisherId as string,
       eventId: eventInfo?.eventId as string,
     };
-    await updateEventById(user?.token as string, id, _updatedEventInfo)
-      .then(async (response) => {
-        // toasthandler?.logSuccess("Success", "Event information updated successfully.");
-        await handleFetchEventInfo();
 
-        // Display success
-        toasthandler?.logSuccess(
-          "Success",
-          toastMessage ?? "Event information updated successfully."
+    const mainImageFile = updatedEventInfo.mainImageFile;
+
+    try {
+      const formData = new FormData();
+
+      // 3. Image Processing: Compress if necessary and append to FormData.
+      if (mainImageFile) {
+        // const isLargeFile = mainImageFile.size > 2 * 1024 * 1024; // 2MB threshold
+        let fileToUpload = mainImageFile;
+
+        console.log(
+          `Original image size: ${formatFileSize(mainImageFile.size)}`
         );
-      })
-      .catch((error) => {
-        toasthandler?.logError(
-          "Error updating event information.",
-          "We encountered an error while updating event information. Please try again."
+        const { compressedFile, compressedSize, reductionPercentage } =
+          await compressImage(mainImageFile);
+        console.log(
+          `Compressed to: ${formatFileSize(
+            compressedSize
+          )} (${reductionPercentage.toFixed(2)}% reduction)`
         );
-        catchError(error);
-      });
+        fileToUpload = compressedFile;
+
+        formData.append("mainImage", fileToUpload);
+      }
+
+      // 4. Populate FormData: Append all fields from the prepared data object.
+      for (const [key, value] of Object.entries(eventData)) {
+        // Skip the legacy Base64 field and the file object itself.
+        if (key === "mainImageBase64Url" || key === "mainImageFile") {
+          continue;
+        }
+
+        // Handle date fields explicitly to ensure they are in ISO 8601 format.
+        if (
+          [
+            "startDate",
+            "endDate",
+            "purchaseStartDate",
+            "purchaseEndDate",
+          ].includes(key) &&
+          value
+        ) {
+          const date = new Date(value as string);
+          // Ensure the date is valid before appending
+          if (!isNaN(date.getTime())) {
+            formData.append(key, date.toISOString());
+          } else {
+            console.warn(`Skipping invalid date for ${key}:`, value);
+          }
+          // Continue to the next item in the loop
+          continue;
+        }
+
+        // Stringify objects/arrays (like tags and tickets).
+        if (typeof value === "object" && value !== null) {
+          formData.append(key, JSON.stringify(value));
+        }
+        // Append all other defined, non-null values.
+        else if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
+        }
+      }
+
+      // 5. API Call: Execute the event creation request.
+      await updateEventById(
+        user?.token as string,
+        id,
+        eventInfo?.publisherId as string,
+        formData
+      );
+
+      // toasthandler?.logSuccess("Success", "Event information updated successfully.");
+      await handleFetchEventInfo();
+
+      // Display success
+      toasthandler?.logSuccess(
+        "Success",
+        toastMessage ?? "Event information updated successfully."
+      );
+    } catch (error) {
+      // --- Error Path ---
+      // 6. Log the actual error for debugging and provide user feedback.
+      console.error("💥 Failed to update event:", error);
+
+      toasthandler?.logError(
+        "Error updating event information.",
+        "We encountered an error while updating event information. Please try again."
+      );
+      catchError(error);
+    }
   }
 
   useEffect(() => {

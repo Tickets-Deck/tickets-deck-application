@@ -16,7 +16,7 @@ interface EditEventModalProps {
   setModalVisibility: Dispatch<SetStateAction<boolean>>;
   initialData: UpdateEventRequest;
   handleUpdateEventInfo: (
-    updatedEventInfo: UpdateEventRequest,
+    updatedEventInfo: UpdateEventRequest & { mainImageFile: File | undefined },
     toastMessage?: string
   ) => Promise<void>;
 }
@@ -32,6 +32,7 @@ export function EditEventModal({
   const [newTag, setNewTag] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [mainImageBase64Url, setMainImageBase64Url] = useState<string>();
+  const [mainImageFile, setMainImageFile] = useState<File>();
   const [mainImageUrl, setMainImageUrl] = useState<string>();
 
   const handleDateSelect = (
@@ -90,7 +91,7 @@ export function EditEventModal({
       const file = e.target.files[0]; // Get the selected file
 
       if (file) {
-        // setMainImageFile(file);
+        setMainImageFile(file);
 
         // Instantiate a FileReader object
         const reader = new FileReader();
@@ -159,7 +160,7 @@ export function EditEventModal({
 
       // console.log("🚀 ~ handleSubmit ~ eventRequest:", eventRequest);
 
-      await handleUpdateEventInfo(eventRequest);
+      await handleUpdateEventInfo({ ...eventRequest, mainImageFile });
 
       setModalVisibility(false);
     } catch (err) {
@@ -168,6 +169,17 @@ export function EditEventModal({
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (initialData) {
+      if (initialData.tags) {
+        setEventRequest((prev) => ({
+          ...(prev as UpdateEventRequest),
+          tags: initialData.tags,
+        }));
+      }
+    }
+  }, [initialData]);
 
   return (
     <ModalWrapper
