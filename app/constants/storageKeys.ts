@@ -23,6 +23,16 @@ export class StorageKeys {
   static readonly Events = "Events";
 
   /**
+   * Key for the past events
+   */
+  static readonly PastEvents = "PastEvents";
+
+  /**
+   * Key for the past events page
+   */
+  static readonly PastEventsPage = "PastEventsPage";
+
+  /**
    * Key for the newly created event
    */
   static readonly NewlyCreatedEvent = "NewlyCreatedEvent";
