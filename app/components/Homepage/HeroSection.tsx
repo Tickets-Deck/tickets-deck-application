@@ -229,16 +229,18 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
       {nextHotEvent && (
         <section className="sectionPadding bg-gradient-to-b from-purple-900 to-purple-700 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Icons.Fire className="w-6 h-6" />
-              <span className="font-semibold font-Mona-Sans-Wide">
-                Hot Event:
-              </span>
+            <div className="flex flex-col md:flex-row items-center gap-3">
+              <div className="flex flex-row items-center gap-2">
+                <Icons.Fire className="w-6 h-6" />
+                <span className="font-semibold font-Mona-Sans-Wide">
+                  Coming Up Next:
+                </span>
+              </div>
               <span>{nextHotEvent.title}</span>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-2">
                 <span className="text-sm font-light text-white/80">
                   Starts in:
                 </span>
@@ -300,7 +302,7 @@ const HeroSection: FunctionComponent<HeroSectionProps> = ({
 
               <Link
                 href={`/event/${nextHotEvent.id}`}
-                className="bg-black/30 tertiaryButton"
+                className="bg-black/30 tertiaryButton !py-[0.5rem] !px-[1.0rem]"
               >
                 Get Tickets
               </Link>
