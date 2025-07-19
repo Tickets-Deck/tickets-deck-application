@@ -7,6 +7,7 @@ import Link from "next/link";
 import { formatStoredDate } from "@/utils/dateformatter";
 import { useFetchPastEvents } from "@/app/api/apiClient";
 import { StorageKeys } from "@/app/constants/storageKeys";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 type Props = {};
 
@@ -20,7 +21,7 @@ export default function RecentlyConcludedEvents({}: Props) {
     const fetchAndStorePastEvents = async () => {
       setIsFetching(true);
       try {
-        const response = await fetchPastEvents(1, 5); // Fetch first 5 for the homepage
+        const response = await fetchPastEvents(1, 5, "newest"); // Fetch first 5 for the homepage
         if (response?.data) {
           const pastEvents = response.data;
           setConcludedEvents(pastEvents);
@@ -86,14 +87,17 @@ export default function RecentlyConcludedEvents({}: Props) {
               key={event.id}
               className="flex-none w-80 bg-white rounded-2xl p-4 shadow-md"
             >
-              <div className="w-full h-32 bg-gray-300 rounded-xl mb-4 relative overflow-hidden">
+              <Link
+                href={`${ApplicationRoutes.GeneralEvent}${event.id}`}
+                className="w-full h-32 bg-gray-300 rounded-xl mb-4 block relative overflow-hidden group"
+              >
                 <Image
                   src={buildCloudinaryImageUrl(event.mainImageUrl)}
                   alt={event.title}
                   fill
-                  className="object-cover"
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-              </div>
+              </Link>
               <h3 className="text-black text-lg font-bold truncate capitalize">
                 {event.title}
               </h3>
@@ -101,7 +105,7 @@ export default function RecentlyConcludedEvents({}: Props) {
                 Concluded on {formatStoredDate(event.endDate, "MMM. Do, YYYY")}
               </p>
               <Link
-                href={`/event/${event.id}`}
+                href={`${ApplicationRoutes.GeneralEvent}${event.id}`}
                 className="text-sm text-primary-color font-medium underline mt-1 inline-block"
               >
                 See more details
