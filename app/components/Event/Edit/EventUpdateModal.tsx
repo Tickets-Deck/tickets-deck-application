@@ -195,14 +195,14 @@ export function EditEventModal({
           "You can't allow ticket sales to continue after the event has ended."
         );
       }
-      if (psDate && sDate && psDate.isAfter(sDate)) {
-        throw new Error(
-          "You can’t start selling tickets after the event has already started."
-        );
-      }
-      if (peDate && sDate && peDate.isSameOrAfter(sDate)) {
-        throw new Error("Ticket sales must end before the event begins.");
-      }
+      //   if (psDate && sDate && psDate.isAfter(sDate)) {
+      //     throw new Error(
+      //       "You can’t start selling tickets after the event has already started."
+      //     );
+      //   }
+      //   if (peDate && sDate && peDate.isSameOrAfter(sDate)) {
+      //     throw new Error("Ticket sales must end before the event begins.");
+      //   }
 
       await handleUpdateEventInfo({ ...eventRequest, mainImageFile });
 
