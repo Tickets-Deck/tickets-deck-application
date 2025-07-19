@@ -55,5 +55,15 @@ export class StorageKeys {
   /**
    * Key for the Draft Event Session
    */
-  static readonly DraftEvent = "draftEvent";
+    static readonly DraftEvent = "draftEvent";
+    
+    /**
+   * Key for the number of times the user had viewed the marketplace annoucement modal
+   */
+    static readonly MrktNewsViewed = "mrktNewsViewed";
+
+    /**
+     * Key for the last time the user viewed the marketplace annoucement modal
+     */
+    static readonly MrktNewsLastViewed = "mrktNewsLastViewed";
 }

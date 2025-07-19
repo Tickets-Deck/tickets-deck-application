@@ -23,6 +23,11 @@ import { catchError } from "./constants/catchError";
 import { ITrendingEventCategory } from "./models/IEventCategory";
 import { Session } from "next-auth";
 import RecentlyConcludedEvents from "./components/Homepage/RecentlyConcludedEvents";
+import MarketplaceAnnouncement from "./components/shared/MarketplaceAnnoucement";
+import {
+  handleMarketplaceAnnouncementViewed,
+  shouldShowMarketplaceAnnouncement,
+} from "@/utils/announcementHelper";
 
 interface HomepageProps {
   imageWithPlaceholder: ImageWithPlaceholder[];
@@ -56,6 +61,8 @@ const Homepage: FunctionComponent<HomepageProps> = ({
     emailVerificationPromptIsVisible,
     setEmailVerificationPromptIsVisible,
   ] = useState(false);
+  const [showMarketplaceAnnouncement, setShowMarketplaceAnnouncement] =
+    useState(false);
 
   const userInfo = useSelector(
     (state: RootState) => state.userCredentials.userInfo
@@ -69,9 +76,10 @@ const Homepage: FunctionComponent<HomepageProps> = ({
         )
       : undefined;
 
-  console.log("🚀 ~ user:", user);
-  console.log("🚀 ~ userInfo:", userInfo);
-  console.log("🚀 ~ isEmailVerified:", isEmailVerified);
+  const handleCloseMarketplaceAnnouncement = () => {
+    handleMarketplaceAnnouncementViewed();
+    setShowMarketplaceAnnouncement(false);
+  };
 
   async function handleFetchFeaturedEvents() {
     // Fetch events
@@ -84,9 +92,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({
           // sessionStorage.setItem(StorageKeys.Events, JSON.stringify(response.data));
         }
       })
-      .catch((error) => {
-        console.log("🚀 ~ handleFetchFeaturedEvents ~ error:", error);
-      })
+      .catch((error) => {})
       .finally(() => {
         // Stop loader
         setIsFetchingFeaturedEvents(false);
@@ -146,7 +152,6 @@ const Homepage: FunctionComponent<HomepageProps> = ({
           callbackUrl: "/",
           // redirect: false
         }).then((response) => {
-          console.log("🚀 ~ .then ~ response:", response);
           // refresh the page
           // window.location.reload();
         });
@@ -155,6 +160,12 @@ const Homepage: FunctionComponent<HomepageProps> = ({
       login();
     }
   }, [authToken]);
+
+  useEffect(() => {
+    if (shouldShowMarketplaceAnnouncement()) {
+      setShowMarketplaceAnnouncement(true);
+    }
+  }, []);
 
   // Show beta test modal after 5 seconds, and only once
   // useEffect(() => {
@@ -184,6 +195,10 @@ const Homepage: FunctionComponent<HomepageProps> = ({
         visibility={showBetaTestModal}
         setVisibility={setShowBetaTestModal}
       />
+      {/* <MarketplaceAnnouncement
+        isOpen={showMarketplaceAnnouncement}
+        onClose={handleCloseMarketplaceAnnouncement}
+      /> */}
 
       {emailVerificationPromptIsVisible && (
         <EmailVerificationPrompt
