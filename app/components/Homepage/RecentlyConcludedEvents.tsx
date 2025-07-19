@@ -72,7 +72,7 @@ export default function RecentlyConcludedEvents({}: Props) {
   }
 
   return (
-    <section className="sectionPadding !py-[4.5rem] bg-dark-grey flex items-start relative text-white flex-col sm:gap-6 gap-2 pt-[6.5rem] !pb-[2.5rem]">
+    <section className="sectionPadding !py-[4.5rem] bg-dark-grey text-white sm:gap-6 gap-2 pt-[6.5rem] !pb-[2.5rem]">
       <div className="mx-auto px-0">
         <h2 className="text-white text-xl font-semibold mb-4">
           Recently Concluded Events
