@@ -90,8 +90,8 @@ export function useFetchEvents() {
 
 export function useFetchPastEvents(page = 1, limit = 5) {
   // Request token
-  const requestToken = useRequestCredentialToken();
-  async function fetchPastEvents(page?: number, limit?: number) {
+    const requestToken = useRequestCredentialToken()
+    async function fetchPastEvents(page: number = 1, limit: number = 5) {
     const token = await requestToken();
     return API.get(
       `${ApiRoutes.FetchPastEvents}?page=${page}&limit=${limit}`,
@@ -99,7 +99,7 @@ export function useFetchPastEvents(page = 1, limit = 5) {
     );
   }
 
-  return fetchPastEvents(page, limit);
+  return fetchPastEvents;
 }
 
 export function useFetchEventsByPublisherId() {
@@ -567,6 +567,14 @@ export function useFetchEventTickets() {
   }
 
   return fetchEventTickets;
+}
+
+export function useFetchDailyTicketSales() {
+  async function fetchDailyTicketSales(token: string, eventId: string, publisherId: string) {
+    return API.get(ApiRoutes.FetchDailyTicketSales(eventId, publisherId), getApiConfig(token));
+  }
+
+  return fetchDailyTicketSales;
 }
 
 export function useUpdateTicketInformation() {

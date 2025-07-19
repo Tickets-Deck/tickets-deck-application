@@ -147,18 +147,62 @@ export function EditEventModal({
         throw new Error("No event data provided");
       }
 
-      // Validate dates
-      // if (eventRequest.endDate && eventRequest.startDate && eventRequest.endDate < eventRequest.startDate) {
-      //     throw new Error("End date cannot be before start date")
-      // }
-      // if (eventRequest.purchaseEndDate && eventRequest.purchaseStartDate && eventRequest.purchaseEndDate < eventRequest.purchaseStartDate) {
-      //     throw new Error("Purchase end date cannot be before purchase start date")
-      // }
-      // if (eventRequest.purchaseEndDate && eventRequest.startDate && eventRequest.purchaseEndDate > eventRequest.startDate) {
-      //     throw new Error("Ticket sales must end before event starts")
-      // }
+      const dataForValidation = {
+        ...initialData,
+        ...eventRequest,
+      };
 
-      // console.log("🚀 ~ handleSubmit ~ eventRequest:", eventRequest);
+      const { startDate, endDate, purchaseStartDate, purchaseEndDate } =
+        dataForValidation;
+
+      const sDate = startDate ? moment(startDate) : null;
+      const eDate = endDate ? moment(endDate) : null;
+      const psDate = purchaseStartDate ? moment(purchaseStartDate) : null;
+      const peDate = purchaseEndDate ? moment(purchaseEndDate) : null;
+
+      // --- Date Validation Logic ---
+
+      // 1. Basic Sequence Violations
+      if (sDate && eDate && eDate.isBefore(sDate)) {
+        throw new Error("An event can’t end before it starts.");
+      }
+
+      // 2. Zero-Duration Violations
+      if (sDate && eDate && eDate.isSame(sDate)) {
+        throw new Error(
+          "The event must have a duration. Start and end times cannot be the same."
+        );
+      }
+      if (psDate && peDate && peDate.isSame(psDate)) {
+        throw new Error(
+          "Ticket sales must have a duration. Start and end times cannot be the same."
+        );
+      }
+
+      // 3. Logical Contradictions (Sales vs. Event)
+      if (psDate && eDate && psDate.isAfter(eDate)) {
+        throw new Error(
+          "You can't start selling tickets for an event that has already ended. Please change the sales start date."
+        );
+      }
+
+      if (psDate && peDate && peDate.isBefore(psDate)) {
+        throw new Error("Ticket sales can’t end before they begin.");
+      }
+
+      if (peDate && eDate && peDate.isAfter(eDate)) {
+        throw new Error(
+          "You can't allow ticket sales to continue after the event has ended."
+        );
+      }
+      if (psDate && sDate && psDate.isAfter(sDate)) {
+        throw new Error(
+          "You can’t start selling tickets after the event has already started."
+        );
+      }
+      if (peDate && sDate && peDate.isSameOrAfter(sDate)) {
+        throw new Error("Ticket sales must end before the event begins.");
+      }
 
       await handleUpdateEventInfo({ ...eventRequest, mainImageFile });
 

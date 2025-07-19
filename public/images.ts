@@ -13,6 +13,7 @@ import createImageMobile from "./images/createImageMobile.png";
 import woman_dancing from "./images/woman_dancing.svg";
 import user_avatar from "./images/user_avatar.png";
 import sad_face from "./images/sad_face.png";
+import bell from "./images/bell.png";
 import fingers_crossed from "./images/fingers_crossed.png";
 import about_hero from "./images/about-hero.jpg";
 
@@ -55,7 +56,8 @@ export default {
   createImageMobile,
   woman_dancing,
   user_avatar,
-  sad_face,
+    sad_face,
+  bell,
   fingers_crossed,
   about_hero,
   toby,

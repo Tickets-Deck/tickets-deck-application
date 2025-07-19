@@ -248,6 +248,9 @@ export class ApiRoutes {
     ticketId: string,
     publisherId: string
   ) => `tickets/${ticketId}/publisher/${publisherId}`;
+    
+    static FetchDailyTicketSales: (eventId: string, publisherId: string) => string = (eventId: string, publisherId: string) =>
+        `/tickets/${eventId}/publisher/${publisherId}/daily-sales`;
 
   /**
    * The route to DeleteTicket endpoint

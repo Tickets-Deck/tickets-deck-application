@@ -502,10 +502,7 @@ const PublisherEventInformation: FunctionComponent<
               />
             )}
             {selectedInfoTab == EventInformationTab.Analytics && (
-              <AnalyticsSection
-                eventInfo={eventInfo}
-                handleUpdateEventInfo={handleUpdateEventInfo}
-              />
+              <AnalyticsSection eventInfo={eventInfo} />
             )}
           </div>
         </section>

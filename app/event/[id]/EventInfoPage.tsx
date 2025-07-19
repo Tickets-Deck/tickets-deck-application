@@ -4,6 +4,7 @@ import {
   ReactElement,
   useEffect,
   useState,
+  useMemo,
   useContext,
 } from "react";
 import { useRouter } from "next/navigation";
@@ -76,6 +77,45 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
   const [contactDetailsModalIsVisible, setContactDetailsModalIsVisible] =
     useState(false);
 
+  const isPurchasePeriodOver =
+    !!eventInfo?.purchaseEndDate &&
+    moment(eventInfo.purchaseEndDate).isBefore(moment());
+
+  const isSaleYetToStart =
+    !!eventInfo?.purchaseStartDate &&
+    moment(eventInfo.purchaseStartDate).isAfter(moment());
+
+  const bannerConfig = useMemo(() => {
+    if (isPurchasePeriodOver) {
+      return {
+        text: "Ouch! Seems like you missed this event.",
+        image: images.sad_face,
+        imageAlt: "Sad face",
+        heading: "Event Information",
+        headingClass: "font-medium text-[30px] sm:text-[35px] leading-[1]",
+        slowMo: true,
+      };
+    }
+    if (isSaleYetToStart) {
+      return {
+        text: "Tickets will be available for sale shortly. Stay tuned!",
+        image: images.bell, // NOTE: Assumes `images.bell` is available. You may need to add a bell icon to your image assets.
+        imageAlt: "Bell icon",
+        heading: "Event Information",
+        headingClass: "text-3xl font-semibold",
+        slowMo: false,
+      };
+    }
+    return {
+      text: "Time to grab those tickets!",
+      image: images.woman_dancing,
+      imageAlt: "Woman dancing",
+      heading: "Event Information",
+      headingClass: "text-3xl font-semibold",
+      slowMo: false,
+    };
+  }, [isPurchasePeriodOver, isSaleYetToStart]);
+
   const eventLocation =
     eventInfo?.location?.address +
     " " +
@@ -85,42 +125,53 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
     ", " +
     eventInfo?.location?.country;
 
-  const isPurchaseStartDateInFuture = eventInfo
-    ? new Date(eventInfo?.purchaseStartDate) > new Date()
-    : false;
   const [timeLeftTillPurchaseStarts, setTimeLeftTillPurchaseStarts] = useState<
     string | null
   >(null);
+  // A dummy state to force re-renders for the timer, ensuring the UI
+  // updates precisely when the sale starts.
+  const [, forceTimerUpdate] = useState(0);
 
   useEffect(() => {
-    if (isPurchaseStartDateInFuture) {
-      // const interval = setInterval(() => {
-      //     const daysLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'days');
-      //     const hoursLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'hours');
-      //     const minutesLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'minutes');
-      //     const secondsLeft = moment(eventInfo?.purchaseStartDate).diff(moment(), 'seconds');
+    // If the sale is not yet to start, or there's no start date, do nothing.
+    if (isSaleYetToStart && eventInfo?.purchaseStartDate) {
+      let intervalId: NodeJS.Timeout;
+      let timeoutId: NodeJS.Timeout;
 
-      //     if (daysLeft > 0) {
-      //         setTimeLeftTillPurchaseStarts(`${daysLeft} days, ${hoursLeft} hrs, ${minutesLeft} mins, ${(secondsLeft / 1000) % 60} secs`);
-      //         return;
-      //     }
-      //     if (hoursLeft > 0) {
-      //         setTimeLeftTillPurchaseStarts(`${hoursLeft} hrs, ${minutesLeft % 60} mins, ${(secondsLeft / 1000) % 60} secs`);
-      //         return;
-      //     }
-      //     // if (minutesLeft > 0) {
-      //     //     setTimeLeftTillPurchaseStarts(`${minutesLeft} mins, ${secondsLeft} secs`);
-      //     //     return;
-      //     // }
-      //     // setTimeLeftTillPurchaseStarts(`${secondsLeft} secs`);
-      // }, 1000);
+      const purchaseStart = moment(eventInfo.purchaseStartDate);
 
-      // return () => clearInterval(interval);
-      setTimeLeftTillPurchaseStarts(
-        moment(eventInfo?.purchaseStartDate).fromNow()
-      );
+      const updateDisplay = () => {
+        setTimeLeftTillPurchaseStarts(purchaseStart.fromNow());
+      };
+
+      // Set initial value
+      updateDisplay();
+
+      // Update the "fromNow" string every minute for display
+      intervalId = setInterval(updateDisplay, 60000);
+
+      // Set a precise timeout to clear the message exactly when the sale starts.
+      // This ensures the UI updates promptly without waiting for the next interval.
+      const timeUntilStart = purchaseStart.diff(moment());
+      if (timeUntilStart > 0) {
+        timeoutId = setTimeout(() => {
+          // By updating a state variable, we force a re-render.
+          // This will cause `isSaleYetToStart` to become false,
+          // triggering the `else` block of this effect on the next render.
+          forceTimerUpdate((c) => c + 1);
+        }, timeUntilStart);
+      }
+
+      // Cleanup function to clear timers when the component unmounts or dependencies change
+      return () => {
+        clearInterval(intervalId);
+        clearTimeout(timeoutId);
+      };
+    } else {
+      // If sale has started or is over, ensure the countdown is not displayed.
+      setTimeLeftTillPurchaseStarts(null);
     }
-  }, [timeLeftTillPurchaseStarts, eventInfo]);
+  }, [isSaleYetToStart, eventInfo?.purchaseStartDate]);
 
   // useEffect hook to set total price
   useEffect(() => {
@@ -259,65 +310,34 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
       )}
 
       <div className="text-white bg-dark-grey">
-        {eventInfo?.purchaseEndDate &&
-        new Date(eventInfo?.purchaseEndDate) < new Date() ? (
-          <section className="relative flex flex-col gap-3 pb-12 w-full">
-            <div className="absolute size-full after:bg-white after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-50 after:bg-[linear-gradient(180deg,#8133f1_0%,#6315d3_100%)]">
-              <video
-                className="size-full object-cover object-bottom"
-                autoPlay
-                loop
-                muted
-                playsInline
-                onLoadStart={(e) => (e.currentTarget.playbackRate = 0.05)}
-                onLoadedData={(e) => (e.currentTarget.playbackRate = 0.05)}
-                onPlay={(e) => (e.currentTarget.playbackRate = 0.05)}
-                src="https://res.cloudinary.com/dvxqk1487/video/upload/q_auto/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4"
-              />
-            </div>
-            <div
-              className={
-                "px-5 md:px-[5rem] lg:px-[10rem] xl:px-[16%] py-6 w-full lg:w-[70%] z-[2] relative flex flex-col gap-3"
-              }
-            >
-              <span className="rounded-[0.5rem] py-1 px-2 flex items-center bg-white/10 gap-1 w-fit text-sm">
-                Ouch! Seems like you missed this event.
-                <span className="size-4 bg-transparent p-0">
-                  <Image src={images.sad_face} alt="Sad face" />
-                </span>
+        <section className="relative flex flex-col gap-3 pb-12 w-full">
+          <div className="absolute size-full after:bg-white after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-50 after:bg-[linear-gradient(180deg,#8133f1_0%,#6315d3_100%)]">
+            <video
+              className="size-full object-cover object-bottom"
+              autoPlay
+              loop
+              muted
+              playsInline
+              {...(bannerConfig.slowMo && {
+                onLoadStart: (e) => (e.currentTarget.playbackRate = 0.05),
+                onLoadedData: (e) => (e.currentTarget.playbackRate = 0.05),
+                onPlay: (e) => (e.currentTarget.playbackRate = 0.05),
+              })}
+              src="https://res.cloudinary.com/dvxqk1487/video/upload/q_auto/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4"
+            />
+          </div>
+          <div className="px-5 md:px-[5rem] xl:px-[16%] lg:px-[10rem] py-6 w-full lg:w-[70%] z-[2] relative flex flex-col gap-3">
+            <span className="rounded-[0.5rem] py-1 px-2 flex items-center bg-white/10 gap-1 w-fit text-sm">
+              {bannerConfig.text}
+              <span className="size-4 bg-transparent p-0">
+                <Image src={bannerConfig.image} alt={bannerConfig.imageAlt} />
               </span>
-              <h2 className="font-medium text-[30px] sm:text-[35px] leading-[1]">
-                Event Information
-              </h2>
-            </div>
-          </section>
-        ) : (
-          <section className="relative flex flex-col gap-3 pb-12 w-full">
-            <div className="absolute size-full after:bg-white after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-50 after:bg-[linear-gradient(180deg,#8133f1_0%,#6315d3_100%)]">
-              <video
-                className="size-full object-cover object-bottom"
-                autoPlay
-                loop
-                muted
-                playsInline
-                src="https://res.cloudinary.com/dvxqk1487/video/upload/q_auto/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4"
-              />
-            </div>
-            <div
-              className={
-                "px-5 md:px-[5rem] xl:px-[16%] lg:px-[10rem] py-6 w-full lg:w-[70%] z-[2] relative flex flex-col gap-3"
-              }
-            >
-              <span className="rounded-[0.5rem] py-1 px-2 flex items-center bg-white/10 gap-1 w-fit text-sm">
-                Time to grab those tickets!
-                <span className="size-4 bg-transparent p-0">
-                  <Image src={images.woman_dancing} alt="Woman dancing" />
-                </span>
-              </span>
-              <h2 className="text-3xl font-semibold">Event Information</h2>
-            </div>
-          </section>
-        )}
+            </span>
+            <h2 className={bannerConfig.headingClass}>
+              {bannerConfig.heading}
+            </h2>
+          </div>
+        </section>
 
         {eventInfo ? (
           <section className="px-5 md:px-[5rem] xl:px-[16%] lg:px-[10rem] z-[2] relative flex flex-col translate-y-[-4rem] sm:translate-y-[-2.25rem] pb-10">

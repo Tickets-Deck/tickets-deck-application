@@ -22,6 +22,7 @@ import EmailVerificationPrompt from "./components/Modal/EmailVerificationPrompt"
 import { catchError } from "./constants/catchError";
 import { ITrendingEventCategory } from "./models/IEventCategory";
 import { Session } from "next-auth";
+import RecentlyConcludedEvents from "./components/Homepage/RecentlyConcludedEvents";
 
 interface HomepageProps {
   imageWithPlaceholder: ImageWithPlaceholder[];
@@ -60,10 +61,14 @@ const Homepage: FunctionComponent<HomepageProps> = ({
     (state: RootState) => state.userCredentials.userInfo
   );
 
-  const isEmailVerified = user && userInfo ? userInfo.flags.some(
-    (flag) => flag.flagName === "isEmailVerified" && flag.flagValue === true
-  ) : undefined;
-  
+  const isEmailVerified =
+    user && userInfo
+      ? userInfo.flags.some(
+          (flag) =>
+            flag.flagName === "isEmailVerified" && flag.flagValue === true
+        )
+      : undefined;
+
   console.log("🚀 ~ user:", user);
   console.log("🚀 ~ userInfo:", userInfo);
   console.log("🚀 ~ isEmailVerified:", isEmailVerified);
@@ -205,6 +210,7 @@ const Homepage: FunctionComponent<HomepageProps> = ({
           isFetchingEvents={isFetchingFeaturedEvents}
           featuredEvents={featuredEvents}
         />
+        <RecentlyConcludedEvents />
         <Services />
         <TestimonialSection />
         <CreateEvent

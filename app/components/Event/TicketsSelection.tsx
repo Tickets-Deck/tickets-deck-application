@@ -12,6 +12,7 @@ import { Icons } from "../ui/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { useToast } from "@/app/context/ToastCardContext";
+import TicketDescription from "../Ticket/TicketDescription";
 
 interface TicketsSelectionContainerProps {
   appTheme: Theme | null;
@@ -125,7 +126,6 @@ const TicketsSelectionContainer: FunctionComponent<
       </div>
       <div className="flex flex-col sm:grid [grid-template-columns:repeat(auto-fill,_minmax(calc(50%-1.25rem),_1fr))] gap-5">
         {eventTickets?.map((ticketType, index) => {
-          console.log("🚀 ~ {eventTickets?.map ~ ticketType:", ticketType);
           if (!ticketType.visibility) {
             return;
           }
@@ -155,7 +155,12 @@ const TicketsSelectionContainer: FunctionComponent<
               key={index}
             >
               <div className="flex items-center justify-between">
-                <p className="text-sm">{ticketType.name}</p>
+                <div>
+                  <p className="text-sm">{ticketType.name}</p>
+                  {ticketType.description && (
+                    <TicketDescription ticket={ticketType} />
+                  )}
+                </div>
                 <h4 className="font-medium">
                   {ticketType.price > 0 ? (
                     <>&#8358;{ticketType.price.toLocaleString()}</>
