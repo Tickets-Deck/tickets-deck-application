@@ -88,13 +88,13 @@ export function useFetchEvents() {
   return fetchEvents;
 }
 
-export function useFetchPastEvents(page = 1, limit = 5) {
+export function useFetchPastEvents() {
   // Request token
     const requestToken = useRequestCredentialToken()
-    async function fetchPastEvents(page: number = 1, limit: number = 5) {
+    async function fetchPastEvents(page: number = 1, limit: number = 5, sort?: "newest" | "oldest") {
     const token = await requestToken();
     return API.get(
-      `${ApiRoutes.FetchPastEvents}?page=${page}&limit=${limit}`,
+      `${ApiRoutes.FetchPastEvents}?page=${page}&limit=${limit}&sort=${sort}`,
       getApiConfig(token.data.token)
     );
   }
