@@ -430,4 +430,19 @@ export class ApiRoutes {
    * The route to TrendingEventCategories endpoint
    */
   static TrendingEventCategories: string = "event-category/trending";
+
+  /**
+   * The route to Create Banner endpoint
+   */
+  static Banners: string = `banners`;
+
+  /**
+   * The route to Upload Banner Frame endpoint
+   */
+  static UploadBannerFrame: string = `banners/upload-frame`;
+
+  /**
+   * The route to generate a personalized DP
+   */
+  static GenerateDp: (bannerId: string) => string = (bannerId: string) => `dps/generate/${bannerId}`;
 }
