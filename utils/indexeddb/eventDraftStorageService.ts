@@ -1,6 +1,6 @@
 import { EventRequest } from "@/app/models/IEvents"; 
 
-const DB_NAME = 'EventDraftDB';
+const DB_NAME = 'TDEventDraftDB';
 const STORE_NAME = 'eventDrafts';
 const DB_VERSION = 1;
 
