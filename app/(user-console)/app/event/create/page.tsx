@@ -33,7 +33,7 @@ import {
   clearEventDraft,
   getEventDraft,
   saveEventDraft,
-} from "@/utils/eventDraftStorageService";
+} from "@/utils/indexeddb/eventDraftStorageService";
 import { useToast } from "@/app/context/ToastCardContext";
 
 interface CreateEventProps {}
