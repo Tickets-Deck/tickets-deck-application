@@ -19,6 +19,7 @@ import {
 } from "../models/IPassword";
 import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
 import { CreateReviewRequest } from "../models/IReview";
+import { ICreateBannerPayload, UploadBannerFrameResponse } from "../models/IBanner";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL,
@@ -841,4 +842,44 @@ export function useFetchOrganizerReviews() {
   }
 
   return fetchReviews;
+}
+
+export function useCreateBanner() {
+  async function createBanner(data: ICreateBannerPayload, token: string) {
+    return API.post(`${ApiRoutes.Banners}`, data, getApiConfig(token));
+  }
+  return createBanner;
+}
+
+export function useFetchBanner() {
+  async function fetchBanner(id: string) {
+    // This is a public route, so no auth token is needed.
+    return API.get(`${ApiRoutes.Banners}/${id}`);
+  }
+  return fetchBanner;
+}
+
+export function useUploadBannerFrame() {
+  async function uploadBanner(data: FormData, token: string) {
+    return API.post<null, { data: UploadBannerFrameResponse }>(
+      `${ApiRoutes.UploadBannerFrame}`,
+      data,
+      getApiConfig(token)
+    );
+  }
+  return uploadBanner;
+}
+
+export function useGenerateDp() {
+  async function generateDp(bannerId: string, data: FormData) {
+    // This is a public endpoint, so no auth token is needed.
+    // We expect the response to be an image blob.
+    return API.post(ApiRoutes.GenerateDp(bannerId), data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      responseType: "blob",
+    });
+  }
+  return generateDp;
 }
