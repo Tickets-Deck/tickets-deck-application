@@ -19,6 +19,8 @@ import {
 import { useDebounce } from "@/app/hooks/useDebounce";
 import { DialogWrapper } from "@/app/components/Dialog/DialogWrapper";
 import { useToast } from "@/app/context/ToastCardContext";
+import { formatFileSize } from "@/utils/formatFileSize";
+import { compressImage } from "@/utils/imageCompress";
 
 export default function CreateBannerPage() {
   const createBanner = useCreateBanner();
@@ -53,7 +55,20 @@ export default function CreateBannerPage() {
   const handleUploadBannerFrame = async (frameImageFile: File) => {
     const formData = new FormData();
 
-    formData.append("frame-image", frameImageFile);
+    let fileToUpload = frameImageFile;
+
+    console.log(`Original image size: ${formatFileSize(frameImageFile.size)}`);
+    const { compressedFile, compressedSize, reductionPercentage } =
+      await compressImage(frameImageFile);
+    console.log(
+      `Compressed to: ${formatFileSize(
+        compressedSize
+      )} (${reductionPercentage.toFixed(2)}% reduction)`
+    );
+
+    fileToUpload = compressedFile;
+
+    formData.append("frame-image", fileToUpload);
 
     const uploadedFileResponse = await uploadBannerFrame(
       formData!,
