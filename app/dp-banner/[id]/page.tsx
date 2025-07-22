@@ -7,6 +7,9 @@ import { useEffect, useRef, useState } from "react";
 import Loading from "./loading";
 import { Download } from "lucide-react";
 import { PersonalizationForm } from "@/app/components/DpBanner/BannerView/PersonalizationForm";
+import { useToast } from "@/app/context/ToastCardContext";
+import { formatFileSize } from "@/utils/formatFileSize";
+import { compressImage } from "@/utils/imageCompress";
 
 interface BannerPageProps {
   params: {
@@ -18,6 +21,7 @@ export default function BannerPage({ params }: BannerPageProps) {
   const fetchBanner = useFetchBanner();
   const generateDp = useGenerateDp();
   const { data: session, status } = useSession();
+  const toast = useToast();
 
   const [banner, setBanner] = useState<IBanner | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,7 +67,22 @@ export default function BannerPage({ params }: BannerPageProps) {
 
     const formData = new FormData();
     if (userAvatarFile) {
-      formData.append("avatar", userAvatarFile);
+      let fileToUpload = userAvatarFile;
+
+      console.log(
+        `Original image size: ${formatFileSize(userAvatarFile.size)}`
+      );
+      const { compressedFile, compressedSize, reductionPercentage } =
+        await compressImage(userAvatarFile);
+      console.log(
+        `Compressed to: ${formatFileSize(
+          compressedSize
+        )} (${reductionPercentage.toFixed(2)}% reduction)`
+      );
+
+      fileToUpload = compressedFile;
+
+      formData.append("avatar", fileToUpload);
     }
     formData.append("textInputs", JSON.stringify(userTextInputs));
 
@@ -74,7 +93,10 @@ export default function BannerPage({ params }: BannerPageProps) {
       setGeneratedImageUrl(url);
     } catch (err) {
       console.error("Error generating DP:", err);
-      // You might want to show a toast notification here
+      toast.logError(
+        "Generation Failed",
+        "We couldn't generate your DP. Please try a different image or check your connection."
+      );
     } finally {
       setIsGenerating(false);
     }
