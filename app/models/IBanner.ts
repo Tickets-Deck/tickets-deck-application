@@ -4,7 +4,7 @@ export type IAvatarConfig = {
   x: number;
   y: number;
   shape?: "circle" | "square";
-}
+};
 
 export type ITextElementConfig = {
   id: string;
@@ -15,30 +15,31 @@ export type ITextElementConfig = {
   color: string;
   fontFamily?: string;
   fontWeight?: string;
-  textAlign?: 'left' | 'center' | 'right';
-}
+  textAlign?: "left" | "center" | "right";
+};
 
 export type IBannerConfiguration = {
   frameImageUrl: string;
   avatar?: IAvatarConfig;
   textElements?: ITextElementConfig[];
-}
+};
 
 export type ICreateBannerPayload = {
   title: string;
   description?: string;
   configuration: IBannerConfiguration;
-}
+};
 
 export type IBanner = ICreateBannerPayload & {
   id: string;
   ownerId: string;
   generationCount: number;
+  viewCount: number;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 export type UploadBannerFrameResponse = {
-    bannerImageId: string,
-    bannerImageUrl: string
-}
+  bannerImageId: string;
+  bannerImageUrl: string;
+};
