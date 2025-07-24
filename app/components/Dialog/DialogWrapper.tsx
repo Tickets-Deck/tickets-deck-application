@@ -14,9 +14,18 @@ interface DialogWrapperProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  containerClass?: string;
+  titleClass?: string;
 }
 
-export const DialogWrapper = ({ isOpen, onClose, title, children }: DialogWrapperProps) => {
+export const DialogWrapper = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  containerClass,
+  titleClass,
+}: DialogWrapperProps) => {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -43,10 +52,12 @@ export const DialogWrapper = ({ isOpen, onClose, title, children }: DialogWrappe
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <DialogPanel
+                className={`w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all ${containerClass}`}
+              >
                 <DialogTitle
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  className={`text-lg font-medium leading-6 text-gray-900 ${titleClass}`}
                 >
                   {title}
                 </DialogTitle>
