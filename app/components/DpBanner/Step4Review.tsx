@@ -74,7 +74,7 @@ export const Step4Review = ({
             <h4 className="font-semibold text-gray-800">Description</h4>
             <p className="text-gray-600">{payload.description || "Not set"}</p>
           </div>
-          {payload.configuration?.avatar && (
+          {/* {payload.configuration?.avatar && (
             <div>
               <h4 className="font-semibold text-gray-800">Avatar Config</h4>
               <ul className="list-disc list-inside text-gray-600 text-sm">
@@ -102,7 +102,7 @@ export const Step4Review = ({
                   ))}
                 </ul>
               </div>
-            )}
+            )} */}
         </div>
 
         {/* Right Column: Visual Preview */}

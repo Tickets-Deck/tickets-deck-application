@@ -46,9 +46,12 @@ export const PersonalizationForm = ({
                 <UploadCloud className="w-6 h-6 text-gray-500" />
               )}
             </div>
-            <span className="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
-              Click to upload an image
-            </span>
+            <div>
+              <span className="text-sm text-indigo-600 hover:text-indigo-800 font-medium block">
+                Click to upload an image
+              </span>
+              <span className="text-xs text-gray-500">(Maximum of 10mb)</span>
+            </div>
           </label>
           <input
             id="avatar-upload"
