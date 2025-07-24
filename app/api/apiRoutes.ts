@@ -21,7 +21,7 @@ export class ApiRoutes {
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
+  static BASE_URL: string = ApiRoutes.BASE_URL_DEV;
 
   /**
    * The route to Request Credential Token endpoint
@@ -248,9 +248,12 @@ export class ApiRoutes {
     ticketId: string,
     publisherId: string
   ) => `tickets/${ticketId}/publisher/${publisherId}`;
-    
-    static FetchDailyTicketSales: (eventId: string, publisherId: string) => string = (eventId: string, publisherId: string) =>
-        `/tickets/${eventId}/publisher/${publisherId}/daily-sales`;
+
+  static FetchDailyTicketSales: (
+    eventId: string,
+    publisherId: string
+  ) => string = (eventId: string, publisherId: string) =>
+    `/tickets/${eventId}/publisher/${publisherId}/daily-sales`;
 
   /**
    * The route to DeleteTicket endpoint
@@ -437,6 +440,11 @@ export class ApiRoutes {
   static Banners: string = `banners`;
 
   /**
+   * The route to fetch the current user's created banners
+   */
+  static MyBanners: string = `banners/my-banners`;
+
+  /**
    * The route to Upload Banner Frame endpoint
    */
   static UploadBannerFrame: string = `banners/upload-frame`;
@@ -444,5 +452,19 @@ export class ApiRoutes {
   /**
    * The route to generate a personalized DP
    */
-  static GenerateDp: (bannerId: string) => string = (bannerId: string) => `dps/generate/${bannerId}`;
+  static GenerateDp: (bannerId: string, ownerId?: string) => string = (
+    bannerId: string,
+    ownerId?: string
+  ) => `dps/generate/${bannerId}/user/${ownerId}`;
+
+  /**
+   * The route to fetch the current user's generated DPs
+   */
+  //   static MyDps: string = `dps/my-dps`;
+    static MyDps: string = "dps/my-dps";
+    
+  /**
+   * The route to record a view for a banner
+   */
+  static RecordBannerView: (bannerId: string) => string = (bannerId: string) => `banners/${bannerId}/view`;
 }
