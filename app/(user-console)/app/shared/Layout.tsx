@@ -13,17 +13,17 @@ export default function Layout({ children, session }: Props) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   return (
-    <div className='flex h-screen flex-col md:overflow-hidden bg-dark-grey-2'>
+    <div className="flex h-screen flex-col md:overflow-hidden bg-dark-grey-2">
       <Topbar
         isMobileSidebarOpen={isMobileSidebarOpen}
         setIsMobileSidebarOpen={setIsMobileSidebarOpen}
       />
-      <div className='flex-grow flex flex-row md:overflow-y-auto'>
+      <div className="flex-grow flex flex-row md:overflow-y-auto">
         <Sidebar
           isMobileSidebarOpen={isMobileSidebarOpen}
           setIsMobileSidebarOpen={setIsMobileSidebarOpen}
         />
-        <div className='w-full bg-dark-grey-2'>{children}</div>
+        <div className="w-full bg-dark-grey-2">{children}</div>
       </div>
     </div>
   );
