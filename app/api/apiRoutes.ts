@@ -21,7 +21,7 @@ export class ApiRoutes {
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
+  static BASE_URL: string = ApiRoutes.BASE_URL_LIVE;
 
   /**
    * The route to Request Credential Token endpoint
@@ -213,6 +213,13 @@ export class ApiRoutes {
   static FetchTicketsSold: (publisherId: string) => string = (
     publisherId: string
   ) => `users/${publisherId}/sold-tickets`;
+
+  /**
+   * The route to Event Attendee Metrics endpoint
+   */
+  static EventAttendeeMetrics: (publisherId: string) => string = (
+    publisherId: string
+  ) => `dashboard/event-attendees/${publisherId}`;
 
   /**
    * The route to Tickets Sold Metrics endpoint
