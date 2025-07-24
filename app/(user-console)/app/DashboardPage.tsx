@@ -2,7 +2,10 @@
 import { ReactElement, FunctionComponent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useFetchDashboardInfo, useFetchTicketsSoldMetrics } from "@/app/api/apiClient";
+import {
+  useFetchDashboardInfo,
+  useFetchTicketsSoldMetrics,
+} from "@/app/api/apiClient";
 import { DashboardInfoResponse } from "@/app/models/IDashboardInfoResponse";
 import { catchError } from "@/app/constants/catchError";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
