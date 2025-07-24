@@ -215,6 +215,13 @@ export class ApiRoutes {
   ) => `users/${publisherId}/sold-tickets`;
 
   /**
+   * The route to Event Attendee Metrics endpoint
+   */
+  static EventAttendeeMetrics: (publisherId: string) => string = (
+    publisherId: string
+  ) => `dashboard/event-attendees/${publisherId}`;
+
+  /**
    * The route to Tickets Sold Metrics endpoint
    */
   static TicketsSoldMetrics: (publisherId: string) => string = (
