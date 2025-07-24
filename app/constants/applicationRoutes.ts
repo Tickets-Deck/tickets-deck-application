@@ -93,6 +93,21 @@ export class ApplicationRoutes {
   static readonly Wallet = "/app/wallet";
 
   /**
+   * The route to the DpBanner page
+   */
+  static readonly DpBanner = "/dp-banner";
+
+  /**
+   * The route to the CreateDpBanner page
+   */
+  static readonly CreateDpBanner = "/dp-banner/create";
+
+  /**
+   * The route to the UserDpBanner page
+   */
+  static readonly UserDpBanner = "/app/dp-banner";
+
+  /**
    * The route to the transactions page
    */
   static readonly Transactions = "/app/transactions";
