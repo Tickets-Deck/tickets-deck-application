@@ -21,7 +21,7 @@ export class ApiRoutes {
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_DEV;
+  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
 
   /**
    * The route to Request Credential Token endpoint
@@ -461,10 +461,11 @@ export class ApiRoutes {
    * The route to fetch the current user's generated DPs
    */
   //   static MyDps: string = `dps/my-dps`;
-    static MyDps: string = "dps/my-dps";
-    
+  static MyDps: string = "dps/my-dps";
+
   /**
    * The route to record a view for a banner
    */
-  static RecordBannerView: (bannerId: string) => string = (bannerId: string) => `banners/${bannerId}/view`;
+  static RecordBannerView: (bannerId: string) => string = (bannerId: string) =>
+    `banners/${bannerId}/view`;
 }
