@@ -15,6 +15,7 @@ import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { motion } from "framer-motion";
 import { mobileMenuVariant } from "@/app/animations/navbarAnimations";
 import { Icons } from "../ui/icons";
+import { PictureInPicture } from "lucide-react";
 
 interface SidebarProps {
   isMobileSidebarOpen: boolean;
@@ -44,6 +45,9 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
   );
   const currentPageIsProfile = pathname.includes(ApplicationRoutes.Profile);
   const currentPageIsWallet = pathname.includes(ApplicationRoutes.Wallet);
+  const currentPageIsDpBanner = pathname.includes(
+    ApplicationRoutes.UserDpBanner
+  );
   const currentPageIsFavorites = pathname.includes(
     ApplicationRoutes.FavouriteEvents
   );
@@ -84,7 +88,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 
   return (
     <motion.div
-      initial='closed'
+      initial="closed"
       variants={
         onMobile
           ? mobileMenuVariant({
@@ -95,14 +99,14 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
           : undefined
       }
       animate={isMobileSidebarOpen ? "opened" : "closed"}
-      className='w-full md:w-[25%] fixed md:sticky top-0 bg-dark-grey text-white z-[999] h-full'
+      className="w-full md:w-[25%] fixed md:sticky top-0 bg-dark-grey text-white z-[999] h-full"
     >
-      <div className='flex flex-col mt-5'>
+      <div className="flex flex-col mt-5">
         <ul>
           <ReusableLink
             route={ApplicationRoutes.Dashboard}
             currentPageChecker={currentPageIsDashboard}
-            text='Dashboard'
+            text="Dashboard"
             icon={<Icons.Dashboard />}
           />
           <li
@@ -136,41 +140,48 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
           >
             <ReusableLink
               route={ApplicationRoutes.Events}
-              className='!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
+              className="!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]"
               currentPageChecker={currentPageIsEvents}
-              text='My Events'
+              text="My Events"
               icon={<Icons.Event />}
             />
             <ReusableLink
               route={ApplicationRoutes.FavouriteEvents}
-              className='!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
+              className="!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]"
               currentPageChecker={currentPageIsFavorites}
-              text='My Favorites'
+              text="My Favorites"
               icon={<Icons.Event />}
             />
             <ReusableLink
               route={ApplicationRoutes.CreateEvent}
-              className='!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]'
+              className="!text-xs before:!opacity-0 hover:!bg-dark-grey/5 hover:before:!opacity-0 [&_svg]:!scale-[0.8]"
               currentPageChecker={currentPageIsCreateEvent}
-              text='Create Event'
+              text="Create Event"
               icon={<Icons.AddEvent />}
             />
           </div>
 
           <ReusableLink
+            route={ApplicationRoutes.UserDpBanner}
+            currentPageChecker={currentPageIsDpBanner}
+            text="My DP Banners"
+            icon={<PictureInPicture />}
+          />
+
+          <ReusableLink
             route={ApplicationRoutes.Wallet}
             currentPageChecker={currentPageIsWallet}
-            text='Wallet'
+            text="Wallet"
             icon={<Icons.Wallet />}
           />
           <ReusableLink
             route={ApplicationRoutes.Profile}
             currentPageChecker={currentPageIsProfile}
-            text='Profile'
+            text="Profile"
             icon={<Icons.Profile />}
           />
           <li
-            className='py-[0.8rem] px-4 flex items-center gap-[6px] text-sm cursor-pointer relative before:absolute before:left-[-0.25rem] before:top-0 before:bottom-0 before:w-[3px] before:[border-start-end-radius:8px] before:[border-end-end-radius:8px] before:bg-transparent before:transition-all before:[transition-timing-function:cubic-bezier(0.55,0.055,0.675,0.19)] before:duration-200  hover:bg-dark-grey/5 hover:text-primary-color-sub [&_svg_path]:hover:fill-primary-color-sub hover:before:left-0 hover:before:bg-primary-color-sub [&_svg]:w-[22px] [&_svg_path]:stroke-primary-color-sub'
+            className="py-[0.8rem] px-4 flex items-center gap-[6px] text-sm cursor-pointer relative before:absolute before:left-[-0.25rem] before:top-0 before:bottom-0 before:w-[3px] before:[border-start-end-radius:8px] before:[border-end-end-radius:8px] before:bg-transparent before:transition-all before:[transition-timing-function:cubic-bezier(0.55,0.055,0.675,0.19)] before:duration-200  hover:bg-dark-grey/5 hover:text-primary-color-sub [&_svg_path]:hover:fill-primary-color-sub hover:before:left-0 hover:before:bg-primary-color-sub [&_svg]:w-[22px] [&_svg_path]:stroke-primary-color-sub"
             onClick={() => {
               signOut();
               closeSidebar();

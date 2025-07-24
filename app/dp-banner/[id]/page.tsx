@@ -87,12 +87,26 @@ export default function BannerPage({ params }: BannerPageProps) {
     formData.append("textInputs", JSON.stringify(userTextInputs));
 
     try {
-      const response = await generateDp(banner.id, formData);
+      const response = await generateDp(
+        banner.id,
+        formData,
+        session?.user.id || undefined
+      );
       const blob = new Blob([response.data], { type: "image/png" });
       const url = URL.createObjectURL(blob);
       setGeneratedImageUrl(url);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error generating DP:", err);
+      if (err.response && err.response.status === 413) {
+        prompt("Entity too large");
+
+        toast.logError(
+          "Image size too large",
+          "Please try again with another image"
+        );
+
+        return;
+      }
       toast.logError(
         "Generation Failed",
         "We couldn't generate your DP. Please try a different image or check your connection."
