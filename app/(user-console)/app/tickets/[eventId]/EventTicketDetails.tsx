@@ -1,5 +1,5 @@
 "use client";
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFetchUserEventTicketsSold } from "@/app/api/apiClient";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
@@ -12,6 +12,7 @@ import Button from "@/app/components/ui/button";
 import jsonexport from "jsonexport";
 import { useSession } from "next-auth/react";
 import { OrderStatus } from "@/app/enums/IOrderStatus";
+import DownloadOptionsModal from "@/app/components/UserConsole/TicketsPage/DownloadOptionsModal";
 
 type Props = {
   eventId: string;
@@ -29,15 +30,26 @@ export default function EventTicketDetails({ eventId }: Props) {
 
   const [isFetchingEventTickets, setIsFetchingEventTickets] = useState(true);
   const [ticketOrders, setTicketOrders] = useState<UserTicketOrder[]>([]);
+  console.log("🚀 ~ EventTicketDetails ~ ticketOrders:", ticketOrders);
   const [isDownloadingTicketsSold, setIsDownloadingTicketsSold] =
     useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const availableFields = [
+    "Ticket Name",
+    "Amount",
+    "Email Address",
+    "Full Name",
+    "Phone Number",
+    "Purchase Date",
+  ];
+  const [selectedFields, setSelectedFields] =
+    useState<string[]>(availableFields);
 
   const handleFetchEventTickets = async () => {
     setIsFetchingEventTickets(true);
 
     await ticketsSold(user?.token as string, userInfo?.id as string, eventId)
       .then((response) => {
-        console.log("🚀 ~ .then ~ response:", response)
         setTicketOrders(response.data);
       })
       .catch((error) => {
@@ -64,26 +76,41 @@ export default function EventTicketDetails({ eventId }: Props) {
     }
   }
 
-  async function handleDownloadEventTicketsInfo(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
+  async function handleDownloadEventTicketsInfo(fieldsToDownload: string[]) {
     setIsDownloadingTicketsSold(true);
 
     try {
+      if (fieldsToDownload.length === 0) {
+        toast.error("Please select at least one field to download.");
+        setIsDownloadingTicketsSold(false);
+        return;
+      }
+
       const formattedData = ticketOrders.map((eachData) => {
         const fullName =
           eachData.order.contactFirstName && eachData.order.contactLastName
-            ? eachData.order.contactFirstName +
-              " " +
-              eachData.order.contactLastName
+            ? `${eachData.order.contactFirstName} ${eachData.order.contactLastName}`
             : "Not provided";
-        return {
-          Ticket: eachData.ticket.name,
-          Amount: eachData.price,
-          "Email Address": eachData.associatedEmail ?? eachData.contactEmail,
-          "Full Name": fullName,
-          "Phone Number": eachData.order.contactNumber,
-          "Date Created": moment(new Date()).format("YYYY-MM-DD"),
-        };
+
+        const record: { [key: string]: any } = {};
+
+        if (fieldsToDownload.includes("Ticket Name"))
+          record["Ticket Name"] = eachData.ticket.name;
+        if (fieldsToDownload.includes("Amount"))
+          record["Amount"] = eachData.price;
+        if (fieldsToDownload.includes("Email Address"))
+          record["Email Address"] =
+            eachData.associatedEmail || eachData.contactEmail;
+        if (fieldsToDownload.includes("Full Name"))
+          record["Full Name"] = fullName;
+        if (fieldsToDownload.includes("Phone Number"))
+          record["Phone Number"] = eachData.order.contactNumber;
+        if (fieldsToDownload.includes("Date Created"))
+          record["Date Created"] = moment(eachData.createdAt).format(
+            "YYYY-MM-DD"
+          );
+
+        return record;
       });
 
       const csvData = await jsonexport(formattedData);
@@ -94,11 +121,11 @@ export default function EventTicketDetails({ eventId }: Props) {
       a.style.display = "none";
       a.href = url;
       a.download = fileName;
-
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       setIsDownloadingTicketsSold(false);
+      setIsModalOpen(false);
       toast(
         `${ticketOrders[0].ticket.event.title} tickets sold downloaded successfully.`
       );
@@ -131,9 +158,7 @@ export default function EventTicketDetails({ eventId }: Props) {
           </h3>
 
           <Button
-            onClick={handleDownloadEventTicketsInfo}
-            isLoading={isDownloadingTicketsSold}
-            disabled={isDownloadingTicketsSold}
+            onClick={() => setIsModalOpen(true)}
             className="bg-primary-color text-white w-fit hover:!text-primary-color"
           >
             Download
@@ -201,6 +226,15 @@ export default function EventTicketDetails({ eventId }: Props) {
           </div>
         )}
       </div>
+      <DownloadOptionsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onDownload={handleDownloadEventTicketsInfo}
+        availableFields={availableFields}
+        selectedFields={selectedFields}
+        setSelectedFields={setSelectedFields}
+        isDownloading={isDownloadingTicketsSold}
+      />
     </div>
   );
 }
