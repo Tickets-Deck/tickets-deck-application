@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   useFetchDashboardInfo,
+  useFetchEventAttendeeMetrics,
   useFetchTicketsSoldMetrics,
 } from "@/app/api/apiClient";
 import { DashboardInfoResponse } from "@/app/models/IDashboardInfoResponse";
@@ -17,6 +18,8 @@ import KpiSection from "@/app/components/UserConsole/DashboardPage/KpiSection";
 import RecentTransactions from "@/app/components/UserConsole/DashboardPage/RecentTransactions";
 import TicketsSold from "@/app/components/UserConsole/DashboardPage/TicketsSold";
 import { TicketsSoldMetrics } from "@/app/models/IMetrics";
+import { EventAttendeeMetrics } from "@/app/models/IMetrics";
+import EventAttendees from "@/app/components/UserConsole/DashboardPage/EventAttendees";
 
 interface DashboardPageProps {}
 
@@ -25,6 +28,7 @@ const DashboardPage: FunctionComponent<
 > = (): ReactElement => {
   const fetchDashboardInfo = useFetchDashboardInfo();
   const fetchTicketsSoldMetrics = useFetchTicketsSoldMetrics();
+  const fetchEventAttendeeMetrics = useFetchEventAttendeeMetrics();
 
   const { data: session, status } = useSession();
   const user = session?.user;
@@ -40,6 +44,11 @@ const DashboardPage: FunctionComponent<
     useState(true);
   const [ticketsSoldMetrics, setTicketsSoldMetrics] = useState<
     TicketsSoldMetrics[]
+  >([]);
+  const [isFetchingAttendeeMetrics, setIsFetchingAttendeeMetrics] =
+    useState(true);
+  const [eventAttendeeMetrics, setEventAttendeeMetrics] = useState<
+    EventAttendeeMetrics[]
   >([]);
 
   async function handleFetchDashboardInfo() {
@@ -74,6 +83,26 @@ const DashboardPage: FunctionComponent<
       });
   }
 
+  async function handleFetchEventAttendeeMetrics() {
+    // show loader
+    setIsFetchingAttendeeMetrics(true);
+
+    await fetchEventAttendeeMetrics(user?.token as string, user?.id as string)
+      .then((response) => {
+        console.log(
+          "🚀 ~ handleFetchEventAttendeeMetrics ~ response:",
+          response
+        );
+        setEventAttendeeMetrics(response.data);
+      })
+      .catch((error) => {
+        catchError(error);
+      })
+      .finally(() => {
+        setIsFetchingAttendeeMetrics(false);
+      });
+  }
+
   function greeting() {
     const date = new Date();
     const hours = date.getHours();
@@ -91,7 +120,8 @@ const DashboardPage: FunctionComponent<
   useEffect(() => {
     if (user) {
       handleFetchDashboardInfo();
-      handleFetchTicketsSoldMetrics();
+      //   handleFetchTicketsSoldMetrics();
+      handleFetchEventAttendeeMetrics();
     }
   }, [user]);
 
@@ -136,9 +166,13 @@ const DashboardPage: FunctionComponent<
       <div className="flex flex-col w-full items-start gap-4 mt-8 pb-10 md:pb-0 md:flex-row">
         <RecentTransactions session={session} />
 
-        <TicketsSold
+        {/* <TicketsSold
           isFetchingTicketsSoldMetrics={isFetchingTicketsSoldMetrics}
           ticketsSoldMetrics={ticketsSoldMetrics}
+        /> */}
+        <EventAttendees
+          isFetchingAttendeeMetrics={isFetchingAttendeeMetrics}
+          attendeeMetrics={eventAttendeeMetrics}
         />
       </div>
     </div>

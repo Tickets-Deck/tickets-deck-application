@@ -528,6 +528,17 @@ export function useFetchTicketsSoldMetrics() {
   return fetchTicketsSoldMetrics;
 }
 
+export function useFetchEventAttendeeMetrics() {
+  async function fetchEventAttendeeMetrics(token: string, publisherId: string) {
+    return API.get(
+      ApiRoutes.EventAttendeeMetrics(publisherId),
+      getApiConfig(token)
+    );
+  }
+
+  return fetchEventAttendeeMetrics;
+}
+
 export function useFetchUserEventTicketsSold() {
   async function userEventTicketsSold(
     token: string,
