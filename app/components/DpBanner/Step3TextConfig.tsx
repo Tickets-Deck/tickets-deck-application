@@ -226,10 +226,10 @@ export const Step3TextConfig = ({
                 handleUpdateElement(el.id, { x: d.x / scale, y: d.y / scale })
               }
               onClick={() => setSelectedElementId(el.id)}
-              className={`p-1 box-border ${
+              className={`box-border ${
                 selectedElementId === el.id
                   ? "border-2 border-dashed border-blue-500"
-                  : ""
+                  : "border-2 border-dashed border-transparent"
               }`}
               bounds="parent"
               disableResizing
