@@ -19,7 +19,10 @@ import {
 } from "../models/IPassword";
 import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
 import { CreateReviewRequest } from "../models/IReview";
-import { ICreateBannerPayload, UploadBannerFrameResponse } from "../models/IBanner";
+import {
+  ICreateBannerPayload,
+  UploadBannerFrameResponse,
+} from "../models/IBanner";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL,
@@ -91,8 +94,12 @@ export function useFetchEvents() {
 
 export function useFetchPastEvents() {
   // Request token
-    const requestToken = useRequestCredentialToken()
-    async function fetchPastEvents(page: number = 1, limit: number = 5, sort?: "newest" | "oldest") {
+  const requestToken = useRequestCredentialToken();
+  async function fetchPastEvents(
+    page: number = 1,
+    limit: number = 5,
+    sort?: "newest" | "oldest"
+  ) {
     const token = await requestToken();
     return API.get(
       `${ApiRoutes.FetchPastEvents}?page=${page}&limit=${limit}&sort=${sort}`,
@@ -210,7 +217,11 @@ export function useUpdateEventById() {
     publisherId: string,
     data: FormData
   ) {
-    return API.put(`${ApiRoutes.Events}/${eventId}/publisher/${publisherId}`, data, getApiConfig(token));
+    return API.put(
+      `${ApiRoutes.Events}/${eventId}/publisher/${publisherId}`,
+      data,
+      getApiConfig(token)
+    );
   }
 
   return updateEventById;
@@ -571,8 +582,15 @@ export function useFetchEventTickets() {
 }
 
 export function useFetchDailyTicketSales() {
-  async function fetchDailyTicketSales(token: string, eventId: string, publisherId: string) {
-    return API.get(ApiRoutes.FetchDailyTicketSales(eventId, publisherId), getApiConfig(token));
+  async function fetchDailyTicketSales(
+    token: string,
+    eventId: string,
+    publisherId: string
+  ) {
+    return API.get(
+      ApiRoutes.FetchDailyTicketSales(eventId, publisherId),
+      getApiConfig(token)
+    );
   }
 
   return fetchDailyTicketSales;
@@ -871,10 +889,14 @@ export function useUploadBannerFrame() {
 }
 
 export function useGenerateDp() {
-  async function generateDp(bannerId: string, data: FormData) {
+  async function generateDp(
+    bannerId: string,
+    data: FormData,
+    ownerId?: string
+  ) {
     // This is a public endpoint, so no auth token is needed.
     // We expect the response to be an image blob.
-    return API.post(ApiRoutes.GenerateDp(bannerId), data, {
+    return API.post(ApiRoutes.GenerateDp(bannerId, ownerId), data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -882,4 +904,25 @@ export function useGenerateDp() {
     });
   }
   return generateDp;
+}
+
+export function useFetchMyDps() {
+  async function fetchMyDps(token: string) {
+    return API.get(ApiRoutes.MyDps, getApiConfig(token));
+  }
+  return fetchMyDps;
+}
+
+export function useFetchMyBanners() {
+  async function fetchMyBanners(token: string) {
+    return API.get(ApiRoutes.MyBanners, getApiConfig(token));
+  }
+  return fetchMyBanners;
+}
+
+export function useRecordBannerView() {
+  async function recordBannerView(bannerId: string) {
+    return API.post(ApiRoutes.RecordBannerView(bannerId), {});
+  }
+  return recordBannerView;
 }
