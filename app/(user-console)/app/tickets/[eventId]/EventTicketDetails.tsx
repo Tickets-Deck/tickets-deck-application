@@ -12,7 +12,7 @@ import Button from "@/app/components/ui/button";
 import jsonexport from "jsonexport";
 import { useSession } from "next-auth/react";
 import { OrderStatus } from "@/app/enums/IOrderStatus";
-import DownloadOptionsModal from "@/app/components/UserConsole/TicketsPage/DownloadOptionsModal";
+import DownloadOptionsModal from "@/app/components/Modal/DownloadOptionsDialog";
 
 type Props = {
   eventId: string;
