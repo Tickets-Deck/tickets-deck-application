@@ -19,6 +19,7 @@ import {
   useDeleteTicket,
   useFetchEventTickets,
   useFetchEventViewsCount,
+  useFetchPreviousEventAnalytics,
   useFetchPublisherEventById,
   useUpdateEventById,
 } from "@/app/api/apiClient";
@@ -58,6 +59,7 @@ const PublisherEventInformation: FunctionComponent<
   const fetchEventTickets = useFetchEventTickets();
   const updateEventById = useUpdateEventById();
   const deleteTicketById = useDeleteTicket();
+  const fetchPreviousEventAnalytics = useFetchPreviousEventAnalytics();
   const deleteEvent = useDeleteEvent();
   const fetchEventViewsCount = useFetchEventViewsCount();
   const toasthandler = useContext(ToastContext);
@@ -66,6 +68,8 @@ const PublisherEventInformation: FunctionComponent<
   const user = session?.user;
 
   const [eventInfo, setEventInfo] = useState<EventResponse>();
+  const [previousEventInfo, setPreviousEventInfo] =
+    useState<EventResponse | null>(null);
   const [eventTickets, setEventTickets] = useState<TicketResponse[]>();
   const [selectedTicket, setSelectedTicket] = useState<TicketResponse>();
   const [selectedInfoTab, setSelectedInfoTab] = useState(
@@ -122,6 +126,20 @@ const PublisherEventInformation: FunctionComponent<
     return now >= eventStart && now <= eventEnd;
   };
 
+  async function handleFetchPreviousEventAnalytics(currentEventId: string) {
+    try {
+      const response = await fetchPreviousEventAnalytics(
+        user?.token as string,
+        currentEventId
+      );
+      setPreviousEventInfo(response.data);
+    } catch (error) {
+      // It's not critical if this fails, so we just log it and continue.
+      // The analytics section will simply not show the comparison.
+      console.error("Could not fetch previous event analytics.", error);
+    }
+  }
+
   async function handleFetchEventInfo() {
     // Set running flag
     setIsFetchingEventInfo(true);
@@ -141,6 +159,10 @@ const PublisherEventInformation: FunctionComponent<
 
         // Update the event results
         setEventInfo(_eventInfo);
+
+        if (_eventInfo) {
+          handleFetchPreviousEventAnalytics(_eventInfo.id);
+        }
       })
       .catch((error) => {
         // Display the error
@@ -502,7 +524,10 @@ const PublisherEventInformation: FunctionComponent<
               />
             )}
             {selectedInfoTab == EventInformationTab.Analytics && (
-              <AnalyticsSection eventInfo={eventInfo} />
+              <AnalyticsSection
+                eventInfo={eventInfo}
+                previousEventInfo={previousEventInfo}
+              />
             )}
           </div>
         </section>
