@@ -17,8 +17,10 @@ import { useSelector } from "react-redux";
 import KpiSection from "@/app/components/UserConsole/DashboardPage/KpiSection";
 import RecentTransactions from "@/app/components/UserConsole/DashboardPage/RecentTransactions";
 import TicketsSold from "@/app/components/UserConsole/DashboardPage/TicketsSold";
-import { TicketsSoldMetrics } from "@/app/models/IMetrics";
-import { EventAttendeeMetrics } from "@/app/models/IMetrics";
+import {
+  EventAttendeeMetrics,
+  TicketsSoldMetrics,
+} from "@/app/models/IMetrics";
 import EventAttendees from "@/app/components/UserConsole/DashboardPage/EventAttendees";
 
 interface DashboardPageProps {}
