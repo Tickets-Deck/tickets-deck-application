@@ -450,6 +450,11 @@ export class ApiRoutes {
   static MyBanners: string = `banners/my-banners`;
 
   /**
+   * The route to fetch the current all created banners
+   */
+  static AllBanners: string = `banners`;
+
+  /**
    * The route to Upload Banner Frame endpoint
    */
   static UploadBannerFrame: string = `banners/upload-frame`;
