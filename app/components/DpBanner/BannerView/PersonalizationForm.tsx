@@ -1,6 +1,7 @@
 "use client";
 
 import { IBanner } from "@/app/models/IBanner";
+import { useToast } from "@/app/context/ToastCardContext";
 import { UploadCloud, Loader2 } from "lucide-react";
 
 interface PersonalizationFormProps {
@@ -22,6 +23,36 @@ export const PersonalizationForm = ({
   isGenerating,
   userAvatarPreviewUrl,
 }: PersonalizationFormProps) => {
+  const toast = useToast();
+
+  const handleGenerateClick = () => {
+    const isAvatarRequired = !!banner.configuration.avatar;
+    const isAvatarProvided = !!userAvatarPreviewUrl;
+    const requiredTextElements = banner.configuration.textElements || [];
+
+    const missingRequirements: string[] = [];
+
+    if (isAvatarRequired && !isAvatarProvided) {
+      missingRequirements.push("you upload your avatar photo");
+    }
+
+    const areAllTextsProvided = requiredTextElements.every((el) =>
+      userTextInputs[el.id]?.trim()
+    );
+
+    if (requiredTextElements.length > 0 && !areAllTextsProvided) {
+      missingRequirements.push("all text fields are filled");
+    }
+
+    if (missingRequirements.length > 0) {
+      const message = `Please make sure ${missingRequirements.join(" and ")}.`;
+      toast.logError("Missing Information", message);
+      return;
+    }
+
+    onGenerate();
+  };
+
   return (
     <div className="p-6 border rounded-lg bg-gray-50">
       <h2 className="text-xl font-semibold mb-4">
@@ -29,40 +60,42 @@ export const PersonalizationForm = ({
       </h2>
       <div className="space-y-4">
         {/* Avatar Upload */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Your Photo
-          </label>
-          <label
-            htmlFor="avatar-upload"
-            className="flex items-center gap-4 cursor-pointer"
-          >
-            <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border">
-              {userAvatarPreviewUrl ? (
-                <img
-                  src={userAvatarPreviewUrl}
-                  alt="Avatar preview"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <UploadCloud className="w-6 h-6 text-gray-500" />
-              )}
-            </div>
-            <div>
-              <span className="text-sm text-indigo-600 hover:text-indigo-800 font-medium block">
-                Click to upload an image
-              </span>
-              <span className="text-xs text-gray-500">(Maximum of 10mb)</span>
-            </div>
-          </label>
-          <input
-            id="avatar-upload"
-            type="file"
-            className="hidden"
-            accept="image/png, image/jpeg"
-            onChange={onAvatarChange}
-          />
-        </div>
+        {banner.configuration.avatar && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Your Photo
+            </label>
+            <label
+              htmlFor="avatar-upload"
+              className="flex items-center gap-4 cursor-pointer"
+            >
+              <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border">
+                {userAvatarPreviewUrl ? (
+                  <img
+                    src={userAvatarPreviewUrl}
+                    alt="Avatar preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <UploadCloud className="w-6 h-6 text-gray-500" />
+                )}
+              </div>
+              <div>
+                <span className="text-sm text-indigo-600 hover:text-indigo-800 font-medium block">
+                  Click to upload an image
+                </span>
+                <span className="text-xs text-gray-500">(Maximum of 10mb)</span>
+              </div>
+            </label>
+            <input
+              id="avatar-upload"
+              type="file"
+              className="hidden"
+              accept="image/png, image/jpeg"
+              onChange={onAvatarChange}
+            />
+          </div>
+        )}
 
         {/* Text Inputs */}
         {banner.configuration.textElements?.map((el) => (
@@ -86,7 +119,7 @@ export const PersonalizationForm = ({
 
         {/* Generate Button */}
         <button
-          onClick={onGenerate}
+          onClick={handleGenerateClick}
           disabled={isGenerating}
           className="w-full flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-md disabled:bg-gray-400 hover:bg-blue-700 transition-colors"
         >
