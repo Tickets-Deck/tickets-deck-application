@@ -5,7 +5,7 @@ import { IBanner } from "@/app/models/IBanner";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import Loading from "./loading";
-import { Download } from "lucide-react";
+import { Download, Share2 } from "lucide-react";
 import { PersonalizationForm } from "@/app/components/DpBanner/BannerView/PersonalizationForm";
 import { useToast } from "@/app/context/ToastCardContext";
 import { formatFileSize } from "@/utils/formatFileSize";
@@ -35,9 +35,10 @@ export default function BannerPage({ params }: BannerPageProps) {
     [key: string]: string;
   }>({});
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(
-    null
-  );
+  const [generatedImage, setGeneratedImage] = useState<{
+    url: string;
+    blob: Blob;
+  } | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +64,7 @@ export default function BannerPage({ params }: BannerPageProps) {
   const handleGenerate = async () => {
     if (!banner) return;
     setIsGenerating(true);
-    setGeneratedImageUrl(null);
+    setGeneratedImage(null);
 
     const formData = new FormData();
     if (userAvatarFile) {
@@ -94,7 +95,7 @@ export default function BannerPage({ params }: BannerPageProps) {
       );
       const blob = new Blob([response.data], { type: "image/png" });
       const url = URL.createObjectURL(blob);
-      setGeneratedImageUrl(url);
+      setGeneratedImage({ url, blob });
     } catch (err: any) {
       console.error("Error generating DP:", err);
       if (err.response && err.response.status === 413) {
@@ -109,10 +110,49 @@ export default function BannerPage({ params }: BannerPageProps) {
       }
       toast.logError(
         "Generation Failed",
-        "We couldn't generate your DP. Please try a different image or check your connection."
+        "We couldn't generate your Pulse Card. Please try a different image or check your connection."
       );
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!generatedImage || !banner) return;
+
+    // Construct the URL to the event page
+    const eventUrl = new URL(`/events`, window.location.origin).href;
+    const shareText = `I just got my tickets. Get yours here: ${eventUrl}`;
+    const imageFile = new File(
+      [generatedImage.blob],
+      `${banner.title.replace(/\s+/g, "-")}-dp.png`,
+      {
+        type: "image/png",
+      }
+    );
+
+    if (navigator.share && navigator.canShare?.({ files: [imageFile] })) {
+      try {
+        await navigator.share({
+          title: banner.title,
+          text: shareText,
+          files: [imageFile],
+        });
+        toast.logSuccess(
+          "Shared successfully!",
+          "Your Pulse Card has been shared."
+        );
+      } catch (error) {
+        // Don't show an error if the user cancels the share dialog
+        if ((error as DOMException).name !== "AbortError") {
+          toast.logError("Could not share", "An error occurred while sharing.");
+        }
+      }
+    } else {
+      toast.logError(
+        "Error",
+        "Sharing files is not supported on your browser."
+      );
     }
   };
 
@@ -195,16 +235,23 @@ export default function BannerPage({ params }: BannerPageProps) {
             userTextInputs={userTextInputs}
             onAvatarClick={handleAvatarAreaClick}
           />
-          {generatedImageUrl && (
-            <div className="mt-6 text-center">
+          {generatedImage && (
+            <div className="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4">
               <a
-                href={generatedImageUrl}
+                href={generatedImage.url}
                 download={`${banner.title.replace(/\s+/g, "-")}-dp.png`}
-                className="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition-colors"
+                className="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition-colors w-full sm:w-auto"
               >
                 <Download className="mr-2 h-5 w-5" />
-                Download Your DP
+                Download Your Pulse Card
               </a>
+              {/* <button
+                onClick={handleShare}
+                className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors w-full sm:w-auto"
+              >
+                <Share2 className="mr-2 h-5 w-5" />
+                Share Now
+              </button> */}
             </div>
           )}
         </div>

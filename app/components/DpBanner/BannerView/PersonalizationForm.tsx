@@ -24,7 +24,9 @@ export const PersonalizationForm = ({
 }: PersonalizationFormProps) => {
   return (
     <div className="p-6 border rounded-lg bg-gray-50">
-      <h2 className="text-xl font-semibold mb-4">Personalize Your DP</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        Personalize Your Pulse Card
+      </h2>
       <div className="space-y-4">
         {/* Avatar Upload */}
         <div>

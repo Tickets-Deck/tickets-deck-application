@@ -65,7 +65,8 @@ export class ApplicationRoutes {
   /**
    * The route to the user event page
    */
-  static readonly UserEventDetails = (eventId: string) => `/app/event/${eventId}`;
+  static readonly UserEventDetails = (eventId: string) =>
+    `/app/event/${eventId}`;
 
   /**
    * The route to the verify payment page
@@ -93,19 +94,19 @@ export class ApplicationRoutes {
   static readonly Wallet = "/app/wallet";
 
   /**
-   * The route to the DpBanner page
+   * The route to the PulseCard page
    */
-  static readonly DpBanner = "/dp-banner";
+  static readonly PulseCard = "/pulse-card";
 
   /**
-   * The route to the CreateDpBanner page
+   * The route to the CreatePulseCard page
    */
-  static readonly CreateDpBanner = "/dp-banner/create";
+  static readonly CreatePulseCard = "/pulse-card/create";
 
   /**
-   * The route to the UserDpBanner page
+   * The route to the UserPulseCard page
    */
-  static readonly UserDpBanner = "/app/dp-banner";
+  static readonly UserPulseCard = "/app/pulse-card";
 
   /**
    * The route to the transactions page
@@ -155,5 +156,6 @@ export class ApplicationRoutes {
   /**
    * The route to the check in page
    */
-  static readonly CheckIn = (eventId: string, name: string) => `/app/event/check-in?id=${eventId}&name=${name}`;
+  static readonly CheckIn = (eventId: string, name: string) =>
+    `/app/event/check-in?id=${eventId}&name=${name}`;
 }

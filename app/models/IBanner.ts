@@ -27,6 +27,7 @@ export type IBannerConfiguration = {
 export type ICreateBannerPayload = {
   title: string;
   description?: string;
+  eventId?: string;
   configuration: IBannerConfiguration;
 };
 
@@ -37,9 +38,19 @@ export type IBanner = ICreateBannerPayload & {
   viewCount: number;
   createdAt: string;
   updatedAt: string;
+  event?: {
+    title: string;
+    startDate: string;
+    endDate: string;
+  } | null;
 };
 
 export type UploadBannerFrameResponse = {
   bannerImageId: string;
   bannerImageUrl: string;
 };
+
+export interface IUserEventForBanner {
+  id: string;
+  title: string;
+}

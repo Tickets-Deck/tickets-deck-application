@@ -95,7 +95,7 @@ const MobileNavbar: FunctionComponent<
             className="size-10 rounded-full overflow-hidden hidden relative border-[1.5px] border-primary-color-sub hover:scale-[0.85] hover:opacity-80"
           >
             <Image
-              src={userInfo.profilePhoto ?? images.user_avatar}
+              src={userInfo.profilePhoto || images.user_avatar}
               className="size-full object-cover"
               alt="Profile photo"
               fill
@@ -134,7 +134,7 @@ const MobileNavbar: FunctionComponent<
                 <span className="size-[52px] min-w-[52px] min-h-[52px] block rounded-full overflow-hidden relative">
                   <Image
                     className="size-full object-cover"
-                    src={userInfo.profilePhoto ?? images.user_avatar}
+                    src={userInfo.profilePhoto || images.user_avatar}
                     alt="Profile image"
                     fill
                     sizes="auto"

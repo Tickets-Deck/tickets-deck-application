@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Button from "@/app/components/ui/button";
-import { DialogWrapper } from "../../Dialog/DialogWrapper";
+import { DialogWrapper } from "../Dialog/DialogWrapper";
 
 interface DownloadOptionsModalProps {
   isOpen: boolean;

@@ -28,6 +28,7 @@ interface ReusableLinkProps {
   text: string;
   icon: ReactElement;
   className?: string;
+  newFeature?: boolean;
 }
 
 const Sidebar: FunctionComponent<SidebarProps> = ({
@@ -46,7 +47,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
   const currentPageIsProfile = pathname.includes(ApplicationRoutes.Profile);
   const currentPageIsWallet = pathname.includes(ApplicationRoutes.Wallet);
   const currentPageIsDpBanner = pathname.includes(
-    ApplicationRoutes.UserDpBanner
+    ApplicationRoutes.UserPulseCard
   );
   const currentPageIsFavorites = pathname.includes(
     ApplicationRoutes.FavouriteEvents
@@ -69,6 +70,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
     currentPageChecker,
     text,
     icon,
+    newFeature,
   }: ReusableLinkProps) {
     return (
       <Link href={route} onClick={closeSidebar}>
@@ -80,7 +82,12 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
           } ${className ? className : ""}
                     `}
         >
-          {icon} {text}
+          {icon} {text}{" "}
+          {newFeature && (
+            <span className="bg-primary-color text-white text-[0.6rem] px-2 py-0.5 rounded-xl ml-auto">
+              New
+            </span>
+          )}
         </li>
       </Link>
     );
@@ -162,10 +169,13 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
           </div>
 
           <ReusableLink
-            route={ApplicationRoutes.UserDpBanner}
+            route={ApplicationRoutes.UserPulseCard}
             currentPageChecker={currentPageIsDpBanner}
-            text="My DP Banners"
-            icon={<PictureInPicture />}
+            text="My Pulse Cards"
+            icon={
+              <PictureInPicture className="[&_svg_path]:!fill-primary-color-sub" />
+            }
+            newFeature={true}
           />
 
           <ReusableLink

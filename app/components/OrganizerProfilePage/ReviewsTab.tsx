@@ -160,7 +160,7 @@ export function ReviewsTab({
                     <div className="h-12 w-12 border-2 border-white relative rounded-full overflow-hidden">
                       <Image
                         src={
-                          review.reviewerProfilePhoto ??
+                          review.reviewerProfilePhoto ||
                           "https://placehold.co/300x300/8133F1/FFFFFF/png?text=SA"
                         }
                         alt="Similoluwa Afolabi"

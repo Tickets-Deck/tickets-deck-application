@@ -3,8 +3,15 @@
 import { useEffect, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { ICreateBannerPayload } from "@/app/models/IBanner";
-import { useCreateBanner, useUploadBannerFrame } from "../../api/apiClient";
+import {
+  ICreateBannerPayload,
+  IUserEventForBanner,
+} from "@/app/models/IBanner";
+import {
+  useCreateBanner,
+  useFetchUserEventsForBanner,
+  useUploadBannerFrame,
+} from "../../api/apiClient";
 import { ProgressBar } from "@/app/components/DpBanner/ProgressBar";
 import { Step1BasicInfo } from "@/app/components/DpBanner/Step1BasicInfo";
 import { Step2AvatarConfig } from "@/app/components/DpBanner/Step2AvatarConfig";
@@ -21,10 +28,12 @@ import { DialogWrapper } from "@/app/components/Dialog/DialogWrapper";
 import { useToast } from "@/app/context/ToastCardContext";
 import { formatFileSize } from "@/utils/formatFileSize";
 import { compressImage } from "@/utils/imageCompress";
+import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 
 export default function CreateBannerPage() {
   const createBanner = useCreateBanner();
   const uploadBannerFrame = useUploadBannerFrame();
+  const fetchUserEvents = useFetchUserEventsForBanner();
   const { data: session, status } = useSession();
   const router = useRouter();
   const toast = useToast();
@@ -37,6 +46,8 @@ export default function CreateBannerPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [showResumeModal, setShowResumeModal] = useState(false);
   const [loadedDraft, setLoadedDraft] = useState<BannerDraft | null>(null);
+  const [userEvents, setUserEvents] = useState<IUserEventForBanner[]>([]);
+  const [isLoadingEvents, setIsLoadingEvents] = useState(true);
 
   const debouncedPayload = useDebounce(payload, 500);
   const debouncedStep = useDebounce(currentStep, 500);
@@ -57,16 +68,16 @@ export default function CreateBannerPage() {
 
     let fileToUpload = frameImageFile;
 
-    console.log(`Original image size: ${formatFileSize(frameImageFile.size)}`);
-    const { compressedFile, compressedSize, reductionPercentage } =
-      await compressImage(frameImageFile);
-    console.log(
-      `Compressed to: ${formatFileSize(
-        compressedSize
-      )} (${reductionPercentage.toFixed(2)}% reduction)`
-    );
+    // console.log(`Original image size: ${formatFileSize(frameImageFile.size)}`);
+    // const { compressedFile, compressedSize, reductionPercentage } =
+    //   await compressImage(frameImageFile);
+    // console.log(
+    //   `Compressed to: ${formatFileSize(
+    //     compressedSize
+    //   )} (${reductionPercentage.toFixed(2)}% reduction)`
+    // );
 
-    fileToUpload = compressedFile;
+    // fileToUpload = compressedFile;
 
     formData.append("frame-image", fileToUpload);
 
@@ -90,7 +101,26 @@ export default function CreateBannerPage() {
       };
       loadState();
     }
-  }, [status, session]);
+  }, [status, session?.user.id]);
+
+  // Effect to fetch user's events
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.id) {
+      const loadEvents = async () => {
+        setIsLoadingEvents(true);
+        try {
+          const response = await fetchUserEvents(session.user.token as string);
+          setUserEvents(response.data);
+        } catch (error) {
+          console.error("Failed to fetch user events", error);
+          toast.logError("Error", "Could not load your events.");
+        } finally {
+          setIsLoadingEvents(false);
+        }
+      };
+      loadEvents();
+    }
+  }, [status, session?.user.id]);
 
   const handleResume = async () => {
     if (!loadedDraft) return;
@@ -184,6 +214,7 @@ export default function CreateBannerPage() {
           avatar: payload.configuration?.avatar,
           textElements: payload.configuration?.textElements,
         },
+        eventId: payload.eventId,
       };
       console.log("🚀 ~ handleSubmit ~ finalPayload:", finalPayload);
 
@@ -193,15 +224,14 @@ export default function CreateBannerPage() {
       await clearBannerState(session.user.id as string);
 
       // Redirect to the new banner's page or a success page
-      router.push(`/dp-banner/${newBanner.data.id}`);
+      router.push(`${ApplicationRoutes.PulseCard}/${newBanner.data.id}`);
     } catch (error: any) {
+      setIsUploading(false);
       setError(
         error.response?.data?.message ||
           error.message ||
           "An unknown error occurred."
       );
-    } finally {
-      setIsUploading(false);
     }
   };
 
@@ -241,6 +271,8 @@ export default function CreateBannerPage() {
             setFrameImageFile={setFrameImageFile}
             framePreviewUrl={framePreviewUrl}
             setFramePreviewUrl={setFramePreviewUrl}
+            userEvents={userEvents}
+            isLoadingEvents={isLoadingEvents}
           />
         );
       case 2:
