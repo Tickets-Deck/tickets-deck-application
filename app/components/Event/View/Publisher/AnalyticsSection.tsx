@@ -13,10 +13,13 @@ import React, { useEffect, useState } from "react";
 
 type Props = {
   eventInfo: EventResponse;
+  previousEventInfo: EventResponse | null;
 };
 
-export default function AnalyticsSection({ eventInfo }: Props) {
-  console.log("🚀 ~ AnalyticsSection ~ eventInfo:", eventInfo.tickets);
+export default function AnalyticsSection({
+  eventInfo,
+  previousEventInfo,
+}: Props) {
   const fetchDailyTicketSales = useFetchDailyTicketSales();
   const { data: session } = useSession();
   const user = session?.user;
@@ -25,6 +28,54 @@ export default function AnalyticsSection({ eventInfo }: Props) {
     []
   );
   const [isLoadingSalesTrend, setIsLoadingSalesTrend] = useState(true);
+
+  const calculatePercentageChange = (
+    current: number,
+    previous: number
+  ): { value: string; isPositive: boolean } | null => {
+    if (previous === 0) {
+      if (current > 0) {
+        return { value: `+${current.toLocaleString()}`, isPositive: true }; // Or some other indicator for new growth
+      }
+      return null; // No change from zero
+    }
+    if (current === previous || isNaN(previous)) {
+      return null;
+    }
+    const change = ((current - previous) / previous) * 100;
+    if (Math.abs(change) < 0.01) return null; // Negligible change
+
+    const sign = change > 0 ? "+" : "";
+    return {
+      value: `${sign}${change.toFixed(0)}%`,
+      isPositive: change >= 0,
+    };
+  };
+
+  const netEarningsChange = previousEventInfo
+    ? calculatePercentageChange(
+        Number(eventInfo.netEarnings ?? 0),
+        Number(previousEventInfo.netEarnings)
+      )
+    : null;
+  console.log("🚀 ~ AnalyticsSection ~ netEarningsChange:", netEarningsChange);
+
+  const ticketsSoldChange = previousEventInfo
+    ? calculatePercentageChange(
+        eventInfo.ticketOrdersCount ?? 0,
+        previousEventInfo.ticketOrdersCount
+      )
+    : null;
+  console.log("🚀 ~ AnalyticsSection ~ ticketsSoldChange:", ticketsSoldChange);
+
+  const engagementCount = eventInfo.bookmarksCount + eventInfo.favoritesCount;
+  const prevEngagementCount =
+    (previousEventInfo?.bookmarksCount ?? 0) +
+    (previousEventInfo?.favoritesCount ?? 0);
+
+  const engagementChange = previousEventInfo
+    ? calculatePercentageChange(engagementCount, prevEngagementCount)
+    : null;
 
   const handleFetchDailyTicketSales = async () => {
     setIsLoadingSalesTrend(true);
@@ -74,25 +125,47 @@ export default function AnalyticsSection({ eventInfo }: Props) {
             <p className="text-2xl font-bold">
               {eventInfo.currency} {eventInfo.netEarnings}
             </p>
-            <p className="text-xs text-green-400 mt-1">
-              +12% from previous event
-            </p>
+            {netEarningsChange && (
+              <p
+                className={`text-xs mt-1 ${
+                  netEarningsChange.isPositive
+                    ? "text-green-400"
+                    : "text-red-400"
+                }`}
+              >
+                {netEarningsChange.value} from previous event
+              </p>
+            )}
           </div>
           <div className="bg-[#252525] p-4 rounded-lg">
             <p className="text-sm text-gray-400">Tickets Sold</p>
             <p className="text-2xl font-bold">{eventInfo.ticketOrdersCount}</p>
-            <p className="text-xs text-green-400 mt-1">
-              +5% from previous event
-            </p>
+            {ticketsSoldChange && (
+              <p
+                className={`text-xs mt-1 ${
+                  ticketsSoldChange.isPositive
+                    ? "text-green-400"
+                    : "text-red-400"
+                }`}
+              >
+                {ticketsSoldChange.value} from previous event
+              </p>
+            )}
           </div>
           <div className="bg-[#252525] p-4 rounded-lg">
             <p className="text-sm text-gray-400">Engagement</p>
-            <p className="text-2xl font-bold">
-              {eventInfo.bookmarksCount + eventInfo.favoritesCount}
-            </p>
-            <p className="text-xs text-green-400 mt-1">
-              +18% from previous event
-            </p>
+            <p className="text-2xl font-bold">{engagementCount}</p>
+            {engagementChange && (
+              <p
+                className={`text-xs mt-1 ${
+                  engagementChange.isPositive
+                    ? "text-green-400"
+                    : "text-red-400"
+                }`}
+              >
+                {engagementChange.value} from previous event
+              </p>
+            )}
           </div>
         </div>
 
