@@ -99,6 +99,11 @@ export class ApplicationRoutes {
   static readonly PulseCard = "/pulse-card";
 
   /**
+   * The route to the PulseBanners page
+   */
+  static readonly PulseBanners = "/pulse-banners";
+
+  /**
    * The route to the CreatePulseCard page
    */
   static readonly CreatePulseCard = "/pulse-card/create";

@@ -52,6 +52,11 @@ const MobileNavbar: FunctionComponent<
       icon: Icons.Events,
     },
     {
+      link: ApplicationRoutes.PulseBanners,
+      text: "PulseCards",
+      icon: Icons.Events,
+    },
+    {
       link: ApplicationRoutes.Pricing,
       text: "Pricing",
       icon: Icons.Ticket,
