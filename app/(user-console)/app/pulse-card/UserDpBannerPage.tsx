@@ -153,7 +153,7 @@ export default function UserDpBannerPage() {
                 <div className="col-span-full text-center py-16 px-6 bg-gray-800/50 rounded-lg">
                   <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
                   <h3 className="mt-2 text-lg font-medium text-white">
-                    No DPs generated
+                    No Place Cards generated
                   </h3>
                   <p className="mt-1 text-sm text-gray-400">
                     Your generated profile pictures will appear here.
