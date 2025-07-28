@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useUpdateUserCoverPhoto } from "@/app/api/apiClient";
 import { UserCredentialsResponse } from "@/app/models/IUser";
+import { useToast } from "@/app/context/ToastCardContext";
+import { compressImage } from "@/utils/imageCompress";
 
 interface UserCoverContainerProps {
   userInformation: UserCredentialsResponse;
@@ -17,10 +19,10 @@ const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({
   forUser,
 }): ReactElement => {
   const updateUserCoverPhoto = useUpdateUserCoverPhoto();
+  const toast = useToast();
   const [isUpdatingCoverPhoto, setIsUpdatingCoverPhoto] = useState(false);
   const [coverImageUrl, setCoverImageUrl] = useState<string>();
   const [coverImageFile, setCoverImageFile] = useState<File>();
-  const [coverImageBase64Url, setCoverImageBase64Url] = useState<string>();
   const { data: session, update } = useSession();
 
   /**
@@ -34,103 +36,60 @@ const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({
 
     // If a valid file was selected...
     if (
-      selectedFile.type === "image/jpg" ||
-      selectedFile.type === "image/png" ||
-      selectedFile.type === "image/jpeg" ||
-      selectedFile.type === "image/webp"
+      selectedFile &&
+      (selectedFile.type === "image/jpg" ||
+        selectedFile.type === "image/png" ||
+        selectedFile.type === "image/jpeg" ||
+        selectedFile.type === "image/webp")
     ) {
-      // Unset validation message
-      // setPhotoErrorMsg(false);
-
-      const file = e.target.files[0]; // Get the selected file
-
-      if (file) {
-        setCoverImageFile(file);
-
-        // Instantiate a FileReader object
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-          const base64URL: string = e.target?.result as string; // This is the base64 URL of the image
-
-          if (base64URL) {
-            // Extract only the base64 string (remove "data:image/jpeg;base64," prefix)
-            const base64String = base64URL.split(",")[1];
-
-            // console.log('base64URL: ', base64String);
-            setCoverImageBase64Url(base64String);
-          }
-        };
-
-        // Read the file as a data URL (base64-encoded)
-        reader.readAsDataURL(file);
-      }
+      setCoverImageFile(selectedFile);
+      setCoverImageUrl(URL.createObjectURL(selectedFile));
     }
-    // Otherwise...
-    else {
-      // Set appropriate validation message
-      // setPhotoErrorMsg('Please select a valid photo');
-
-      // Exit this method
-      return;
-    }
-
-    // Set the image url
-    const imgURL = URL.createObjectURL(selectedFile);
-
-    // Update the image url state
-    setCoverImageUrl(imgURL);
   };
 
   async function handleUploadUserCoverPhoto() {
     // Spin the spinner
     setIsUpdatingCoverPhoto(true);
 
-    await updateUserCoverPhoto(session?.user.id as string, {
-      coverPhoto: coverImageBase64Url as string,
-    })
-      .then(async (response) => {
-        setCoverImageUrl(undefined);
-        setCoverImageFile(undefined);
-        setCoverImageBase64Url(undefined);
+    if (!coverImageFile) {
+      toast.logError("Error", "Please select a cover photo to upload.");
+      setIsUpdatingCoverPhoto(false);
+      return;
+    }
 
-        handleFetchUserInformation();
-        // Update the user's profile photo in the session
-        await update({
-          ...session,
-          user: {
-            ...session?.user,
-            image: response.data.profilePhoto,
-          },
-        });
-        // Stop the spinner
-        setIsUpdatingCoverPhoto(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        // Stop the spinner
-        setIsUpdatingCoverPhoto(false);
-      });
+    try {
+      const formData = new FormData();
+      const { compressedFile } = await compressImage(coverImageFile);
+      formData.append("coverPhoto", compressedFile);
+
+      await updateUserCoverPhoto(
+        session?.user.token as string,
+        session?.user.id as string,
+        formData
+      );
+
+      setCoverImageUrl(undefined);
+      setCoverImageFile(undefined);
+      handleFetchUserInformation();
+      toast.logSuccess("Success", "Cover photo updated successfully.");
+    } catch (error) {
+      toast.logError("Error", "Failed to update cover photo.");
+      console.log(error);
+    } finally {
+      setIsUpdatingCoverPhoto(false);
+    }
   }
 
-  // async function handleGetBase64Url(url: string) {
-  //     const base64Url = await getBase64Url(url);
-  //     return base64Url;
-  // }
-  // handleGetBase64Url("https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover");
-
-  // const myDynamicUrl = await getBase64Url(coverImageUrl ?? userInformation.coverPhoto ?? "https://placehold.co/1200x300/8133F1/FFFFFF/png?text=Cover");
-
   return (
-    <div className='h-[220px] md:h-80 relative overflow-hidden'>
-      <div className='absolute top-0 left-0 size-full z-[1] overflow-hidden [&_img]:object-cover'>
+    <div className="h-[220px] md:h-80 relative overflow-hidden">
+      <div className="absolute top-0 left-0 size-full z-[1] overflow-hidden [&_img]:object-cover">
         <Image
           src={`${
             coverImageUrl ||
             userInformation.coverPhoto ||
             "https://placehold.co/1600x400/8133F1/FFFFFF/png?text=Cover+Photo"
           }`}
-          alt='Cover image'
+          alt="Cover image"
           width={1600}
           height={400}
           // fill
@@ -142,15 +101,15 @@ const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({
         {/* {<input type="file" accept="image/png, image/jpeg" onChange={(e) => handleFileUpload(e)} />} */}
       </div>
       {!forUser && (
-        <div className='flex gap-2 absolute top-6 right-8'>
+        <div className="flex gap-2 absolute top-6 right-8">
           {!coverImageUrl ? (
-            <button className='z-[2] tertiaryButton !py-[0.4rem] !ml-auto [&_svg_path]:!fill-dark-grey !gap-1 !px-[0.8rem]'>
+            <button className="z-[2] tertiaryButton !py-[0.4rem] !ml-auto [&_svg_path]:!fill-dark-grey !gap-1 !px-[0.8rem]">
               <Icons.Edit />
               Edit Cover Photo
               <input
-                type='file'
-                className='absolute size-full top-0 left-0 opacity-0 cursor-pointer'
-                accept='image/png, image/jpeg'
+                type="file"
+                className="absolute size-full top-0 left-0 opacity-0 cursor-pointer"
+                accept="image/png, image/jpeg"
                 onChange={(e) => handleFileUpload(e)}
               />
             </button>
@@ -158,20 +117,20 @@ const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({
             <>
               <button
                 disabled={isUpdatingCoverPhoto}
-                className='z-[2] tertiaryButton !py-[0.4rem] !ml-auto [&_svg_path]:!fill-dark-grey !gap-1 !px-[0.8rem]'
+                className="z-[2] tertiaryButton !py-[0.4rem] !ml-auto [&_svg_path]:!fill-dark-grey !gap-1 !px-[0.8rem]"
               >
                 <Icons.Edit />
                 Change Photo
                 <input
-                  type='file'
-                  className='absolute size-full top-0 left-0 opacity-0 cursor-pointer'
-                  accept='image/png, image/jpeg'
+                  type="file"
+                  className="absolute size-full top-0 left-0 opacity-0 cursor-pointer"
+                  accept="image/png, image/jpeg"
                   onChange={(e) => handleFileUpload(e)}
                 />
               </button>
               <button
                 disabled={isUpdatingCoverPhoto}
-                className='z-[2] tertiaryButton !py-[0.4rem] !ml-auto [&_svg_path]:!fill-dark-grey !gap-1 !px-[0.8rem]'
+                className="z-[2] tertiaryButton !py-[0.4rem] !ml-auto [&_svg_path]:!fill-dark-grey !gap-1 !px-[0.8rem]"
                 onClick={handleUploadUserCoverPhoto}
               >
                 <Icons.Check />
