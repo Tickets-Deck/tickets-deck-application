@@ -16,11 +16,13 @@ import { CustomerEnquiry } from "../models/ICustomerEnquiries";
 import {
   PasswordResetLinkRequest,
   PasswordResetRequest,
+  ChangePasswordRequest,
 } from "../models/IPassword";
 import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
 import { CreateReviewRequest } from "../models/IReview";
 import {
   ICreateBannerPayload,
+  IUserEventForBanner,
   UploadBannerFrameResponse,
 } from "../models/IBanner";
 
@@ -175,6 +177,16 @@ export function useFetchPublisherEventById() {
   }
 
   return fetchEvent;
+}
+
+export function useFetchPreviousEventAnalytics() {
+  async function fetchPreviousEventAnalytics(token: string, eventId: string) {
+    return API.get(
+      ApiRoutes.FetchPreviousEventAnalytics(eventId),
+      getApiConfig(token)
+    );
+  }
+  return fetchPreviousEventAnalytics;
 }
 
 export function useCheckInTicketOrder() {
@@ -372,12 +384,20 @@ export function useFetchUserInformationByUserName() {
 
 export function useUploadUserProfilePhoto() {
   async function uploadUserProfilePhoto(
+    token: string,
     userId: string,
-    data: ProfilePhotoRequest
+    data: FormData
   ) {
     return API.post(
       `${ApiRoutes.UploadUserProfilePhoto}?userId=${userId}`,
-      data
+      data,
+      {
+        ...getApiConfig(token),
+        headers: {
+          ...getApiConfig(token).headers,
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
   }
 
@@ -385,8 +405,22 @@ export function useUploadUserProfilePhoto() {
 }
 
 export const useUpdateUserCoverPhoto = () => {
-  async function updateUserCoverPhoto(userId: string, data: CoverPhotoRequest) {
-    return API.post(`${ApiRoutes.UpdateUserCoverPhoto}?userId=${userId}`, data);
+  async function updateUserCoverPhoto(
+    token: string,
+    userId: string,
+    data: FormData
+  ) {
+    return API.post(
+      `${ApiRoutes.UpdateUserCoverPhoto}?userId=${userId}`,
+      data,
+      {
+        ...getApiConfig(token),
+        headers: {
+          ...getApiConfig(token).headers,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
   }
 
   return updateUserCoverPhoto;
@@ -741,6 +775,21 @@ export function useResetPassword() {
   return resetPassword;
 }
 
+export function useChangePassword() {
+  async function changePassword(
+    token: string,
+    userId: string,
+    data: ChangePasswordRequest
+  ) {
+    return API.put(
+      ApiRoutes.UserPasswordChange(userId),
+      data,
+      getApiConfig(token)
+    );
+  }
+  return changePassword;
+}
+
 export function useFetchUserWalletBalance() {
   async function fetchUserWalletBalance(userId: string, token: string) {
     return API.get(ApiRoutes.FetchWalletBalance(userId), getApiConfig(token));
@@ -931,9 +980,19 @@ export function useFetchMyBanners() {
   return fetchMyBanners;
 }
 
-export function useRecordBannerView() {
-  async function recordBannerView(bannerId: string) {
-    return API.post(ApiRoutes.RecordBannerView(bannerId), {});
-  }
-  return recordBannerView;
-}
+// export function useRecordBannerView() {
+//   async function recordBannerView(bannerId: string) {
+//     return API.post(ApiRoutes.RecordBannerView(bannerId), {});
+//   }
+//   return recordBannerView;
+// }
+
+export const useFetchUserEventsForBanner = () => {
+  const api = API;
+  return async (token: string) => {
+    return api.get<IUserEventForBanner[]>(
+      ApiRoutes.FetchUserEventsForBanner,
+      getApiConfig(token)
+    );
+  };
+};

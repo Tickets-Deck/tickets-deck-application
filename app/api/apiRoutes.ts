@@ -21,7 +21,7 @@ export class ApiRoutes {
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_LIVE;
+  static BASE_URL: string = ApiRoutes.BASE_URL_DEV;
 
   /**
    * The route to Request Credential Token endpoint
@@ -76,6 +76,13 @@ export class ApiRoutes {
       `events/${eventId}/publisher/${publisherId}`;
 
   /**
+   * The route to Fetch Previous Event Analytics endpoint
+   */
+  static FetchPreviousEventAnalytics: (eventId: string) => string = (
+    eventId: string
+  ) => `events/${eventId}/previous-analytics`;
+
+  /**
    * The route to Fetch Events endpoint for the publisher's use only
    */
   static FetchOrganizerEvents: (publisherId: string) => string = (
@@ -127,11 +134,6 @@ export class ApiRoutes {
     `events/${eventId}/check-in-multiple/${ticketOrderAccessCode}`;
 
   /**
-   * The route to Users endpoint
-   */
-  static Users: string = "api/users";
-
-  /**
    * The route to Update User Profile Information endpoint
    */
   static UpdateUserProfileInformation: (userId: string) => string = (
@@ -167,12 +169,12 @@ export class ApiRoutes {
   /**
    * The route to UploadUserProfilePhoto endpoint
    */
-  static UploadUserProfilePhoto: string = "api/users/profile-photo";
+  static UploadUserProfilePhoto: string = "users/profile-photo";
 
   /**
    * The route to UpdateUserCoverPhoto endpoint
    */
-  static UpdateUserCoverPhoto: string = "api/users/cover-photo";
+  static UpdateUserCoverPhoto: string = "users/cover-photo";
 
   /**
    * The route to UpdateUserName endpoint
@@ -184,11 +186,6 @@ export class ApiRoutes {
    * The route to TicketOrder endpoint
    */
   static InitializeTicketOrder: string = "orders/event/initialize";
-
-  /**
-   * The route to User TicketOrder endpoint
-   */
-  static UserTicketOrder: string = "api/users/tickets";
 
   /**
    * The route to Intialize Payment endpoint
@@ -343,7 +340,8 @@ export class ApiRoutes {
   /**
    * The route to User Password Change endpoint
    */
-  static UserPasswordChange: string = "api/users/password/change";
+  static UserPasswordChange: (userId: string) => string = (userId: string) =>
+    `users/change-password/${userId}`;
 
   /**
    * The route to Fetch User Wallet Balance endpoint
@@ -473,6 +471,8 @@ export class ApiRoutes {
   /**
    * The route to record a view for a banner
    */
-  static RecordBannerView: (bannerId: string) => string = (bannerId: string) =>
-    `banners/${bannerId}/view`;
+//   static RecordBannerView: (bannerId: string) => string = (bannerId: string) =>
+//     `banners/${bannerId}/view`;
+
+  static FetchUserEventsForBanner: string = "/events/organizer/for-banner";
 }
