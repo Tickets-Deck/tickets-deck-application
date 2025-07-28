@@ -39,6 +39,7 @@ export type IBanner = ICreateBannerPayload & {
   createdAt: string;
   updatedAt: string;
   event?: {
+    id: string;
     title: string;
     startDate: string;
     endDate: string;

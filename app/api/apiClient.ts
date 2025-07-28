@@ -973,6 +973,14 @@ export function useFetchMyDps() {
   return fetchMyDps;
 }
 
+export function useFetchAllBanners() {
+  async function fetchAllBanners(page: number = 1, limit: number = 9) {
+    // This is a public route, so no auth token is needed.
+    return API.get(`${ApiRoutes.AllBanners}?page=${page}&limit=${limit}`);
+  }
+  return fetchAllBanners;
+}
+
 export function useFetchMyBanners() {
   async function fetchMyBanners(token: string) {
     return API.get(ApiRoutes.MyBanners, getApiConfig(token));
