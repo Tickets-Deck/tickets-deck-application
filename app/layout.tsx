@@ -9,6 +9,7 @@ import Head from "next/head";
 import { initializeIcons, loadTheme } from "@fluentui/react";
 import { UserCredentialsResponse } from "./models/IUser";
 import { useFetchUserInformation } from "./api/apiClient";
+import Script from "next/script";
 
 const Layout = dynamic(() => import("./components/Layout"), { ssr: false });
 
@@ -169,6 +170,19 @@ export default async function RootLayout({
         <body>
           <Layout children={children} session={session} userData={userData} />
         </body>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+          
+            gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+          `}
+        </Script>
       </html>
     </GlobalProvider>
   );
