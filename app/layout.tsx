@@ -180,6 +180,11 @@ export default async function RootLayout({
             gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
           `}
           </Script>
+
+          <meta
+            name="google-site-verification"
+            content="YEPW079mW6Awh0cX0jMh-pM525OdBjjrOilVxUu_mC4"
+          />
         </head>
         <body>
           <Layout children={children} session={session} userData={userData} />
