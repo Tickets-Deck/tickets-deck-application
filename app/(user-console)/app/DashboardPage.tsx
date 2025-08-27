@@ -91,10 +91,6 @@ const DashboardPage: FunctionComponent<
 
     await fetchEventAttendeeMetrics(user?.token as string, user?.id as string)
       .then((response) => {
-        console.log(
-          "🚀 ~ handleFetchEventAttendeeMetrics ~ response:",
-          response
-        );
         setEventAttendeeMetrics(response.data);
       })
       .catch((error) => {

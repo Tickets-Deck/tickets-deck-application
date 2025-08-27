@@ -14,12 +14,9 @@ export default async function getBase64Url(imageUrl: string) {
 
   //     const { base64 } = await getPlaiceholder(Buffer.from(buffer));
 
-  //     // Log the base64 string
-  //     console.log("🚀 ~ getBase64Url ~ base64:", base64);
-
   //     return base64;
   //   } catch (error) {
-  //     if (error instanceof Error) console.log(error.stack);
+  //     if (error instanceof Error) {}
   //     error;
   //   }
 
@@ -31,8 +28,6 @@ export default async function getBase64Url(imageUrl: string) {
     );
 
     const { color } = await getPlaiceholder(buffer);
-
-    console.log(color);
   } catch (err) {
     err;
   }

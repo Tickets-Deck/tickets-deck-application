@@ -15,9 +15,7 @@ const TokenSync = ({ session }: TokenSyncProps) => {
                 // Only refresh if token expires in less than 1 minute
                 const timeUntilExpiry = session.user.accessTokenExpires - Date.now();
                 if (timeUntilExpiry > 0 && timeUntilExpiry < 60 * 1000) {
-                    console.log("Token expiring soon, refreshing...");
                     const updatedSession = await update();
-                    console.log("Updated session: ", updatedSession);
                 }
             }
         }, 30 * 1000); // Check every 30 seconds

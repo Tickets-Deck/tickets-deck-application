@@ -30,7 +30,6 @@ export default function EventTicketDetails({ eventId }: Props) {
 
   const [isFetchingEventTickets, setIsFetchingEventTickets] = useState(true);
   const [ticketOrders, setTicketOrders] = useState<UserTicketOrder[]>([]);
-  console.log("🚀 ~ EventTicketDetails ~ ticketOrders:", ticketOrders);
   const [isDownloadingTicketsSold, setIsDownloadingTicketsSold] =
     useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);

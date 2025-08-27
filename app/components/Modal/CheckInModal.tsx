@@ -42,16 +42,11 @@ const CheckInModal: FunctionComponent<CheckInModalProps> = (
                 setVisibility(false);
             })
             .catch((error) => {
-                console.log("Check in error: ", error);
             })
             .finally(() => {
                 setIsCheckingIn(false);
             })
     };
-
-    useEffect(() => {
-        console.log("Selected tickets: ", selectedTickets);
-    }, [selectedTickets])
 
     return (
         <ModalWrapper visibility={visibility} setVisibility={setVisibility} styles={{ backgroundColor: 'transparent', color: '#fff', width: "fit-content" }}>

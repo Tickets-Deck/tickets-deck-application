@@ -99,8 +99,7 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
     // Retrieve customer
     await fetchUserInformation(session?.user.id as string)
       .then((response) => {
-        // console.log("response data: ", response.data);
-        alert("response data: " + JSON.stringify(response.data));
+        // alert("response data: " + JSON.stringify(response.data));
 
         // Set the result
         setUserProfileInformation(response.data);
@@ -154,11 +153,9 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
     // Fetch the bank list
     await fetchEventCategories()
       .then((response) => {
-        console.log("🚀 ~ .then ~ response:", response);
         setEventCategories(response.data);
       })
       .catch((error) => {
-        console.log("🚀 ~ .then ~ error:", error);
         catchError(error);
       });
   }
@@ -182,9 +179,7 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
 
   async function handleRecordEventView(eventId: string, userId?: string) {
     await recordEventView(eventId, userId)
-      .then((response) => {
-        console.log("🚀 ~ .then ~ response:", response);
-      })
+      .then((response) => {})
       .catch((error) => {
         catchError(error);
       });
@@ -192,9 +187,7 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
 
   async function handleFetchEventViewsAnalytics(eventId: string) {
     await fetchEventViewsAnalytics(eventId)
-      .then((response) => {
-        console.log("🚀 ~ .then ~ response:", response);
-      })
+      .then((response) => {})
       .catch((error) => {
         catchError(error);
       });
@@ -225,7 +218,7 @@ const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) => {
     handleFetchTransactionFee,
     eventCategories,
     handleRecordEventView,
-    handleFetchEventCategories
+    handleFetchEventCategories,
   };
 
   return (

@@ -25,11 +25,9 @@ export async function uploadImageToCloudinary(
       body: formData,
     })
       .then((response) => {
-        // console.log("response gotten: ", response);
         return response.json();
       })
       .then((data) => {
-        // console.log("data gotten: ", data);
         setCloudinaryImageUrl(data.secure_url);
 
         // Stop loader

@@ -63,9 +63,6 @@ export function ContactSalesModal({
     setIsSubmitting(true);
 
     try {
-      // In a real app, you would send this data to your backend
-      console.log("Submitting contact sales form:", formData);
-
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -98,9 +95,7 @@ export function ContactSalesModal({
     >
       <div className="w-full md:w-[28.125rem] max-h-[86vh] overflow-y-auto p-6 rounded-[20px] bg-container-grey [scrollbar-width:none]">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-2xl font-medium text-white">
-            Contact Sales
-          </h2>
+          <h2 className="text-2xl font-medium text-white">Contact Sales</h2>
           <span
             className="ml-auto size-8 min-w-8 min-h-8 rounded-full grid place-items-center cursor-pointer hover:bg-white/10 [&_svg_path]:stroke-white [&_svg_path]:fill-white"
             onClick={() => {

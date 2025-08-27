@@ -68,14 +68,8 @@ export default function CreateBannerPage() {
 
     let fileToUpload = frameImageFile;
 
-    // console.log(`Original image size: ${formatFileSize(frameImageFile.size)}`);
     // const { compressedFile, compressedSize, reductionPercentage } =
     //   await compressImage(frameImageFile);
-    // console.log(
-    //   `Compressed to: ${formatFileSize(
-    //     compressedSize
-    //   )} (${reductionPercentage.toFixed(2)}% reduction)`
-    // );
 
     // fileToUpload = compressedFile;
 
@@ -216,7 +210,6 @@ export default function CreateBannerPage() {
         },
         eventId: payload.eventId,
       };
-      console.log("🚀 ~ handleSubmit ~ finalPayload:", finalPayload);
 
       const newBanner = await createBanner(finalPayload, session.user.token);
 

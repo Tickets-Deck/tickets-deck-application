@@ -103,7 +103,6 @@ export function EditEventModal({
             // Extract only the base64 string (remove "data:image/jpeg;base64," prefix)
             const base64String = base64URL.split(",")[1];
 
-            // console.log('base64URL: ', base64String);
             setMainImageBase64Url(base64String);
             setEventRequest({
               ...(eventRequest as UpdateEventRequest),
@@ -364,8 +363,6 @@ export function EditEventModal({
                       : undefined
                   }
                   onChangeFn={(newValue) => {
-                    console.log("🚀 ~ newValue:", newValue);
-                    console.log("🚀 ~ newValue:", newValue.toISOString());
                     // Set the form value
                     handleDateSelect("startDate", newValue?.toISOString());
                     // setEventRequest({ ...eventRequest as UpdateEventRequest, startDate: formattedDateForApi(newValue.toDate()) });

@@ -8,7 +8,7 @@ export function deleteImageFromCloudinary(
   const cloudName = "dvxqk1487";
 
   const url = `https://api.cloudinary.com/v1_1/${cloudName}/destroy`;
-        // const url = `https://api.cloudinary.com/v1_1/${process.env.CLOUDNAME}/upload`
+  // const url = `https://api.cloudinary.com/v1_1/${process.env.CLOUDNAME}/upload`
 
   if (imageId) {
     const formData = new FormData();
@@ -22,15 +22,10 @@ export function deleteImageFromCloudinary(
       body: formData,
     })
       .then((response) => {
-        // console.log("response gotten: ", response);
         return response.json();
       })
-      .then((data) => {
-        console.log("data gotten after deletion: ", data);
-      })
-      .catch((error) => {
-        // console.log("error: ", error);
-      })
+      .then((data) => {})
+      .catch((error) => {})
       .finally(() => {
         // Stop loader
         setIsDeletingingImage(false);
@@ -42,9 +37,9 @@ export async function deleteImageFromCloudinaryv2(
   imagePublicId: string,
   setIsDeletingingImage: (value: SetStateAction<boolean>) => void
 ) {
-    // Show loader
-    setIsDeletingingImage(true);
+  // Show loader
+  setIsDeletingingImage(true);
 
-    // Delete image from cloudinary
-    await cloudinary.v2.uploader.destroy(imagePublicId);
+  // Delete image from cloudinary
+  await cloudinary.v2.uploader.destroy(imagePublicId);
 }

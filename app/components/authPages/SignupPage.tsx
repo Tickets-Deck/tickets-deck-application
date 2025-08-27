@@ -176,13 +176,10 @@ const SignupPage: FunctionComponent<SignupPageProps> = (): ReactElement => {
                 router.push(ApplicationRoutes.VerifyEmail);
             })
             .catch((error) => {
-                console.log("Error while creating user: ", error);
-
                 if (
                     error.response &&
                     error.response.data.errorCode == ApplicationError.UserWithEmailAlreadyExists.Code
                 ) {
-                    console.log(error.response.data.detail);
                     setRegistrationError("User with this email already exists!");
 
                     // Display error message

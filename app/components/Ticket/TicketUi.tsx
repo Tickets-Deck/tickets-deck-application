@@ -57,7 +57,6 @@ const TicketUi: FunctionComponent<TicketUiProps> = ({
 
   //     await domtoimage.toJpeg(pdfRef.current as Node)
   //         .then((dataUrl) => {
-  //             console.log("dataUrl: ", dataUrl);
   //             saveAs(dataUrl, 'Ticket.png');
   //         })
   // }

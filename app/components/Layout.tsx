@@ -96,8 +96,6 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, session, userData })
     }, [session, status]);
 
     // useSocket(WebhookEvent.USER_EMAIL_VERIFIED, (data) => {
-    //     console.log("🚀 ~ User email verified event gotten:", data.email);
-
     //     // Refresh page or trigger state update
     //     // window.location.reload();
     // });

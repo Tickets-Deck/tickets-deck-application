@@ -94,9 +94,6 @@ export function ScheduleDemoModal({
     setIsSubmitting(true);
 
     try {
-      // In a real app, you would send this data to your backend
-      console.log("Scheduling demo:", formData);
-
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 

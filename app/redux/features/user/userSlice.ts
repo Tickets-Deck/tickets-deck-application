@@ -28,9 +28,6 @@ export const fetchUserProfile = createAsyncThunk(
 
     return await fetchUserInformation(userId)
       .then((response) => {
-        // if (!response.ok) throw new Error("Failed to fetch user profile");
-        console.log("User information on layout: ", response.data);
-
         const data = response.data;
 
         // Convert flags array into an object
@@ -39,8 +36,6 @@ export const fetchUserProfile = createAsyncThunk(
             acc[flag.flagName] = flag.flagValue;
             return acc;
           }, {}) || null;
-
-        console.log("🚀 ~ flagsObject:", flagsObject);
 
         return { userInfo: data, flags: flagsObject };
       })

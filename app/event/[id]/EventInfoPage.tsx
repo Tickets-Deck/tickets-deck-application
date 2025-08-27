@@ -216,7 +216,6 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
         );
 
         catchError(error);
-        console.log("Error fetching info: ", error);
 
         // Unset running flag
         setLoader(false);
@@ -227,9 +226,6 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
   //     try {
   //         await fetchEventsByTags(eventInfo?.tags ?? [], eventInfo?.eventId as string)
   //             .then((response) => {
-  //                 // Log the result
-  //                 console.log('Result:', response.data);
-
   //                 // Set the event results
   //                 setEvents(response.data);
   //             })
@@ -277,7 +273,6 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
         selectedTickets: 0,
       }));
       setEventTickets(updatedTicketTypes);
-      // console.log(eventTickets);
     }
   }, [eventInfo]);
 

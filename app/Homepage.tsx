@@ -104,7 +104,6 @@ const Homepage: FunctionComponent<HomepageProps> = ({
     await fetchEvents()
       .then((response) => {
         if (response) {
-          // console.log(response.data);
           setEvents(response.data);
 
           // Save events to session storage
@@ -112,7 +111,6 @@ const Homepage: FunctionComponent<HomepageProps> = ({
         }
       })
       .catch((err) => {
-        console.log(err);
         // toasthandler?.logError('Error', 'An error occurred while fetching events.');
       })
       .finally(() => {

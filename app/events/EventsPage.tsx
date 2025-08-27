@@ -36,17 +36,10 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
     await fetchEvents()
       .then((response) => {
         if (response) {
-          console.log("Events: ", response.data);
           setEvents(response.data);
         }
       })
-      .catch((err) => {
-        console.log(err);
-        // toasthandler?.logError(
-        //     "Error",
-        //     "An error occurred while fetching events."
-        // );
-      })
+      .catch((err) => {})
       .finally(() => {
         // Stop loader
         setIsFetchingEvents(false);
@@ -73,8 +66,6 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
     await fetchPastEvents(currentPastEventsPage)
       .then((response) => {
         if (response) {
-          console.log("Past events: ", response.data);
-
           if (response?.data) {
             // Use functional update to avoid stale closure issues
             setPastEvents((prevEvents) =>
@@ -85,13 +76,7 @@ const AllEvents: FunctionComponent<AllEventsProps> = (): ReactElement => {
           }
         }
       })
-      .catch((err) => {
-        console.log(err);
-        // toasthandler?.logError(
-        //     "Error",
-        //     "An error occurred while fetching events."
-        // );
-      })
+      .catch((err) => {})
       .finally(() => {
         // Stop loader
         setIsFetchingPastEvents(false);

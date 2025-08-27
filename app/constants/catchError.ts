@@ -7,7 +7,7 @@ export function catchError(error: any) {
   // Otherwise, if we could not reach the server...
   else if (error.request) {
     // Log the error
-    // console.log("Request Error:", error.request);
+    // console.error("Request Error:", error.request);
   }
   // Otherwise... some error occurred in the build up of the request
   else {

@@ -146,9 +146,6 @@ const PublisherEventInformation: FunctionComponent<
 
     await fetchEventInfo(user?.token as string, id, user?.id as string)
       .then((response) => {
-        // Log the result
-        console.log("🚀 ~ .then ~ event info response:", response);
-
         // Set the event results
         let _eventInfo = response.data;
 
@@ -284,16 +281,8 @@ const PublisherEventInformation: FunctionComponent<
         // const isLargeFile = mainImageFile.size > 2 * 1024 * 1024; // 2MB threshold
         let fileToUpload = mainImageFile;
 
-        console.log(
-          `Original image size: ${formatFileSize(mainImageFile.size)}`
-        );
         const { compressedFile, compressedSize, reductionPercentage } =
           await compressImage(mainImageFile);
-        console.log(
-          `Compressed to: ${formatFileSize(
-            compressedSize
-          )} (${reductionPercentage.toFixed(2)}% reduction)`
-        );
         fileToUpload = compressedFile;
 
         formData.append("mainImage", fileToUpload);
@@ -371,7 +360,6 @@ const PublisherEventInformation: FunctionComponent<
     setEventInfo(undefined);
 
     if (id) {
-      console.log("Fetching info based on Event ID:", id);
       handleFetchEventInfo();
     }
   }, [id, session]);
