@@ -22,6 +22,7 @@ import { BankAccount, BankAccountDetailsRequest } from "../models/IBankAccount";
 import { CreateReviewRequest } from "../models/IReview";
 import {
   ICreateBannerPayload,
+  IUpdateBannerPayload,
   IUserEventForBanner,
   UploadBannerFrameResponse,
 } from "../models/IBanner";
@@ -1003,4 +1004,18 @@ export const useFetchUserEventsForBanner = () => {
       getApiConfig(token)
     );
   };
+};
+
+export const useUpdateBanner = () => {
+  const requestToken = useRequestCredentialToken();
+
+  async function updateBanner(
+    id: string,
+    data: IUpdateBannerPayload,
+    token: string
+  ) {
+    return API.put(ApiRoutes.UpdateBanner(id), data, getApiConfig(token));
+  }
+
+  return updateBanner;
 };
