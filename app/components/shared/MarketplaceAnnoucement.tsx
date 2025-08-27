@@ -186,8 +186,6 @@ export default function MarketplaceAnnouncement({
                           <Button
                             className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold px-8 py-3 rounded-xl shadow-lg shadow-purple-500/25"
                             onClick={() => {
-                              // Handle vendor signup
-                              console.log("Become a Vendor clicked");
                               onClose();
                             }}
                           >
@@ -207,8 +205,6 @@ export default function MarketplaceAnnouncement({
                           <Button
                             className="w-full sm:w-auto border-2 border-purple-400 text-purple-300 hover:bg-purple-400 hover:text-white font-semibold px-8 py-3 rounded-xl bg-transparent"
                             onClick={() => {
-                              // Handle waitlist signup
-                              console.log("Join Waitlist clicked");
                               onClose();
                             }}
                           >

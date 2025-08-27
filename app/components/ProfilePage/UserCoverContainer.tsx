@@ -74,7 +74,6 @@ const UserCoverContainer: FunctionComponent<UserCoverContainerProps> = ({
       toast.logSuccess("Success", "Cover photo updated successfully.");
     } catch (error) {
       toast.logError("Error", "Failed to update cover photo.");
-      console.log(error);
     } finally {
       setIsUpdatingCoverPhoto(false);
     }

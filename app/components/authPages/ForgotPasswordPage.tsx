@@ -46,13 +46,10 @@ const ForgotPasswordPage: FunctionComponent<
     await requestPasswordResetLink({ email })
       .then((response) => {
         if (response) {
-          // console.log("Reset Password Link: ", response.data);
           setIsPasswordResetModalVisible(true);
         }
       })
       .catch((error) => {
-        console.log("🚀 ~ handleSubmit ~ error:", error);
-
         if (error.response?.data.errorCode === "USER_1017") {
           // This implies that the user signed up with Google
           setEmailErrorMsg(

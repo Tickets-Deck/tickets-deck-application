@@ -8,7 +8,6 @@ const socket = io(ApiRoutes.BASE_URL); // Change to your actual API URL
 
 // // Listen for the "user-email-verified" event
 // socket.on(WebhookEvent.USER_EMAIL_VERIFIED, (data) => {
-//   console.log("User email verified:", data);
 //   // You can trigger a page refresh if needed
 //   window.location.reload();
 // });
@@ -22,7 +21,6 @@ export async function POST(req: Request, res: Response) {
   try {
     // Parse the request body
     const body = await req.json();
-    console.log("🚀 ~ handler ~ body:", body);
 
     const { event, email } = body;
 
@@ -35,8 +33,6 @@ export async function POST(req: Request, res: Response) {
     }
 
     if (event === WebhookEvent.USER_EMAIL_VERIFIED) {
-      console.log(`User email verified: ${email}`);
-
       // Emit WebSocket event to frontend clients
       socket.emit(event, { email });
 

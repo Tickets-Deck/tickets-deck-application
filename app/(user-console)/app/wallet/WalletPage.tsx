@@ -32,7 +32,7 @@ const WalletPage: FunctionComponent<WalletPageProps> = ({
 
   const [showPayoutModal, setShowPayoutModal] = useState(false);
   const [walletBalance, setWalletBalance] = useState<WalletBalance>();
-//   const [showWalletBalance, setShowWalletBalance] = useState(false);
+  //   const [showWalletBalance, setShowWalletBalance] = useState(false);
   const [userPayouts, setUserPayouts] = useState<Payout[] | null>(
     initialUserPayouts
   );
@@ -77,9 +77,7 @@ const WalletPage: FunctionComponent<WalletPageProps> = ({
       .then((response) => {
         setUserPayouts(response.data);
       })
-      .catch((error) => {
-        console.log("🚀 ~ handleFetchUserPayouts ~ error:", error);
-      });
+      .catch((error) => {});
   };
 
   const showPaymentStatus = (paymentStatus: PaymentStatus) => {

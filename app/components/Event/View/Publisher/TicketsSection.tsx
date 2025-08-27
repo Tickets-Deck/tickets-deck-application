@@ -77,26 +77,20 @@ export default function TicketsSection(
             const displaySeconds = seconds > 0 ? `${seconds > 1 ? `${seconds} seconds` : `${seconds} second`}` : '0 seconds';
 
             if (duration.asMilliseconds() <= 0) {
-                // console.log('The time has already passed!');
                 setTimer(undefined)
             }
             else {
                 setTimer(`${displayDays} ${displayHours} ${displayMinutes} ${displaySeconds} left`);
-                // console.log(`${days} days, ${hours} ${hours > 1 ? 'hours' : 'hour'}, ${minutes} ${minutes > 1 ? 'minutes' : 'minute'}, ${seconds} seconds left`);
             }
 
             // else if (days > 0) {
             //     setTimer(`${days} days, ${hours} ${hours > 1 ? 'hours' : 'hour'}, ${minutes} ${minutes > 1 ? 'minutes' : 'minute'}, ${seconds} seconds left`);
-            //     console.log(`${days} days, ${hours} ${hours > 1 ? 'hours' : 'hour'}, ${minutes} ${minutes > 1 ? 'minutes' : 'minute'}, ${seconds} seconds left`);
             // } else if (hours > 0) {
             //     setTimer(`${hours} ${hours > 1 ? 'hours' : 'hour'}, ${minutes} ${minutes > 1 ? 'minutes' : 'minute'}, ${seconds} seconds left`);
-            //     console.log(`${hours} ${hours > 1 ? 'hours' : 'hour'}, ${minutes} ${minutes > 1 ? 'minutes' : 'minute'}, ${seconds} seconds left`);
             // } else if (minutes > 0) {
             //     setTimer(`${minutes} ${minutes > 1 ? 'minutes' : 'minute'}, ${seconds} seconds left`);
-            //     console.log(`${minutes} ${minutes > 1 ? 'minutes' : 'minute'}, ${seconds} seconds left`);
             // } else {
             //     setTimer(`${seconds} seconds left`);
-            //     console.log(`${seconds} seconds left`);
             // }
         }, 1000);
 

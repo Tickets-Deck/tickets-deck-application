@@ -12,7 +12,6 @@ export async function GET() {
     const tokenRes = await axios.get(`${API_BASE}auth/request-token`, {
       headers: { "x-api-key": process.env.NEXT_PUBLIC_API_KEY },
     });
-    console.log("🚀 ~ GET ~ tokenRes:", tokenRes);
 
     const token = tokenRes.data?.token;
     if (!token) throw new Error("No token returned.");
@@ -21,7 +20,6 @@ export async function GET() {
     const eventsRes = await axios.get(`${API_BASE}events`, {
       headers: { "x-api-key": process.env.NEXT_API_KEY },
     });
-    console.log("🚀 ~ GET ~ eventsRes:", eventsRes);
 
     const eventPages = eventsRes.data || [];
 

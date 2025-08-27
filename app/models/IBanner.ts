@@ -31,6 +31,13 @@ export type ICreateBannerPayload = {
   configuration: IBannerConfiguration;
 };
 
+export type IUpdateBannerPayload = {
+  title?: string;
+  description?: string;
+  eventId?: string;
+  configuration?: IBannerConfiguration;
+};
+
 export type IBanner = ICreateBannerPayload & {
   id: string;
   ownerId: string;

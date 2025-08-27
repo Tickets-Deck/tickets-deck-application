@@ -70,16 +70,8 @@ export default function BannerPage({ params }: BannerPageProps) {
     if (userAvatarFile) {
       let fileToUpload = userAvatarFile;
 
-      console.log(
-        `Original image size: ${formatFileSize(userAvatarFile.size)}`
-      );
       const { compressedFile, compressedSize, reductionPercentage } =
         await compressImage(userAvatarFile);
-      console.log(
-        `Compressed to: ${formatFileSize(
-          compressedSize
-        )} (${reductionPercentage.toFixed(2)}% reduction)`
-      );
 
       fileToUpload = compressedFile;
 

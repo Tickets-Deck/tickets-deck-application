@@ -42,28 +42,28 @@ const UserEventsGroup: FunctionComponent<UserEventsGroupProps> = ({
         consoleDisplay ? "!px-6 !pt-5 !pb-2 h-full" : ""
       }`}
     >
-      <div className='flex items-start justify-between w-full'>
-        <div className='w-full sm:w-1/2'>
-          <div className='flex items-center gap-1'>
-            <span className='text-[20px] font-medium font-Mona-Sans-Wide min-[520px]:text-[30px]'>
+      <div className="flex items-start justify-between w-full">
+        <div className="w-full sm:w-1/2">
+          <div className="flex items-center gap-1">
+            <span className="text-[20px] font-medium font-Mona-Sans-Wide min-[520px]:text-[30px]">
               {title}
             </span>
             <Image
-              className='h-[1.25rem] w-fit inline-flex'
+              className="h-[1.25rem] w-fit inline-flex"
               src={images.rocket}
-              alt='Rocket'
+              alt="Rocket"
             />
           </div>
-          <p className='min-[400px]:text-sm w-[80%] opacity-80 text-xs'>
+          <p className="min-[400px]:text-sm w-[80%] opacity-80 text-xs">
             {subText}
           </p>
         </div>
-        <div className='hidden min-[550px]:block'>
+        <div className="hidden min-[550px]:block">
           {
             consoleDisplay ? (
               <Link href={ApplicationRoutes.CreateEvent}>
                 <button
-                  className='py-[0.4rem] px-[0.8rem] bg-transparent border-none outline-none cursor-pointer rounded-[6px] opacity-80 text-sm text-white hover:bg-white/10 hover:opacity-100'
+                  className="py-[0.4rem] px-[0.8rem] bg-transparent border-none outline-none cursor-pointer rounded-[6px] opacity-80 text-sm text-white hover:bg-white/10 hover:opacity-100"
                   onClick={() => {
                     push("/app/event/create");
                   }}
@@ -86,7 +86,7 @@ const UserEventsGroup: FunctionComponent<UserEventsGroupProps> = ({
         }`}
       >
         <div
-          className='grid grid-cols-3 gap-4'
+          className="grid grid-cols-3 gap-4"
           // "[grid-template-columns:_repeat(auto-fill,_minmax(200px,_1fr))] min-[550px]:[[grid-template-columns:_repeat(auto-fill,_minmax(250px,_1fr))]]"
         >
           {!isFetchingEvents &&
@@ -101,7 +101,6 @@ const UserEventsGroup: FunctionComponent<UserEventsGroupProps> = ({
                   : new Date(event.startDate) >= new Date()
               )
               .map((event, index) => {
-                console.log("🚀 ~ .map ~ event:", event);
                 return (
                   <EventCard
                     event={event}
@@ -118,15 +117,15 @@ const UserEventsGroup: FunctionComponent<UserEventsGroupProps> = ({
               })}
         </div>
         {isFetchingEvents && (
-          <div className='min-[50vh] grid place-items-center'>
-            <ComponentLoader customLoaderColor='#fff' />
+          <div className="min-[50vh] grid place-items-center">
+            <ComponentLoader customLoaderColor="#fff" />
           </div>
         )}
         {!isFetchingEvents && eventsData && eventsData?.length == 0 && (
-          <div className='w-fit mx-auto text-center flex flex-col gap-[0.125rem]'>
+          <div className="w-fit mx-auto text-center flex flex-col gap-[0.125rem]">
             <br />
             <br />
-            <p className='text-sm opacity-40'>No events found.</p>
+            <p className="text-sm opacity-40">No events found.</p>
           </div>
         )}
       </div>

@@ -71,7 +71,6 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
     //             dispatch(updateUserCredentials(response.data));
     //         })
     //         .catch((error) => {
-    //             // console.log(error);
     //             catchError(error);
     //         });
     // }
@@ -101,8 +100,6 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
 
         await signIn("credentials", { ...userInformation, redirect: false })
             .then(async (response) => {
-                // console.log("login response: ", response);
-
                 // If we have an error
                 // if (
                 //     response?.error
@@ -121,10 +118,8 @@ const Login: FunctionComponent<LoginProps> = (): ReactElement => {
                     );
                     return;
                 }
-                // console.log('Login successful');
             })
             .catch((error) => {
-                // console.log("Error logging in: ", error);
                 setMessage("An error occurred while logging in. Please try again.");
                 catchError(error);
                 // Close loader

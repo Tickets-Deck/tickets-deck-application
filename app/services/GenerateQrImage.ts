@@ -55,8 +55,7 @@ import path from "path";
 export async function generateQRCode(text: string): Promise<Buffer> {
   try {
     // const qrDataURL = await QRCode.toDataURL(text);
-    const qrDataURL = await QRCode.toBuffer(text, { type: 'png' });
-    // console.log("🚀 ~ generateQRCode ~ qrDataURL:", qrDataURL)
+    const qrDataURL = await QRCode.toBuffer(text, { type: "png" });
     return qrDataURL;
   } catch (error) {
     // console.error("Error generating QR code:", error);

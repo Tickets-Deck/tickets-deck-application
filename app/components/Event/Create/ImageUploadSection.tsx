@@ -71,8 +71,6 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({
           if (base64URL) {
             // Extract only the base64 string (remove "data:image/jpeg;base64," prefix)
             const base64String = base64URL.split(",")[1];
-
-            // console.log('base64URL: ', base64String);
             setMainImageBase64Url(base64String);
           }
         };
@@ -106,8 +104,6 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({
    * @returns void
    */
   const handleFileUploadIntoArray = (e: any, index?: number) => {
-    console.log("running");
-
     // Get the selected file
     const selectedFile: File = e.target.files[0];
 
@@ -124,11 +120,8 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({
       const file = e.target.files[0]; // Get the selected file
 
       if (file) {
-        console.log("index: ", index);
-        console.log("subImageFiles: ", subImageFiles);
         // If index is defined, update the file at the specified index
         if (index && subImageFiles && subImageFiles[index]) {
-          console.log("Update index");
           setSubImageFiles({ ...(subImageFiles as File[]), [index]: file });
         }
         // Otherwise, add the file to the array
@@ -147,8 +140,6 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({
           if (base64URL) {
             // Extract only the base64 string (remove "data:image/jpeg;base64," prefix)
             const base64String = base64URL.split(",")[1];
-
-            // console.log('base64URL: ', base64String);
           }
         };
 
@@ -168,10 +159,8 @@ const ImageUploadSection: FunctionComponent<ImageUploadSectionProps> = ({
     // Set the image url
     const imgURL = URL.createObjectURL(selectedFile);
 
-    console.log("subImageUrls: ", subImageUrls);
     // If index is defined, update the url at the specified index
     if (index && subImageUrls && subImageUrls[index]) {
-      console.log("Update index");
       setSubImageUrls({ ...(subImageUrls as string[]), [index]: imgURL });
     }
     // Update the image url state

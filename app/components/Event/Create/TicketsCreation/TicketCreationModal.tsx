@@ -115,8 +115,6 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
     ) {
       return true;
     } else {
-      console.log(ticketFormRequest);
-
       // Validate the ticket name
       if (!ticketFormRequest?.name) {
         setTicketNameErrorMsg({
@@ -155,7 +153,6 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
         });
       } else {
         if (Number(ticketFormRequest?.quantity < 1)) {
-          console.log("Less than 1");
           setTicketQuantityErrorMsg({
             message: "Ticket quantity cannot be less than 1",
             status: DefaultFormResponseStatus.Failed,
@@ -173,7 +170,6 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
         });
       } else {
         if (Number(ticketFormRequest?.numberOfUsers < 1)) {
-          console.log("Less than 1");
           setTicketNumberOfUsersErrorMsg({
             message: "Number of users cannot be less than 1",
             status: DefaultFormResponseStatus.Failed,
@@ -198,9 +194,6 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
     if (!validateForm()) {
       return;
     }
-
-    // console.log({ticketFormRequest});
-    // return;
 
     // If there are created tickets...
     if (eventRequest && eventRequest?.tickets) {
@@ -273,8 +266,6 @@ const TicketCreationModal: FunctionComponent<TicketCreationModalProps> = ({
       }
     )
       .then(async (response) => {
-        console.log("🚀 ~ .then ~ response:", response);
-
         handleFetchEventInfo && (await handleFetchEventInfo());
 
         handleFetchEventTickets && (await handleFetchEventTickets());

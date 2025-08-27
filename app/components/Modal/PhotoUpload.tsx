@@ -73,7 +73,6 @@ const PhotoUpload: FunctionComponent<PhotoUploadProps> = ({
             // Extract only the base64 string (remove "data:image/jpeg;base64," prefix)
             const base64String = base64URL.split(",")[1];
 
-            // console.log('base64URL: ', base64String);
             setImageBase64Url(base64String);
           }
         };
@@ -133,7 +132,6 @@ const PhotoUpload: FunctionComponent<PhotoUploadProps> = ({
       setVisibility(false);
     } catch (error) {
       toast.logError("Error", "Failed to upload profile photo.");
-      console.log(error);
     } finally {
       setUploadingPhoto(false);
     }

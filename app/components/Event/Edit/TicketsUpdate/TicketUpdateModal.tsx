@@ -103,8 +103,6 @@ const TicketUpdateModal: FunctionComponent<TicketUpdateModalProps> = ({
   }, [selectedTicket]);
 
   async function handleUpdateTicketInformation() {
-    console.log({ ticketFormRequest });
-
     // Show loader
     setIsUpdatingTicketInfo(true);
 

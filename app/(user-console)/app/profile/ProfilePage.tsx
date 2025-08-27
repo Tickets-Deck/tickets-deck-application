@@ -93,11 +93,9 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
       .then((response) => {
         // Save to redux
         // dispatch(updateUserCredentials(response.data));
-        // console.log(response.data);
         setUserInformation(response.data);
       })
       .catch((error) => {
-        // console.log(error);
         catchError(error);
       })
       .finally(() => {
@@ -121,7 +119,6 @@ const ProfilePage: FunctionComponent<ProfilePageProps> = (): ReactElement => {
         twitterUrl: retrievedUserInformation?.socialLinks?.twitterUrl || null,
       },
     };
-    // console.log("🚀 ~ handleUpdateUserInformation ~ data:", data);
 
     // Update user information
     await updateUserInformation(

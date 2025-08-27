@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Plus, Edit, Image as ImageIcon } from "lucide-react";
@@ -12,7 +12,7 @@ import { BannerInfo } from "@/app/components/DpBanner/UserDpBanner/BannerInfo";
 import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { useFetchMyBanners, useFetchMyDps } from "@/app/api/apiClient";
 import { catchError } from "@/app/constants/catchError";
-import { Tab } from "@headlessui/react";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { MyBannerCard } from "@/app/components/DpBanner/UserDpBanner/MyBannerCard";
 
 function classNames(...classes: string[]) {
@@ -91,8 +91,8 @@ export default function UserDpBannerPage() {
         </Link>
       </div>
 
-      <Tab.Group>
-        <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 mb-6">
+      <TabGroup>
+        <TabList className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 mb-6">
           {tabs.map((tab) => (
             <Tab
               key={tab.name}
@@ -109,9 +109,9 @@ export default function UserDpBannerPage() {
               {tab.name}
             </Tab>
           ))}
-        </Tab.List>
-        <Tab.Panels>
-          <Tab.Panel>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {myBanners.length > 0 ? (
                 myBanners.map((banner) => (
@@ -144,8 +144,8 @@ export default function UserDpBannerPage() {
                 </div>
               )}
             </div>
-          </Tab.Panel>
-          <Tab.Panel>
+          </TabPanel>
+          <TabPanel>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {savedDps.length > 0 ? (
                 savedDps.map((dp) => <SavedDpCard key={dp.id} dp={dp} />)
@@ -161,9 +161,9 @@ export default function UserDpBannerPage() {
                 </div>
               )}
             </div>
-          </Tab.Panel>
-        </Tab.Panels>
-      </Tab.Group>
+          </TabPanel>
+        </TabPanels>
+      </TabGroup>
     </div>
   );
 }

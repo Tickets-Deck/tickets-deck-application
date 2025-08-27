@@ -94,7 +94,6 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
         setUserInformation(response.data);
       })
       .catch((error) => {
-        // console.log(error);
         catchError(error);
       })
       .finally(() => {
@@ -120,7 +119,6 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
         }
       })
       .catch((error) => {
-        // console.log("Failed to fetch user follow metrics: ", error);
         catchError(error);
       });
   }
@@ -173,12 +171,10 @@ const UserInformationPage: FunctionComponent<UserInformationPageProps> = ({
   async function handleFetchPublisherEvents() {
     await fetchPublisherEvents(userInformation?.id as string)
       .then((response) => {
-        console.log("Fetched events: ", response.data);
         setOrganizerEvents(response.data);
       })
       .catch((error) => {
         if (error.response) {
-          console.log(error.response.data);
           throw new Error(error.response.data.message);
         }
       });

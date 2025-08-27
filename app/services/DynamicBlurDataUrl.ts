@@ -3,7 +3,6 @@ import { promises as fs } from "fs";
 import path from "path";
 
 // const baseUrl = process.env.NEXT_PUBLIC_URL;
-// console.log("🚀 ~ baseUrl:", baseUrl);
 
 // export async function dynamicBlurDataUrl(url: string) {
 //   /**
@@ -14,7 +13,6 @@ import path from "path";
 //   ).then(async (response) =>
 //     Buffer.from(await response.arrayBuffer()).toString("base64")
 //   );
-//   console.log("🚀 ~ dynamicBlurDataUrl ~ base64string:", base64string);
 
 //   // Get SVG with blur filter
 //   const blurSvg = `
@@ -31,7 +29,6 @@ import path from "path";
 //         href='data:image/avif;base64,${base64string}' />
 //   </svg>
 //   `;
-//   console.log("🚀 ~ dynamicBlurDataUrl ~ blurSvg:", blurSvg);
 
 //   // Convert SVG to base64
 //   const toBase64 = (imgString: string) =>
@@ -42,7 +39,6 @@ import path from "path";
 //   // Return data URL
 //   return `data:image/svg+xml;base64,${toBase64(blurSvg)}`;
 // };
-
 
 function bufferToBase64(buffer: Buffer): string {
   return `data:image/png;base64,${buffer.toString("base64")}`;

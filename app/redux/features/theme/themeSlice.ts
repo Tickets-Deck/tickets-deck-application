@@ -13,12 +13,10 @@ const isLocalStorageAvailable = typeof localStorage !== "undefined";
 const storedAppTheme = isLocalStorageAvailable
   ? localStorage.getItem(StorageKeys.AppTheme)
   : null;
-//   console.log("storedAppTheme: ", storedAppTheme);
-//   console.log("parsed storedAppTheme: ", JSON.parse(storedAppTheme as string));
 
 // Define the initial state using the ThemeState interface
 const initialState: ThemeState = storedAppTheme
-  ? {appTheme: JSON.parse(storedAppTheme) as Theme}
+  ? { appTheme: JSON.parse(storedAppTheme) as Theme }
   : { appTheme: Theme.Dark };
 
 export const themeSlice = createSlice({
@@ -29,7 +27,10 @@ export const themeSlice = createSlice({
       state.appTheme = action.payload;
 
       // Save updated theme to local storage after modification
-      localStorage.setItem(StorageKeys.AppTheme, JSON.stringify(action.payload));
+      localStorage.setItem(
+        StorageKeys.AppTheme,
+        JSON.stringify(action.payload)
+      );
     },
     resetAppTheme: (state) => {
       state.appTheme = null;

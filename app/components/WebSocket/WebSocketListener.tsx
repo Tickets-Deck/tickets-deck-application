@@ -5,28 +5,33 @@ import { PaymentVerificationEventRes } from "@/app/models/ISocketEventsResponse"
 import { useRouter } from "next/navigation";
 
 export default function WebSocketListener() {
-    const router = useRouter();
+  const router = useRouter();
 
-    useEffect(() => {
-        socket.on("connect", () => console.log(`Connected to websocket!`));
+  useEffect(() => {
+    socket.on("connect", () => console.debug(`Connected to websocket!`));
 
-        socket.on("disconnect", () => console.log(`Disconnected from websocket!`));
+    socket.on("disconnect", () =>
+      console.debug(`Disconnected from websocket!`)
+    );
 
-        socket.on(SocketEvents.User_Email_Verfied, (data) => {
-            console.log("User Verified:", data);
-        });
+    socket.on(SocketEvents.User_Email_Verfied, (data) => {
+      console.debug("User Email Verified");
+    });
 
-        socket.on(SocketEvents.Payment_Verfied, (data: PaymentVerificationEventRes) => {
-            // Route to order page
-            router.push(`/order/${data.ticketOrderId}`);
-        });
+    socket.on(
+      SocketEvents.Payment_Verfied,
+      (data: PaymentVerificationEventRes) => {
+        // Route to order page
+        router.push(`/order/${data.ticketOrderId}`);
+      }
+    );
 
-        return () => {
-            socket.off(SocketEvents.User_Email_Verfied);
-            socket.off(SocketEvents.Payment_Verfied);
-            // socket.disconnect(); // Disconnect WebSocket on unmount
-        };
-    }, []);
+    return () => {
+      socket.off(SocketEvents.User_Email_Verfied);
+      socket.off(SocketEvents.Payment_Verfied);
+      // socket.disconnect(); // Disconnect WebSocket on unmount
+    };
+  }, []);
 
-    return null; // Runs in the background
+  return null; // Runs in the background
 }

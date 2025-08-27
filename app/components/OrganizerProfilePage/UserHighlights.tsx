@@ -22,13 +22,10 @@ const UserHighlights: FunctionComponent<UserHighlightsProps> = ({
   async function handleFetchUserEventsByPublisherId() {
     await fetchUserEventsByPublisherId(userInformation.id)
       .then((response) => {
-        // console.log(response.data);
         // Update the state
         setUserEvents(response.data);
       })
       .catch((error) => {
-        // Log the error
-        // console.log(error);
         catchError(error);
       })
       .finally(() => {

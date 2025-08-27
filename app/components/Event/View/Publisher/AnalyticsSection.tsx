@@ -58,7 +58,6 @@ export default function AnalyticsSection({
         Number(previousEventInfo.netEarnings)
       )
     : null;
-  console.log("🚀 ~ AnalyticsSection ~ netEarningsChange:", netEarningsChange);
 
   const ticketsSoldChange = previousEventInfo
     ? calculatePercentageChange(
@@ -66,7 +65,6 @@ export default function AnalyticsSection({
         previousEventInfo.ticketOrdersCount
       )
     : null;
-  console.log("🚀 ~ AnalyticsSection ~ ticketsSoldChange:", ticketsSoldChange);
 
   const engagementCount = eventInfo.bookmarksCount + eventInfo.favoritesCount;
   const prevEngagementCount =

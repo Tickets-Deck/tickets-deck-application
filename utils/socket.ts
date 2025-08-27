@@ -14,7 +14,6 @@ const getSessionId = () => {
     sessionId = uuidv4(); // Generate a unique ID
     localStorage.setItem(StorageKeys.ClientSessionWS, sessionId);
   }
-  console.log("🚀 ~ getSessionId ~ sessionId:", sessionId);
   return sessionId;
 };
 

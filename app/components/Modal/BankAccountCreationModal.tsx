@@ -28,7 +28,6 @@ const BankAccountCreationModal: FunctionComponent<BankAccountCreationModalProps>
     const createBankAccount = useCreateUserBankAccount();
 
     const { bankList } = useContext(ApplicationContext) as ApplicationContextData;
-    console.log("🚀 ~ bankList:", bankList)
 
     const [isConfirmingAccount, setIsConfirmingAccount] = useState(false);
     const [isCreatingBankAccount, setIsCreatingBankAccount] = useState(false);
@@ -78,7 +77,6 @@ const BankAccountCreationModal: FunctionComponent<BankAccountCreationModalProps>
         // Call API to create bank account
         await createBankAccount(user?.token as string, user?.id as string, data)
             .then(async (response) => {
-                console.log("🚀 ~ .then ~ response:", response)
                 toasthandler?.logSuccess('Success', `Your ${data.bankName} account has been added successfully.`);
                 await handleFetchUserBankAccount();
                 setVisibility(false);

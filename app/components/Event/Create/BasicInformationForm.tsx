@@ -68,8 +68,6 @@ const BasicInformationForm: FunctionComponent<BasicInformationFormProps> = ({
   //       const start = moment(eventRequest?.startDate);
   //       const computed = start.clone().add(hours, "hours");
 
-  //       console.log("🚀 ~ useEffect ~ computed:", computed);
-
   //       setEventRequest({
   //         ...(eventRequest as EventRequest),
   //         endDate: computed.toDate(),

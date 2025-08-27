@@ -72,7 +72,6 @@ const VerifyEmailPage: FunctionComponent<
         setIsEmailVerified(true);
       })
       .catch((error) => {
-        console.log("🚀 ~ handleVerifyUserEmail ~ error:", error);
         if (
           error.response.data.errorCode ==
           ApplicationError.EmailAlreadyVerified.Code

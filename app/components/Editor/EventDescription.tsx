@@ -51,7 +51,6 @@ const EventDescriptionEditor: FunctionComponent<EventDescriptionEditorProps> = (
 
     return (
         <>
-            {/* {console.log(eventRequest?.description)} */}
             <ReactQuill
                 theme="snow"
                 modules={modules}

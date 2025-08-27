@@ -2,9 +2,10 @@ import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { useToast } from "@/app/context/ToastCardContext";
 import { IBanner } from "@/app/models/IBanner";
 import { format } from "date-fns";
-import { Eye, Share2, Zap } from "lucide-react";
+import { Eye, Share2, Zap, Edit } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import Tooltip from "../../custom/Tooltip";
 
 interface MyBannerCardProps {
   banner: IBanner;
@@ -22,12 +23,15 @@ export const MyBannerCard = ({ banner }: MyBannerCardProps) => {
   };
 
   return (
-    <div className="bg-dark-grey-2 rounded-lg overflow-hidden shadow-lg transition-transform group flex flex-col">
-      <div
-        // href={`${ApplicationRoutes.UserDpBanner}/${banner.id}`}
+    <div className="bg-dark-grey-2 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105 group flex flex-col">
+      <Link
+        href={`${ApplicationRoutes.UserPulseCard}/${banner.id}/edit`}
         className="flex-grow"
       >
         <div className="relative h-48 bg-gray-700">
+          <div className="absolute top-2 right-2 z-10 p-2 bg-black/50 rounded-full text-white group-hover:bg-primary-color transition-colors">
+            <Edit size={16} />
+          </div>
           {banner.configuration.frameImageUrl && (
             <Image
               src={banner.configuration.frameImageUrl}
@@ -44,21 +48,26 @@ export const MyBannerCard = ({ banner }: MyBannerCardProps) => {
             Created: {format(new Date(banner.createdAt), "MMM d, yyyy")}
           </p>
         </div>
-      </div>
-      <div className="p-4 pt-0 flex justify-between items-center">
+      </Link>
+      <div className="p-4 py-2 flex justify-between items-center border-t border-gray-700/50">
         <div className="flex items-center gap-4 text-sm text-gray-300">
-          <div className="flex items-center gap-1">
-            <Eye size={14} />
-            <span>{banner.viewCount} views</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Zap size={14} />
-            <span>{banner.generationCount} generations</span>
-          </div>
+          <Tooltip position={"top"} tooltipText="Views">
+            <div className="flex items-center gap-1" title="Views">
+              <Eye size={14} />
+              <span>{banner.viewCount}</span>
+            </div>
+          </Tooltip>
+
+          <Tooltip position={"top"} tooltipText="Generations">
+            <div className="flex items-center gap-1" title="Generations">
+              <Zap size={14} />
+              <span>{banner.generationCount}</span>
+            </div>
+          </Tooltip>
         </div>
         <button
           onClick={handleShare}
-          className="p-2 rounded-full hover:bg-gray-700 transition-colors"
+          className="p-2 rounded-full hover:bg-gray-700 transition-colors z-10"
           aria-label="Share banner"
         >
           <Share2 size={16} />

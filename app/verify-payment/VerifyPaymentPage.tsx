@@ -58,7 +58,6 @@ const VerifyPaymentPage: FunctionComponent<
         }
       })
       .catch((error) => {
-        console.log("🚀 ~ handlePaymentVerification ~ error:", error);
         if (error.response) {
           if (
             error.response.data.error == "Payment has already been verified"

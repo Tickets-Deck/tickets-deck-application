@@ -54,7 +54,6 @@ export const authOptions: NextAuthOptions = {
 
         // Get the response
         const loginResponse = await res.json();
-        console.log("🚀 ~ authorize ~ loginResponse:", loginResponse);
 
         if (
           loginResponse?.errorCode === ApplicationError.InvalidCredentials.Code
@@ -78,7 +77,6 @@ export const authOptions: NextAuthOptions = {
         token: { label: "Token", type: "text" }, // Accept the token
       },
       async authorize(credentials) {
-        console.log("🚀 ~ authorize ~ credentials:", credentials);
         // const res = await fetch(
         //   `${ApiRoutes.BASE_URL}${ApiRoutes.VerifyOAuthToken}`,
         //   {
@@ -107,8 +105,6 @@ export const authOptions: NextAuthOptions = {
         );
 
         const user = await res.json();
-        console.log("🚀 ~ authorize ~ res:", res);
-        console.log("🚀 ~ authorize ~ user:", user);
 
         if (res.ok && user) {
           return user; // This object will be passed into the session callback
@@ -121,8 +117,6 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ account, profile }) {
-      console.log("Sign In Callback", { account, profile });
-
       if (account?.provider === "google") {
         // Check if user exists in database checking each user's email if it matches the email provided
 
@@ -139,8 +133,6 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage JWTs here
     jwt: async ({ token, user, trigger, account }) => {
-      console.log("🚀 ~ jwt: ~ user:", user);
-      console.log("🚀 ~ jwt: ~ token:", token);
       const customToken = token as Token;
 
       if (user) {
@@ -167,16 +159,6 @@ export const authOptions: NextAuthOptions = {
         };
       }
 
-      console.log("Date.now(): ", Date.now());
-      console.log(
-        "customToken.accessTokenExpires: ",
-        customToken.accessTokenExpires
-      );
-      console.log(
-        "token expired?: ",
-        Date.now() > customToken.accessTokenExpires
-      );
-
       // If the access token is still valid, return it
       if (Date.now() < customToken.accessTokenExpires) {
         return customToken;
@@ -190,8 +172,6 @@ export const authOptions: NextAuthOptions = {
     },
     // Create and manage sessions here
     session: async ({ session, token }) => {
-      console.log("🚀 ~ session: ~ token:", token);
-      console.log("🚀 ~ session: ~ session:", session);
       const customToken = token as Token;
 
       return {
@@ -209,9 +189,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   events: {
-    async signIn(message) {
-      //   console.log("Sign In Event", { message });
-    },
+    async signIn(message) {},
     async signOut(message) {
       // Delete the session cookie
       await fetch(`${process.env.NEXTAUTH_URL}/api/auth/session`, {
@@ -222,13 +200,10 @@ export const authOptions: NextAuthOptions = {
       });
     },
     // async createUser(message) {
-    //   console.log("Create User Event", { message });
     // },
     // async linkAccount(message) {
-    //   console.log("Link Account Event", { message });
     // },
     // async session(message) {
-    //   console.log("Session Event", { message });
     // },
   },
   pages: {
@@ -248,8 +223,6 @@ async function refreshAccessToken(token: Token): Promise<Token> {
     });
 
     const refreshedTokens = await res.json();
-
-    console.log("🚀 ~ refreshAccessToken ~ refreshedTokens:", refreshedTokens);
 
     if (!res.ok) throw refreshedTokens;
 

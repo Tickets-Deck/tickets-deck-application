@@ -480,4 +480,9 @@ export class ApiRoutes {
   //     `banners/${bannerId}/view`;
 
   static FetchUserEventsForBanner: string = "/events/organizer/for-banner";
+
+  /**
+   * The route to update a banner
+   */
+  static UpdateBanner: (id: string) => string = (id: string) => `banners/${id}`;
 }

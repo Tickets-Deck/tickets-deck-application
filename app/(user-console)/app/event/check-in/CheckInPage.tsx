@@ -55,7 +55,6 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
       eventId as string
     )
       .then((response) => {
-        console.log("Check in response: ", response);
         if (response.data) {
           setMultipleTickets(response.data);
           return;
@@ -63,9 +62,7 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
         toastHandler.logSuccess("Success", "Check-in successful");
       })
       .catch((error) => {
-        console.log("Check in error: ", error);
         if (error?.response) {
-          console.log("Error response: ", error.response);
           if (
             error.response.data.errorCode ==
             ApplicationError.TicketOrderWithIdNotFound.Code
@@ -146,7 +143,6 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
             );
 
             if (code) {
-              // console.log("QR CODE found: ", code);
               validateQrData(code.data);
               // setScannedAccessCode(code.data); // QR code data found
               setBeginScan(false);
@@ -201,35 +197,35 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
   }, [multipleCheckInModalVisibility]);
 
   return (
-    <main className='px-4 py-8 min-h-screen'>
-      <div className='mb-5'>
-        <h2 className='text-2xl font-medium text-gray-300'>
+    <main className="px-4 py-8 min-h-screen">
+      <div className="mb-5">
+        <h2 className="text-2xl font-medium text-gray-300">
           {eventTitle} Attendees Check-In
         </h2>
       </div>
-      <div className='flex flex-col mb-5'>
-        <p className='mb-1'>Please scan attendee QR code to continue</p>
+      <div className="flex flex-col mb-5">
+        <p className="mb-1">Please scan attendee QR code to continue</p>
         <button
           onClick={() => setBeginScan(true)}
-          className='h-24 w-full md:w-1/3 bg-primary-color-sub/30 border-dashed border-primary-color-sub border-[1.5px] rounded-xl hover:bg-primary-color-sub/50'
+          className="h-24 w-full md:w-1/3 bg-primary-color-sub/30 border-dashed border-primary-color-sub border-[1.5px] rounded-xl hover:bg-primary-color-sub/50"
         >
           Scan
         </button>
       </div>
-      <div className='flex flex-col mb-5'>
-        <p className='mb-1'>Or enter attendee access code below to continue</p>
-        <div className='flex flex-row gap-2 items-center'>
+      <div className="flex flex-col mb-5">
+        <p className="mb-1">Or enter attendee access code below to continue</p>
+        <div className="flex flex-row gap-2 items-center">
           <input
-            className='p-2 border-[1px] border-solid border-grey/30 bg-grey/10 rounded-lg'
-            type='text'
-            placeholder='Event ID'
+            className="p-2 border-[1px] border-solid border-grey/30 bg-grey/10 rounded-lg"
+            type="text"
+            placeholder="Event ID"
             name={"eventId"}
             value={typedAccessCode ?? ""}
             onChange={(e) => setTypedAccessCode(e.target.value)}
           />
           <button
             // disabled={}
-            className='text-sm w-fit bg-white text-black/80 px-4 py-2 rounded-full hover:bg-white/80 transition-all'
+            className="text-sm w-fit bg-white text-black/80 px-4 py-2 rounded-full hover:bg-white/80 transition-all"
             onClick={() => setScannedAccessCode(typedAccessCode)}
           >
             Continue
@@ -237,18 +233,18 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
         </div>
       </div>
 
-      {scanError && <p className='text-red-500'>{scanError}</p>}
+      {scanError && <p className="text-red-500">{scanError}</p>}
       {scannedAccessCode && (
-        <p className='text-primary-color-sub-50'>
+        <p className="text-primary-color-sub-50">
           Check-in attendee with access code: {scannedAccessCode}
         </p>
       )}
 
       {beginScan && (
-        <div className='absolute w-full h-full top-0 left-0 z-20 flex flex-col items-center justify-center gap-3 bg-dark-grey/50'>
+        <div className="absolute w-full h-full top-0 left-0 z-20 flex flex-col items-center justify-center gap-3 bg-dark-grey/50">
           <video
             ref={videoRef}
-            className='w-[80%] h-[70%] border-primary-color-sub border-[1px] rounded-xl object-cover'
+            className="w-[80%] h-[70%] border-primary-color-sub border-[1px] rounded-xl object-cover"
             style={{
               // width: '100%',
               // height: 'auto',
@@ -258,14 +254,14 @@ const CheckInPage: FunctionComponent<CheckInPageProps> = (): ReactElement => {
           />
           <button
             onClick={() => setBeginScan(true)}
-            className='text-sm w-fit bg-white text-black/80 px-4 py-2 rounded-full hover:bg-white/80 transition-all'
+            className="text-sm w-fit bg-white text-black/80 px-4 py-2 rounded-full hover:bg-white/80 transition-all"
           >
             Stop Scan
           </button>
         </div>
       )}
       {isCheckingIn && (
-        <div className='absolute w-full h-full top-0 left-0 z-20 flex flex-col items-center justify-center gap-0 bg-dark-grey/50'>
+        <div className="absolute w-full h-full top-0 left-0 z-20 flex flex-col items-center justify-center gap-0 bg-dark-grey/50">
           <FullPageLoader />
           <p>Checking in...</p>
         </div>

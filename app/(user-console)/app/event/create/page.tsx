@@ -81,8 +81,6 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
 
     // Update the event creation stage
     // setEventCreationStage(EventCreationStage.ImageUpload);
-
-    // console.log(eventRequest);
   }
 
   function moveToNextStage(e: FormEvent<HTMLFormElement>) {
@@ -155,8 +153,6 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
   //     // formData.append("mainImage", mainImageFile || "");
   //     // Compress image if it's too large (e.g., > 2MB)
   //     if (mainImageFile && mainImageFile.size > 2 * 1024 * 1024) {
-  //       console.log(`Original image size: ${formatFileSize(mainImageFile.size)}`);
-
   //       //   const compressedImage = await compressImage(mainImageFile);
   //       const {
   //         compressedFile,
@@ -164,10 +160,6 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
   //         compressedSize,
   //         reductionPercentage,
   //       } = await compressImage(mainImageFile);
-
-  //       console.log(`Original image size: ${formatFileSize(originalSize)}`);
-  //       console.log(`Compressed image size: ${formatFileSize(compressedSize)}`);
-  //       console.log(`Reduction: ${reductionPercentage.toFixed(2)}%`);
 
   //       formData.append("mainImage", compressedFile);
   //     } else {
@@ -227,9 +219,6 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
   //         // Update created event state
   //         setIsEventCreated(true);
 
-  //         // log response
-  //         // console.log(response);
-
   //         // Persist the newly created event
   //         persistNewlyCreatedEvent(response.data);
 
@@ -240,8 +229,6 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
   //         push(`${ApplicationRoutes.Event}/${response.data.id}`);
   //       })
   //       .catch((error) => {
-  //         // log error
-  //         // console.log(error);
   //         // Stop loader
   //         setIsCreatingEvent(false);
   //       });
@@ -268,32 +255,15 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
       if (mainImageFile) {
         const isLargeFile = mainImageFile.size > 2 * 1024 * 1024; // 2MB threshold
         let fileToUpload = mainImageFile;
-
-        console.log(
-          `Original image size: ${formatFileSize(mainImageFile.size)}`
-        );
         const { compressedFile, compressedSize, reductionPercentage } =
           await compressImage(mainImageFile);
-        console.log(
-          `Compressed to: ${formatFileSize(
-            compressedSize
-          )} (${reductionPercentage.toFixed(2)}% reduction)`
-        );
         fileToUpload = compressedFile;
 
         formData.append("mainImage", fileToUpload);
 
         // if (isLargeFile) {
-        //   console.log(
-        //     `Original image size: ${formatFileSize(mainImageFile.size)}`
-        //   );
         //   const { compressedFile, compressedSize, reductionPercentage } =
         //     await compressImage(mainImageFile);
-        //   console.log(
-        //     `Compressed to: ${formatFileSize(
-        //       compressedSize
-        //     )} (${reductionPercentage.toFixed(2)}% reduction)`
-        //   );
         //   fileToUpload = compressedFile;
         // }
 
@@ -354,7 +324,6 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
       const response = await createEvent(user.token, formData);
 
       // --- Success Path ---
-      console.log("Event created successfully:", response.data);
       setIsEventCreated(true);
       persistNewlyCreatedEvent(response.data);
 
@@ -396,7 +365,6 @@ const CreateEvent: FunctionComponent<CreateEventProps> = (): ReactElement => {
 
         // Case 1: A draft exists and it belongs to the current user.
         if (draft.eventData?.publisherId === currentUserId) {
-          console.log("Matching draft found for user. Loading...");
           setEventRequest(draft.eventData);
           if (draft.imageFile) {
             setMainImageFile(draft.imageFile);

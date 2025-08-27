@@ -54,7 +54,6 @@ const SubscriptionFormSection: FunctionComponent<SubscriptionFormSectionProps> =
 
         await createNewsletterSubscriber(email.trim())
             .then((response) => {
-                console.log(response);
                 // Display success message
                 toastHandler?.logSuccess(
                     "Success",
@@ -69,7 +68,6 @@ const SubscriptionFormSection: FunctionComponent<SubscriptionFormSectionProps> =
                 setEmail("");
             })
             .catch((error) => {
-                console.log(error);
                 if (error.response) {
                     if (
                         error.response.data.errorCode ==

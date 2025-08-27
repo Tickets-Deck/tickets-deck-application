@@ -51,7 +51,6 @@ const EmailVerificationPrompt: FunctionComponent<
                 setVisibility(false);
             })
             .catch((error) => {
-                console.log("🚀 ~ handleResendVerificationLink ~ error:", error);
                 // Show error message
                 toastHandler.logError(
                     "Error",
