@@ -3,13 +3,13 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
-import { Icons } from "../components/ui/icons";
-import Badge from "../components/ui/badge";
-import Button from "../components/ui/button";
+import { Icons } from "../../components/ui/icons";
+import Badge from "../../components/ui/badge";
+import Button from "../../components/ui/button";
 import { DreamyBackground, WavyBackground } from "./3d-background";
-import { ApplicationRoutes } from "../constants/applicationRoutes";
-import { ContactSalesModal } from "../components/Modal/PricingPage/ContactSales";
-import { ScheduleDemoModal } from "../components/Modal/PricingPage/ScheduleDemo";
+import { ApplicationRoutes } from "../../constants/applicationRoutes";
+import { ContactSalesModal } from "../../components/Modal/PricingPage/ContactSales";
+import { ScheduleDemoModal } from "../../components/Modal/PricingPage/ScheduleDemo";
 
 // Animation variants
 const fadeIn = {

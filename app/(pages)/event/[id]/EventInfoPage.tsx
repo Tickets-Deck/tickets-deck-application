@@ -9,10 +9,10 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import images from "../../../public/images";
+import images from "../../../../public/images";
 import moment from "moment";
-import TicketDelivery from "../../components/Modal/TicketDelivery";
-import SkeletonEventInfo from "../../components/Skeletons/SkeletonEventInfo";
+import TicketDelivery from "../../../components/Modal/TicketDelivery";
+import SkeletonEventInfo from "../../../components/Skeletons/SkeletonEventInfo";
 import { EventResponse } from "@/app/models/IEvents";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import { useFetchEventById } from "@/app/api/apiClient";

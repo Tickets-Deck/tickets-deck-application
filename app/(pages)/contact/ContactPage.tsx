@@ -2,14 +2,14 @@
 import { ReactElement, FunctionComponent, useState } from "react";
 import images from "@/public/images";
 import Link from "next/link";
-import PageHeroSection from "../components/shared/PageHeroSection";
-import { Icons } from "../components/ui/icons";
-import { CustomerEnquiry } from "../models/ICustomerEnquiries";
-import ComponentLoader from "../components/Loader/ComponentLoader";
-import { useCreateCustomerEnquiry } from "../api/apiClient";
-import { RootState } from "../redux/store";
+import PageHeroSection from "../../components/shared/PageHeroSection";
+import { Icons } from "../../components/ui/icons";
+import { CustomerEnquiry } from "../../models/ICustomerEnquiries";
+import ComponentLoader from "../../components/Loader/ComponentLoader";
+import { useCreateCustomerEnquiry } from "../../api/apiClient";
+import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
-import { useToast } from "../context/ToastCardContext";
+import { useToast } from "../../context/ToastCardContext";
 
 interface ContactPageProps {}
 
