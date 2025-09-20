@@ -48,6 +48,8 @@ export function serializeEventInformationTab(tab: number) {
       return "Overview";
     case EventInformationTab.Tickets:
       return "Tickets";
+    case EventInformationTab.Coupons:
+      return "Coupons";
     case EventInformationTab.Analytics:
       return "Analytics";
     case EventInformationTab.Settings:
