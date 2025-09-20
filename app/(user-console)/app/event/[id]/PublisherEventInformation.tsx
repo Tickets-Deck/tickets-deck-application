@@ -32,6 +32,7 @@ import OverviewSection from "@/app/components/Event/View/Publisher/OverviewSecti
 import TicketsSection from "@/app/components/Event/View/Publisher/TicketsSection";
 import SettingsSection from "@/app/components/Event/View/Publisher/SettingsSection";
 import AnalyticsSection from "@/app/components/Event/View/Publisher/AnalyticsSection";
+import CouponManager from "@/app/components/Event/View/Publisher/CouponManager";
 import { Icons } from "@/app/components/ui/icons";
 import Tooltip from "@/app/components/custom/Tooltip";
 import { CheckInArea } from "@/app/components/Event/View/Publisher/CheckIn/CheckInArea";
@@ -500,6 +501,11 @@ const PublisherEventInformation: FunctionComponent<
                 isFetchingEventTickets={isFetchingEventTickets}
                 setIsTicketCreateModalVisible={setIsTicketCreateModalVisible}
                 setIsTicketDeleteModalVisible={setIsTicketDeleteModalVisible}
+              />
+            )}
+            {selectedInfoTab == EventInformationTab.Coupons && (
+              <CouponManager
+                eventInfo={eventInfo}
               />
             )}
             {selectedInfoTab == EventInformationTab.Settings && (
