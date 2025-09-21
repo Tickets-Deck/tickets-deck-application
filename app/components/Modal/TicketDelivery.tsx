@@ -255,7 +255,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                                 ticketPricing.selectedTickets,
                                 ticketPricing.emailId
                             )
-                        ]?.toLocaleLowerCase(),
+                        ]?.toLocaleLowerCase() || undefined,
                     contactEmail:
                         primaryEmail ??
                         (userEmailIsPrimaryEmail ? (userInfo?.email as string) : ""),
@@ -502,11 +502,11 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
         setCouponDetails(undefined);
 
         // check coupon code
-        await verifyCoupon(eventInfo?.eventId as string, couponCodeValue as string)
+        await verifyCoupon(eventInfo?.eventId as string, couponCodeValue as string, userInfo?.id as string || primaryEmail)
             .then((response) => {
                 if (response.data) {
                     setCouponDetails(response.data);
-                    // setCodeValidationStatus(ValidationStatus.Valid);
+                    setCodeValidationStatus(ValidationStatus.Valid);
                     toastHandler.logSuccess(
                         "Success",
                         "Coupon code applied successfully"
@@ -520,6 +520,11 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                 }
             })
             .catch((error) => {
+                // clear coupon input
+                setCouponCodeValue('');
+                setCouponDetails(undefined);
+                // setCodeValidationStatus(ValidationStatus.Invalid); 
+                
                 if (
                     error.response.data.errorCode ==
                     ApplicationError.InvalidCouponExpirationDate.Code
@@ -527,6 +532,16 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                     toastHandler.logError(
                         "Error",
                         "This coupon code has expired. Please get a new code, and try again"
+                    );
+                    return;
+                }
+                if (
+                    error.response.data.errorCode ==
+                    ApplicationError.CouponAlreadyUsedByUser.Code
+                ) {
+                    toastHandler.logError(
+                        "Error",
+                        "This coupon code has already been used by you. Please get a new code, and try again"
                     );
                     return;
                 }
@@ -791,7 +806,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                                     </div>
                                     {codeValidationStatus === ValidationStatus.Valid && (
                                         <span
-                                            className='text-[0.6rem] font-medium flex items-center gap-0.5 [&_svg]:size-4 [&_svg]:translate-y-[-0.125rem] border-[0.188rem] border-primary-color-sub/50 text-[#5cb85c] [&_svg_path]:fill-[#5cb85c]'
+                                            className='text-[0.6rem] font-medium flex items-center gap-0.5 [&_svg]:size-4 [&_svg]:translate-y-[-0.125rem] text-[#5cb85c] [&_svg_path]:fill-[#5cb85c]'
                                             id={"valid"}
                                         >
                                             <Icons.Check /> Valid code
@@ -799,7 +814,7 @@ const TicketDelivery: FunctionComponent<TicketDeliveryProps> = ({
                                     )}
                                     {codeValidationStatus === ValidationStatus.Invalid && (
                                         <span
-                                            className='text-[0.6rem] font-medium flex items-center gap-0.5 [&_svg]:size-4 border-[0.188rem] border-failed-color/50 [&_svg]:translate-y-[-0.125rem] text-failed-color'
+                                            className='text-[0.6rem] font-medium flex items-center gap-0.5 [&_svg]:size-4 [&_svg]:translate-y-[-0.125rem] text-failed-color'
                                             id={"invalid"}
                                         >
                                             <Icons.Close /> Invalid code. Please verify code, and try
