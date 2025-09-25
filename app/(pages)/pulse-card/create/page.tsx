@@ -11,7 +11,7 @@ import {
   useCreateBanner,
   useFetchUserEventsForBanner,
   useUploadBannerFrame,
-} from "../../api/apiClient";
+} from "../../../api/apiClient";
 import { ProgressBar } from "@/app/components/DpBanner/ProgressBar";
 import { Step1BasicInfo } from "@/app/components/DpBanner/Step1BasicInfo";
 import { Step2AvatarConfig } from "@/app/components/DpBanner/Step2AvatarConfig";

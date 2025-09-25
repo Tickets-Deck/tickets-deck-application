@@ -402,10 +402,38 @@ export class ApiRoutes {
   /**
    * The route to Verify Coupon Code endpoint
    */
-  static VerifyCouponCode: (eventId: string, couponCode: string) => string = (
+  static VerifyCouponCode: (
     eventId: string,
-    couponCode: string
-  ) => `coupons/${eventId}/verify/${couponCode}`;
+    couponCode: string,
+    userIdentifier?: string
+  ) => string = (
+    eventId: string,
+    couponCode: string,
+    userIdentifier?: string
+  ) => `coupons/verify/${couponCode}/event/${eventId}/user/${userIdentifier}`;
+
+  /**
+   * The route to Create Coupon endpoint
+   */
+  static CreateCoupon: (eventId: string, publisherId: string) => string = (
+    eventId: string,
+    publisherId: string
+  ) => `coupons/${eventId}/publisher/${publisherId}`;
+
+  static FetchEventCoupons: (eventId: string, publisherId: string) => string = (
+    eventId: string,
+    publisherId: string
+  ) => `coupons/event/${eventId}/publisher/${publisherId}`;
+
+  static UpdateCoupon: (couponId: string, publisherId: string) => string = (
+    couponId: string,
+    publisherId: string
+  ) => `coupons/${couponId}/publisher/${publisherId}`;
+
+  static DeleteCoupon: (couponId: string, publisherId: string) => string = (
+    couponId: string,
+    publisherId: string
+  ) => `coupons/${couponId}/publisher/${publisherId}`;
 
   /**
    * The route to EventCategory endpoint

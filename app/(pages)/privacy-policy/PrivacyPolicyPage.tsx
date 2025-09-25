@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FunctionComponent, ReactElement } from "react";
-import { ApplicationRoutes } from "../constants/applicationRoutes";
+import { ApplicationRoutes } from "../../constants/applicationRoutes";
 
 interface PrivacyPolicyPageProps {
 

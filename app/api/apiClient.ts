@@ -26,6 +26,10 @@ import {
   IUserEventForBanner,
   UploadBannerFrameResponse,
 } from "../models/IBanner";
+import {
+  CouponRequest,
+  CouponUpdateRequest,
+} from "../models/ICoupon";
 
 export const API = axios.create({
   baseURL: ApiRoutes.BASE_URL,
@@ -892,15 +896,52 @@ export function useFetchTransactionFee() {
 export function useVerifyCouponCode() {
   // Request token
   const requestToken = useRequestCredentialToken();
-  async function verifyCouponCode(eventId: string, couponCode: string) {
+  async function verifyCouponCode(eventId: string, couponCode: string, userIdentifier?: string) {
     const token = await requestToken();
     return API.get(
-      ApiRoutes.VerifyCouponCode(eventId, couponCode),
+      ApiRoutes.VerifyCouponCode(eventId, couponCode, userIdentifier),
       getApiConfig(token.data.token)
     );
   }
 
   return verifyCouponCode;
+}
+
+export function useCreateCoupon() {
+  async function createCoupon(token: string, eventId: string, publisherId: string, data: CouponRequest) {
+    return API.post(ApiRoutes.CreateCoupon(eventId, publisherId), data, getApiConfig(token));
+  }
+
+  return createCoupon;
+}
+
+export function useFetchEventCoupons() {
+  async function fetchEventCoupons(token: string, eventId: string, publisherId: string) {
+    return API.get(ApiRoutes.FetchEventCoupons(eventId, publisherId), getApiConfig(token));
+  }
+
+  return fetchEventCoupons;
+}
+
+export function useUpdateCoupon() {
+  async function updateCoupon(
+    token: string,
+    couponId: string,
+    publisherId: string,
+    data: CouponUpdateRequest
+  ) {
+    return API.put(ApiRoutes.UpdateCoupon(couponId, publisherId), data, getApiConfig(token));
+  }
+
+  return updateCoupon;
+}
+
+export function useDeleteCoupon() {
+  async function deleteCoupon(token: string, couponId: string, publisherId: string) {
+    return API.delete(ApiRoutes.DeleteCoupon(couponId, publisherId), getApiConfig(token));
+  }
+
+  return deleteCoupon;
 }
 
 export function useCreateReview() {

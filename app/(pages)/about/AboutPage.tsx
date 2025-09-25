@@ -1,10 +1,10 @@
 "use client"
 import { FunctionComponent, ReactElement } from "react";
 import images from "@/public/images";
-import PageHeroSection from "../components/shared/PageHeroSection";
-import IntroSection from "../components/AboutPage/IntroSection";
-import WhyChooseUs from "../components/AboutPage/WhyChooseUs";
-import TeamSection from "../components/AboutPage/TeamSection";
+import PageHeroSection from "../../components/shared/PageHeroSection";
+import IntroSection from "../../components/AboutPage/IntroSection";
+import WhyChooseUs from "../../components/AboutPage/WhyChooseUs";
+import TeamSection from "../../components/AboutPage/TeamSection";
 
 interface AboutPageProps {
 

@@ -6,12 +6,12 @@ import {
   useEffect,
   useState,
 } from "react";
-import EventsGroup from "../components/events/EventsGroup";
-import { useFetchEvents, useFetchPastEvents } from "../api/apiClient";
-import { EventResponse } from "../models/IEvents";
-import PageHeroSection from "../components/shared/PageHeroSection";
-import { ToastContext } from "../context/ToastCardContext";
-import { StorageKeys } from "../constants/storageKeys";
+import EventsGroup from "../../components/events/EventsGroup";
+import { useFetchEvents, useFetchPastEvents } from "../../api/apiClient";
+import { EventResponse } from "../../models/IEvents";
+import PageHeroSection from "../../components/shared/PageHeroSection";
+import { ToastContext } from "../../context/ToastCardContext";
+import { StorageKeys } from "../../constants/storageKeys";
 
 interface AllEventsProps {}
 

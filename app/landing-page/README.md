@@ -66,7 +66,7 @@ This landing page serves as the main entry point for Ticketsdeck's comprehensive
 ## 🎨 Design System
 
 ### Color Palette
-- **Primary**: Purple (#9333ea) to Pink (#db2777) gradient
+- **Primary**: Purple (#9333ea) to Cream (#F9E5C5) gradient
 - **Industry Colors**:
   - Events: Purple to Pink
   - Flights: Blue to Cyan
@@ -74,8 +74,8 @@ This landing page serves as the main entry point for Ticketsdeck's comprehensive
   - Sports: Orange to Red
 
 ### Typography
-- **Headings**: Inter, bold weights (600-800)
-- **Body**: Inter, regular weights (400-500)
+- **Headings**: MonaSans, bold weights (600-800)
+- **Body**: MonaSans, regular weights (400-500)
 - **Responsive scaling**: 5xl-7xl for hero, 4xl-5xl for sections
 
 ### Spacing

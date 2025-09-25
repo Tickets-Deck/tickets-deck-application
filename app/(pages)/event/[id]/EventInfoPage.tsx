@@ -9,10 +9,10 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import images from "../../../public/images";
+import images from "../../../../public/images";
 import moment from "moment";
-import TicketDelivery from "../../components/Modal/TicketDelivery";
-import SkeletonEventInfo from "../../components/Skeletons/SkeletonEventInfo";
+import TicketDelivery from "../../../components/Modal/TicketDelivery";
+import SkeletonEventInfo from "../../../components/Skeletons/SkeletonEventInfo";
 import { EventResponse } from "@/app/models/IEvents";
 import { RetrievedTicketResponse } from "@/app/models/ITicket";
 import { useFetchEventById } from "@/app/api/apiClient";
@@ -306,29 +306,29 @@ const EventDetailsPage: FunctionComponent<EventDetailsPageProps> = ({
 
       <div className="text-white bg-dark-grey">
         <section className="relative flex flex-col gap-3 pb-12 w-full">
-          <div className="absolute size-full after:bg-white after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-50 after:bg-[linear-gradient(180deg,#8133f1_0%,#6315d3_100%)]">
-            <video
-              className="size-full object-cover object-bottom"
-              autoPlay
-              loop
-              muted
-              playsInline
-              {...(bannerConfig.slowMo && {
-                onLoadStart: (e) => (e.currentTarget.playbackRate = 0.05),
-                onLoadedData: (e) => (e.currentTarget.playbackRate = 0.05),
-                onPlay: (e) => (e.currentTarget.playbackRate = 0.05),
-              })}
-              src="https://res.cloudinary.com/dvxqk1487/video/upload/q_auto/v1704506218/videos/Pexels_Videos_2022395_1080P_po4ic2.mp4"
-            />
+          {/* <div className="absolute size-full after:bg-white after:absolute after:size-full after:top-0 after:left-0 after:z-[2] after:opacity-50 after:bg-[linear-gradient(180deg,#8133f1_0%,#6315d3_100%)]"> */}
+          <div className="">
+            {eventInfo?.mainImageUrl ? (
+              <Image
+                className="size-full object-cover object-center blur-md scale-105"
+                src={buildCloudinaryImageUrl(eventInfo.mainImageUrl)}
+                alt={eventInfo.title}
+                fill
+                priority
+                sizes="100vw"
+              />
+            ) : (
+              <div className="size-full bg-gradient-to-br from-purple-600 to-blue-600" />
+            )}
           </div>
-          <div className="px-5 md:px-[5rem] xl:px-[16%] lg:px-[10rem] py-6 w-full lg:w-[70%] z-[2] relative flex flex-col gap-3">
-            <span className="rounded-[0.5rem] py-1 px-2 flex items-center bg-white/10 gap-1 w-fit text-sm">
+          <div className="px-5 md:px-[5rem] xl:px-[16%] lg:px-[10rem] py-6 w-full lg:w-[70%] z-[3] relative flex flex-col gap-3">
+            <span className="rounded-[0.5rem] py-2 px-3 flex items-center bg-black/30 backdrop-blur-sm border border-white/20 gap-2 w-fit text-sm text-white drop-shadow-lg [text-shadow:_0_1px_2px_rgb(0_0_0_/_80%)] mix-blend-normal">
               {bannerConfig.text}
               <span className="size-4 bg-transparent p-0">
                 <Image src={bannerConfig.image} alt={bannerConfig.imageAlt} />
               </span>
             </span>
-            <h2 className={bannerConfig.headingClass}>
+            <h2 className={`${bannerConfig.headingClass} text-white drop-shadow-xl [text-shadow:_0_2px_4px_rgb(0_0_0_/_90%)] mix-blend-normal`}>
               {bannerConfig.heading}
             </h2>
           </div>

@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useFetchAllBanners } from "../api/apiClient";
-import { IBanner } from "../models/IBanner";
-import { ApplicationRoutes } from "../constants/applicationRoutes";
+import { useFetchAllBanners } from "../../api/apiClient";
+import { IBanner } from "../../models/IBanner";
+import { ApplicationRoutes } from "../../constants/applicationRoutes";
 
 const PulseBannersPage = () => {
   const [banners, setBanners] = useState<IBanner[]>([]);

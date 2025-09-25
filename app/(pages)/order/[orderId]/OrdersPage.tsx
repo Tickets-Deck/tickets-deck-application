@@ -8,8 +8,8 @@ import {
     Suspense,
 } from "react";
 import styles from "@/app/styles/OrdersPage.module.scss";
-import EventMainInfo from "../../components/Event/EventInfo";
-import { EventResponse } from "../../models/IEvents";
+import EventMainInfo from "../../../components/Event/EventInfo";
+import { EventResponse } from "../../../models/IEvents";
 import { useFetchOrderInformationById } from "@/app/api/apiClient";
 import ComponentLoader from "@/app/components/Loader/ComponentLoader";
 import { UserTicketOrderInfo } from "@/app/models/IUserTicketOrder";
