@@ -37,7 +37,6 @@ import { Icons } from "@/app/components/ui/icons";
 import Tooltip from "@/app/components/custom/Tooltip";
 import { CheckInArea } from "@/app/components/Event/View/Publisher/CheckIn/CheckInArea";
 import { FullPageLoader } from "@/app/components/Loader/ComponentLoader";
-import { useSession } from "next-auth/react";
 import TicketUpdateModal from "@/app/components/Event/Edit/TicketsUpdate/TicketUpdateModal";
 import DeletionConfirmationModal from "@/app/components/Modal/DeletionConfirmation";
 import moment from "moment";
@@ -45,8 +44,9 @@ import TicketCreationModal from "@/app/components/Event/Create/TicketsCreation/T
 import SharePopup from "@/app/components/custom/SharePopup";
 import { EditEventModal } from "@/app/components/Event/Edit/EventUpdateModal";
 import { Session } from "next-auth";
-import { formatFileSize } from "@/utils/formatFileSize";
 import { compressImage } from "@/utils/imageCompress";
+import EventUrlShortenerModal from "@/app/components/Modal/Console/EventUrlShortenerModal";
+import { Copy, Link } from "lucide-react";
 
 interface PublisherEventInformationProps {
   id: string;
@@ -89,6 +89,8 @@ const PublisherEventInformation: FunctionComponent<
     isEventDeletionConfirmationModalVisible,
     setIsEventDeletionConfirmationModalVisible,
   ] = useState(false);
+  const [isUrlShortenerModalVisible, setIsUrlShortenerModalVisible] =
+    useState(false);
   const [eventViewsCount, setEventViewsCount] = useState<number>();
 
   const [isFetchingEventInfo, setIsFetchingEventInfo] = useState(true);
@@ -96,25 +98,44 @@ const PublisherEventInformation: FunctionComponent<
   const [isDeletingEvent, setIsDeletingEvent] = useState(false);
   const [isDeletingTicket, setIsDeletingTicket] = useState(false);
 
-  function shareEvent() {
+  function shareEvent(copyLinkOnly?: boolean) {
     const eventUrl = `${
-      window.location.origin + ApplicationRoutes.GeneralEvent + eventInfo?.id
+      window.location.origin + ApplicationRoutes.GeneralEvent + (eventInfo?.slug || eventInfo?.id)
     }`;
 
-    navigator.clipboard
-      .writeText(`${eventInfo?.title} - Ticketsdeck Events: ${eventUrl}`)
-      .then(() => {
-        toasthandler?.logSuccess(
-          "Success",
-          `The link to ${eventInfo?.title} has been copied.`
-        );
-      })
-      .catch((error) => {
-        toasthandler?.logError(
-          "Error copying link",
-          "Failed to copy event link. Please try again."
-        );
-      });
+    if (copyLinkOnly) {
+      // Simple URL-only copy to clipboard
+      navigator.clipboard
+        .writeText(eventUrl)
+        .then(() => {
+          toasthandler?.logSuccess(
+            "Success",
+            "Event link copied to clipboard!"
+          );
+        })
+        .catch((error) => {
+          toasthandler?.logError(
+            "Error copying link",
+            "Failed to copy event link. Please try again."
+          );
+        });
+    } else {
+      // Full share text with title
+      navigator.clipboard
+        .writeText(`${eventInfo?.title} - Ticketsdeck Events: ${eventUrl}`)
+        .then(() => {
+          toasthandler?.logSuccess(
+            "Success",
+            `The link to ${eventInfo?.title} has been copied.`
+          );
+        })
+        .catch((error) => {
+          toasthandler?.logError(
+            "Error copying link",
+            "Failed to copy event link. Please try again."
+          );
+        });
+    }
   }
 
   // Check if event is currently live
@@ -125,6 +146,16 @@ const PublisherEventInformation: FunctionComponent<
     const eventStart = new Date(eventInfo.startDate);
     const eventEnd = new Date(eventInfo.endDate);
     return now >= eventStart && now <= eventEnd;
+  };
+
+  // Handle slug update
+  const handleSlugUpdate = (newSlug: string) => {
+    toasthandler?.logSuccess(
+      "URL Updated",
+      `Your event URL has been updated to: /event/${newSlug}`
+    );
+    // refresh the event data
+    handleFetchEventInfo();
   };
 
   async function handleFetchPreviousEventAnalytics(currentEventId: string) {
@@ -413,9 +444,20 @@ const PublisherEventInformation: FunctionComponent<
         isLoading={isDeletingEvent}
       />
 
+      {eventInfo && (
+        <EventUrlShortenerModal
+          isOpen={isUrlShortenerModalVisible}
+          onClose={() => setIsUrlShortenerModalVisible(false)}
+          currentSlug={eventInfo.slug || eventInfo.id}
+          eventId={eventInfo.id}
+          publisherId={eventInfo.publisherId}
+          onSlugUpdate={handleSlugUpdate}
+        />
+      )}
+
       {!isFetchingEventInfo && eventInfo && (
         <section className="p-[1.25rem]">
-          <div className="flex flex-row justify-between items-center gap-4 mb-10">
+          <div className="flex flex-row justify-between items-center gap-4 mb-8">
             <div>
               <h4 className="mb-1">Event Information</h4>
               <h2 className="text-3xl font-medium">{eventInfo.title}</h2>
@@ -446,6 +488,58 @@ const PublisherEventInformation: FunctionComponent<
                   eventInfo?.id
                 }`}
               />
+            </div>
+          </div>
+
+          {/* Event Link Section */}
+          <div className="mt-3 p-4 bg-container-grey/50 rounded-lg border border-white/10 mb-8">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-white/60 mb-1 font-medium">
+                Event Link
+              </p>
+              <div className="flex flex-col md:flex-row items-center gap-2">
+                <div className="flex-1 min-w-0 w-full bg-dark-grey-2 rounded-md px-3 py-2 border border-white/20">
+                  <p
+                    className="text-sm text-white font-mono truncate"
+                    title={`${window.location.origin}${
+                      ApplicationRoutes.GeneralEvent
+                    }${eventInfo?.slug || eventInfo.id}`}
+                  >
+                    {`${window.location.origin}${
+                      ApplicationRoutes.GeneralEvent
+                    }${eventInfo?.slug || eventInfo.id}`}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 ml-auto">
+                  {/* Copy Button */}
+                  <Tooltip position="top" tooltipText="Copy link">
+                    <button
+                      onClick={() => shareEvent(true)}
+                      className="flex items-center justify-center w-10 h-10 bg-white/10 hover:bg-white/20 rounded-md border border-white/20 transition-all duration-200 hover:scale-105"
+                    >
+                      <Copy width={16} height={16} className="text-white" />
+                    </button>
+                  </Tooltip>
+
+                  {/* Shorten URL Button */}
+                  <Tooltip position="top" tooltipText="Customize URL">
+                    <button
+                      onClick={() => setIsUrlShortenerModalVisible(true)}
+                      className="flex items-center justify-center px-4 py-2 bg-gradient-to-r from-primary-color to-purple-700 rounded-md border border-purple-500/50 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20"
+                    >
+                      <Link
+                        width={16}
+                        height={16}
+                        className="text-white mr-2"
+                      />
+                      <span className="text-sm font-medium text-white">
+                        Customize
+                      </span>
+                    </button>
+                  </Tooltip>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -504,9 +598,7 @@ const PublisherEventInformation: FunctionComponent<
               />
             )}
             {selectedInfoTab == EventInformationTab.Coupons && (
-              <CouponManager
-                eventInfo={eventInfo}
-              />
+              <CouponManager eventInfo={eventInfo} />
             )}
             {selectedInfoTab == EventInformationTab.Settings && (
               <SettingsSection
