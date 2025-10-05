@@ -46,6 +46,7 @@ export type EventResponse = {
   publisherId: string;
   title: string;
   description: string;
+  slug: string | null;
   onlineLink: string | null;
   locationId: string | null;
   venue: string;
@@ -98,6 +99,7 @@ export type UpdateEventRequest = {
   publisherId: string;
 
   title: string | null;
+  slug: string | null;
   description: string | null;
   location: Location | null;
   venue: string | null;
