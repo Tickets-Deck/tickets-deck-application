@@ -21,7 +21,7 @@ export class ApiRoutes {
   /**
    * The base url being used for the application
    */
-  static BASE_URL: string = ApiRoutes.BASE_URL_LIVE;
+  static BASE_URL: string = ApiRoutes.BASE_URL_TEST;
 
   /**
    * The route to Request Credential Token endpoint
@@ -466,6 +466,12 @@ export class ApiRoutes {
    * The route to TrendingEventCategories endpoint
    */
   static TrendingEventCategories: string = "event-category/trending";
+
+  /**
+   * The route to Verify Event Slug endpoint
+   */
+  static VerifyEventSlug: (slug: string) => string = (slug: string) =>
+    `events/verify-slug/${slug}`;
 
   /**
    * The route to Create Banner endpoint

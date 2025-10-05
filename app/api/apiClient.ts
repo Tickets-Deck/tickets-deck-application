@@ -315,6 +315,19 @@ export function useFetchTrendingEventCategories() {
   return fetchTrendingEventCategories;
 }
 
+export function useVerifyEventSlug() {
+  const requestToken = useRequestCredentialToken();
+  async function verifyEventSlug(slug: string) {
+    const token = await requestToken();
+    return API.get<{ isUnique: boolean; reason: string | null }>(
+      ApiRoutes.VerifyEventSlug(slug),
+      getApiConfig(token.data.token)
+    );
+  }
+
+  return verifyEventSlug;
+}
+
 export function useFetchEventLikeStatus() {
   async function fetchEventLikeStatus(token: string, eventId: string) {
     return API.get(ApiRoutes.EventLikeStatus(eventId), getApiConfig(token));
