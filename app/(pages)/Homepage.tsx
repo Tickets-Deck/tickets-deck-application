@@ -1,29 +1,29 @@
 "use client";
 import { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import HeroSection from "./components/Homepage/HeroSection";
-import FeaturedEvents from "./components/Homepage/FeaturedEvents";
-import Services from "./components/Homepage/Services";
-import CreateEvent from "./components/Homepage/CreateEvent";
+import HeroSection from "../components/Homepage/HeroSection";
+import FeaturedEvents from "../components/Homepage/FeaturedEvents";
+import Services from "../components/Homepage/Services";
+import CreateEvent from "../components/Homepage/CreateEvent";
 import {
   useFetchEvents,
   useFetchFeaturedEvents,
   useFetchTrendingEventCategories,
-} from "./api/apiClient";
-import { EventResponse, FeaturedEvent } from "./models/IEvents";
-import BetaTestModal from "./components/Modal/BetaTestModal";
-import { ImageWithPlaceholder } from "./models/IImage";
+} from "../api/apiClient";
+import { EventResponse, FeaturedEvent } from "../models/IEvents";
+import BetaTestModal from "../components/Modal/BetaTestModal";
+import { ImageWithPlaceholder } from "../models/IImage";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import TestimonialSection from "./components/Homepage/TestimonialSection";
-import UpcomingEvents from "./components/Homepage/UpcomingEvents";
+import TestimonialSection from "../components/Homepage/TestimonialSection";
+import UpcomingEvents from "../components/Homepage/UpcomingEvents";
 import { useSelector } from "react-redux";
-import { RootState } from "./redux/store";
-import EmailVerificationPrompt from "./components/Modal/EmailVerificationPrompt";
-import { catchError } from "./constants/catchError";
-import { ITrendingEventCategory } from "./models/IEventCategory";
+import { RootState } from "../redux/store";
+import EmailVerificationPrompt from "../components/Modal/EmailVerificationPrompt";
+import { catchError } from "../constants/catchError";
+import { ITrendingEventCategory } from "../models/IEventCategory";
 import { Session } from "next-auth";
-import RecentlyConcludedEvents from "./components/Homepage/RecentlyConcludedEvents";
-import MarketplaceAnnouncement from "./components/shared/MarketplaceAnnoucement";
+import RecentlyConcludedEvents from "../components/Homepage/RecentlyConcludedEvents";
+import MarketplaceAnnouncement from "../components/shared/MarketplaceAnnoucement";
 import {
   handleMarketplaceAnnouncementViewed,
   shouldShowMarketplaceAnnouncement,

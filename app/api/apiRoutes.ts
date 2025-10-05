@@ -468,6 +468,12 @@ export class ApiRoutes {
   static TrendingEventCategories: string = "event-category/trending";
 
   /**
+   * The route to Verify Event Slug endpoint
+   */
+  static VerifyEventSlug: (slug: string) => string = (slug: string) =>
+    `events/verify-slug/${slug}`;
+
+  /**
    * The route to Create Banner endpoint
    */
   static Banners: string = `banners`;

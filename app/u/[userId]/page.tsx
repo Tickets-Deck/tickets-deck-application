@@ -15,7 +15,7 @@ async function getUserData(
 ): Promise<UserCredentialsResponse | null> {
   // This page is a Server Component, so we need to fetch data directly.
   const apiBaseUrl = ApiRoutes.BASE_URL;
-  const url = `${apiBaseUrl}/ApiRoutes.FetchUserByUsername(${userId})`;
+  const url = `${apiBaseUrl}/${ApiRoutes.FetchUserByUsername}/${userId}`;
 
   try {
     const res = await fetch(url, {

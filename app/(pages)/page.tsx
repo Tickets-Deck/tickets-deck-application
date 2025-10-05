@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Homepage from "./Homepage";
-import { getPlaceholderImage } from "./services/DynamicBlurDataUrl";
+import { getPlaceholderImage } from "../services/DynamicBlurDataUrl";
 import images from "@/public/images";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";

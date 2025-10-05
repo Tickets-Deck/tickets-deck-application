@@ -257,7 +257,7 @@ const TicketsSelectionContainer: FunctionComponent<
             </button>
           )}
           <button
-            className="h-[3rem] w-[3rem] md:size-fit rounded-[2.5rem] cursor-pointer text-lg p-[0.65rem] hover:bg-failed-color [&_svg_path]:hover:!stroke-white border-none bg-white [&_svg]:size-6 text-black flex items-center place-items-center gap-1"
+            className="h-[3rem] w-[3rem] md:size-fit rounded-[2.5rem] cursor-pointer text-lg p-[0.65rem] hover:bg-failed-color [&_svg_path]:hover:!stroke-white border-none bg-white [&_svg]:size-6 text-black grid place-items-center"
             onClick={() => setTicketsSelectionContainerIsVisible(false)}
           >
             <Icons.Close />
