@@ -338,92 +338,92 @@ export default function CouponManager({ eventInfo }: Props) {
               const status = getCouponStatus(coupon);
               return (
                 <div
-                  key={coupon.id}
-                  className="bg-white/5 rounded-lg p-4 border border-white/10"
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="bg-primary-color-sub/20 px-3 py-1 rounded-md text-sm font-mono font-medium">
-                          {coupon.code}
-                        </span>
-                        <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">
-                          {coupon.discount}% OFF
-                        </span>
-                        <span
-                          className={`${status.bgColor} ${status.color} px-2 py-1 rounded text-xs`}
-                        >
-                          {status.status}
-                        </span>
-                      </div>
+                 key={coupon.id}
+                 className="bg-white/5 rounded-lg p-4 border border-white/10 flex flex-col md:flex-row gap-4 md:items-end"
+               >
+                 {/* Left / Main Content */}
+                 <div className="flex-1 min-w-0">
+                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                     <div className="flex items-center gap-3 flex-wrap">
+                       <span className="bg-primary-color-sub/20 px-3 py-1 rounded-md text-sm font-mono font-medium truncate">
+                         {coupon.code}
+                       </span>
+                       <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">
+                         {coupon.discount}% OFF
+                       </span>
+                       <span
+                         className={`${status.bgColor} ${status.color} px-2 py-1 rounded text-xs`}
+                       >
+                         {status.status}
+                       </span>
+                     </div>
+                     <div className="text-sm text-gray-400">
+                       <p className="hidden sm:block">{/* placeholder for alignment */}</p>
+                     </div>
+                   </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-400">
-                        <div>
-                          <p className="font-medium text-white mb-1">Usage</p>
-                          <p>
-                            {coupon.usageCount} / {coupon.maxUsage} used
-                          </p>
-                          <div className="w-full bg-gray-700 rounded-full h-2 mt-1">
-                            <div
-                              className="bg-primary-color h-2 rounded-full"
-                              style={{
-                                width: `${
-                                  (coupon.usageCount / coupon.maxUsage) * 100
-                                }%`,
-                              }}
-                            ></div>
-                          </div>
-                        </div>
+                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-400">
+                     <div className="min-w-0">
+                       <p className="font-medium text-white mb-1">Usage</p>
+                       <p className="truncate">
+                         {coupon.usageCount} / {coupon.maxUsage} used
+                       </p>
+                       <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
+                         <div
+                           className="bg-primary-color h-2 rounded-full"
+                           style={{
+                             width: `${
+                               (coupon.usageCount / coupon.maxUsage) * 100
+                             }%`,
+                           }}
+                           aria-hidden
+                         ></div>
+                       </div>
+                     </div>
 
-                        <div>
-                          <p className="font-medium text-white mb-1">Expires</p>
-                          <p>
-                            {moment(coupon.validUntil).format("MMM D, YYYY")}
-                          </p>
-                          <p className="text-xs">
-                            {moment(coupon.validUntil).fromNow()}
-                          </p>
-                        </div>
+                     <div>
+                       <p className="font-medium text-white mb-1">Expires</p>
+                       <p className="truncate">
+                         {moment(coupon.validUntil).format("MMM D, YYYY")}
+                       </p>
+                       <p className="text-xs">{moment(coupon.validUntil).fromNow()}</p>
+                     </div>
 
-                        <div>
-                          <p className="font-medium text-white mb-1">
-                            Remaining
-                          </p>
-                          <p
-                            className={`${
-                              coupon.maxUsage - coupon.usageCount > 0
-                                ? "text-green-400"
-                                : "text-red-400"
-                            }`}
-                          >
-                            {coupon.maxUsage - coupon.usageCount}{" "}
-                            {coupon.maxUsage - coupon.usageCount === 1
-                              ? "use"
-                              : "uses"}{" "}
-                            left
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                     <div>
+                       <p className="font-medium text-white mb-1">Remaining</p>
+                       <p
+                         className={`${
+                           coupon.maxUsage - coupon.usageCount > 0
+                             ? "text-green-400"
+                             : "text-red-400"
+                         }`}
+                       >
+                         {coupon.maxUsage - coupon.usageCount}{" "}
+                         {coupon.maxUsage - coupon.usageCount === 1 ? "use" : "uses"} left
+                       </p>
+                     </div>
+                   </div>
+                 </div>
 
-                    <div className="flex items-center gap-2 ml-4">
-                      <button
-                        onClick={() => handleEditCoupon(coupon)}
-                        className="tertiaryButton !rounded-lg !py-2 !px-4 text-sm"
-                        title="Edit coupon"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteCoupon(coupon)}
-                        className="tertiaryButton !bg-failed-color !text-white !rounded-lg !py-2 !px-4"
-                        title="Delete coupon"
-                      >
-                        <Icons.Delete className="!w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                 {/* Actions */}
+                 <div className="flex-shrink-0 flex items-center gap-2 md:flex-col md:items-end">
+                   <button
+                     onClick={() => handleEditCoupon(coupon)}
+                     className="tertiaryButton !rounded-lg !py-2 !px-4 text-sm w-full md:w-auto"
+                     title="Edit coupon"
+                   >
+                     Edit
+                   </button>
+                   <button
+                     onClick={() => handleDeleteCoupon(coupon)}
+                     className="tertiaryButton !bg-failed-color !text-white !rounded-lg !py-2 !px-4 w-full md:w-auto flex items-center justify-center gap-2"
+                     title="Delete coupon"
+                   >
+                     <Icons.Delete className="!w-4 h-4" />
+                     <span className="hidden md:inline">Delete</span>
+                   </button>
+                 </div>
+               </div>
               );
             })}
           </div>
