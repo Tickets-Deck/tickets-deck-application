@@ -10,6 +10,7 @@ import { useContext } from "react";
 import { NairaPrice } from "@/app/constants/priceFormatter";
 import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
 import { formatStoredDate } from "@/utils/dateformatter";
+import { eventHelpers } from "@/helpers/event";
 
 function isFeaturedEvent(
   event: EventResponse | FeaturedEvent
@@ -24,10 +25,7 @@ const EventCard = ({
   event: EventResponse | FeaturedEvent;
   consoleDisplay?: boolean;
 }) => {
-  const slugOrId =
-    event.slug && event.slug.trim()
-      ? event.slug.trim().toLowerCase()
-      : event.id;
+  const { generateSlugOrId } = eventHelpers;
   const isFeatured = isFeaturedEvent(event);
 
   const toast = useContext(ToastContext);
@@ -66,8 +64,8 @@ const EventCard = ({
           <Link
             href={
               consoleDisplay
-                ? ApplicationRoutes.UserEventDetails(slugOrId)
-                : `${ApplicationRoutes.GeneralEvent}${slugOrId}`
+                ? ApplicationRoutes.UserEventDetails(generateSlugOrId(event))
+                : `${ApplicationRoutes.GeneralEvent}${generateSlugOrId(event)}`
             }
           >
             <Image
@@ -149,7 +147,7 @@ const EventCard = ({
                 `${
                   window.location.origin +
                   ApplicationRoutes.GeneralEvent +
-                  slugOrId
+                  generateSlugOrId(event)
                 }`
               )
             }
@@ -163,7 +161,7 @@ const EventCard = ({
       {consoleDisplay ? (
         <Link
           className="p-4 pt-0 block !mt-auto"
-          href={ApplicationRoutes.UserEventDetails(slugOrId)}
+          href={ApplicationRoutes.UserEventDetails(generateSlugOrId(event))}
         >
           <button className="primaryButton !w-full !justify-center">
             View details
@@ -171,7 +169,7 @@ const EventCard = ({
         </Link>
       ) : (
         <Link
-          href={`${ApplicationRoutes.GeneralEvent}${slugOrId}`}
+          href={`${ApplicationRoutes.GeneralEvent}${generateSlugOrId(event)}`}
           className="p-4 pt-0 block !mt-auto"
         >
           <button className="primaryButton !w-full !justify-center">

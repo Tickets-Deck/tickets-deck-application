@@ -47,6 +47,7 @@ import { Session } from "next-auth";
 import { compressImage } from "@/utils/imageCompress";
 import EventUrlShortenerModal from "@/app/components/Modal/Console/EventUrlShortenerModal";
 import { Copy, Link } from "lucide-react";
+import { eventHelpers } from "@/helpers/event";
 
 interface PublisherEventInformationProps {
   id: string;
@@ -65,6 +66,7 @@ const PublisherEventInformation: FunctionComponent<
   const fetchEventViewsCount = useFetchEventViewsCount();
   const toasthandler = useContext(ToastContext);
   const router = useRouter();
+  const { generateSlugOrId } = eventHelpers;
 
   const user = session?.user;
 
@@ -100,7 +102,9 @@ const PublisherEventInformation: FunctionComponent<
 
   function shareEvent(copyLinkOnly?: boolean) {
     const eventUrl = `${
-      window.location.origin + ApplicationRoutes.GeneralEvent + (eventInfo?.slug || eventInfo?.id)
+      window.location.origin +
+      ApplicationRoutes.GeneralEvent +
+      (eventInfo?.slug || eventInfo?.id)
     }`;
 
     if (copyLinkOnly) {
@@ -485,7 +489,7 @@ const PublisherEventInformation: FunctionComponent<
                 url={`${
                   window.location.origin +
                   ApplicationRoutes.GeneralEvent +
-                  eventInfo?.id
+                  generateSlugOrId(eventInfo)
                 }`}
               />
             </div>
@@ -552,8 +556,8 @@ const PublisherEventInformation: FunctionComponent<
               </div>
             )}
 
-            <div className="w-full overflow-x-auto md:overflow-auto">
-              <div className="flex flex-row justify-start items-center gap-3 bg-container-grey rounded-xl p-4">
+            <div className="w-full overflow-x-auto md:overflow-auto bg-container-grey rounded-xl">
+              <div className="flex flex-row justify-start items-center gap-3 p-4">
                 {Object.values(EventInformationTab).map((tab) => {
                   if (isNaN(Number(tab))) {
                     return;

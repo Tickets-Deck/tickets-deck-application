@@ -24,6 +24,7 @@ import { ApplicationRoutes } from "@/app/constants/applicationRoutes";
 import { useToast } from "@/app/context/ToastCardContext";
 import { Session } from "next-auth";
 import { buildCloudinaryImageUrl } from "@/utils/getCloudinaryImageUrl";
+import { eventHelpers } from "@/helpers/event";
 
 interface EventMainInfoProps {
   eventInfo: EventResponse;
@@ -47,6 +48,8 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = ({
   const { handleRecordEventView } = useApplicationContext();
   const fetchEventViewsCount = useFetchEventViewsCount();
 
+  const { generateSlugOrId } = eventHelpers;
+
   const windowRes = useResponsiveness();
   const isMobile = windowRes.width && windowRes.width < 768;
   const onMobile = typeof isMobile == "boolean" && isMobile;
@@ -56,7 +59,7 @@ const EventMainInfo: FunctionComponent<EventMainInfoProps> = ({
 
   async function shareEvent() {
     const eventUrl = `${
-      window.location.origin + ApplicationRoutes.GeneralEvent + eventInfo.id
+      window.location.origin + ApplicationRoutes.GeneralEvent + generateSlugOrId(eventInfo)
     }`;
 
     navigator.clipboard
